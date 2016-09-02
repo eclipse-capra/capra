@@ -52,10 +52,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 public class ResourceListener implements IResourceChangeListener {
 	// TODO Change into enumeration
 
-	final static int ARTIFACT_RENAMED = 0;
-	final static int ARTIFACT_MOVED = 1;
-	final static int ARTIFACT_DELETED = 2;
-	final static int ARTIFACT_CHANGED = 3;
+	public enum IssueType {
+		ARTIFACT_RENAMED, ARTIFACT_MOVED, ARTIFACT_DELETED, ARTIFACT_CHANGED
+	}
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -87,16 +86,16 @@ public class ResourceListener implements IResourceChangeListener {
 					if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
 
 						if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
-							markupJob(delta, ARTIFACT_MOVED, file, awc);
+							markupJob(delta, IssueType.ARTIFACT_MOVED, file, awc);
 						else
-							markupJob(delta, ARTIFACT_RENAMED, file, awc);
+							markupJob(delta, IssueType.ARTIFACT_RENAMED, file, awc);
 					}
 					if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
-						markupJob(delta, ARTIFACT_DELETED, file, awc);
+						markupJob(delta, IssueType.ARTIFACT_DELETED, file, awc);
 					}
 
 					if (delta.getKind() == IResourceDelta.CHANGED) {
-						markupJob(delta, ARTIFACT_CHANGED, file, awc);
+						markupJob(delta, IssueType.ARTIFACT_CHANGED, file, awc);
 					}
 					return true;
 				}
@@ -116,7 +115,7 @@ public class ResourceListener implements IResourceChangeListener {
 	 * @param delta
 	 *            The changes from the workspace
 	 * 
-	 * @param issueType
+	 * @param IssueType
 	 *            Type of change that occurred. Can be file changed, deleted,
 	 *            moved or renamed.
 	 * @param file
@@ -124,7 +123,7 @@ public class ResourceListener implements IResourceChangeListener {
 	 * @param awc
 	 *            The artifact wrapper model
 	 */
-	public void markupJob(IResourceDelta delta, int issueType, IFile file, EObject awc) {
+	public void markupJob(IResourceDelta delta, IssueType issue, IFile file, EObject awc) {
 
 		WorkspaceJob job = new WorkspaceJob("CapraNotificationJob") {
 
@@ -137,7 +136,7 @@ public class ResourceListener implements IResourceChangeListener {
 
 						if (aw.getName().equals(delta.getResource().getName())) {
 
-							if (issueType == ARTIFACT_RENAMED) {
+							if (issue == IssueType.ARTIFACT_RENAMED) {
 								IMarker marker = file
 										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
@@ -149,7 +148,7 @@ public class ResourceListener implements IResourceChangeListener {
 								marker.setAttribute("oldFileName", delta.getResource().getName());
 								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
 								marker.setAttribute("issueType", "Rename");
-							} else if (issueType == ARTIFACT_MOVED) {
+							} else if (issue == IssueType.ARTIFACT_MOVED) {
 								IMarker marker = file
 										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
@@ -162,7 +161,7 @@ public class ResourceListener implements IResourceChangeListener {
 								marker.setAttribute("oldFileName", delta.getResource().getName());
 								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
 								marker.setAttribute("issueType", "Move");
-							} else if (issueType == ARTIFACT_DELETED) {
+							} else if (issue == IssueType.ARTIFACT_DELETED) {
 								IMarker marker = file
 										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
@@ -172,7 +171,7 @@ public class ResourceListener implements IResourceChangeListener {
 										+ " has been deleted from " + delta.getFullPath());
 								marker.setAttribute("issueType", "Delete");
 								marker.setAttribute("fileName", delta.getResource().getName());
-							} else if (issueType == ARTIFACT_CHANGED) {
+							} else if (issue == IssueType.ARTIFACT_CHANGED) {
 								addFileChangedMarker(file, delta);
 
 							}
