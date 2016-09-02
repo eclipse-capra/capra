@@ -26,25 +26,20 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator {
 	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		try {
-			String problem = (String) marker.getAttribute("IssueType");
+
+			String problem = (String) marker.getAttribute("issueType");
 			if (problem.equals("Rename")) {
-				return new IMarkerResolution[] {
-						// new DummyNameOnlyQuickFix("Update the name only in
-						// the wrapper model."),
-						new RenameOrMoveQuickFix("Update the EMF presentation."),
-						// new DummyURIOnlyQuickFix("Update URI in the wrapper
-						// model."),
-				};
+				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation.") };
 			}
 			if (problem.equals("Move")) {
-				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation."),
-
-				};
+				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation.") };
 			}
 			if (problem.equals("Delete")) {
+				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link.") };
+			}
+			if (problem.equals("fileChanged")) {
 				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link."),
-
-				};
+						new FileChangedQuickFix("Do not update existing trace link") };
 			} else
 				return null;
 

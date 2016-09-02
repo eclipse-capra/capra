@@ -25,5 +25,6 @@ Require-Bundle: org.eclipse.equinox.registry,
  org.eclipse.capra.core
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.handlers,
- org.eclipse.capra.ui.helpers
+ org.eclipse.capra.ui.helpers,
+ org.eclipse.capra.ui.views
 

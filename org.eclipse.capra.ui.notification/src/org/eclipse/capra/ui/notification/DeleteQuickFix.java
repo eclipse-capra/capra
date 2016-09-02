@@ -52,7 +52,6 @@ public class DeleteQuickFix implements IMarkerResolution {
 	private Resource resourceForArtifacts;
 	private Resource resourceForTraces;
 	private ArtifactWrapperContainer container;
-	private String fullPath;
 	private EObject traceModel;
 	private TraceMetaModelAdapter traceMetamodelAdapter;
 	private List<RelatedTo> toDelete = new ArrayList<>();
@@ -68,12 +67,6 @@ public class DeleteQuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
-		try {
-			fullPath = (String) marker.getAttribute("DeltaFullPath");
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		resourceSet = new ResourceSetImpl();
 		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
@@ -95,37 +88,36 @@ public class DeleteQuickFix implements IMarkerResolution {
 		int counter = -1;
 		for (ArtifactWrapper aw : list) {
 			counter++;
-			String s = aw.getUri().replace("<{", "/");
-			s = s.substring(1);
-			s = s.replace("<", "/");
-			s = s.replace("{", "/");
-			s = "/" + s;
-
-			if (s.equals(fullPath)) {
-				List<Connection> connections = traceMetamodelAdapter.getConnectedElements(aw, traceModel);
-				connections.forEach(c -> {
-					for (RelatedTo t : traces) {
-						if (c.getTlink().equals(t)) {
-							toDelete.add(t);
+			try {
+				if (aw.getName().equals(marker.getAttribute("fileName"))) {
+					List<Connection> connections = traceMetamodelAdapter.getConnectedElements(aw, traceModel);
+					connections.forEach(c -> {
+						for (RelatedTo t : traces) {
+							if (c.getTlink().equals(t)) {
+								toDelete.add(t);
+							}
 						}
+					});
+					traces.removeAll(toDelete);
+					newTraceModel.getTraces().addAll(traces);
+					resourceForTraces.getContents().add(newTraceModel);
+
+					ArtifactWrapper toRemove = container.getArtifacts().get(counter);
+					EcoreUtil.delete(toRemove);
+					resourceForArtifacts.getContents().add(container);
+					try {
+						resourceForTraces.save(null);
+						resourceForArtifacts.save(null);
+					} catch (IOException e) {
+
+						e.printStackTrace();
 					}
-				});
-				traces.removeAll(toDelete);
-				newTraceModel.getTraces().addAll(traces);
-				resourceForTraces.getContents().add(newTraceModel);
 
-				ArtifactWrapper toRemove = container.getArtifacts().get(counter);
-				EcoreUtil.delete(toRemove);
-				resourceForArtifacts.getContents().add(container);
-				try {
-					resourceForTraces.save(null);
-					resourceForArtifacts.save(null);
-				} catch (IOException e) {
-
-					e.printStackTrace();
+					break;
 				}
-
-				break;
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

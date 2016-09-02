@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
@@ -36,105 +40,124 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * Listens to resource changes to detect if the trace links are still
- * consistent.
  * 
  * @author Michael Warne
+ * 
+ *
  */
+
 public class ResourceListener implements IResourceChangeListener {
 
-	// TODO Change this into an enumeration
 	final static int ARTIFACT_RENAMED = 0;
 	final static int ARTIFACT_MOVED = 1;
 	final static int ARTIFACT_DELETED = 2;
-
-	private URI uri;
-	private TracePersistenceAdapter tracePersistenceAdapter;
-	private ResourceSet resourceSet;
-	private EObject awc;
+	final static int ARTIFACT_CHANGED = 3;
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
+		URI uri;
+		TracePersistenceAdapter tracePersistenceAdapter;
+		ResourceSet resourceSet = new ResourceSetImpl();
+		EObject awc;
 
-		IResourceDelta delta = event.getDelta();
-		IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
+		uri = EcoreUtil.getURI(awc);
+		EList<ArtifactWrapper> artifactlist = ((ArtifactWrapperContainer) awc).getArtifacts();
 
-			@Override
-			public boolean visit(IResourceDelta delta) throws CoreException {
+		// check if artifact model contains anything
 
-				IPath toPath = delta.getMovedToPath();
+		if (artifactlist.size() > 0) {
+			uri = EcoreUtil.getURI(awc);
+			IPath path = new Path(uri.toPlatformString(false));
+			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-				if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
+			IResourceDelta delta = event.getDelta();
+			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 
-					if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
-						markupJob(delta, ARTIFACT_MOVED);
-					else
-						markupJob(delta, ARTIFACT_RENAMED);
+				@Override
+				public boolean visit(IResourceDelta delta) throws CoreException {
+
+					IPath toPath = delta.getMovedToPath();
+
+					if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
+
+						if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
+							markupJob(delta, ARTIFACT_MOVED, file, awc);
+						else
+							markupJob(delta, ARTIFACT_RENAMED, file, awc);
+					}
+					if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
+						markupJob(delta, ARTIFACT_DELETED, file, awc);
+					}
+
+					if (delta.getKind() == IResourceDelta.CHANGED) {
+						markupJob(delta, ARTIFACT_CHANGED, file, awc);
+					}
+					return true;
 				}
-				if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
-					markupJob(delta, ARTIFACT_DELETED);
-				}
-				return true;
+			};
+			try {
+				delta.accept(visitor);
+			} catch (CoreException e) {
+				e.printStackTrace();
 			}
-		};
-		try {
-			delta.accept(visitor);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Creates and schedules the job to create error markers for any
-	 * inconsistencies detected.
-	 * 
-	 * @param delta
-	 *            the changes in the resources that have been detected
-	 * @param issueType
-	 *            the kind of change that has taken place
-	 */
-	public void markupJob(IResourceDelta delta, int issueType) {
+	public void markupJob(IResourceDelta delta, int issueType, IFile file, EObject awc) {
 
-		WorkspaceJob job = new WorkspaceJob("myJob") {
+		WorkspaceJob job = new WorkspaceJob("CapraNotificationJob") {
+
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+
 				try {
-					resourceSet = new ResourceSetImpl();
-					tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-					tracePersistenceAdapter.getTraceModel(resourceSet);
-					awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-					// if(! tracemodel.isPresent() || ! awc.isPresent()) return
-					// Status.OK_STATUS;
-					uri = EcoreUtil.getURI(awc);
-					IPath path = new Path(uri.toPlatformString(false));
-					IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 					EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
 					for (ArtifactWrapper aw : list) {
 
 						if (aw.getName().equals(delta.getResource().getName())) {
 
-							IMarker marker = file.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
 							if (issueType == ARTIFACT_RENAMED) {
+								IMarker marker = file
+										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
+								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
 								marker.setAttribute(IMarker.MESSAGE,
 										delta.getFullPath() + " has been renamed to " + delta.getMovedToPath());
 								marker.setAttribute("DeltaMovedToPath", delta.getMovedToPath().toString());
-								marker.setAttribute("FileName", delta.getMovedToPath().toFile().getName().toString());
-								marker.setAttribute("IssueType", "Rename");
+								marker.setAttribute("oldFileName", delta.getResource().getName());
+								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
+								marker.setAttribute("issueType", "Rename");
 							} else if (issueType == ARTIFACT_MOVED) {
+								IMarker marker = file
+										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
+								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
 								marker.setAttribute(IMarker.MESSAGE,
 										delta.getResource().getName() + " has been moved from " + delta.getFullPath()
 												+ " to " + delta.getMovedToPath());
 								marker.setAttribute("DeltaMovedToPath", delta.getMovedToPath().toString());
-								marker.setAttribute("FileName", delta.getMovedToPath().toFile().getName().toString());
-								marker.setAttribute("IssueType", "Move");
+								marker.setAttribute("oldFileName", delta.getResource().getName());
+								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
+								marker.setAttribute("issueType", "Move");
 							} else if (issueType == ARTIFACT_DELETED) {
+								IMarker marker = file
+										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
+								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
 								marker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
 										+ " has been deleted from " + delta.getFullPath());
-								marker.setAttribute("IssueType", "Delete");
+								marker.setAttribute("issueType", "Delete");
+								marker.setAttribute("fileName", delta.getResource().getName());
+							} else if (issueType == ARTIFACT_CHANGED) {
+								addFileChangedMarker(file, delta);
+
 							}
-							marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-							marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
 						}
 					}
 				} catch (CoreException e) {
@@ -144,5 +167,46 @@ public class ResourceListener implements IResourceChangeListener {
 			}
 		};
 		job.schedule();
+
+	}
+
+	protected void addFileChangedMarker(IFile file, IResourceDelta delta) throws CoreException {
+
+		IMarker[] markers = file.findMarkers("org.eclipse.capra.ui.notifcation.capraFileChangedMarker", false, 0);
+		List<IMarker> markerList = Arrays.asList(markers);
+		List<String> changedFiles = new ArrayList<>();
+
+		// check if the marker for file changes already exists in the same file
+		// To make sure a new marker is not generated every time a change is
+		// made.
+		if (!markerList.isEmpty()) {
+
+			markerList.stream().forEach(m -> {
+				changedFiles.add((String) m.getAttribute("fileName", null));
+			});
+
+			String changedFile = delta.getResource().getName();
+			if (!changedFiles.contains(changedFile)) {
+				IMarker fileChangedMarker = file
+						.createMarker("org.eclipse.capra.ui.notifcation.capraFileChangedMarker");
+				fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
+				fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
+				fileChangedMarker.setAttribute("changedFile", delta.getResource().getName());
+				fileChangedMarker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
+						+ "has been changed. Please check if associated trace links are still valid");
+				fileChangedMarker.setAttribute("issueType", "fileChanged");
+			}
+		} else {
+			IMarker fileChangedMarker = file.createMarker("org.eclipse.capra.ui.notifcation.capraFileChangedMarker");
+			fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
+			fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+
+			fileChangedMarker.setAttribute("fileName", delta.getResource().getName());
+			fileChangedMarker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
+					+ "has been changed. Please check if associated trace links are still valid");
+			fileChangedMarker.setAttribute("issueType", "fileChanged");
+		}
+
 	}
 }
