@@ -40,6 +40,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
+ * Checks for workspace changes to determine if the changes made to resources
+ * affect the trace model. Creates markers on the artifact model if the changes
+ * affect artifact wrappers.
  * 
  * @author Michael Warne
  * 
@@ -47,6 +50,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 
 public class ResourceListener implements IResourceChangeListener {
+	// TODO Change into enumeration
 
 	final static int ARTIFACT_RENAMED = 0;
 	final static int ARTIFACT_MOVED = 1;
@@ -105,6 +109,21 @@ public class ResourceListener implements IResourceChangeListener {
 		}
 	}
 
+	/**
+	 * The job responsible for adding problem markers to the artifact wrapper
+	 * model in case of changes affecting the trace model
+	 * 
+	 * @param delta
+	 *            The changes from the workspace
+	 * 
+	 * @param issueType
+	 *            Type of change that occurred. Can be file changed, deleted,
+	 *            moved or renamed.
+	 * @param file
+	 *            The file containing the artifact wrapper model
+	 * @param awc
+	 *            The artifact wrapper model
+	 */
 	public void markupJob(IResourceDelta delta, int issueType, IFile file, EObject awc) {
 
 		WorkspaceJob job = new WorkspaceJob("CapraNotificationJob") {
@@ -170,15 +189,23 @@ public class ResourceListener implements IResourceChangeListener {
 
 	}
 
+	/**
+	 * Checks if the marker for file changes already exists in the same file.To
+	 * make sure a new marker is not generated every time a change is made.
+	 * 
+	 * @param file
+	 *            The file containing artifact wrappers
+	 *
+	 * @param delta
+	 *            The change that occurred in the workspace
+	 * 
+	 */
 	protected void addFileChangedMarker(IFile file, IResourceDelta delta) throws CoreException {
 
 		IMarker[] markers = file.findMarkers("org.eclipse.capra.ui.notifcation.capraFileChangedMarker", false, 0);
 		List<IMarker> markerList = Arrays.asList(markers);
 		List<String> changedFiles = new ArrayList<>();
 
-		// check if the marker for file changes already exists in the same file
-		// To make sure a new marker is not generated every time a change is
-		// made.
 		if (!markerList.isEmpty()) {
 
 			markerList.stream().forEach(m -> {

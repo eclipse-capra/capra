@@ -28,24 +28,16 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.ui.IMarkerResolution;
 
 /**
- * TODO: Document this class. I am not sure what it actually does.
+ * Renames the associated artifact wrapper in the artifact model to reflect
+ * changes in the original resource represented by the wrapper. If the original
+ * resource has been renamed or moved, the respective wrapper if renamed to
+ * reflect the new name/location of file.
  * 
  * @author Michael Warne
  */
 public class RenameOrMoveQuickFix implements IMarkerResolution {
 
-	private URI uri;
-	private TracePersistenceAdapter tracePersistenceAdapter;
-	private ResourceSet resourceSet;
-	private EObject awc;
 	private String label;
-
-	private Resource resourceForArtifacts;
-	private ArtifactWrapperContainer container;
-
-	private String movedToPath;
-	private String oldFileName;
-	private String newFileName;
 
 	RenameOrMoveQuickFix(String label) {
 		this.label = label;
@@ -58,12 +50,22 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
+		URI uri;
+		TracePersistenceAdapter tracePersistenceAdapter;
+		ResourceSet resourceSet;
+		EObject awc;
+		Resource resourceForArtifacts;
+		ArtifactWrapperContainer container;
+
+		String movedToPath = null;
+		String oldFileName = null;
+		String newFileName = null;
+
 		try {
 			movedToPath = (String) marker.getAttribute("DeltaMovedToPath");
 			oldFileName = (String) marker.getAttribute("oldFileName");
 			newFileName = (String) marker.getAttribute("newFileName");
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
