@@ -16,8 +16,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<relativePath>../../build/org.eclipse.build/pom.xml</relativePath>
-		<groupId>org.eclipse.build</groupId>
+		<relativePath>../pom.xml</relativePath>
+		<groupId>org.eclipse.capra</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+      Contributors:
+         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+         -->
+
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.eclipse.capra</groupId>
+  <artifactId>parent</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>org.eclipse.capra.core</module>
+    <module>org.eclipse.capra.feature</module>
+    <module>org.eclipse.capra.generic.persistence</module>
+    <module>org.eclipse.capra.generic.priority</module>
+    <module>org.eclipse.capra.generic.tracemodels</module>
+    <module>org.eclipse.capra.handler.cdt</module>
+    <module>org.eclipse.capra.handler.emf</module>
+    <module>org.eclipse.capra.handler.file</module>
+    <module>org.eclipse.capra.handler.gef</module>
+    <module>org.eclipse.capra.handler.hudson</module>
+    <module>org.eclipse.capra.handler.jdt</module>
+    <module>org.eclipse.capra.handler.mylyn</module>
+    <module>org.eclipse.capra.handler.papyrus</module>
+    <module>org.eclipse.capra.testsuite</module>
+    <module>org.eclipse.capra.ui</module>
+    <module>org.eclipse.capra.ui.notification</module>
+    <module>org.eclipse.capra.ui.plantuml</module>
+    <module>org.eclipse.capra.releng.target</module>
+    <module>org.eclipse.capra.releng.p2</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <tycho-version>0.24.0</tycho-version>
+  </properties>
+
+  <profiles>
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>license-feature</id>
+      <url>http://download.eclipse.org/cbi/updates/license/</url>
+      <layout>p2</layout>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <!-- Only required if tests need UI -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <useUIHarness>true</useUIHarness>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho-version}</version>
+        <configuration>
+          <target>
+            <artifact>
+              <groupId>org.eclipse.capra</groupId>
+              <artifactId>org.eclipse.capra.releng.target</artifactId>
+              <version>0.7.0-SNAPSHOT</version>
+            </artifact>
+          </target>
+          <environments>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>
