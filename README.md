@@ -14,19 +14,15 @@ Capra uses the Eclipse Modelling Framework (EMF) as its base technology and stor
 
 Before downloading and using Capra, download Eclipse Modelling Environment and make sure you have the listed dependencies installed.
 
-* [PlantUML](http://plantuml.com/eclipse.html): Use the nightlies [update site](http://basar.idi.ntnu.no/svn/tdt4100/anonymous/trunk/updatesite) in Eclipse's "Install new software..." feature. Version 1.1.11 or higher should be installed through this link. Older versions advertised on the website will not work! It might also be necessary to install [Graphviz](http://www.graphviz.org) binaries on your system to view the visualisation of trace links.
 * [Xcore](https://wiki.eclipse.org/Xcore): Install through Eclipse's "Install new software..." feature
-* [Mylyn](https://www.eclipse.org/mylyn/): Install the "Mylyn Builds Connector: Hudson/Jenkins" through Eclipse's "Install new software..." feature
-* [C/C++ Development Tools](https://www.eclipse.org/cdt/): : Use Eclipse's "Install new software..." feature
-* [Java Development Tools](https://www.eclipse.org/jdt): Use Eclipse's "Install new software..." feature
 * [Xtend](https://eclipse.org/xtend/): Install through the Eclipse Market Place
-* [Papyrus](https://eclipse.org/papyrus/): Install through the Eclipse Market Place  
 
 ### Get the source code
 
 * Open your Eclipse Environment
 * Go to File >> Import and select Git >> Projects from Git
 * Use the [GitHub repository](https://github.com/Salome-Maro/TraceabilityManagement) and import all available projects to your workspace
+* All dependencies are listed in the target platform file org.eclipse.capra.releng.target/org.eclipse.capra.releng.target.target. Set it as the active target platform by opening it and clicking on "Set as Target Platform" in the upper right corner. Eclipse will now download all dependencies. Note that this will take a while. Check the progress in the lower right corner.
 * Build your workspace
 * Make sure that all the projects have no errors.
 * Click on Run >> Run Configurations and create a new Eclipse Application Configuration
@@ -52,6 +48,14 @@ If compilation errors occur during the first build, check if any of the dependen
 
 
 # How to Extend the Tool - For Developers
+
+## Building
+
+Install Maven. Run maven in the root folder:
+
+```
+mvn clean verify
+```
 
 ## Before committing
 
