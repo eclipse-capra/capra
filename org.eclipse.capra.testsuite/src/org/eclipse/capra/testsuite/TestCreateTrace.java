@@ -43,7 +43,7 @@ import org.eclipse.jdt.core.IType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CreateTrace {
+public class TestCreateTrace {
 
 	@Before
 	public void init() throws CoreException {
