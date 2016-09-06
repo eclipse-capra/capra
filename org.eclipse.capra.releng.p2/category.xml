@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.capra.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.feature" version="0.7.0.qualifier">
+      <category name="capra"/>
+   </feature>
+   <category-def name="capra" label="Capra"/>
+</site>
