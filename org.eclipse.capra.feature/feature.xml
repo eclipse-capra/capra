@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.capra.feature"
+      label="Capra"
+      version="0.7.0.qualifier"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
+
+   <copyright>
+      Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="org.eclipse.capra.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.generic.persistence"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.generic.priority"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.generic.tracemodels"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.cdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.emf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.file"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.gef"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.hudson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.mylyn"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.papyrus"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui.notification"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui.plantuml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
