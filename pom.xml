@@ -22,6 +22,7 @@
 
   <modules>
     <module>org.eclipse.capra.core</module>
+    <module>org.eclipse.capra.documentation</module>
     <module>org.eclipse.capra.feature</module>
     <module>org.eclipse.capra.generic.persistence</module>
     <module>org.eclipse.capra.generic.priority</module>
