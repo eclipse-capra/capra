@@ -45,7 +45,7 @@ h5(#installing-through-an-update-site). Installing through an update site
 * Go to perspectives and switch to the Capra perspective
 * Now you can create traceability links as described in "Creating Traceability Links":#creating-traceability-links.
 
-<figure><img src="../images/updatesite.png" width="600"><figcaption>Figure 1: Installing Capra from the Updatesite</figcaption></figure>
+<figure><img src="../images/updatesite.png" width="600"></img><figcaption>Figure 1: Installing Capra from the Updatesite</figcaption></figure>
 
 h5(#manual-installation-import-from-git). Manual installation (Import from Git)
 
@@ -102,7 +102,7 @@ To demonstrate features of Capra, we take an example of the development of a Hea
 
 These artifacts are shown in the figure below in the context of the development environment of the HVAC system.
 
-<figure><img src="../images/hvacProjects.png" width="800"><figcaption>Figure 2: Resources for the HVAC system</figcaption></figure>
+<figure><img src="../images/hvacProjects.png" width="800"></img><figcaption>Figure 2: Resources for the HVAC system</figcaption></figure>
 
 h4(#creating-traceability-links). Creating Traceability Links
 
@@ -122,10 +122,10 @@ h5(#a-link-from-a-requirement-to-a-feature-representing-the-requirement-in-the-f
 
 # To start, open the requirements (@HVAC_Requirements.reqif@ file), with the "Sample Reflective Ecore Editor" view. 
 # Expand the model to see the requirements. Drag Req 3 and drop it in the Selection view. 
-# Next, open the feature model (@HVAC_Variants.pld@), drag and drop the feature named "Blower" into the selection view as well as shown in the figure below. 	<figure> 		<img src="../images/selectionView1.png" width="400"> 		<figcaption> 		Figure 3: Capra Selection View 		</figcaption> 	</figure> 
-# Right click on the selection view and click on "Create Trace". 	<figure> 		<img src="../images/createTrace.png" width="400"> 		<figcaption> 		Figure 4: Creating a traceability link 		</figcaption> 	</figure> 
+# Next, open the feature model (@HVAC_Variants.pld@), drag and drop the feature named "Blower" into the selection view as well as shown in the figure below. 	<figure> 		<img src="../images/selectionView1.png" width="400"></img> 		<figcaption> 		Figure 3: Capra Selection View 		</figcaption> 	</figure> 
+# Right click on the selection view and click on "Create Trace". 	<figure> 		<img src="../images/createTrace.png" width="400"></img> 		<figcaption> 		Figure 4: Creating a traceability link 		</figcaption> 	</figure> 
 # A pop up window will appear, showing the types of links that can be created based on the selected element.
-# Choose a traceability link type to create (in our case "RelatedTo") and click OK. <figure> 	<img src="../images/relatedTo.png" width="400"> 	<figcaption> 	Figure 5: Creating a traceability link of type "RelatedTo" 	</figcaption> </figure> 	Since this is our first traceability link, a new folder will appear in the 	workspace with the name @__WorkspaceTraceModels@. This folder 	contains your 	trace model which contains the traceability link we just created and an 	artifact wrapper model which contains EMF 		representations of artifacts that 	are not in EMF format. In our case the artifact model should be empty since 	the artifacts we used 	to create the traceability link are all EMF elements. 	The trace model (@traceModel.xmi@) should contain only one traceability link. <figure> 		<img src="../images/traceLink.png" width="700"> 		<figcaption> 		Figure 6: A traceability link of type "RelatedTo" 		</figcaption> </figure>
+# Choose a traceability link type to create (in our case "RelatedTo") and click OK. <figure> 	<img src="../images/relatedTo.png" width="400"></img>	<figcaption> 	Figure 5: Creating a traceability link of type "RelatedTo" 	</figcaption> </figure> 	Since this is our first traceability link, a new folder will appear in the 	workspace with the name @__WorkspaceTraceModels@. This folder 	contains your 	trace model which contains the traceability link we just created and an 	artifact wrapper model which contains EMF 		representations of artifacts that 	are not in EMF format. In our case the artifact model should be empty since 	the artifacts we used 	to create the traceability link are all EMF elements. 	The trace model (@traceModel.xmi@) should contain only one traceability link. <figure> 		<img src="../images/traceLink.png" width="700"></img> 		<figcaption> 		Figure 6: A traceability link of type "RelatedTo" 		</figcaption> </figure>
 # To remove the elements from the selection view, there are two options: 
 ## Right click on an element and select "Remove from Selection". This will only remove the selected element.
 ## Right click anywhere on the selection view and click on "Clear selection". This will remove all elements in the selection view. 
@@ -177,17 +177,17 @@ To view the traceability links related to an artifact and the connected artifact
 
 The graphical view allows you to explore directly connected elements or transitively connected elements. To use the latter functionality, click on the downward arrow on right hand corner of the Plant UML View and click on "Toggle Transitivity". This enables you to move from viewing only directly connected elements to the selected element, to viewing all the transitively connected elements. Use the same button to return to the previously active view.
 
-<figure>		<img src="../images/toggleTransitivity.pdf" width="600">		<figcaption>		Figure 7: Toggle Transitivity		</figcaption></figure>
+<figure>		<img src="../images/toggleTransitivity.pdf" width="600"></img>		<figcaption>		Figure 7: Toggle Transitivity		</figcaption></figure>
 
 h5(#traceability-matrix). Traceability matrix
 
 The traceability matrix can be created by selecting at least two model elements when the "Plant UML View" is open. This will list all the model elements as rows and columns and an "x" mark will appear to show that there is a traceability link between two elements. For instance, the picture below shows the resulting matrix when selecting Req3 and the artifact wrapper representing the PDF document. 
 
-<figure>		<img src="../images/matrixView.png" width="400">		<figcaption>		Figure 8: Matrix View as a result of selecting two elements		</figcaption></figure>
+<figure>		<img src="../images/matrixView.png" width="400"></img>		<figcaption>		Figure 8: Matrix View as a result of selecting two elements		</figcaption></figure>
 
 Selecting more than two model elements expands the matrix into a square matrix with same elements listed vertically and horizontally. 
 
-<figure>		<img src="../images/matrixViewMany.png" width="600">		<figcaption>		Figure 9: Matrix view as a result of selecting more than two elements		</figcaption></figure>
+<figure>		<img src="../images/matrixViewMany.png" width="600"></img>		<figcaption>		Figure 9: Matrix view as a result of selecting more than two elements		</figcaption></figure>
 
 h4(#detecting-and-fixing-inconsistencies). Detecting and Fixing Inconsistencies
 
@@ -197,9 +197,9 @@ The problems detected by Capra are shown in the @Problems View@ with a type "Cap
 
 # Go to the "Project Explorer" and expand the project containing test cases. 
 # Delete the file @BlowerTest.java@.
-# Look at the @Problems view@ and you will see a warning with a type "Capra Problem". The issue tells you that there is a traceability link that points to a file named @BlowerTest.java@, but that file has been deleted. <figure> 		<img src="../images/problemView.png" width="700"> 		<figcaption> 		Figure 9: Problem view showing Capra errors 		</figcaption> </figure>
+# Look at the @Problems view@ and you will see a warning with a type "Capra Problem". The issue tells you that there is a traceability link that points to a file named @BlowerTest.java@, but that file has been deleted. <figure> 		<img src="../images/problemView.png" width="700"></img> 		<figcaption> 		Figure 9: Problem view showing Capra errors 		</figcaption> </figure>
 # Right click on the warning and select Quick fix.
-# A window will appear showing the quick fixes options available. In this case there is one option, which is to delete the traceability link related to @BlowerTest.java@ file. <figure> 		<img src="../images/quickFix.png" width="500"> 		<figcaption> 		Figure 10: Quick Fixes 		</figcaption> </figure> 
+# A window will appear showing the quick fixes options available. In this case there is one option, which is to delete the traceability link related to @BlowerTest.java@ file. <figure> 		<img src="../images/quickFix.png" width="500"></img> 		<figcaption> 		Figure 10: Quick Fixes 		</figcaption> </figure> 
 # Click Finish.
 # Notice that the traceability link has been deleted and the warning disappears.
 
@@ -207,11 +207,11 @@ h4(#analyzing-change-impact). Analyzing change impact
 
 In this section, we describe scenarios in which Capra can be used to facilitate change impact analysis. Change impact analysis means being able to evaluate the effect a change to an artifact will have to other artifacts. Using the HVAC example, assume that the customer requests a change on the requirement @REQ-3@. Before such a change is made, it is important for the company to know which other artefacts will be affected. With Capra, this can be done by selecting @REQ-3@ and then using the visualization, one can see all other artefacts that are related to @REQ-3@ too. 
 
-<figure>		<img src="../images/toggleTransitivity.pdf" width="700">		<figcaption>		Figure 11: Capra graphical view showing directly connected elements		</figcaption></figure> 
+<figure>		<img src="../images/toggleTransitivity.pdf" width="700"></img>		<figcaption>		Figure 11: Capra graphical view showing directly connected elements		</figcaption></figure> 
 
 For further analysis, clicking on Toggle transitivity as shown in th figure below will show all artifacts connected to @REQ-3@ and their connnections to other artifacts. The end user can therefore use this information as a starting point for performing impact analysis.
 
-<figure>		<img src="../images/graphical-view-transitive.pdf" width="500">		<figcaption>		Figure 12: Capra graphical view showing transitively connected elements		</figcaption></figure> 
+<figure>		<img src="../images/graphical-view-transitive.pdf" width="500"></img>		<figcaption>		Figure 12: Capra graphical view showing transitively connected elements		</figcaption></figure> 
 
 h2(#developer-guide). Developer Guide
 
@@ -230,7 +230,7 @@ Additionally, Capra has an API which makes traceability data available to other 
 
 The figure below depicts the extension points. The rationale for each of them is described in the following.
 
-<figure>		<img src="../images/capraArchitecture.png" width="600">		<figcaption>		Figure 13: The Architecture of Capra		</figcaption></figure> 
+<figure>		<img src="../images/capraArchitecture.png" width="600"></img>		<figcaption>		Figure 13: The Architecture of Capra		</figcaption></figure> 
 
 h4(#traceability-metamodel). Traceability Metamodel
 
@@ -259,7 +259,7 @@ Capra provides several programming interfaces that can be used by other plugins 
 A good example on how these methods can be used is in the plugin @org.eclipse.capra.ui.plantuml@. This plugin utilizes the methods to get the traceability model and its links and also to determine which artifacts are connected by the links. The plugin uses the results of these methods to create a string that can be rendered as a diagram using the PlantUML view. For example in the file @VisualizationHelper@, the method @CreateMatrix()@ calls a method @isThereATraceBetween()@ which is part of the
 @TraceMetamodelAdapter@ interface. 
 
-<figure>		<img src="../images/interface.png" width="600">		<figcaption>		Figure 14: Use of the method "isThereATraceBetween()" provided by the `TraceMetamodelAdapter` interface		</figcaption></figure>
+<figure>		<img src="../images/interface.png" width="600"></img>		<figcaption>		Figure 14: Use of the method "isThereATraceBetween()" provided by the `TraceMetamodelAdapter` interface		</figcaption></figure>
 
 h4(#adding-a-custom-traceability-metamodel). Adding a custom Traceability Metamodel
 
@@ -268,15 +268,15 @@ To define your own traceability metamodel follow the steps below:
 # Create a Java project and name it @org.eclipse.capra.MyTraceabilityMetaModel@
 # Create a new folder and name it @model@
 # In the @model@ folder create a new file and name it @MyTraceabilityMetaModel.xcore@. A pop up window will appear asking if you want to add the Xtext nature to the project. Click "Yes".
-# Define your traceability metamodel as required. In our example, we add two types of traceability links i.e "implements" and "tests" <figure> 		<img src="../images/traceMetamodelDefinition.pdf" width="400"> 		<figcaption> 		Figure 15: Tracemetamodel Definition 		</figcaption> </figure> 
+# Define your traceability metamodel as required. In our example, we add two types of traceability links i.e "implements" and "tests" <figure> 		<img src="../images/traceMetamodelDefinition.pdf" width="400"></img>		<figcaption> 		Figure 15: Tracemetamodel Definition 		</figcaption> </figure> 
 # Open the @plugin.xml@ file of the new project and click on the "Extension Points" tab 
 # Un-check the check box that says "Show only extension points from the required plugins" 
 # In the text box for the "Extension point filter" type "Traceability" and select @org.eclipse.capra.configuration.TraceabilityMetaModel@
-# Click Finish. <figure> 		<img src="../images/addTraceExtension.pdf" width="500"> 		<figcaption> 		Figure 16: Adding the Trace metamodel extension point 		</figcaption> </figure> 
+# Click Finish. <figure> 		<img src="../images/addTraceExtension.pdf" width="500"></img> 		<figcaption> 		Figure 16: Adding the Trace metamodel extension point 		</figcaption> </figure> 
 # Another pop up window will appear asking if you want to add the project @org.eclipse.capra.core@ to the list of plugin dependencies. Click Yes 
-# Right click on the newly added extension, and click on "New" then @TraceabilityMetaModelAdapter@. A new @TraceabilityMetaModelAdapter@ will be created 	<figure> 		<img src="../images/newTMAdapter.pdf" width="700"> 		<figcaption> 		Figure 17: Adding the Trace metamodel extension point 		</figcaption> 	</figure> 	
+# Right click on the newly added extension, and click on "New" then @TraceabilityMetaModelAdapter@. A new @TraceabilityMetaModelAdapter@ will be created 	<figure> 		<img src="../images/newTMAdapter.pdf" width="700"></img> 		<figcaption> 		Figure 17: Adding the Trace metamodel extension point 		</figcaption> 	</figure> 	
 # Click on the newly created @TraceabilityMetaModelAdapter@. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 
-# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newClass.pdf" width="700"> 		<figcaption> 		Figure 18: Add new Class 		</figcaption> </figure> <figure> 		<img src="../images/addNewTraceAdapterClass.png" width="500"> 		<figcaption> 		Figure 19: Add new Trace Adapter Class 		</figcaption> </figure> 
+# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newClass.pdf" width="700"> </img>		<figcaption> 		Figure 18: Add new Class 		</figcaption> </figure> <figure> 		<img src="../images/addNewTraceAdapterClass.png" width="500"></img> 		<figcaption> 		Figure 19: Add new Trace Adapter Class 		</figcaption> </figure> 
 # Click Finish and a class will be created with the methods to be implemented in it. 
 # Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. 
 
@@ -285,12 +285,12 @@ h4(#adding-a-custom-artifact-metamodel). Adding a custom Artifact metamodel
 To define your own artifact metamodel, follow the steps below:
 
 # In the same project used to define the traceability metamodel, go to the @model@ folder, create a new file and name it @artifact.xcore@.
-# Define the artifact metamodel as in the picture below. Note that you can modify this definition to fit your needs. <figure> 		<img src="../images/artifactMetamodelDefinition.png" width="400"> 		<figcaption> 		Figure 20: Artifact Metamodel definition 		</figcaption> </figure> 
+# Define the artifact metamodel as in the picture below. Note that you can modify this definition to fit your needs. <figure> 		<img src="../images/artifactMetamodelDefinition.png" width="400"></img> 		<figcaption> 		Figure 20: Artifact Metamodel definition 		</figcaption> </figure> 
 # Next, open the @plugin.xml@ file of the project and click on the "Extension Points" tab
 # Un-check the checkbox that says "Show only extension points from the required plugins" 
 # In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.ArtifactMetamodel@
-# Right click on the newly added extension, and click on "New" then @ArtifactMetamodelAdapter@. A new @ArtifactMetamodelAdapter@ will be created <figure> 		<img src="../images/newArtifactAdapter.png" width="600"> 		<figcaption> 		Figure 21: Artifact adapter definition 		</figcaption> </figure> 
-# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newArtifactAdapterClass.png" width="500"> 		<figcaption> 		Figure 22: Artifact adapter Class definition 		</figcaption> </figure> 
+# Right click on the newly added extension, and click on "New" then @ArtifactMetamodelAdapter@. A new @ArtifactMetamodelAdapter@ will be created <figure> 		<img src="../images/newArtifactAdapter.png" width="600"></img>		<figcaption> 		Figure 21: Artifact adapter definition 		</figcaption> </figure> 
+# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newArtifactAdapterClass.png" width="500"></img> 		<figcaption> 		Figure 22: Artifact adapter Class definition 		</figcaption> </figure> 
 # Click Finish and a class will be created with the methods to be implemented in it. 
 # Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. 
 
@@ -309,9 +309,9 @@ As an example, we describe how the Java artifact handler was added using the fol
 # Un-check the checkbox that says "Show only extension points from the required plugins" 
 # In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.ArtifactMetaModel@ and click Finish.
 # Another pop up window will appear asking if you want to add the project @org.eclipse.capra.core@ to the list of plugin dependencies. Click Yes 
-# Right click on the newly added extension, and click on "New", then "ArtifactHandler". A new @ArtifactHandler@ will be created. <figure> 		<img src="../images/newArtifactHandler.png" width="600"> 		<figcaption> 		Figure 23: New Artifact Handler definition 		</figcaption> </figure>
+# Right click on the newly added extension, and click on "New", then "ArtifactHandler". A new @ArtifactHandler@ will be created. <figure> 		<img src="../images/newArtifactHandler.png" width="600"></img>		<figcaption> 		Figure 23: New Artifact Handler definition 		</figcaption> </figure>
 # Click on the newly created @ArtifactHandler@. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 
-# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newArtifactClass.png" width="500"> 		<figcaption> 		Figure 24: New Artifact Handler Class definition 		</figcaption> </figure>
+# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newArtifactClass.png" width="500"></img>		<figcaption> 		Figure 24: New Artifact Handler Class definition 		</figcaption> </figure>
 # Click Finish and a class will be created with the methods to be implemented in it. In this case there are only two methods.
 # Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. 
 
@@ -327,7 +327,7 @@ h4(#edit-existing-persistence-handler). Edit existing Persistence Handler
 # Expand the project @org.eclipse.capra.generic.persistance@.
 # Expand the @src@ folder and then the @org.eclipse.capra.generic.persistence@ package
 # Open the file @TracePersistenceAdapter.java@.
-# Edit the static variables @DEFAULT_PROJECT_NAME@, @DEFAULT_TRACE_MODEL_NAME@ and @DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME@ to reflect the new location and new model names for your traceability model and artifact wrapper model. <figure> 		<img src="../images/editPersistenceHandler.png" width="700"> 		<figcaption> 		Figure 25: Editing existing Persistence Handler 		</figcaption> </figure>
+# Edit the static variables @DEFAULT_PROJECT_NAME@, @DEFAULT_TRACE_MODEL_NAME@ and @DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME@ to reflect the new location and new model names for your traceability model and artifact wrapper model. <figure> 		<img src="../images/editPersistenceHandler.png" width="700"></img> 		<figcaption> 		Figure 25: Editing existing Persistence Handler 		</figcaption> </figure>
 # Save the project and Run Capra
 
 h4(#add-a-new-persistence-handler). Add a new Persistence Handler
@@ -337,11 +337,11 @@ h4(#add-a-new-persistence-handler). Add a new Persistence Handler
 # Expand the @META-INF@ folder , Open the @MANIFEST.MF@ file and click on the "Extensions" tab.
 # Click on Add. A pop up window will appear with a list of available extension points.
 # Un-check the checkbox that says "Show only extension points from the required plugins" 
-# In the textbox for "Extension point filter" type "Persistence", select @org.eclipse.capra.configuration.persistenceHandler@ and click Finish. <figure> 		<img src="../images/addPersistenceHandler.png" width="500"> 		<figcaption> 		Figure 26: Add new Persistence Handler 		</figcaption> </figure>
+# In the textbox for "Extension point filter" type "Persistence", select @org.eclipse.capra.configuration.persistenceHandler@ and click Finish. <figure> 		<img src="../images/addPersistenceHandler.png" width="500"></img> 		<figcaption> 		Figure 26: Add new Persistence Handler 		</figcaption> </figure>
 # Another pop up window will appear asking if you want to add the project @org.eclipse.capra.core@ to the list of plugin dependencies. Click Yes. 
-# Right click on the newly added extension, and click on "New", then @persistenceHandler@. A new Persistence Handler will be created. <figure> 		<img src="../images/newPersistenceHandler.png" width="600"> 		<figcaption> 		Figure 27: New Persistence Handler 		</figcaption> </figure>
+# Right click on the newly added extension, and click on "New", then @persistenceHandler@. A new Persistence Handler will be created. <figure> 		<img src="../images/newPersistenceHandler.png" width="600"></img>		<figcaption> 		Figure 27: New Persistence Handler 		</figcaption> </figure>
 # Click on the newly created @persistenceHandler@. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 
-# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class. <figure> 		<img src="../images/newPersistenceHandlerClass.png" width="500"> 		<figcaption> 		Figure 28: New Persistence Handler Class 		</figcaption> </figure>
+# Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class. <figure> 		<img src="../images/newPersistenceHandlerClass.png" width="500"></img> 		<figcaption> 		Figure 28: New Persistence Handler Class 		</figcaption> </figure>
 # Click Finish and a class will be created with the methods to be implemented in it. In this case there are only two methods.
 # Implement all the methods according to your needs. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name.
 
@@ -352,7 +352,7 @@ There are cases where for one artifact type, there are several handlers availabl
 # Expand the project @org.eclipse.capra.generic.priority@.
 # Expand the src folder and then the @org.eclipse.capra.generic.priority@ package.
 # Open the file @DefaultPriorityHander.java@.
-# Modify the code to have the right handler selected. For instance, the code below selects a @hudsonHandler@ when the element selected is a Test element and also a build element. <figure> 		<img src="../images/priorityHandlerCode.png" width="700"> 		<figcaption> 		Figure 29: Code for the Priority Handler 		</figcaption> </figure>
+# Modify the code to have the right handler selected. For instance, the code below selects a @hudsonHandler@ when the element selected is a Test element and also a build element. <figure> 		<img src="../images/priorityHandlerCode.png" width="700"></img> 		<figcaption> 		Figure 29: Code for the Priority Handler 		</figcaption> </figure>
 
 h3(#adding-new-source-files). Adding new source files
 

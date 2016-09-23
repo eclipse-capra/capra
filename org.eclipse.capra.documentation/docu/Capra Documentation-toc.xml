@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="docu/Capra Documentation.html" label="Capra Documentation">
+	<topic href="docu/Capra Documentation.html" label="Capra Help Contents">
+		<topic href="docu/Capra Documentation.html#user-guide" label="User Guide">
+			<topic href="docu/Capra Documentation.html#introduction-what-is-capra" label="Introduction - What is Capra?"></topic>
+			<topic href="docu/Capra Documentation.html#getting-started" label="Getting Started">
+				<topic href="docu/Capra Documentation.html#prerequisites" label="Prerequisites"></topic>
+				<topic href="docu/Capra Documentation.html#installing-capra" label="Installing Capra">
+					<topic href="docu/Capra Documentation.html#installing-through-an-update-site" label="Installing through an update site"></topic>
+					<topic href="docu/Capra Documentation.html#manual-installation-import-from-git" label="Manual installation (Import from Git)"></topic>
+				</topic>
+			</topic>
+			<topic href="docu/Capra Documentation.html#traceability-concepts" label="Traceability Concepts">
+				<topic href="docu/Capra Documentation.html#definition-of-traceability" label="Definition of traceability"></topic>
+				<topic href="docu/Capra Documentation.html#what-is-a-traceability-link" label="What is a traceability link?"></topic>
+				<topic href="docu/Capra Documentation.html#types-of-traceability-links" label="Types of traceability links"></topic>
+				<topic href="docu/Capra Documentation.html#what-is-an-artifact" label="What is an artifact?"></topic>
+				<topic href="docu/Capra Documentation.html#what-is-an-artifact-handler" label="What is an artifact handler?"></topic>
+			</topic>
+			<topic href="docu/Capra Documentation.html#practical-examples" label="Practical Examples">
+				<topic href="docu/Capra Documentation.html#creating-traceability-links" label="Creating Traceability Links">
+					<topic href="docu/Capra Documentation.html#a-link-from-a-requirement-to-a-feature-representing-the-requirement-in-the-feature-model" label="A link from a requirement to a feature representing the requirement in the feature model"></topic>
+					<topic href="docu/Capra Documentation.html#a-link-from-a-feature-to-the-state-machine-that-describes-the-behavior-of-the-feature" label="A link from a feature to the state machine that describes the behavior of the feature"></topic>
+					<topic href="docu/Capra Documentation.html#a-link-from-a-state-machine-to-test-case-that-tests-the-behavior-described-by-the-state-machine" label="A link from a state machine to test case that tests the behavior described by the state machine"></topic>
+					<topic href="docu/Capra Documentation.html#a-link-from-a-requirement-to-a-pdf-document-that-describes-safety-issues-that-need-to-be-considered" label="A link from a requirement to a PDF document that describes safety issues that need to be considered"></topic>
+					<topic href="docu/Capra Documentation.html#a-link-from-a-task-ticket-to-a-requirement-that-is-associated-with-the-ticket" label="A link from a task ticket to a requirement that is associated with the ticket"></topic>
+				</topic>
+				<topic href="docu/Capra Documentation.html#visualizing-traceability-links" label="Visualizing Traceability Links">
+					<topic href="docu/Capra Documentation.html#graphical-view" label="Graphical view"></topic>
+					<topic href="docu/Capra Documentation.html#traceability-matrix" label="Traceability matrix"></topic>
+				</topic>
+				<topic href="docu/Capra Documentation.html#detecting-and-fixing-inconsistencies" label="Detecting and Fixing Inconsistencies"></topic>
+				<topic href="docu/Capra Documentation.html#analyzing-change-impact" label="Analyzing change impact"></topic>
+			</topic>
+		</topic>
+		<topic href="docu/Capra Documentation.html#developer-guide" label="Developer Guide">
+			<topic href="docu/Capra Documentation.html#architecture-of-capra" label="Architecture of Capra">
+				<topic href="docu/Capra Documentation.html#traceability-metamodel" label="Traceability Metamodel"></topic>
+				<topic href="docu/Capra Documentation.html#artifact-handler" label="Artifact Handler"></topic>
+				<topic href="docu/Capra Documentation.html#persistence-handler" label="Persistence Handler"></topic>
+				<topic href="docu/Capra Documentation.html#priority-handler" label="Priority Handler"></topic>
+			</topic>
+			<topic href="docu/Capra Documentation.html#capra-api" label="Capra API">
+				<topic href="docu/Capra Documentation.html#adding-a-custom-traceability-metamodel" label="Adding a custom Traceability Metamodel"></topic>
+				<topic href="docu/Capra Documentation.html#adding-a-custom-artifact-metamodel" label="Adding a custom Artifact metamodel"></topic>
+				<topic href="docu/Capra Documentation.html#adding-a-new-artifact-handler" label="Adding a new artifact handler"></topic>
+			</topic>
+			<topic href="docu/Capra Documentation.html#changing-the-storage-location-of-the-traceability-model" label="Changing the storage location of the traceability model">
+				<topic href="docu/Capra Documentation.html#edit-existing-persistence-handler" label="Edit existing Persistence Handler"></topic>
+				<topic href="docu/Capra Documentation.html#add-a-new-persistence-handler" label="Add a new Persistence Handler"></topic>
+			</topic>
+			<topic href="docu/Capra Documentation.html#taking-care-of-multiple-handlers-for-the-same-artifact-type" label="Taking care of multiple handlers for the same artifact type"></topic>
+			<topic href="docu/Capra Documentation.html#adding-new-source-files" label="Adding new source files"></topic>
+		</topic>
+		<topic href="docu/Capra Documentation.html#rerefences" label="Rerefences"></topic>
+	</topic>
+</toc>
