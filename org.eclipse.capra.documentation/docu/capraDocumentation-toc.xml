@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<toc label="Capra Documentation" link_to="capraDocumentation" topic="docu/capraDocumentation.html">
+<toc topic="docu/capraDocumentation.html" label="capraDocumentation">
 	<topic href="docu/capraDocumentation.html" label="Capra Help Contents">
 		<topic href="docu/capraDocumentation.html#user-guide" label="User Guide">
-			<topic href="docu/capraDocumentation.html#introduction-what-is-capra" label="Introduction - What is Capra?"></topic>
+			<topic href="docu/capraDocumentation.html#introduction-what-is-capra" label="Introduction -- What is Capra?"></topic>
 			<topic href="docu/capraDocumentation.html#getting-started" label="Getting Started">
 				<topic href="docu/capraDocumentation.html#prerequisites" label="Prerequisites"></topic>
 				<topic href="docu/capraDocumentation.html#installing-capra" label="Installing Capra">
-					<topic href="docu/capraDocumentation.html#installing-through-an-update-site" label="Installing through an update site"></topic>
-					<topic href="docu/capraDocumentation.html#manual-installation-import-from-git" label="Manual installation (Import from Git)"></topic>
+					<topic href="docu/capraDocumentation.html#installing-through-an-update-site" label="Installing Capra through an update site"></topic>
+					<topic href="docu/capraDocumentation.html#manual-installation-import-from-git" label="Installing Capra manually with Git"></topic>
 				</topic>
 			</topic>
 			<topic href="docu/capraDocumentation.html#traceability-concepts" label="Traceability Concepts">
@@ -52,6 +52,6 @@
 			<topic href="docu/capraDocumentation.html#taking-care-of-multiple-handlers-for-the-same-artifact-type" label="Taking care of multiple handlers for the same artifact type"></topic>
 			<topic href="docu/capraDocumentation.html#adding-new-source-files" label="Adding new source files"></topic>
 		</topic>
-		<topic href="docu/capraDocumentation.html#rerefences" label="Rerefences"></topic>
+		<topic href="docu/capraDocumentation.html#references" label="Rerefences"></topic>
 	</topic>
 </toc>

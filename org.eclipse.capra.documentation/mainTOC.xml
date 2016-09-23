@@ -1,6 +1,4 @@
 <toc label="Capra Documentation">
-<link toc="toc/capra_Documentation.xml"/>
-<anchor id="capraDocumentation"/>
 
 <topic href="docu/capraDocumentation.html#user-guide" label="User Guide">
 <link toc="toc/capra_Documentation.xml"/>
@@ -13,6 +11,6 @@
 <link toc="toc/capra_Documentation.xml"/>
 <topic href="docu/capraDocumentation.html#architecture-of-capra" label="Architecture of Capra"></topic>
 <topic href="docu/capraDocumentation.html#capra-api" label="Capra API"></topic>
-<topic href="docu/capraDocumentation.html#rerefences" label="Rerefences"></topic>
+<topic href="docu/capraDocumentation.html#references" label="Rerefences"></topic>
 </topic>
 </toc>
