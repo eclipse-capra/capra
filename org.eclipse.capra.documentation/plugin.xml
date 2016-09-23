@@ -4,8 +4,12 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="docu/Capra Documentation-toc.xml"
+            file="mainTOC.xml"
             primary="true">
+      </toc>
+      <toc
+            file="docu/capraDocumentation-toc.xml"
+            primary="false">
       </toc>
    </extension>
 

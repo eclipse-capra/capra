@@ -1,0 +1,18 @@
+<toc label="Capra Documentation">
+<link toc="toc/capra_Documentation.xml"/>
+<anchor id="capraDocumentation"/>
+
+<topic href="docu/capraDocumentation.html#user-guide" label="User Guide">
+<link toc="toc/capra_Documentation.xml"/>
+<topic href="docu/capraDocumentation.html#introduction-what-is-capra" label="Introduction - What is Capra?"></topic>
+<topic href="docu/capraDocumentation.html#getting-started" label="Getting Started"></topic>
+<topic href="docu/capraDocumentation.html#traceability-concepts" label="Traceability Concepts"></topic>
+<topic href="docu/capraDocumentation.html#practical-examples" label="Practical Examples"></topic>
+</topic>
+<topic href="docu/capraDocumentation.html#developer-guide" label="Developer Guide">
+<link toc="toc/capra_Documentation.xml"/>
+<topic href="docu/capraDocumentation.html#architecture-of-capra" label="Architecture of Capra"></topic>
+<topic href="docu/capraDocumentation.html#capra-api" label="Capra API"></topic>
+<topic href="docu/capraDocumentation.html#rerefences" label="Rerefences"></topic>
+</topic>
+</toc>
