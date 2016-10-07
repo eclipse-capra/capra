@@ -8,7 +8,7 @@
  *   Contributors:
  *      Chalmers|Gothenburg University and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.app4mc.capra.handlers;
+package org.eclipse.capra.handler.reqif;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
@@ -25,13 +25,11 @@ public class ReqIfHandler implements ArtifactHandler {
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
 		IStructuredSelection sel = (IStructuredSelection) selection;
 		EObject obj = EObject.class.cast(sel.getFirstElement());
-
 		return obj;
 	}
 
 	@Override
 	public Object resolveArtifact(EObject artifact) {
-		
 		return artifact;
 	}
 
