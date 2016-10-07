@@ -13,11 +13,12 @@
 
 <plugin>
    <extension
-         id="id1"
+         id="org.eclipse.capra.handler.reqif.ReqIfHandler"
          point="org.eclipse.capra.configuration.artifactHandler">
       <artifactHandler
-            class="org.eclipse.app4mc.capra.handlers.ReqIfHandler">
+            class="org.eclipse.capra.handler.reqif.ReqIfHandler">
       </artifactHandler>
    </extension>
+
 
 </plugin>

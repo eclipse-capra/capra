@@ -35,6 +35,7 @@
     <module>org.eclipse.capra.handler.jdt</module>
     <module>org.eclipse.capra.handler.mylyn</module>
     <module>org.eclipse.capra.handler.papyrus</module>
+    <module>org.eclipse.capra.handler.reqIf</module>
     <module>org.eclipse.capra.testsuite</module>
     <module>org.eclipse.capra.ui</module>
     <module>org.eclipse.capra.ui.notification</module>

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ReqIFHandler
 Bundle-SymbolicName: org.eclipse.capra.handler.reqIf;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.eclipse.app4mc.capra.handlers
+Export-Package: org.eclipse.capra.handler.reqif
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.jface,
  org.eclipse.capra.core;bundle-version="0.7.0"
