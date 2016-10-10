@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension
+         point="org.eclipse.capra.configuration.TraceabilityMetaModel">
+      <TraceabilityMetaModelAdapter
+            class="org.eclipse.capra.variability.tracemetamodel.VariabilityTraceMetaModelAdapter">
+      </TraceabilityMetaModelAdapter>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated artifact -->
+      <package
+            uri="org.eclipse.capra.GenericArtifactMetaModel"
+            class="org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage"
+            genModel="model/artifact.xcore"/>
+   </extension>
+   <extension
+         point="org.eclipse.capra.configuration.ArtifactMetaModel">
+      <ArtifactMetaModelAdapter
+            class="org.eclipse.capra.variability.tracemetamodel.GenericArtifactMetaModelAdapter">
+      </ArtifactMetaModelAdapter>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated variabilitytracing -->
+      <package
+            uri="org.eclipse.capra.variability.tracemetamodel.TraceModel"
+            class="org.eclipse.capra.variability.tracemetamodel.TraceModel.TraceModelPackage"
+            genModel="model/variabilitytracing.xcore"/>
+   </extension>
+
+</plugin>

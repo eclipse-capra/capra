@@ -1,0 +1,47 @@
+package org.eclipse.capra.variability.tracemetamodel.TraceModel
+
+import org.eclipse.app4mc.variability.ample.Mandatory
+import org.eclipse.app4mc.variability.ample.Optional
+import org.eclipse.app4mc.variability.ample.Or
+import org.eclipse.app4mc.variability.ample.Alternative
+import org.eclipse.app4mc.variability.ample.AlternativeGroup
+import org.eclipse.app4mc.variability.components.ComponentInstance
+import org.eclipse.app4mc.variability.components.VariationPoint
+import org.eclipse.app4mc.variability.components.Variant
+import org.eclipse.emf.ecore.EObject
+
+class TraceModel{
+	contains GenericTraceLink[0..*] genericTraceLinks
+	contains VariabilityTraceLink[0..*] variableTraceLinks
+}
+
+abstract class GenericTraceLink{ 
+}
+
+class RelatedTo extends GenericTraceLink{
+	refers EObject [0..*] item 
+}  
+
+abstract class VariabilityTraceLink{
+}
+
+class Mandatory2ComponentInstances extends VariabilityTraceLink{
+	refers Mandatory[1] mandatoryFeature
+	refers ComponentInstance[1..*] components
+}
+
+class Optional2ComponentInstances extends VariabilityTraceLink{
+	refers Optional[0..1] optionalFeature
+	refers Or[0..1] orFeature
+	refers ComponentInstance[1..*] components
+}
+
+class AlternativeFeature2Variant extends VariabilityTraceLink{
+	refers Alternative[1] feature
+	refers Variant[1] variant
+}
+
+class AlternativeGroup2VariationPoint extends VariabilityTraceLink{
+	refers AlternativeGroup[1] alternativeGroup
+	refers VariationPoint[1] variationPoint
+}
