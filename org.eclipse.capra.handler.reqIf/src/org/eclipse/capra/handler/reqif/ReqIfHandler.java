@@ -13,19 +13,32 @@ package org.eclipse.capra.handler.reqif;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.rmf.reqif10.impl.SpecHierarchyImpl;
 
 public class ReqIfHandler implements ArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
-		return selection instanceof IStructuredSelection;
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if (!(structuredSelection.getFirstElement() == null)) {
+				Object element = structuredSelection.getFirstElement();
+				if (element instanceof SpecHierarchyImpl) {
+					return true;
+				}
+			}
+		}
+		return false;
+
 	}
 
 	@Override
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IStructuredSelection sel = (IStructuredSelection) selection;
-		EObject obj = EObject.class.cast(sel.getFirstElement());
-		return obj;
+		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		Object element = structuredSelection.getFirstElement();
+		SpecHierarchyImpl specification = (SpecHierarchyImpl) element;
+		return specification;
+
 	}
 
 	@Override
