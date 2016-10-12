@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
-     
-      Contributors:
-         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
- -->
+<!-- Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and 
+	others. All rights reserved. This program and the accompanying materials 
+	are made available under the terms of the Eclipse Public License v1.0 which 
+	accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html 
+	Contributors: Chalmers | University of Gothenburg and rt-labs - initial API 
+	and implementation and/or initial documentation -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -22,6 +18,10 @@
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<os-jvm-flags /> <!-- for the default case -->
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -30,10 +30,8 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<useUIHarness>true</useUIHarness>
-					<includes>
-						<include>**/TestCreateTrace.java</include>
-					</includes>
-					<testFailureIgnore>true</testFailureIgnore>
+					<useUIThread>true</useUIThread>
+					<argLine>${os-jvm-flags}</argLine>
 					<dependencies>
 						<dependency>
 							<type>eclipse-plugin</type>
@@ -45,6 +43,20 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
 
 	<artifactId>org.eclipse.capra.testsuite</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
