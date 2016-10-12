@@ -144,7 +144,8 @@ public class SelectionView extends ViewPart {
 				org.eclipse.swt.dnd.RTFTransfer.getInstance(), org.eclipse.swt.dnd.TextTransfer.getInstance(),
 				org.eclipse.swt.dnd.URLTransfer.getInstance(),
 				org.eclipse.jface.util.LocalSelectionTransfer.getTransfer(),
-				org.eclipse.emf.edit.ui.dnd.LocalTransfer.getInstance() };
+				org.eclipse.emf.edit.ui.dnd.LocalTransfer.getInstance(),
+				org.eclipse.capra.ui.office.utils.OfficeTransferType.getInstance()};
 
 		viewer.addDropSupport(ops, transfers, new SelectionDropAdapter(viewer));
 	}
