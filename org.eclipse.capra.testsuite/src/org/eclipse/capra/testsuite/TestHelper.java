@@ -61,12 +61,8 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.JavaRuntime;
-import org.eclipse.jdt.launching.LibraryLocation;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-
 
 public class TestHelper {
 
@@ -97,10 +93,6 @@ public class TestHelper {
 		binFolder.create(false, true, null);
 		javaProject.setOutputLocation(binFolder.getFullPath(), null);
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-		IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-		LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
-		for (LibraryLocation element : locations)
-			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 
 		javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 
@@ -115,7 +107,7 @@ public class TestHelper {
 		javaProject.setRawClasspath(newEntries, null);
 
 		IPackageFragment pack = javaProject.getPackageFragmentRoot(sourceFolder)
-				.createPackageFragment("org.amalthea.test", false, null);
+				.createPackageFragment("org.eclipse.capra.test", false, null);
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\n");
@@ -169,8 +161,7 @@ public class TestHelper {
 	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		TraceCreationHandler handler = new TraceCreationHandler();
-		handler.createTrace(window, (traceTypes, selection)
-		-> {
+		handler.createTrace(window, (traceTypes, selection) -> {
 			if (traceTypes.contains(traceType))
 				return Optional.of(traceType);
 			else
@@ -189,14 +180,13 @@ public class TestHelper {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
-
 		List<Connection> connected = traceAdapter.getConnectedElements(a,
 				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-		
+
 		return connected.stream().filter(o -> {
 			List<EObject> objects = o.getTargets();
-			for(EObject obj:objects) {
-				if(obj instanceof ArtifactWrapper) {
+			for (EObject obj : objects) {
+				if (obj instanceof ArtifactWrapper) {
 					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
 					if ((wrapper.getArtifactHandler().equals(JavaElementHandler.class.getName()))) {
 						return (wrapper.getUri().equals(b.getHandleIdentifier()));
@@ -218,8 +208,8 @@ public class TestHelper {
 
 		return connected.stream().filter(o -> {
 			List<EObject> objects = o.getTargets();
-			for(EObject obj:objects) {
-				if(obj instanceof ArtifactWrapper) {
+			for (EObject obj : objects) {
+				if (obj instanceof ArtifactWrapper) {
 					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
 					if ((wrapper.getArtifactHandler().equals(CDTHandler.class.getName()))) {
 						return (wrapper.getUri().equals(b.getHandleIdentifier()));
@@ -233,16 +223,16 @@ public class TestHelper {
 
 	public static boolean thereIsATraceBetween(IResource r1, IResource r2) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		
+
 		EObject tracemodel = persistenceAdapter.getTraceModel(new ResourceSetImpl());
 		GenericTraceModel gtm = (GenericTraceModel) tracemodel;
-		
+
 		RelatedTo trace = gtm.getTraces().get(0);
-		
+
 		return trace.getItem().contains(r1) && trace.getItem().contains(r2);
 
 	}
-	
+
 	public static ICProject createCDTProject(String projectName) throws OperationCanceledException, CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -269,8 +259,8 @@ public class TestHelper {
 
 		return f;
 	}
-	
-	public static void resetSelectionView(){
+
+	public static void resetSelectionView() {
 		SelectionView.getOpenedView().clearSelection();
 		DisplayTracesHandler.setTraceViewTransitive(true);
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
