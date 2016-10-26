@@ -11,6 +11,7 @@
 package org.eclipse.capra.ui.views;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -51,6 +52,21 @@ public class SelectionView extends ViewPart {
 
 	/** The ID of the view as specified by the extension. */
 	public static final String ID = "org.eclipse.capra.generic.views.SelectionView";
+
+	/**
+	 * Identifier of the extension point that contains the transfer definitions.
+	 */
+	private static final String TRANSFER_EXTENSION_POINT_ID = "org.eclipse.capra.ui.transfers";
+
+	/**
+	 * Standard transfers that are always used in the SelectionView.
+	 */
+	private static final Transfer[] DEFAULT_TRANSFERS = new Transfer[] {
+			org.eclipse.ui.part.ResourceTransfer.getInstance(), org.eclipse.ui.part.EditorInputTransfer.getInstance(),
+			org.eclipse.swt.dnd.FileTransfer.getInstance(), org.eclipse.swt.dnd.RTFTransfer.getInstance(),
+			org.eclipse.swt.dnd.TextTransfer.getInstance(), org.eclipse.swt.dnd.URLTransfer.getInstance(),
+			org.eclipse.jface.util.LocalSelectionTransfer.getTransfer(),
+			org.eclipse.emf.edit.ui.dnd.LocalTransfer.getInstance() };
 
 	/** The actual table containing selected elements */
 	public TableViewer viewer;
@@ -128,6 +144,7 @@ public class SelectionView extends ViewPart {
 
 	}
 
+	@Override
 	public void createPartControl(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
@@ -139,14 +156,14 @@ public class SelectionView extends ViewPart {
 		hookContextMenu();
 
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transfers = new Transfer[] { org.eclipse.ui.part.ResourceTransfer.getInstance(),
-				org.eclipse.ui.part.EditorInputTransfer.getInstance(), org.eclipse.swt.dnd.FileTransfer.getInstance(),
-				org.eclipse.swt.dnd.RTFTransfer.getInstance(), org.eclipse.swt.dnd.TextTransfer.getInstance(),
-				org.eclipse.swt.dnd.URLTransfer.getInstance(),
-				org.eclipse.jface.util.LocalSelectionTransfer.getTransfer(),
-				org.eclipse.emf.edit.ui.dnd.LocalTransfer.getInstance() };
 
-		viewer.addDropSupport(ops, transfers, new SelectionDropAdapter(viewer));
+		List<Transfer> transfers = new ArrayList<Transfer>(Arrays.asList(DEFAULT_TRANSFERS));
+
+		// Get all additionally configured transfers from the extension point.
+		transfers.addAll(ExtensionPointHelper.getExtensions(TRANSFER_EXTENSION_POINT_ID, "class").stream()
+				.map(Transfer.class::cast).collect(Collectors.toList()));
+
+		viewer.addDropSupport(ops, transfers.toArray(DEFAULT_TRANSFERS), new SelectionDropAdapter(viewer));
 	}
 
 	private void hookContextMenu() {
@@ -168,7 +185,6 @@ public class SelectionView extends ViewPart {
 
 	@SuppressWarnings("unchecked")
 	public void dropToSelection(Object data) {
-
 		if (data instanceof TreeSelection) {
 			TreeSelection tree = (TreeSelection) data;
 			if (tree.toList().stream().allMatch(this::validateSelection))
