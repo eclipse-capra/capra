@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.file;
 
+import java.io.File;
+
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -37,10 +39,11 @@ public class IFileHandler implements ArtifactHandler {
 
 	@Override
 	public Object resolveArtifact(EObject artifact) {
-		//TO DO
-		return null;
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		String uri = adapter.getArtifactUri(artifact);
+		return new File(uri);
 	}
-	
+
 	@Override
 	public String getDisplayName(Object selection) {
 		IFile selectionAsFile = (IFile) selection;

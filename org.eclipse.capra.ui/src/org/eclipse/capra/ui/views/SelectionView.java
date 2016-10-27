@@ -94,10 +94,10 @@ public class SelectionView extends ViewPart {
 			Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 			List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
 					.filter(handler -> handler.canHandleSelection(element)).collect(Collectors.toList());
-			if (availableHandlers.size() == 1) {
+			if (availableHandlers.size() > 1) {
 				return availableHandlers.get(0).getDisplayName(element);
 			} else
-				return null;
+				return element.toString();
 		};
 
 		@Override
