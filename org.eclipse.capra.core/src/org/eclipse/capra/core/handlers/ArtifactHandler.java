@@ -57,13 +57,14 @@ public interface ArtifactHandler {
 	Object resolveArtifact(EObject artifact);
 
 	/**
+	 * Provide the display name to be displayed in the selection view when an
+	 * object is dropped. This is a default implementation but gives flexibility
+	 * for each handler to decide how its objects should look like when dropped
+	 * to the selection view.
 	 * 
 	 * @param selection
 	 *            The selected object to be added to the selection view
-	 * @return The name that should be displayed in the selection view. This
-	 *         method has a default implementation but gives flexibility for
-	 *         each handler to decide how its objects should look like when
-	 *         dropped to the selection view.
+	 * @return The string that should be displayed in the selection view.
 	 */
 	default String getDisplayName(Object selection) {
 		if (selection instanceof EObject) {
