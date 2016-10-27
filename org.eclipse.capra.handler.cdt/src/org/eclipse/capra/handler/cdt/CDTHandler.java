@@ -44,4 +44,10 @@ public class CDTHandler implements ArtifactHandler {
 		return CoreModel.create(uri);
 	}
 
+	@Override
+	public String getDisplayName(Object selection) {
+		ICElement cu = (ICElement) selection;
+		return cu.getElementName();
+	}
+
 }

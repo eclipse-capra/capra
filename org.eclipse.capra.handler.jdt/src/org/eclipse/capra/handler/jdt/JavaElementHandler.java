@@ -48,4 +48,10 @@ public class JavaElementHandler implements ArtifactHandler {
 		return JavaCore.create(uri);
 	}
 
+	@Override
+	public String getDisplayName(Object selection) {
+		IJavaElement cu = (IJavaElement) selection;
+		return cu.getElementName();
+	}
+
 }

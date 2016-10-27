@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -54,5 +55,21 @@ public interface ArtifactHandler {
 	 * @return originally selected object
 	 */
 	Object resolveArtifact(EObject artifact);
+
+	/**
+	 * 
+	 * @param selection
+	 *            The selected object to be added to the selection view
+	 * @return The name that should be displayed in the selection view. This
+	 *         method has a default implementation but gives flexibility for
+	 *         each handler to decide how its objects should look like when
+	 *         dropped to the selection view.
+	 */
+	default String getDisplayName(Object selection) {
+		if (selection instanceof EObject) {
+			return EMFHelper.getIdentifier((EObject) selection);
+		} else
+			return selection.toString();
+	}
 
 }

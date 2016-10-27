@@ -41,4 +41,10 @@ public class MylynHandler implements ArtifactHandler {
 		return null;
 	}
 
+	@Override
+	public String getDisplayName(Object selection) {
+		ITask task = (ITask) selection;
+		return task.getTaskId() + " : " + task.getSummary();
+	}
+
 }

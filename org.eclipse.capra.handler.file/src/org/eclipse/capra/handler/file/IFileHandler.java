@@ -37,7 +37,13 @@ public class IFileHandler implements ArtifactHandler {
 
 	@Override
 	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
+		//TO DO
 		return null;
+	}
+	
+	@Override
+	public String getDisplayName(Object selection) {
+		IFile selectionAsFile = (IFile) selection;
+		return selectionAsFile.getName();
 	}
 }
