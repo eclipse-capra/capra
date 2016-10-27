@@ -56,4 +56,16 @@ public class HudsonHandler implements ArtifactHandler {
 		return null;
 	}
 
+	@Override
+	public String getDisplayName(Object selection) {
+		if (selection instanceof TestElement) {
+			TestElement test = (TestElement) selection;
+			return test.getLabel();
+		} else {
+			BuildElement build = (BuildElement) selection;
+			return build.getName();
+		}
+
+	}
+
 }

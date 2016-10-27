@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.helpers.EMFHelper;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -93,11 +91,13 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof EObject) {
-				return EMFHelper.getIdentifier((EObject) element);
+			Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+			List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
+					.filter(handler -> handler.canHandleSelection(element)).collect(Collectors.toList());
+			if (availableHandlers.size() == 1) {
+				return availableHandlers.get(0).getDisplayName(element);
 			} else
-				return element.toString();
-
+				return null;
 		};
 
 		@Override

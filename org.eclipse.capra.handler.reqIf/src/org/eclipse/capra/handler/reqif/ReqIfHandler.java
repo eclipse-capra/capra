@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.reqif;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.rmf.reqif10.impl.SpecHierarchyImpl;
 
 public class ReqIfHandler implements ArtifactHandler {
@@ -44,6 +45,16 @@ public class ReqIfHandler implements ArtifactHandler {
 	@Override
 	public Object resolveArtifact(EObject artifact) {
 		return artifact;
+	}
+
+	@Override
+	public String getDisplayName(Object selection) {
+		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		Object element = structuredSelection.getFirstElement();
+		SpecHierarchyImpl specification = (SpecHierarchyImpl) element;
+		SpecObject specObject = specification.getObject();
+
+		return specObject.getIdentifier();
 	}
 
 }
