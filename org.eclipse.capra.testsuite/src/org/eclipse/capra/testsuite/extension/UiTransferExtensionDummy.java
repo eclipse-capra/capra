@@ -4,7 +4,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 
 public class UiTransferExtensionDummy extends Transfer {
-
+	
 	private static final String MIME_TYPE = "UiTransferExtensionDummy";
 	private static final int MIME_TYPE_ID = registerType(MIME_TYPE);
 

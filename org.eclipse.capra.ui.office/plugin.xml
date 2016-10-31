@@ -88,4 +88,10 @@
          </separator>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.capra.ui.transfers">
+      <transfer
+            class="org.eclipse.capra.ui.office.utils.OfficeTransferType">
+      </transfer>
+   </extension>
 </plugin>
