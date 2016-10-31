@@ -4,7 +4,7 @@ import java.util.Collection
 import java.util.List
 import org.eclipse.capra.core.adapters.Connection
 import org.eclipse.capra.core.helpers.ExtensionPointHelper
-import org.eclipse.capra.ui.helpers.EMFHelper
+import org.eclipse.capra.core.helpers.EMFHelper
 import org.eclipse.emf.ecore.EObject
 
 class VisualizationHelper {

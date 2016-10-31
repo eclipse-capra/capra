@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.ui.helpers.EMFHelper;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
