@@ -164,6 +164,7 @@ public class SelectionView extends ViewPart {
 				.map(Transfer.class::cast).collect(Collectors.toList()));
 
 		viewer.addDropSupport(ops, transfers.toArray(DEFAULT_TRANSFERS), new SelectionDropAdapter(viewer));
+
 	}
 
 	private void hookContextMenu() {
