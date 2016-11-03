@@ -3,7 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Capra:  Traceability Management
 Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
 Bundle-Version: 0.7.0.qualifier
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/poi-3.10.1-20140818.jar,
+ lib/poi-ooxml-3.10.1-20140818.jar,
+ lib/poi-ooxml-schemas-3.10.1-20140818.jar,
+ lib/xmlbeans-2.6.0.jar
 Bundle-Vendor: Chalmers | University of Gothenburg
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.edit.ui;bundle-version="2.12.0",
@@ -12,15 +16,7 @@ Require-Bundle: org.eclipse.emf.edit.ui;bundle-version="2.12.0",
  org.eclipse.ui,
  org.eclipse.jface,
  com.google.guava,
- org.apache.poi;bundle-version="3.9.0",
- org.apache.poi.ooxml;bundle-version="3.9.0",
- org.apache.poi.ooxml.schemas;bundle-version="3.9.0",
- org.apache.commons.codec;bundle-version="1.6.0",
- org.apache.commons.collections;bundle-version="3.2.2",
- org.apache.commons.logging;bundle-version="1.1.1",
- org.apache.log4j;bundle-version="1.2.15",
- org.apache.xmlbeans;bundle-version="2.3.0",
- org.eclipse.capra.ui;bundle-version="0.7.0"
+ org.dom4j
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office.objects,
  org.eclipse.capra.ui.office.utils,
