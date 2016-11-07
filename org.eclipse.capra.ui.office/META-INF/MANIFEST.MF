@@ -5,12 +5,12 @@ Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-ClassPath: .,
  lib/poi-3.10.1-20140818.jar,
- lib/poi-ooxml-3.10.1-20140818.jar,
  lib/poi-ooxml-schemas-3.10.1-20140818.jar,
- lib/xmlbeans-2.6.0.jar
+ lib/xmlbeans-2.6.0.jar,
+ lib/poi-ooxml-3.10.1-filtered.jar
 Bundle-Vendor: Chalmers | University of Gothenburg
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.emf.edit.ui;bundle-version="2.12.0",
+Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.equinox.registry,
  org.eclipse.swt,
  org.eclipse.ui,
