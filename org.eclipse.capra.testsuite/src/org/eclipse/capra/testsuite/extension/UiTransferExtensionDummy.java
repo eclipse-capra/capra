@@ -5,6 +5,9 @@ import org.eclipse.swt.dnd.TransferData;
 
 public class UiTransferExtensionDummy extends Transfer {
 
+	private static final String MIME_TYPE = "UiTransferExtensionDummy";
+	private static final int MIME_TYPE_ID = registerType(MIME_TYPE);
+
 	@Override
 	public TransferData[] getSupportedTypes() {
 		// TODO Auto-generated method stub
@@ -19,14 +22,12 @@ public class UiTransferExtensionDummy extends Transfer {
 
 	@Override
 	protected int[] getTypeIds() {
-		// TODO Auto-generated method stub
-		return null;
+		return new int[] { MIME_TYPE_ID };
 	}
 
 	@Override
 	protected String[] getTypeNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[] { MIME_TYPE };
 	}
 
 	@Override
