@@ -93,9 +93,8 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 		ArrayList<CapraOfficeObject> officeObjects = (ArrayList<CapraOfficeObject>) object;
 
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			DataOutputStream writeOut = new DataOutputStream(out);
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+				DataOutputStream writeOut = new DataOutputStream(out)) {
 
 			for (int i = 0; i < officeObjects.size(); i++) {
 				CapraOfficeObject currOfficeObject = officeObjects.get(i);
@@ -110,11 +109,10 @@ public class OfficeTransferType extends ByteArrayTransfer {
 			}
 
 			byte[] bufferOut = out.toByteArray();
-			writeOut.close();
 
 			super.javaToNative(bufferOut, transferData);
 		} catch (IOException e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -133,9 +131,8 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 			ArrayList<CapraOfficeObject> officeObjects = new ArrayList<CapraOfficeObject>();
 
-			try {
-				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
-				DataInputStream readIn = new DataInputStream(in);
+			try (ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+					DataInputStream readIn = new DataInputStream(in)) {
 
 				while (readIn.available() > 0) {
 
@@ -154,9 +151,9 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 					officeObjects.add(currOfficeObject);
 				}
-				readIn.close();
 
-			} catch (IOException ex) {
+			} catch (IOException e) {
+				e.printStackTrace();
 				return null;
 			}
 

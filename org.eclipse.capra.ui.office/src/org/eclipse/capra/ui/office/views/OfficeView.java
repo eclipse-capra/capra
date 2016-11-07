@@ -19,14 +19,15 @@ import java.util.List;
 
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.xmlbeans.SchemaTypeLoaderException;
+import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
+import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
@@ -82,23 +83,23 @@ public class OfficeView extends ViewPart {
 	public static final String ID = "org.eclipse.capra.ui.views.OfficeView";
 
 	/**
-	 * A constant that is used for checking whether the ID of the object is
-	 * provided or not
+	 * A constant that is used to specify that the user should be prompted to
+	 * select a sheet when opening an excel document.
 	 */
-	public static final String OBJECT_ID_NOT_SPECIFIED = "-1";
+	public static final boolean SHEET_SELECT_REQUIRED = true;
 
 	/**
-	 * The MS Office file-types that are supported by the plugin.
+	 * A constant that is used to specify that the user doesn't have to be
+	 * prompted to select a sheet and the currently active sheet will be
+	 * displayed.
 	 */
-	public static final String DOCX = "docx";
-	public static final String XLS = "xls";
-	public static final String XLSX = "xlsx";
+	public static final boolean SHEET_SELECT_NOT_REQUIRED = false;
 
 	/**
-	 * This file-type is not supported, but is needed to display the correct
-	 * error message.
+	 * The caption that is shown when a message dialog appears describing an
+	 * error.
 	 */
-	public static final String DOC = "doc";
+	private static final String ERROR_TITLE = "Error";
 
 	/**
 	 * The actual view that contains the contents of the documents.
@@ -165,7 +166,13 @@ public class OfficeView extends ViewPart {
 
 		@Override
 		public boolean performDrop(Object data) {
-			dropToSelection(data);
+			try {
+				dropToSelection(data);
+			} catch (CapraOfficeFileNotSupportedException e) {
+				e.printStackTrace();
+				showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+				return false;
+			}
 			return true;
 		}
 
@@ -242,50 +249,28 @@ public class OfficeView extends ViewPart {
 	 *
 	 * @param data
 	 *            the object that was dragged into the view
+	 * @throws CapraOfficeFileNotSupportedException
 	 */
-	public void dropToSelection(Object data) {
+	private void dropToSelection(Object data) throws CapraOfficeFileNotSupportedException {
 
-		File officeFile = null;
+		File file = null;
 
 		if (data instanceof String[])
-			officeFile = new File(((String[]) data)[0]);
+			file = new File(((String[]) data)[0]);
 
-		if (officeFile != null)
-			parseFile(officeFile, OBJECT_ID_NOT_SPECIFIED);
+		if (file == null)
+			return;
+
+		String fileExtension = Files.getFileExtension(file.getName());
+
+		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS))
+			parseExcelDocument(file, SHEET_SELECT_NOT_REQUIRED);
+		else if (fileExtension.equals(CapraOfficeObject.DOCX))
+			parseWordDocument(file);
 		else
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Not an Excel or Word file.");
+			throw new CapraOfficeFileNotSupportedException(fileExtension);
 
 		viewer.refresh();
-	}
-
-	/**
-	 * Calls the appropriate parse method (according to the file extension),
-	 * which displays the data in the Office view.
-	 *
-	 * @param officeFile
-	 *            the File object that points to the file that is to be parsed
-	 * @param objectID
-	 *            if provided, only the object with this ID will be displayed
-	 */
-	private void parseFile(File officeFile, String objectID) {
-
-		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
-
-		if (fileType.equals(XLSX) || fileType.equals(XLS)) {
-			getOpenedView().clearSelection();
-			parseExcelDocument(officeFile, objectID);
-
-		} else if (fileType.equals(DOCX)) {
-			getOpenedView().clearSelection();
-			parseWordDocument(officeFile, objectID);
-
-		} else if (fileType.equals(DOC)) {
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error",
-					".doc file format not supported, use .docx");
-
-		} else {
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Not an Excel or Word file.");
-		}
 	}
 
 	/**
@@ -294,58 +279,61 @@ public class OfficeView extends ViewPart {
 	 * @param officeFile
 	 *            the File object pointing to the Excel document that was
 	 *            dragged into the view.
-	 * @param objectID
-	 *            the row ID; if "-1" (the value of constant
-	 *            OBJECT_ID_NOT_SPECIFIED), the whole document will print out,
-	 *            otherwise only the selected row
+	 * @param sheetSelect
+	 *            true if the user has to be prompted to select a sheet, false
+	 *            otherwise
 	 */
-	private void parseExcelDocument(File officeFile, String objectID) {
+	private void parseExcelDocument(File officeFile, boolean sheetSelect) {
 
 		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
-		Sheet sheet;
+		Workbook workBook;
 
 		try {
-			if (fileType.equals(XLSX)) {
-				sheet = new XSSFWorkbook(OPCPackage.open(officeFile)).getSheetAt(0);
-			} else {
-				sheet = new HSSFWorkbook(new FileInputStream(officeFile)).getSheetAt(0);
-			}
+			if (fileType.equals(CapraOfficeObject.XLSX))
+				workBook = new XSSFWorkbook(new FileInputStream(officeFile));
+			else
+				workBook = new HSSFWorkbook(new FileInputStream(officeFile));
 		} catch (OldExcelFormatException e) {
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "This version of Excel is not supported.");
+			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
 			return;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Couldn't open the file.");
 			return;
 		}
 
-		DataFormatter formatter = new DataFormatter();
+		String selectedSheetName;
+		if (!sheetSelect)
+			selectedSheetName = workBook.getSheetName(workBook.getActiveSheetIndex());
+		else if (selection.size() > 0) {
+			String activeSheetName = ((CapraExcelRow) selection.get(0)).getSheetName();
+			String[] sNames = new String[workBook.getNumberOfSheets()];
+
+			// Fill sNames with sheetNames, with the active sheet at index 0
+			int counter = 0;
+			sNames[counter++] = activeSheetName;
+			for (int i = 0; i < sNames.length; i++) {
+				String sName = workBook.getSheetName(i);
+				if (sName.equals(activeSheetName))
+					continue;
+				sNames[counter++] = workBook.getSheetName(i);
+			}
+
+			selectedSheetName = new SelectSheetDialog(viewer.getControl().getShell(),
+					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, sNames).open();
+		} else {
+			return;
+		}
+
+		Sheet sheet = workBook.getSheet(selectedSheetName);
 
 		getOpenedView().clearSelection();
 
-		// TODO Currently, the first block of code is only accessed
-		// if the method is triggered via OfficeHandler. Does this have to
-		// change if the handler is not allowed to have a dependency on UI?
-		// Also, the solution assumes that the location of the row is also the
-		// rowId, should that be different? Should the ID be defined, for
-		// example, in the first cell?
-		if (!objectID.equals(OBJECT_ID_NOT_SPECIFIED)) {
-			Row row = sheet.getRow(Integer.parseInt(objectID));
+		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+			Row row = sheet.getRow(i);
 			if (row != null) {
-				CapraExcelRow cRow = new CapraExcelRow(row, officeFile, formatter);
-
+				CapraExcelRow cRow = new CapraExcelRow(officeFile, row);
 				if (!cRow.getData().isEmpty())
 					selection.add(cRow);
-			}
-		} else {
-			for (int i = 0; i <= sheet.getLastRowNum(); i++) {
-				Row row = sheet.getRow(i);
-				if (row != null) {
-					CapraExcelRow cRow = new CapraExcelRow(row, officeFile, formatter);
-
-					if (!cRow.getData().isEmpty())
-						selection.add(cRow);
-				}
 			}
 		}
 	}
@@ -356,79 +344,40 @@ public class OfficeView extends ViewPart {
 	 * @param officeFile
 	 *            the File object pointing of the Word document that was dragged
 	 *            into the view.
-	 * @param objectID
-	 *            the paragraph/requirement ID; if "-1" (the value of constant
-	 *            OBJECT_ID_NOT_SPECIFIED), the whole document will print out,
-	 *            otherwise only the selected object
 	 */
-	private void parseWordDocument(File officeFile, String objectID) {
+	private void parseWordDocument(File officeFile) {
 		List<XWPFParagraph> paragraphs;
 
 		try {
 			FileInputStream fs = new FileInputStream(officeFile);
-			// TODO The following line always triggers an exception!
 			XWPFDocument xwpfDoc = new XWPFDocument(fs);
+			fs.close();
 			paragraphs = (xwpfDoc).getParagraphs();
-			// If poi 3.15 is used, it allows closing the XWPFDocument. If 3.9
-			// is used it is not possible.
-			// xwpfDoc.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Couldn't open the file.");
+			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
 			return;
 		} catch (SchemaTypeLoaderException e) {
-			// TODO This is the exception for the error!
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Couldn't open the file.");
+			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
 			return;
 		}
+
+		getOpenedView().clearSelection();
 
 		for (int i = 0; i < paragraphs.size(); i++) {
 			XWPFParagraph paragraph = paragraphs.get(i);
 			if (paragraph != null) {
-				CapraWordRequirement cRequirement = new CapraWordRequirement(paragraph, officeFile, i);
-
-				// TODO Currently, this condition is only true if the method
-				// is triggered via OfficeHandler. Does this have to change
-				// if the handler is not allowed to have a dependency on UI?
-				if (!objectID.equals(OBJECT_ID_NOT_SPECIFIED)) {
-					if (cRequirement.getId().equals(objectID)) {
-						selection.add(cRequirement);
-						break;
-					}
-				} else if (!cRequirement.getData().isEmpty())
+				CapraWordRequirement cRequirement = new CapraWordRequirement(paragraph, officeFile);
+				if (!cRequirement.getData().isEmpty())
 					selection.add(cRequirement);
 			}
 		}
 	}
 
 	/**
-	 * Shows only the selected OfficeObject in the Office Selection View.
-	 *
-	 * @param uri
-	 *            the uri of the row/word_requirement, containing the file path
-	 *            and the index of the row/word_requirement
-	 */
-	public void showSingleOfficeObjectInOfficeView(String uri) {
-
-		if (uri.isEmpty())
-			return;
-
-		File officeFile = new File(CapraOfficeObject.getFilePathFromUri(uri));
-		String objectID = CapraOfficeObject.getIdFromUri(uri);
-
-		// Check if the file (still) exists.
-		if (officeFile.exists())
-			parseFile(officeFile, objectID);
-		else
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, "Error", "Resource not found.");
-
-		viewer.refresh();
-	}
-
-	/**
-	 * Shows the dialog with the information about the selected element in the
-	 * view.
+	 * Shows the details of the object in its native environment (MS Word or MS
+	 * Excel).
 	 * 
 	 * @param event
 	 *            Should be of type DoubleClickEvent or ExecutionEvent, hold the
@@ -437,7 +386,6 @@ public class OfficeView extends ViewPart {
 	 *            Shell which will be the parent of the dialog window.
 	 */
 	public void showObjectDetails(Object event, Shell parentShell) {
-
 		CapraOfficeObject officeObject;
 
 		if (event instanceof DoubleClickEvent) { // If called with double click
@@ -452,24 +400,19 @@ public class OfficeView extends ViewPart {
 				officeObject = (CapraOfficeObject) selection.getFirstElement();
 			} catch (ExecutionException e) {
 				e.printStackTrace();
-				officeObject = null;
+				return;
 			}
 		} else {
-			officeObject = null;
+			return;
 		}
 
-		String caption;
-		String message;
-
-		if (officeObject == null) {
-			caption = "Notification";
-			message = "No information to show.";
-		} else {
-			caption = "Row " + officeObject.getId();
-			message = officeObject.getData();
+		try {
+			officeObject.showOfficeObjectInNativeEnvironment();
+		} catch (CapraOfficeObjectNotFound e) {
+			e.printStackTrace();
+			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
 		}
 
-		showMessage(parentShell, SWT.OK, caption, message);
 	}
 
 	/**
@@ -481,16 +424,55 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Opens a file-chooser dialog and calls the parseFile method, which
+	 * Opens a file-chooser dialog and calls the parseOfficeFile method, which
 	 * displays the contents of the selected file in the TableViewer (if the
 	 * file is of type xlsx, xls or docx).
 	 */
 	public void openFile() {
 
 		FileDialog fd = new FileDialog(viewer.getControl().getShell(), SWT.OK);
-		File officeFile = new File(fd.open());
+		String filePath = fd.open();
 
-		parseFile(officeFile, OBJECT_ID_NOT_SPECIFIED);
+		if (filePath != null && !filePath.isEmpty()) {
+			File file = new File(filePath);
+			if (file != null) {
+				try {
+					dropToSelection(new String[] { file.getAbsolutePath() });
+				} catch (CapraOfficeFileNotSupportedException e) {
+					e.printStackTrace();
+					showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+				}
+				viewer.refresh();
+			}
+		}
+	}
+
+	/**
+	 * Opens a pop-up window that allows the user to select which excel sheet
+	 * should be displayed.
+	 */
+	public void selectSheet() {
+
+		if (selection.isEmpty()) {
+			// TODO custom exception
+			return;
+		}
+
+		if (selection.get(0).getClass().equals(CapraWordRequirement.class)) {
+			// TODO custom exception - although this check won't be necessary
+			// since the select sheet option will be hidden (not yet
+			// implemented) when the selection is empty or when Word file is
+			// displayed. Therefore also the first check won't necessary.
+			return;
+		}
+
+		File currentFile = ((CapraExcelRow) selection.get(0)).getFile();
+
+		if (!Files.getFileExtension(currentFile.getAbsolutePath()).equals(CapraOfficeObject.XLSX)
+				&& !Files.getFileExtension(currentFile.getAbsolutePath()).equals(CapraOfficeObject.XLS))
+			return;
+
+		parseExcelDocument(currentFile, SHEET_SELECT_REQUIRED);
 
 		viewer.refresh();
 	}

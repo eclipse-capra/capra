@@ -91,7 +91,8 @@
                name="org.eclipse.capra.generic.separator2">
          </separator>
          <menu
-               label="Capra">
+               label="Capra"
+               id="org.eclipse.capra.ui.contextsubmenu">
             <command
                   commandId="org.eclipse.capra.generic.addtoselection"
                   label="Add to Selection"

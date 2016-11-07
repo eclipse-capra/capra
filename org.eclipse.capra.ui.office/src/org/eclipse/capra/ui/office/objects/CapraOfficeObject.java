@@ -11,7 +11,11 @@
 
 package org.eclipse.capra.ui.office.objects;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 
 /**
  * This class provides a custom object for describing the contents of MS Excel
@@ -23,6 +27,13 @@ import java.io.File;
 public class CapraOfficeObject {
 
 	/**
+	 * The MS Office file-types that are supported by the plugin.
+	 */
+	public static final String DOCX = "docx";
+	public static final String XLS = "xls";
+	public static final String XLSX = "xlsx";
+
+	/**
 	 * The description of the object (row in Excel, requirement in Word)
 	 */
 	private String data = "";
@@ -31,10 +42,6 @@ public class CapraOfficeObject {
 	 * The uri of the object in the form of filePath/objectId
 	 */
 	private String uri = "";
-
-	/**
-	 * The delimiter separating the filePath from the objectId in uri
-	 */
 
 	/**
 	 * A constructor that generates an empty instance of OfficeObject.
@@ -49,17 +56,6 @@ public class CapraOfficeObject {
 	public CapraOfficeObject(String data, String uri) {
 		this.data = data;
 		this.uri = uri;
-	}
-
-	/**
-	 * A constructor that generates a new instance of OfficeObject with defined
-	 * data and uri properties, the latter being constructed from the file-path
-	 * and objectId.
-	 */
-	public CapraOfficeObject(String data, File officeFile, String objectId) {
-		// TODO here data can be extracted by reading the object in its file
-		this.data = data;
-		this.uri = createUri(officeFile, objectId);
 	}
 
 	/**
@@ -99,11 +95,11 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the file-path of the file that contains the OfficeObject
+	 * Returns the File reference of the file that contains the OfficeObject
 	 */
-	public String getFilePath() {
+	public File getFile() {
 		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
-		return uri.substring(0, lastDelimiterIndex);
+		return new File(uri.substring(0, lastDelimiterIndex));
 	}
 
 	/**
@@ -128,6 +124,23 @@ public class CapraOfficeObject {
 	public static String getFilePathFromUri(String uri) {
 		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
 		return uri.substring(0, lastDelimiterIndex);
+	}
+
+	/**
+	 * Opens the OfficeObject in its native environment. If object is of class
+	 * OfficeObject (parent object), then the method does nothing but return an
+	 * error string
+	 * 
+	 * @return an OK or ERROR message
+	 * @throws CapraOfficeObjectNotFound
+	 */
+	public void showOfficeObjectInNativeEnvironment() throws CapraOfficeObjectNotFound {
+		try {
+			Desktop.getDesktop().open(getFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new CapraOfficeObjectNotFound(getId());
+		}
 	}
 
 	/**

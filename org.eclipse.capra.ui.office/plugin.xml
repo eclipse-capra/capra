@@ -18,12 +18,12 @@
             id="org.eclipse.capra.ui.views"
 			name="Capra Views">
       </category>
-      <view
-		category="org.eclipse.capra.ui.views"
-		class="org.eclipse.capra.ui.office.views.OfficeView"
-		icon="icons/selectionView.png"
-		id="org.eclipse.capra.ui.views.OfficeView"
-		name="Office Selection View">
+	  <view
+			category="org.eclipse.capra.ui.views"
+			class="org.eclipse.capra.ui.office.views.OfficeView"
+			icon="icons/selectionView.png"
+			id="org.eclipse.capra.ui.views.OfficeView"
+			name="Office Selection View">
       </view>
    </extension>
    <extension
@@ -40,41 +40,49 @@
             id="org.eclipse.capra.ui.office.openfile"
             name="Open File">
       </command>
+      <command
+            id="org.eclipse.capra.ui.office.selectsheet"
+            name="Select Sheet">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.office.setcharactercount"
+            name="Character Count">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-	          class="org.eclipse.capra.ui.office.handlers.ClearSelectionHandler"
-	          commandId="org.eclipse.capra.ui.office.clearselection">
+            class="org.eclipse.capra.ui.office.handlers.ClearSelectionHandler"
+            commandId="org.eclipse.capra.ui.office.clearselection">
       </handler>
       <handler
-	          class="org.eclipse.capra.ui.office.handlers.ShowObjectDetailsHandler"
-	          commandId="org.eclipse.capra.ui.office.showdetails">
+            class="org.eclipse.capra.ui.office.handlers.ShowObjectDetailsHandler"
+            commandId="org.eclipse.capra.ui.office.showdetails">
       </handler>
       <handler
-	          class="org.eclipse.capra.ui.office.handlers.OpenFileHandler"
-	          commandId="org.eclipse.capra.ui.office.openfile">
+            class="org.eclipse.capra.ui.office.handlers.OpenFileHandler"
+            commandId="org.eclipse.capra.ui.office.openfile">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.office.handlers.SelectSheetHandler"
+            commandId="org.eclipse.capra.ui.office.selectsheet">
       </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.capra.ui.views.OfficeView?after=additions">
+            locationURI="menu:org.eclipse.capra.ui.views.OfficeView?after=additions"> 
          <command
                commandId="org.eclipse.capra.ui.office.openfile"
                label="Open File"
                style="push"
-               tooltip="Triggers the file selection dialog.">
+               tooltip="Triggers the file selection dialog">
          </command>
-         <separator
-               name="org.eclipse.capra.generic.tracecreation.separator1"
-               visible="true">
-         </separator>
          <command
-               commandId="org.eclipse.capra.ui.office.showdetails"
-               label="Show Details"
+         	   commandId="org.eclipse.capra.ui.office.selectsheet"
+               label="Select Sheet"
                style="push"
-               tooltip="Shows the details of the selected row">
+               tooltip="Select which sheet in the Excel workbook to display">
          </command>
          <command
                commandId="org.eclipse.capra.ui.office.clearselection"
@@ -82,10 +90,33 @@
                style="push"
                tooltip="Clears the current selection of elements">
          </command>
-         <separator
-               name="org.eclipse.capra.generic.tracecreation.separator1"
-               visible="true">
-         </separator>
+         <menu
+		       label="Options">
+            <command
+                  commandId="org.eclipse.capra.ui.office.setcharactercount"
+                  label="Character Count"
+                  style="push"
+                  tooltip="Set number of characters that are shown per line">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
+         <menu
+		       label="Capra"
+		       id="org.eclipse.capra.ui.contextsubmenu">
+            <command
+                  commandId="org.eclipse.capra.ui.office.showdetails"
+                  label="Show Details"
+                  style="push"
+                  tooltip="Shows the details of the selected row">
+               <visibleWhen>
+     	          <iterate ifEmpty="false">
+                     <instanceof value="org.eclipse.capra.ui.office.objects.CapraOfficeObject"/>
+                  </iterate>
+               </visibleWhen> -->
+            </command>
+         </menu>     
       </menuContribution>
    </extension>
    <extension

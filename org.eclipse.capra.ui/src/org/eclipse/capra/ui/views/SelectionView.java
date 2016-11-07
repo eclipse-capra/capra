@@ -135,9 +135,9 @@ public class SelectionView extends ViewPart {
 	class SelectionDropAdapter extends ViewerDropAdapter {
 		TableViewer view;
 
-		public SelectionDropAdapter(TableViewer viewer) {
+		public SelectionDropAdapter(TableViewer view) {
 			super(viewer);
-			this.view = viewer;
+			this.view = view;
 		}
 
 		@Override
