@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.ui,
  org.eclipse.jface,
  com.google.guava,
- org.dom4j
+ org.dom4j,
+ org.eclipse.core.expressions
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office.objects,
  org.eclipse.capra.ui.office.utils,

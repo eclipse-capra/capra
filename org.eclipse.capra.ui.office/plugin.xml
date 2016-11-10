@@ -69,6 +69,16 @@
       </handler>
    </extension>
    <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester 
+            class="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            id="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            namespace="org.eclipse.capra.ui.office.utils"
+            properties="isViewEmpty, isExcelObject"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.capra.ui.views.OfficeView?after=additions"> 
@@ -83,12 +93,24 @@
                label="Select Sheet"
                style="push"
                tooltip="Select which sheet in the Excel workbook to display">
+            <visibleWhen>
+               <test
+                     forcePluginActivation="true"
+                     property="org.eclipse.capra.ui.office.utils.isExcelObject">
+               </test>
+            </visibleWhen>
          </command>
          <command
                commandId="org.eclipse.capra.ui.office.clearselection"
                label="Clear Selection"
                style="push"
                tooltip="Clears the current selection of elements">
+            <visibleWhen>
+               <test
+                     forcePluginActivation="true"
+                     property="org.eclipse.capra.ui.office.utils.isViewEmpty">
+               </test>
+            </visibleWhen>
          </command>
          <menu
 		       label="Options">
@@ -114,7 +136,7 @@
      	          <iterate ifEmpty="false">
                      <instanceof value="org.eclipse.capra.ui.office.objects.CapraOfficeObject"/>
                   </iterate>
-               </visibleWhen> -->
+               </visibleWhen>
             </command>
          </menu>     
       </menuContribution>

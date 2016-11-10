@@ -109,7 +109,7 @@ public class OfficeView extends ViewPart {
 	/**
 	 * The collection that contains the Excel/Word contents.
 	 */
-	private ArrayList<Object> selection = new ArrayList<Object>();
+	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
 
 	/**
 	 * The content provider class used by the view.
@@ -242,6 +242,15 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
+	 * Getter method for the selection that is displayed by the view.
+	 * 
+	 * @return currently displayed selection
+	 */
+	public List<CapraOfficeObject> getSelection() {
+		return this.selection;
+	}
+
+	/**
 	 * A method that is called when the user drags a file into the OfficeView.
 	 * Its main task is to parse the dragged file and display its contents in
 	 * the OfficeView. It only parses the file if it is of type xlsx, xls, or
@@ -348,10 +357,8 @@ public class OfficeView extends ViewPart {
 	private void parseWordDocument(File officeFile) {
 		List<XWPFParagraph> paragraphs;
 
-		try {
-			FileInputStream fs = new FileInputStream(officeFile);
+		try (FileInputStream fs = new FileInputStream(officeFile)) {
 			XWPFDocument xwpfDoc = new XWPFDocument(fs);
-			fs.close();
 			paragraphs = (xwpfDoc).getParagraphs();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -452,19 +459,6 @@ public class OfficeView extends ViewPart {
 	 * should be displayed.
 	 */
 	public void selectSheet() {
-
-		if (selection.isEmpty()) {
-			// TODO custom exception
-			return;
-		}
-
-		if (selection.get(0).getClass().equals(CapraWordRequirement.class)) {
-			// TODO custom exception - although this check won't be necessary
-			// since the select sheet option will be hidden (not yet
-			// implemented) when the selection is empty or when Word file is
-			// displayed. Therefore also the first check won't necessary.
-			return;
-		}
 
 		File currentFile = ((CapraExcelRow) selection.get(0)).getFile();
 
