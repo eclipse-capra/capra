@@ -32,8 +32,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -116,11 +116,20 @@ public class SelectionView extends ViewPart {
 		}
 	}
 
-	class NameSorter extends ViewerSorter {
+	/**
+	 * Leaves the order of objects unchanged by returning 0 for all combinations
+	 * of objects.
+	 * 
+	 * @see ViewerComparator#compare(Viewer, Object, Object)
+	 */
+	class NoChangeComparator extends ViewerComparator {
+
 		@Override
-		public void sort(Viewer viewer, Object[] elements) {
+		public int compare(Viewer viewer, Object e1, Object e2) {
 			// Retain order in which the user dragged in the elements
+			return 0;
 		}
+
 	}
 
 	class SelectionDropAdapter extends ViewerDropAdapter {
@@ -149,7 +158,7 @@ public class SelectionView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
+		viewer.setComparator(new NoChangeComparator());
 		viewer.setInput(getViewSite());
 
 		getSite().setSelectionProvider(viewer);
