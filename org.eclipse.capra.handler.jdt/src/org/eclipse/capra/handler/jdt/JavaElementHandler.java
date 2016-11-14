@@ -4,14 +4,16 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.capra.handler.jdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.IJavaElement;
@@ -21,7 +23,7 @@ import org.eclipse.jdt.core.JavaCore;
  * A handler to allow creating traces to and from java elements such as classes
  * and methods based on JDT.
  */
-public class JavaElementHandler implements ArtifactHandler {
+public class JavaElementHandler implements ArtifactHandler, IAnnotateArtifact {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -54,4 +56,9 @@ public class JavaElementHandler implements ArtifactHandler {
 		return cu.getElementName();
 	}
 
+	@Override
+	public void annotateArtifact(EObject artifact, String annotation) throws AnnotationException {
+		IJavaElement handle = resolveArtifact(artifact);
+		JDTAnnotate.annotateArtifact(handle, annotation);
+	}
 }
