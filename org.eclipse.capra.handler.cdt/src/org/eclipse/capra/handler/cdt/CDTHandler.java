@@ -4,14 +4,16 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
@@ -21,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * Handler to allow tracing to and from elements of C such as files and
  * functions. Uses CDT as the foundation.
  */
-public class CDTHandler implements ArtifactHandler {
+public class CDTHandler implements ArtifactHandler, IAnnotateArtifact {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -48,6 +50,12 @@ public class CDTHandler implements ArtifactHandler {
 	public String getDisplayName(Object selection) {
 		ICElement cu = (ICElement) selection;
 		return cu.getElementName();
+	}
+
+	@Override
+	public void annotateArtifact(EObject artifact, String annotation) throws AnnotationException {
+		ICElement handle = resolveArtifact(artifact);
+		CDTAnnotate.annotateArtifact(handle, annotation);
 	}
 
 }
