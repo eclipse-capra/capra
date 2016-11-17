@@ -53,8 +53,7 @@ public interface TraceMetaModelAdapter {
 	 *            Objects to create the trace for
 	 * @return root of trace model that now contains the newly created trace
 	 */
-	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selectionAsEcore,
-			List<Object> originalObject);
+	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection);
 
 	/**
 	 * Used to delete a trace

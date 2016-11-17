@@ -13,7 +13,7 @@ package org.eclipse.capra.generic.tracemodels;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
@@ -21,8 +21,6 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -51,24 +49,13 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 	}
 
 	@Override
-	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection,
-			List<Object> originalSelection) {
+	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection) {
 
 		GenericTraceModel TM = (GenericTraceModel) traceModel;
 		EObject trace = GenericTraceMetaModelFactory.eINSTANCE.create(traceType);
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
-
-		String name = "";
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(originalSelection)).collect(Collectors.toList());
-		if (availableHandlers.size() > 1) {
-			name = name + " " + availableHandlers.get(0).getDisplayName(originalSelection);
-		} else
-			name = name + " " + originalSelection.toString();
-
-		RelatedToTrace.setName(name);
+		
 		TM.getTraces().add(RelatedToTrace);
 		return TM;
 	}
