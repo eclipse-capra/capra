@@ -66,7 +66,7 @@ public class TraceCreationHandler extends AbstractHandler {
 		Optional<EClass> chosenType = chooseTraceType.apply(traceTypes, selectionAsEObjects);
 
 		if (chosenType.isPresent()) {
-			EObject root = traceAdapter.createTrace(chosenType.get(), traceModel, selectionAsEObjects);
+			EObject root = traceAdapter.createTrace(chosenType.get(), traceModel, selectionAsEObjects, selection);
 			persistenceAdapter.saveTracesAndArtifacts(root, artifactModel);
 		}
 	}
