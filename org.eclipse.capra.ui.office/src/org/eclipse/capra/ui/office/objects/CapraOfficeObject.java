@@ -165,12 +165,7 @@ public class CapraOfficeObject {
 	 */
 	@Override
 	public String toString() {
-		int minAllowed = 30;
-		int dataLength = Math.min(data.length(), minAllowed);
-		if (dataLength == minAllowed)
-			return this.data.substring(0, dataLength) + "...";
-		else
-			return this.data;
+		return this.data;
 	}
 
 	/**

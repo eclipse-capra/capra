@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
+import org.eclipse.capra.ui.office.preferences.OfficePreferences;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSelection;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetView;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetViews;
@@ -87,10 +88,15 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 *            an Excel row, extracted from an Excel document
 	 * 
 	 */
-	public CapraExcelRow(File officeFile, Row row) {
+	public CapraExcelRow(File officeFile, Row row, String idColumn) {
 		super();
 
-		String rowId = FORMATTER.formatCellValue(row.getCell(0));
+		String rowId;
+		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT))
+			rowId = Integer.toString(row.getRowNum());
+		else
+			rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
+
 		StringBuilder rowBuilder = new StringBuilder();
 		rowBuilder.append("ID " + rowId + ": ");
 

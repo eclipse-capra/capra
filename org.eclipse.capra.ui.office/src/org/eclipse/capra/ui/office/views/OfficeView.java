@@ -31,6 +31,8 @@ import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
+import org.eclipse.capra.ui.office.preferences.OfficePreferences;
+import org.eclipse.capra.ui.office.preferences.PreferenceActivator;
 import org.eclipse.capra.ui.office.utils.OfficeTransferType;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -136,7 +138,12 @@ public class OfficeView extends ViewPart {
 
 		@Override
 		public String getText(Object obj) {
-			return obj.toString();
+			int minAllowed = PreferenceActivator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
+			String text = obj.toString();
+			int textLength = Math.min(text.length(), minAllowed);
+			if (textLength == minAllowed)
+				text = text.substring(0, textLength) + "...";
+			return text;
 		};
 
 		@Override
@@ -310,11 +317,21 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		String selectedSheetName;
-		if (!sheetSelect)
+		String selectedSheetName = "";
+		if (!sheetSelect || selection.isEmpty()) {
 			selectedSheetName = workBook.getSheetName(workBook.getActiveSheetIndex());
-		else if (selection.size() > 0) {
-			String activeSheetName = ((CapraExcelRow) selection.get(0)).getSheetName();
+			// If sheet is empty, prompt user to select another
+			if (workBook.getSheet(selectedSheetName).getLastRowNum() == 0)
+				sheetSelect = true;
+		}
+
+		if (sheetSelect) {
+			String activeSheetName;
+			if (selectedSheetName.isEmpty())
+				activeSheetName = ((CapraExcelRow) selection.get(0)).getSheetName();
+			else
+				activeSheetName = selectedSheetName;
+
 			String[] sNames = new String[workBook.getNumberOfSheets()];
 
 			// Fill sNames with sheetNames, with the active sheet at index 0
@@ -329,18 +346,21 @@ public class OfficeView extends ViewPart {
 
 			selectedSheetName = new SelectSheetDialog(viewer.getControl().getShell(),
 					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, sNames).open();
-		} else {
-			return;
 		}
+
+		if (selectedSheetName.isEmpty())
+			return;
 
 		Sheet sheet = workBook.getSheet(selectedSheetName);
 
-		getOpenedView().clearSelection();
+		clearSelection();
 
+		String idColumn = PreferenceActivator.getDefault().getPreferenceStore()
+				.getString(OfficePreferences.EXCEL_COLUMN_VALUE);
 		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
 			if (row != null) {
-				CapraExcelRow cRow = new CapraExcelRow(officeFile, row);
+				CapraExcelRow cRow = new CapraExcelRow(officeFile, row, idColumn);
 				if (!cRow.getData().isEmpty())
 					selection.add(cRow);
 			}
@@ -370,7 +390,7 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		getOpenedView().clearSelection();
+		clearSelection();
 
 		for (int i = 0; i < paragraphs.size(); i++) {
 			XWPFParagraph paragraph = paragraphs.get(i);
@@ -460,15 +480,12 @@ public class OfficeView extends ViewPart {
 	 */
 	public void selectSheet() {
 
-		File currentFile = ((CapraExcelRow) selection.get(0)).getFile();
-
-		if (!Files.getFileExtension(currentFile.getAbsolutePath()).equals(CapraOfficeObject.XLSX)
-				&& !Files.getFileExtension(currentFile.getAbsolutePath()).equals(CapraOfficeObject.XLS))
+		if (selection.isEmpty())
 			return;
-
-		parseExcelDocument(currentFile, SHEET_SELECT_REQUIRED);
-
-		viewer.refresh();
+		else if (selection.get(0) instanceof CapraExcelRow) {
+			parseExcelDocument(selection.get(0).getFile(), SHEET_SELECT_REQUIRED);
+			viewer.refresh();
+		}
 	}
 
 	/**
@@ -484,6 +501,16 @@ public class OfficeView extends ViewPart {
 		}
 
 		return null;
+	}
+
+	public void refreshView() {
+
+		if (selection.isEmpty())
+			return;
+		else if (selection.get(0) instanceof CapraExcelRow)
+			parseExcelDocument(selection.get(0).getFile(), SHEET_SELECT_NOT_REQUIRED);
+
+		viewer.refresh();
 	}
 
 	private int showMessage(Shell parentShell, int style, String caption, String message) {

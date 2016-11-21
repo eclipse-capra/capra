@@ -44,10 +44,6 @@
             id="org.eclipse.capra.ui.office.selectsheet"
             name="Select Sheet">
       </command>
-      <command
-            id="org.eclipse.capra.ui.office.setcharactercount"
-            name="Character Count">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -112,15 +108,6 @@
                </test>
             </visibleWhen>
          </command>
-         <menu
-		       label="Options">
-            <command
-                  commandId="org.eclipse.capra.ui.office.setcharactercount"
-                  label="Character Count"
-                  style="push"
-                  tooltip="Set number of characters that are shown per line">
-            </command>
-         </menu>
       </menuContribution>
       <menuContribution
             locationURI="popup:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
@@ -146,5 +133,20 @@
       <transfer
             class="org.eclipse.capra.ui.office.utils.OfficeTransferType">
       </transfer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.capra.ui.preferences.CapraPreferences"
+            class="org.eclipse.capra.ui.office.preferences.OfficePreferences"
+            id="org.eclipse.capra.ui.office.preferences.OfficePreferences"
+            name="Office">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.capra.ui.office.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
 </plugin>
