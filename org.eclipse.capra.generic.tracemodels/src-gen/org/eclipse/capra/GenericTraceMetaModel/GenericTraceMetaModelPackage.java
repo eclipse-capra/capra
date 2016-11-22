@@ -2,6 +2,7 @@
  */
 package org.eclipse.capra.GenericTraceMetaModel;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -104,13 +105,31 @@ public interface GenericTraceMetaModelPackage extends EPackage {
 	int RELATED_TO = 1;
 
 	/**
+	 * The feature id for the '<em><b>ID</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATED_TO__ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATED_TO__NAME = 1;
+
+	/**
 	 * The feature id for the '<em><b>Item</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RELATED_TO__ITEM = 0;
+	int RELATED_TO__ITEM = 2;
 
 	/**
 	 * The number of structural features of the '<em>Related To</em>' class.
@@ -119,7 +138,7 @@ public interface GenericTraceMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATED_TO_FEATURE_COUNT = 1;
+	int RELATED_TO_FEATURE_COUNT = 3;
 
 	/**
 	 * The number of operations of the '<em>Related To</em>' class.
@@ -161,6 +180,28 @@ public interface GenericTraceMetaModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getRelatedTo();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getID <em>ID</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>ID</em>'.
+	 * @see org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getID()
+	 * @see #getRelatedTo()
+	 * @generated
+	 */
+	EAttribute getRelatedTo_ID();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getName()
+	 * @see #getRelatedTo()
+	 * @generated
+	 */
+	EAttribute getRelatedTo_Name();
 
 	/**
 	 * Returns the meta object for the reference list '{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getItem <em>Item</em>}'.
@@ -223,6 +264,22 @@ public interface GenericTraceMetaModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass RELATED_TO = eINSTANCE.getRelatedTo();
+
+		/**
+		 * The meta object literal for the '<em><b>ID</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute RELATED_TO__ID = eINSTANCE.getRelatedTo_ID();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute RELATED_TO__NAME = eINSTANCE.getRelatedTo_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Item</b></em>' reference list feature.

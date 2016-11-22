@@ -13,6 +13,7 @@ package org.eclipse.capra.generic.tracemodels;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
@@ -20,6 +21,7 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -54,6 +56,23 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
 
+
+		// String builder to build the name of the trace link so by adding the
+		// elements it connects so as to make it easy for a user to visually
+		// differentiate trace links
+	
+		String name = "";
+		
+		for (Object obj : selection) {
+				name = name + " " + ExtensionPointHelper.getArtifactHandlers().stream()
+						.map(handler -> handler.withCastedHandler(obj, (h, e) -> h.getDisplayName(e)))
+						.filter(Optional::isPresent)
+						.map(Optional::get)
+						.findFirst()
+						.orElseGet(obj::toString);
+		}
+		
+		RelatedToTrace.setName(name.toString());
 		TM.getTraces().add(RelatedToTrace);
 		return TM;
 	}

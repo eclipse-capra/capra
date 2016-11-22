@@ -1,10 +1,15 @@
 package org.eclipse.capra.GenericTraceMetaModel
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
 
 class GenericTraceModel{
 	contains RelatedTo[0..*] traces
 } 
 
 class RelatedTo {
+	derived String ID get {
+			EcoreUtil.generateUUID();
+	}
+	String name
 	refers EObject [0..*] item 
-}   
+}    
