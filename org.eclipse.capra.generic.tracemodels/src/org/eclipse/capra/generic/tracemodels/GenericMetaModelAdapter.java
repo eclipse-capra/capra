@@ -59,16 +59,23 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
 
-		String name = "";
+		// String builder to build the name of the trace link so by adding the
+		// elements it connects so as to make it easy for a user to visually
+		// differentiate trace links
+		StringBuilder name = new StringBuilder();
 		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(originalSelection)).collect(Collectors.toList());
-		if (availableHandlers.size() > 1) {
-			name = name + " " + availableHandlers.get(0).getDisplayName(originalSelection);
-		} else
-			name = name + " " + originalSelection.toString();
+		List<ArtifactHandler> availableHandlers = null;
 
-		RelatedToTrace.setName(name);
+		for (Object obj : originalSelection) {
+			availableHandlers = artifactHandlers.stream().filter(handler -> handler.canHandleSelection(obj))
+					.collect(Collectors.toList());
+			if (availableHandlers.size() > 0) {
+				name = name.append(" ").append(availableHandlers.get(0).getDisplayName(obj));
+			} else
+				name = name.append(" ").append(originalSelection.toString());
+		}
+
+		RelatedToTrace.setName(name.toString());
 		TM.getTraces().add(RelatedToTrace);
 		return TM;
 	}
