@@ -26,13 +26,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.xmlbeans.SchemaTypeLoaderException;
+import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
-import org.eclipse.capra.ui.office.preferences.PreferenceActivator;
 import org.eclipse.capra.ui.office.utils.OfficeTransferType;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -138,7 +138,7 @@ public class OfficeView extends ViewPart {
 
 		@Override
 		public String getText(Object obj) {
-			int minAllowed = PreferenceActivator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
+			int minAllowed = Activator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
 			String text = obj.toString();
 			int textLength = Math.min(text.length(), minAllowed);
 			if (textLength == minAllowed)
@@ -355,8 +355,7 @@ public class OfficeView extends ViewPart {
 
 		clearSelection();
 
-		String idColumn = PreferenceActivator.getDefault().getPreferenceStore()
-				.getString(OfficePreferences.EXCEL_COLUMN_VALUE);
+		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
 		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
 			if (row != null) {

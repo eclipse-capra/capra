@@ -11,6 +11,7 @@
 
 package org.eclipse.capra.ui.office.preferences;
 
+import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -28,7 +29,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = PreferenceActivator.getDefault().getPreferenceStore();
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(OfficePreferences.CHAR_COUNT, OfficePreferences.CHAR_COUNT_DEFAULT);
 		store.setDefault(OfficePreferences.EXCEL_COLUMN_RADIO_CHOICE,
 				OfficePreferences.EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);

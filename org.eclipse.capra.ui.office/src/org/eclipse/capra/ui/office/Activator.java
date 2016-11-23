@@ -9,7 +9,7 @@
  * 	   Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.capra.ui.office.preferences;
+package org.eclipse.capra.ui.office;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -20,34 +20,39 @@ import org.osgi.framework.BundleContext;
  * @author Dusan Kalanj
  *
  */
-public class PreferenceActivator extends AbstractUIPlugin {
-
-	private static PreferenceActivator preferenceActivator = new PreferenceActivator();
+public class Activator extends AbstractUIPlugin {
 
 	/**
-	 * Empty constructor
+	 * The plugin ID
 	 */
-	public PreferenceActivator() {
+	public static final String PLUGIN_ID = "org.eclipse.capra.ui.office";
+
+	private static Activator plugin;
+
+	/**
+	 * An empty constructor
+	 */
+	public Activator() {
 	}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		preferenceActivator = this;
+		plugin = this;
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		preferenceActivator = null;
+		plugin = null;
 		super.stop(context);
 	}
 
 	/**
-	 * Returns the shared instance of the PreferenceActivator class.
+	 * Returns the shared instance
 	 *
-	 * @return instance of PreferenceActivator class
+	 * @return the shared instance
 	 */
-	public static PreferenceActivator getDefault() {
-		return preferenceActivator;
+	public static Activator getDefault() {
+		return plugin;
 	}
 }

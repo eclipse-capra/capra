@@ -11,6 +11,7 @@
 
 package org.eclipse.capra.ui.office.preferences;
 
+import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.capra.ui.office.views.OfficeView;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -91,11 +92,11 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(PreferenceActivator.getDefault().getPreferenceStore());
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
 
 	private void storeValues() {
-		IPreferenceStore store = PreferenceActivator.getDefault().getPreferenceStore();
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 		boolean idIsRowNumber;
 		String idColumn;
@@ -117,7 +118,7 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	private void initializeValues() {
-		IPreferenceStore store = PreferenceActivator.getDefault().getPreferenceStore();
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
 		boolean idIsRowNumber = store.getBoolean(EXCEL_COLUMN_RADIO_CHOICE);
 		if (idIsRowNumber) {

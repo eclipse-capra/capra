@@ -52,7 +52,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 * RegEx of characters (tabs, newlines, carriage returns and invisible
 	 * control characters) to be replaced with white-spaces in the Office View.
 	 */
-	private static final String LINE_BREAKS_AND_CONTROL_REQE = "[\r\n\t\\p{C}]+";
+	private static final String LINE_BREAKS_AND_CONTROL_REQ = "[\r\n\t\\p{C}]+";
 
 	private static final DataFormatter FORMATTER = new DataFormatter();
 
@@ -78,6 +78,12 @@ public class CapraExcelRow extends CapraOfficeObject {
 	private static final String NO_LAST_CELL_REFERENCE = "-1";
 
 	/**
+	 * The ID of the column that is used to extract the identifier of the row
+	 * (if value is "0", then line numbers are used as identifiers).
+	 */
+	private String idColumn;
+
+	/**
 	 * A constructor that generates a new instance of CapraExcelRow where the
 	 * parent properties are extracted from the provided Excel row and File
 	 * object that contains the row.
@@ -90,13 +96,9 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 */
 	public CapraExcelRow(File officeFile, Row row, String idColumn) {
 		super();
+		this.idColumn = idColumn;
 
-		String rowId;
-		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT))
-			rowId = Integer.toString(row.getRowNum());
-		else
-			rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
-
+		String rowId = getRowIdFromExcelRow(row);
 		StringBuilder rowBuilder = new StringBuilder();
 		rowBuilder.append("ID " + rowId + ": ");
 
@@ -116,7 +118,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		}
 
 		if (firstCellSet) {
-			Pattern p = Pattern.compile(LINE_BREAKS_AND_CONTROL_REQE);
+			Pattern p = Pattern.compile(LINE_BREAKS_AND_CONTROL_REQ);
 			Matcher m = p.matcher(rowBuilder);
 
 			String rowContent = (m.replaceAll(" ")).trim();
@@ -132,7 +134,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 	public void showOfficeObjectInNativeEnvironment() throws CapraOfficeObjectNotFound {
 
 		String fileType = Files.getFileExtension(getFile().getAbsolutePath());
-		String rowId = getRowId();
+		String rowId = getRowIdFromObjectUri();
 		String sheetName = getSheetName();
 
 		Sheet sheet;
@@ -148,14 +150,13 @@ public class CapraExcelRow extends CapraOfficeObject {
 			return;
 		}
 
-		DataFormatter formatter = new DataFormatter();
 		int rowIndex = NO_ROW_INDEX;
 		String lastCellReference = NO_LAST_CELL_REFERENCE;
 		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
 			if (row != null) {
-				String currRowID = formatter.formatCellValue(row.getCell(0));
-				if (currRowID.equals(rowId)) {
+				String currRowId = getRowIdFromExcelRow(row);
+				if (currRowId.equals(rowId)) {
 					rowIndex = i;
 					lastCellReference = CellReference.convertNumToColString(row.getLastCellNum()) + (rowIndex + 1);
 					break;
@@ -164,7 +165,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		}
 
 		if (rowIndex == NO_ROW_INDEX || lastCellReference == NO_LAST_CELL_REFERENCE)
-			throw new CapraOfficeObjectNotFound(getRowId());
+			throw new CapraOfficeObjectNotFound(getRowIdFromObjectUri());
 
 		int firstDisplayedRowIndex = (rowIndex - 2 > 0) ? rowIndex - 2 : 1;
 		if (fileType.equals(CapraOfficeObject.XLSX)) {
@@ -207,15 +208,29 @@ public class CapraExcelRow extends CapraOfficeObject {
 		}
 	}
 
+	/**
+	 * Extracts the name of the sheet which the object is associated with.
+	 * 
+	 * @return name of the sheet
+	 */
 	public String getSheetName() {
 		String itemId = getId();
 		int lastIndexOfDelimiter = itemId.lastIndexOf(ID_DELIMITER);
 		return itemId.substring(0, lastIndexOfDelimiter);
 	}
 
-	public String getRowId() {
+	private String getRowIdFromObjectUri() {
 		String itemId = getId();
 		int lastIndexOfDelimiter = itemId.lastIndexOf(ID_DELIMITER);
 		return itemId.substring(lastIndexOfDelimiter + 1);
+	}
+
+	private String getRowIdFromExcelRow(Row row) {
+		String rowId = "";
+		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT))
+			rowId = Integer.toString(row.getRowNum() + 1);
+		else
+			rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
+		return rowId;
 	}
 }
