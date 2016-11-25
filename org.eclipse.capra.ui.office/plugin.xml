@@ -65,16 +65,6 @@
       </handler>
    </extension>
    <extension
-         point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester 
-            class="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
-            id="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
-            namespace="org.eclipse.capra.ui.office.utils"
-            properties="isViewEmpty, isExcelObject"
-            type="java.lang.Object">
-      </propertyTester>
-   </extension>
-   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.capra.ui.views.OfficeView?after=additions"> 
@@ -90,11 +80,9 @@
                style="push"
                tooltip="Select which sheet in the Excel workbook to display">
             <visibleWhen>
-               <test
-                     forcePluginActivation="true"
-                     property="org.eclipse.capra.ui.office.utils.isExcelObject">
-               </test>
-            </visibleWhen>
+    		   <reference
+    		   	   definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression"/>
+			</visibleWhen>
          </command>
          <command
                commandId="org.eclipse.capra.ui.office.clearselection"
@@ -102,11 +90,9 @@
                style="push"
                tooltip="Clears the current selection of elements">
             <visibleWhen>
-               <test
-                     forcePluginActivation="true"
-                     property="org.eclipse.capra.ui.office.utils.isViewEmpty">
-               </test>
-            </visibleWhen>
+    		   <reference
+    		   	   definitionId="org.eclipse.capra.ui.office.utils.isViewPopulatedExpression"/>
+			</visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -148,5 +134,51 @@
       <initializer
             class="org.eclipse.capra.ui.office.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            id="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            namespace="org.eclipse.capra.ui.office.utils"
+            properties="isViewPopulated, isExcelObject"
+            type="org.eclipse.capra.ui.office.objects.CapraOfficeObject">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="org.eclipse.capra.ui.office.utils.OfficeSourceProvider">
+         <variable
+               name="org.eclipse.capra.ui.office.utils.capraOfficeObject"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.capra.ui.office.utils.isViewPopulatedExpression">
+         <with
+               variable="org.eclipse.capra.ui.office.utils.capraOfficeObject">
+            <test
+                  forcePluginActivation="true"
+                  property="org.eclipse.capra.ui.office.utils.isViewPopulated">
+            </test>
+         </with>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
+         <with
+               variable="org.eclipse.capra.ui.office.utils.capraOfficeObject">
+            <test
+                  forcePluginActivation="true"
+                  property="org.eclipse.capra.ui.office.utils.isExcelObject">
+            </test>
+         </with>
+      </definition>
    </extension>
 </plugin>

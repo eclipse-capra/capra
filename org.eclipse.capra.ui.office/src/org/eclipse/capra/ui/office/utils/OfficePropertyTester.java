@@ -12,7 +12,6 @@
 package org.eclipse.capra.ui.office.utils;
 
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
-import org.eclipse.capra.ui.office.views.OfficeView;
 import org.eclipse.core.expressions.PropertyTester;
 
 /**
@@ -25,28 +24,17 @@ import org.eclipse.core.expressions.PropertyTester;
  */
 public class OfficePropertyTester extends PropertyTester {
 
-	private static final String IS_VIEW_EMPTY = "isViewEmpty";
+	private static final String IS_VIEW_POPULATED = "isViewPopulated";
 	private static final String IS_EXCEL_OBJECT = "isExcelObject";
 
 	@Override
 	public boolean test(final Object receiver, final String property, final Object[] args, final Object expectedValue) {
 
-		// Triggers when a test is called to check whether the Office view is
-		// empty or not.
-		if (property.equals(IS_VIEW_EMPTY))
-			if (OfficeView.getOpenedView().getSelection().isEmpty())
-				return false;
-			else
-				return true;
+		if (property.equals(IS_VIEW_POPULATED))
+			return receiver != null;
 
-		// Triggers when a test is called to check if the objects in the Office
-		// view represent Excel rows.
 		if (property.equals(IS_EXCEL_OBJECT))
-			if (!OfficeView.getOpenedView().getSelection().isEmpty()
-					&& OfficeView.getOpenedView().getSelection().get(0) instanceof CapraExcelRow)
-				return true;
-			else
-				return false;
+			return receiver instanceof CapraExcelRow;
 
 		return false;
 	}

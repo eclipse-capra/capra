@@ -27,6 +27,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.xmlbeans.SchemaTypeLoaderException;
 import org.eclipse.capra.ui.office.Activator;
+import org.eclipse.capra.ui.office.utils.OfficeSourceProvider;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
@@ -66,6 +67,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.ISourceProviderService;
 
 import com.google.common.io.Files;
 
@@ -113,6 +115,12 @@ public class OfficeView extends ViewPart {
 	 */
 	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
 
+	/**
+	 * Instance of OfficeSourceProvider (used for hiding context menu options)
+	 */
+	private OfficeSourceProvider provider = (OfficeSourceProvider) ((ISourceProviderService) PlatformUI.getWorkbench()
+			.getService(ISourceProviderService.class)).getSourceProvider(OfficeSourceProvider.CAPRA_OFFICE_OBJECT);
+	
 	/**
 	 * The content provider class used by the view.
 	 */
@@ -364,6 +372,9 @@ public class OfficeView extends ViewPart {
 					selection.add(cRow);
 			}
 		}
+		
+		if (!selection.isEmpty())
+			provider.setResource(selection.get(0));
 	}
 
 	/**
@@ -399,6 +410,9 @@ public class OfficeView extends ViewPart {
 					selection.add(cRequirement);
 			}
 		}
+		
+		if (!selection.isEmpty())
+			provider.setResource(selection.get(0));
 	}
 
 	/**
@@ -447,6 +461,7 @@ public class OfficeView extends ViewPart {
 	public void clearSelection() {
 		selection.clear();
 		viewer.refresh();
+		provider.setResource(null);
 	}
 
 	/**
