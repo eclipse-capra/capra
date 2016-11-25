@@ -40,7 +40,7 @@ public class OfficeHandler implements ArtifactHandler {
 			// TODO here artifactName is the same as the row/paragraph
 			// description. Should it be different?
 			EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-					officeObject.toString());
+					officeObject.getName());
 			return wrapper;
 		} else {
 			return null;

@@ -103,6 +103,16 @@ public class CapraOfficeObject {
 	}
 
 	/**
+	 * Generates a readable name for the purpose of supplying it to
+	 * createArtifact method in the OfficeHandler.
+	 * 
+	 * @return a readable name of the OfficeObject
+	 */
+	public String getName() {
+		return getFile().getName() + File.separator + getId();
+	}
+	
+	/**
 	 * Extracts the ID of the object from uri of the OfficeObject.
 	 * 
 	 * @param uri
