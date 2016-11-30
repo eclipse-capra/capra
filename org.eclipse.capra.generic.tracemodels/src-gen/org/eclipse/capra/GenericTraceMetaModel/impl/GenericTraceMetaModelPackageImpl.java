@@ -7,6 +7,7 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -131,8 +132,26 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getRelatedTo_ID() {
+		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRelatedTo_Name() {
+		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getRelatedTo_Item() {
-		return (EReference)relatedToEClass.getEStructuralFeatures().get(0);
+		return (EReference)relatedToEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -167,6 +186,8 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 		createEReference(genericTraceModelEClass, GENERIC_TRACE_MODEL__TRACES);
 
 		relatedToEClass = createEClass(RELATED_TO);
+		createEAttribute(relatedToEClass, RELATED_TO__ID);
+		createEAttribute(relatedToEClass, RELATED_TO__NAME);
 		createEReference(relatedToEClass, RELATED_TO__ITEM);
 	}
 
@@ -207,6 +228,8 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 		initEReference(getGenericTraceModel_Traces(), this.getRelatedTo(), null, "traces", null, 0, -1, GenericTraceModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(relatedToEClass, RelatedTo.class, "RelatedTo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getRelatedTo_ID(), theEcorePackage.getEString(), "ID", null, 0, 1, RelatedTo.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRelatedTo_Name(), theEcorePackage.getEString(), "name", null, 0, 1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRelatedTo_Item(), theEcorePackage.getEObject(), null, "item", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
