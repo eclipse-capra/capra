@@ -42,14 +42,18 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -112,7 +116,7 @@ public class TestHelper {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\n");
 		buffer.append("\n");
-		buffer.append("public class TestClass {}");
+		buffer.append("public class TestClass { public void doNothing(){ } }");
 
 		ICompilationUnit icu = pack.createCompilationUnit("TestClass.java", buffer.toString(), false, null);
 		return icu.getType("TestClass");
@@ -221,16 +225,45 @@ public class TestHelper {
 
 	}
 
+	/**
+	 * Checks if there is a trace link connecting the provided resources.
+	 * 
+	 * @param r1
+	 *            first resource
+	 * @param r2
+	 *            second resource
+	 * @return true, if there is a trace link between the resources, false
+	 *         otherwise
+	 */
 	public static boolean thereIsATraceBetween(IResource r1, IResource r2) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 
 		EObject tracemodel = persistenceAdapter.getTraceModel(new ResourceSetImpl());
 		GenericTraceModel gtm = (GenericTraceModel) tracemodel;
 
-		RelatedTo trace = gtm.getTraces().get(0);
+		EList<RelatedTo> traces = gtm.getTraces();
+		if (traces.isEmpty())
+			return false;
 
-		return trace.getItem().contains(r1) && trace.getItem().contains(r2);
+		IPath pathR1 = r1.getFullPath();
+		IPath pathR2 = r2.getFullPath();
 
+		for (RelatedTo trace : traces) {
+			EList<EObject> items = trace.getItem();
+			List<IPath> uris = new ArrayList<IPath>();
+			items.forEach(item -> {
+				EList<EStructuralFeature> structFeatures = item.eClass().getEAllStructuralFeatures();
+				for (EStructuralFeature esf : structFeatures) {
+					if (esf.getName().equals("uri")) {
+						uris.add(new Path((String) item.eGet(esf)));
+					}
+				}
+			});
+
+			if (uris.contains(pathR1) && uris.contains(pathR2))
+				return true;
+		}
+		return false;
 	}
 
 	public static ICProject createCDTProject(String projectName) throws OperationCanceledException, CoreException {

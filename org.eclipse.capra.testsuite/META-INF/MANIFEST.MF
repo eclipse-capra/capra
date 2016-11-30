@@ -23,7 +23,9 @@ Require-Bundle: org.junit,
  org.eclipse.capra.handler.cdt,
  org.eclipse.capra.handler.emf,
  org.eclipse.capra.handler.hudson,
- org.eclipse.capra.generic.persistence
+ org.eclipse.capra.generic.persistence,
+ org.eclipse.capra.handler.file,
+ org.eclipse.capra.ui.notification
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.swt.dnd
 Bundle-Vendor: Capra Development Team
