@@ -59,10 +59,6 @@
 <repository location="http://download.eclipse.org/egit/github/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="0.0.0"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.6"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>
 <unit id="org.apache.xmlbeans" version="2.3.0.v201605172150"/>
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
