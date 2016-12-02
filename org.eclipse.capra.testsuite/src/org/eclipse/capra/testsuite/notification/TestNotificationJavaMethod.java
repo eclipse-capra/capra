@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,13 +53,13 @@ import org.junit.Test;
  *
  */
 public class TestNotificationJavaMethod {
-	
+
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
-	}	
-	
+	}
+
 	/**
 	 * Tests if a marker appears after deleting a Java method that is referenced
 	 * in the trace model.
@@ -91,7 +92,7 @@ public class TestNotificationJavaMethod {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkerLength = markers.length;
 
 		// Delete method and wait a bit for the
@@ -101,7 +102,7 @@ public class TestNotificationJavaMethod {
 		TimeUnit.MILLISECONDS.sleep(100);
 
 		// Check if there are new markers
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		// assertEquals(currMarkerLength + 1, markers.length);
 		// Deleting a java method doesn't trigger the notification.
 		// For now this test fails.
@@ -139,7 +140,7 @@ public class TestNotificationJavaMethod {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkerLength = markers.length;
 
 		// Rename method and wait a bit for the
@@ -149,9 +150,62 @@ public class TestNotificationJavaMethod {
 		TimeUnit.MILLISECONDS.sleep(100);
 
 		// Check if there are new markers
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		// assertEquals(currMarkerLength + 1, markers.length);
 		// Renaming a java method doesn't trigger the notification.
+		// For now this test fails.
+	}
+
+	/**
+	 * Tests if a marker appears after editing a Java method that is referenced
+	 * in the trace model.
+	 * 
+	 * @throws CoreException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void testEditMethod() throws CoreException, IOException, InterruptedException {
+
+		// Create a project
+		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		assertTrue(projectExists("TestProject"));
+
+		// Create a model and persist
+		IProject testProject = getProject("TestProject");
+		EPackage a = TestHelper.createEcoreModel("modelA");
+		createEClassInEPackage(a, "A");
+		save(testProject, a);
+		EClass A = (EClass) a.getEClassifier("A");
+
+		// Create a trace via the selection view
+		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
+		SelectionView.getOpenedView().dropToSelection(A);
+		SelectionView.getOpenedView().dropToSelection(javaClass);
+		assertFalse(thereIsATraceBetween(A, javaClass));
+		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(A, javaClass));
+
+		// Get current number of markers
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		int currMarkerLength = markers.length;
+
+		// Edit method and wait a bit for the
+		// ResourceChangedListener to trigger
+		IMethod method = (IMethod) javaClass.getChildren()[0];
+		IPackageFragment pack = method.getDeclaringType().getPackageFragment();
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("package " + pack.getElementName() + ";\n");
+		buffer.append("\n");
+		buffer.append("public class TestClass { public void doNothing() { boolean doNothing = true; } }");
+		pack.createCompilationUnit("TestClass.java", buffer.toString(), true, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(100);
+
+		// Check if there are new markers
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		// assertEquals(currMarkerLength + 1, markers.length);
+		// Editing a java method doesn't trigger the notification.
 		// For now this test fails.
 	}
 }

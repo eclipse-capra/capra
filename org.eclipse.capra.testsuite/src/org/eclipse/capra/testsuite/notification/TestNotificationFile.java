@@ -22,10 +22,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
+import org.eclipse.capra.testsuite.TestHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -68,8 +70,8 @@ public class TestNotificationFile {
 		// Create a project and put files in
 		createSimpleProject("TestProject");
 		assertTrue(projectExists("TestProject"));
-		IFile testFile1 = (IFile) createEmptyFileInProject("TestFile1", "TestProject");
-		IFile testFile2 = (IFile) createEmptyFileInProject("TestFile2", "TestProject");
+		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
+		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -81,7 +83,7 @@ public class TestNotificationFile {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkersSize = markers.length;
 
 		// Delete file and wait a bit for the ResourceChangedListener to trigger
@@ -89,7 +91,7 @@ public class TestNotificationFile {
 		TimeUnit.MILLISECONDS.sleep(100);
 
 		// Check if there are new markers
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 		currMarkersSize = markers.length;
 
@@ -97,7 +99,7 @@ public class TestNotificationFile {
 		testFile2.delete(true, new NullProgressMonitor());
 		root.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(100);
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
 
@@ -115,8 +117,8 @@ public class TestNotificationFile {
 		// Create a project and put files in
 		createSimpleProject("TestProject1");
 		assertTrue(projectExists("TestProject1"));
-		IFile testFile1 = (IFile) createEmptyFileInProject("TestFile1", "TestProject1");
-		IFile testFile2 = (IFile) createEmptyFileInProject("TestFile2", "TestProject1");
+		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject1");
+		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject1");
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -128,7 +130,7 @@ public class TestNotificationFile {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkersSize = markers.length;
 
 		// Move first file to another project and wait a bit for the
@@ -140,7 +142,7 @@ public class TestNotificationFile {
 		TimeUnit.MILLISECONDS.sleep(100);
 
 		// Check if there are new markers
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 		currMarkersSize = markers.length;
 
@@ -148,7 +150,7 @@ public class TestNotificationFile {
 		Path movePath_file2 = new Path(testFile2.getFullPath().toString().replaceFirst("TestProject1", "TestProject2"));
 		testFile2.move(movePath_file2, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(100);
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
 
@@ -166,8 +168,8 @@ public class TestNotificationFile {
 		// Create a project and put files in
 		createSimpleProject("TestProject");
 		assertTrue(projectExists("TestProject"));
-		IFile testFile1 = (IFile) createEmptyFileInProject("TestFile1", "TestProject");
-		IFile testFile2 = (IFile) createEmptyFileInProject("TestFile2", "TestProject");
+		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
+		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -179,7 +181,7 @@ public class TestNotificationFile {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkersSize = markers.length;
 
 		// Rename file and wait a bit for the ResourceChangedListener to trigger
@@ -188,7 +190,7 @@ public class TestNotificationFile {
 		TimeUnit.MILLISECONDS.sleep(100);
 
 		// Check if there are new markers
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 		currMarkersSize = markers.length;
 
@@ -196,7 +198,55 @@ public class TestNotificationFile {
 		Path renamePath_file2 = new Path(testFile2.getFullPath().toString().replaceFirst("TestFile2", "TestFile4"));
 		testFile2.move(renamePath_file2, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(100);
-		markers = root.findMarkers(null, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkersSize + 1, markers.length);
+	}
+
+	/**
+	 * Tests if a marker appears after editing a file that is referenced in the
+	 * trace model.
+	 * 
+	 * @throws CoreException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void testEditFile() throws CoreException, IOException, InterruptedException {
+
+		// Create a project and put files in
+		createSimpleProject("TestProject");
+		assertTrue(projectExists("TestProject"));
+		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
+		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
+
+		// Create a trace via the selection view
+		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
+		SelectionView.getOpenedView().dropToSelection(testFile1);
+		SelectionView.getOpenedView().dropToSelection(testFile2);
+		assertFalse(thereIsATraceBetween(testFile1, testFile2));
+		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(testFile1, testFile2));
+
+		// Get current number of markers
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		int currMarkersSize = markers.length;
+
+		// Edit file and wait a bit for the ResourceChangedListener to trigger
+		testFile1.appendContents(new ByteArrayInputStream("\nhello again 1!".getBytes()), true, true,
+				new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(100);
+
+		// Check if there are new markers
+		markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkersSize + 1, markers.length);
+		currMarkersSize = markers.length;
+
+		// Repeat the process for the second file
+		testFile2.appendContents(new ByteArrayInputStream("\nhello again 2!".getBytes()), true, true,
+				new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(100);
+		markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
 }
