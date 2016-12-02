@@ -49,6 +49,7 @@
 		<module>org.eclipse.capra.ui.jdt</module>
 		<module>org.eclipse.capra.ui.office</module>
 		<module>org.eclipse.capra.ui.zest</module>
+		<module>org.eclipse.capra.office.feature</module>
 	</modules>
 
 	<properties>

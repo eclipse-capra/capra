@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.capra.office.feature"
+      label="Capra MS Office support"
+      version="0.7.0.qualifier"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
+
+   <copyright>
+      Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.capra.feature"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.office"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui.office"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
