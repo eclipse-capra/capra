@@ -68,8 +68,28 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * A helper class for writing JUnit tests for the Capra tool.
+ */
 public class TestHelper {
 
+	/**
+	 * ID of Capra custom marker for reporting a generic problem.
+	 */
+	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
+
+	/**
+	 * ID of Capra custom marker for reporting a change in a file.
+	 */
+	public static final String CAPRA_FILE_CHANGED_MARKER_ID = "org.eclipse.capra.ui.notification.capraFileChangedMarker";
+
+	/**
+	 * Creates an empty project
+	 * 
+	 * @param projectName
+	 *            the name of the project
+	 * @throws CoreException
+	 */
 	public static void createSimpleProject(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 
@@ -78,6 +98,14 @@ public class TestHelper {
 		project.open(progressMonitor);
 	}
 
+	/**
+	 * Creates a Java project and a Java class declaration inside it.
+	 * 
+	 * @param projectName
+	 *            the name of the project
+	 * @return the created Java class
+	 * @throws CoreException
+	 */
 	public static IType createJavaProjectWithASingleJavaClass(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 
@@ -122,33 +150,77 @@ public class TestHelper {
 		return icu.getType("TestClass");
 	}
 
+	/**
+	 * Clears the active workspace by deleting all the contents.
+	 * 
+	 * @throws CoreException
+	 */
 	public static void clearWorkspace() throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		for (IProject p : root.getProjects())
 			p.delete(true, new NullProgressMonitor());
 	}
 
+	/**
+	 * Checks if the project with the provided name exists.
+	 * 
+	 * @param projectName
+	 *            the name of the project
+	 * @return true if the project exists in the active workspace, false
+	 *         otherwise
+	 */
 	public static boolean projectExists(String projectName) {
 		return getProject(projectName).exists();
 	}
 
+	/**
+	 * Returns a handle to the project resource with the given name.
+	 * 
+	 * @param projectName
+	 *            the name of the project
+	 * @return a handle to the project resource
+	 */
 	public static IProject getProject(String projectName) {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		return root.getProject(projectName);
 	}
 
+	/**
+	 * Creates an empty Ecore model.
+	 * 
+	 * @param name
+	 *            the name of the model
+	 * @return
+	 */
 	public static EPackage createEcoreModel(String name) {
 		EPackage p = EcoreFactory.eINSTANCE.createEPackage();
 		p.setName(name);
 		return p;
 	}
 
+	/**
+	 * Creates an EClass entity in the provided model.
+	 * 
+	 * @param p
+	 *            an Ecore model
+	 * @param name
+	 *            the name of the created EClass entity
+	 */
 	public static void createEClassInEPackage(EPackage p, String name) {
 		EClass c = EcoreFactory.eINSTANCE.createEClass();
 		c.setName(name);
 		p.getEClassifiers().add(c);
 	}
 
+	/**
+	 * Persists (saves) the provided Ecore model in the specified project.
+	 * 
+	 * @param project
+	 *            a handle to the project in which the model is to be persisted
+	 * @param pack
+	 *            the Ecore model to be persisted
+	 * @throws IOException
+	 */
 	public static void save(IProject project, EPackage pack) throws IOException {
 		ResourceSet rs = new ResourceSetImpl();
 		URI path = URI.createFileURI(project.getLocation().toString() + "/" + pack.getName() + ".ecore");
@@ -157,11 +229,29 @@ public class TestHelper {
 		r.save(null);
 	}
 
+	/**
+	 * Returns an Ecore model entity from the specified project.
+	 * 
+	 * @param project
+	 *            the project containing the model
+	 * @param p
+	 *            the name of the model
+	 * @param rs
+	 *            the provided ResourceSet instance
+	 * @return an Ecore model entity
+	 * @throws IOException
+	 */
 	public static EPackage load(IProject project, String p, ResourceSet rs) throws IOException {
 		URI path = URI.createFileURI(project.getLocation().toString() + "/" + p);
 		return (EPackage) rs.getResource(path, true).getContents().get(0);
 	}
 
+	/**
+	 * Creates a trace between the objects that are in the Selection view.
+	 * 
+	 * @param traceType
+	 *            the type of the trace that is to connect the objects
+	 */
 	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		TraceCreationHandler handler = new TraceCreationHandler();
@@ -173,6 +263,15 @@ public class TestHelper {
 		});
 	}
 
+	/**
+	 * Checks if there is a trace between the provided EObjects.
+	 * 
+	 * @param a
+	 *            first EObject
+	 * @param b
+	 *            second EObject
+	 * @return true if a trace exists between the two objects, false otherwise
+	 */
 	public static boolean thereIsATraceBetween(EObject a, EObject b) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
@@ -180,6 +279,15 @@ public class TestHelper {
 				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
 	}
 
+	/**
+	 * Checks if there is a trace between the provided EObject and Java element.
+	 * 
+	 * @param a
+	 *            EObject element
+	 * @param b
+	 *            Java element
+	 * @return true if a trace exists between the two objects, false otherwise
+	 */
 	public static boolean thereIsATraceBetween(EObject a, IType b) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
@@ -203,6 +311,16 @@ public class TestHelper {
 
 	}
 
+	/**
+	 * Checks if there is a trace between the provided EObject and C or C++
+	 * element.
+	 * 
+	 * @param a
+	 *            EObject element
+	 * @param b
+	 *            C or C++ element
+	 * @return true if a trace exists between the two objects, false otherwise
+	 */
 	public static boolean thereIsATraceBetween(EObject a, ICProject b) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
@@ -226,7 +344,7 @@ public class TestHelper {
 	}
 
 	/**
-	 * Checks if there is a trace link connecting the provided resources.
+	 * Checks if there is a trace between the provided resources.
 	 * 
 	 * @param r1
 	 *            first resource
@@ -266,6 +384,15 @@ public class TestHelper {
 		return false;
 	}
 
+	/**
+	 * Creates an empty C or C++ project.
+	 * 
+	 * @param projectName
+	 *            the name of the created project
+	 * @return a handle to the created project
+	 * @throws OperationCanceledException
+	 * @throws CoreException
+	 */
 	public static ICProject createCDTProject(String projectName) throws OperationCanceledException, CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -285,7 +412,17 @@ public class TestHelper {
 		return tu;
 	}
 
-	public static IResource createEmptyFileInProject(String fileName, String projectName) throws CoreException {
+	/**
+	 * Creates an empty file in the project with the provided name.
+	 * 
+	 * @param fileName
+	 *            the name of the created file
+	 * @param projectName
+	 *            the name of the project in which the file is to be created
+	 * @return a handle to the created file
+	 * @throws CoreException
+	 */
+	public static IFile createEmptyFileInProject(String fileName, String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 		IFile f = project.getFile(fileName);
 		f.create(new ByteArrayInputStream("hello world!".getBytes()), true, new NullProgressMonitor());
@@ -293,6 +430,9 @@ public class TestHelper {
 		return f;
 	}
 
+	/**
+	 * Resets the selection view by emptying it.
+	 */
 	public static void resetSelectionView() {
 		SelectionView.getOpenedView().clearSelection();
 		DisplayTracesHandler.setTraceViewTransitive(true);
