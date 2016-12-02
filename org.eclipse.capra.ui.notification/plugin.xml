@@ -22,15 +22,15 @@
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
             class="org.eclipse.capra.ui.notification.MarkerResolutionGenerator"
-            markerType="org.eclipse.capra.ui.notification.capraproblemmarker">
+            markerType="org.eclipse.capra.ui.notification.capraProblemMarker">
       </markerResolutionGenerator>
       <markerResolutionGenerator
             class="org.eclipse.capra.ui.notification.MarkerResolutionGenerator"
-            markerType="org.eclipse.capra.ui.notifcation.capraFileChangedMarker">
+            markerType="org.eclipse.capra.ui.notification.capraFileChangedMarker">
       </markerResolutionGenerator>
    </extension>
    <extension
-         id="org.eclipse.capra.ui.notification.capraproblemmarker"
+         id="org.eclipse.capra.ui.notification.capraProblemMarker"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -40,7 +40,7 @@
       </persistent>
    </extension>
    <extension
-         id="org.eclipse.capra.ui.notifcation.capraFileChangedMarker"
+         id="org.eclipse.capra.ui.notification.capraFileChangedMarker"
          name="fileChangedMarker"
          point="org.eclipse.core.resources.markers">
       <persistent

@@ -51,6 +51,16 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class ResourceListener implements IResourceChangeListener {
 	// TODO Change into enumeration
+	
+	/**
+	 * ID of Capra custom marker for reporting a generic problem.
+	 */
+	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
+
+	/**
+	 * ID of Capra custom marker for reporting a change in a file.
+	 */
+	public static final String CAPRA_FILE_CHANGED_MARKER_ID = "org.eclipse.capra.ui.notification.capraFileChangedMarker";
 
 	public enum IssueType {
 		ARTIFACT_RENAMED, ARTIFACT_MOVED, ARTIFACT_DELETED, ARTIFACT_CHANGED
@@ -138,7 +148,7 @@ public class ResourceListener implements IResourceChangeListener {
 
 							if (issue == IssueType.ARTIFACT_RENAMED) {
 								IMarker marker = file
-										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+										.createMarker(CAPRA_PROBLEM_MARKER_ID);
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
 								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 
@@ -150,7 +160,7 @@ public class ResourceListener implements IResourceChangeListener {
 								marker.setAttribute("issueType", "Rename");
 							} else if (issue == IssueType.ARTIFACT_MOVED) {
 								IMarker marker = file
-										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+										.createMarker(CAPRA_PROBLEM_MARKER_ID);
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
 								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 
@@ -163,7 +173,7 @@ public class ResourceListener implements IResourceChangeListener {
 								marker.setAttribute("issueType", "Move");
 							} else if (issue == IssueType.ARTIFACT_DELETED) {
 								IMarker marker = file
-										.createMarker("org.eclipse.capra.ui.notification.capraproblemmarker");
+										.createMarker(CAPRA_PROBLEM_MARKER_ID);
 								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
 								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 
@@ -201,7 +211,7 @@ public class ResourceListener implements IResourceChangeListener {
 	 */
 	protected void addFileChangedMarker(IFile file, IResourceDelta delta) throws CoreException {
 
-		IMarker[] markers = file.findMarkers("org.eclipse.capra.ui.notifcation.capraFileChangedMarker", false, 0);
+		IMarker[] markers = file.findMarkers(CAPRA_FILE_CHANGED_MARKER_ID, false, 0);
 		List<IMarker> markerList = Arrays.asList(markers);
 		List<String> changedFiles = new ArrayList<>();
 
@@ -214,7 +224,7 @@ public class ResourceListener implements IResourceChangeListener {
 			String changedFile = delta.getResource().getName();
 			if (!changedFiles.contains(changedFile)) {
 				IMarker fileChangedMarker = file
-						.createMarker("org.eclipse.capra.ui.notifcation.capraFileChangedMarker");
+						.createMarker(CAPRA_FILE_CHANGED_MARKER_ID);
 				fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
 				fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 
@@ -224,7 +234,7 @@ public class ResourceListener implements IResourceChangeListener {
 				fileChangedMarker.setAttribute("issueType", "fileChanged");
 			}
 		} else {
-			IMarker fileChangedMarker = file.createMarker("org.eclipse.capra.ui.notifcation.capraFileChangedMarker");
+			IMarker fileChangedMarker = file.createMarker(CAPRA_FILE_CHANGED_MARKER_ID);
 			fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
 			fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 
