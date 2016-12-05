@@ -127,6 +127,12 @@
             name="Capra">
       </perspective>
    </extension>
-
-
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.capra.ui.preferences.CapraPreferences"
+            id="org.eclipse.capra.ui.preferences.CapraPreferences"
+            name="Capra">
+      </page>
+   </extension>
 </plugin>
