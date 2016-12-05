@@ -1,3 +1,6 @@
 /.DS_Store
 **/bin
 **/target
+org.eclipse.capra.variability.tracemetamodel/.project
+*.project
+org.eclipse.capra.variability.tracemetamodel/META-INF/MANIFEST.MF

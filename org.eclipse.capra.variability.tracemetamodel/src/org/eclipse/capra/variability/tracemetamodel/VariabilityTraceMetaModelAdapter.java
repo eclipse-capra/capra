@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import org.eclipse.app4mc.variability.ample.Alternative;
 import org.eclipse.app4mc.variability.ample.AlternativeGroup;
 import org.eclipse.app4mc.variability.ample.Mandatory;
@@ -47,7 +45,7 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 		/*
 		 * Based on the selection, only suitable trace links are shown
 		 */
-		if (selection.stream().filter(getInvalidElementsPredicate()).collect(Collectors.toList()).size() == 0) {
+		if (selection.stream().filter(getInvalidElementsPredicate()).count() == 0) {
 			int mandatoryFeatures = 0;
 			int optionalFeatures = 0;
 			int orFeatures = 0;
@@ -56,6 +54,7 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 			int componentInstances = 0;
 			int variationPoints = 0;
 			int variants = 0;
+			List<ComponentInstance> componentInstancesList = new ArrayList<ComponentInstance>();
 
 			for (EObject obj : selection) {
 				if (obj instanceof Mandatory) {
@@ -70,6 +69,7 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 					alternativeGroups++;
 				} else if (obj instanceof ComponentInstance) {
 					componentInstances++;
+					componentInstancesList.add((ComponentInstance) obj);
 				} else if (obj instanceof VariationPoint) {
 					variationPoints++;
 				} else if (obj instanceof Variant) {
@@ -78,17 +78,20 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 			}
 
 			if (mandatoryFeatures == 1 && componentInstances >= 1) {
-				traceTypes.add(TraceModelPackage.eINSTANCE.getMandatory2ComponentInstances());
+				// checks if the component are none-optional
+				if (componentInstancesList.parallelStream().filter(c -> c.getIsOptional()).count() == 0) {
+					traceTypes.add(TraceModelPackage.eINSTANCE.getMandatory2ComponentInstances());
+				}
 			}
-
 			if ((optionalFeatures == 1 || orFeatures == 1) && componentInstances >= 1) {
-				traceTypes.add(TraceModelPackage.eINSTANCE.getOptional2ComponentInstances());
+				// checks if the component are optional
+				if (componentInstancesList.parallelStream().filter(c -> !c.getIsOptional()).count() == 0) {
+					traceTypes.add(TraceModelPackage.eINSTANCE.getOptional2ComponentInstances());
+				}
 			}
-
 			if (alternativeGroups == 1 && variationPoints == 1) {
 				traceTypes.add(TraceModelPackage.eINSTANCE.getAlternativeGroup2VariationPoint());
 			}
-
 			if (alternativeFeatures == 1 && variants == 1) {
 				traceTypes.add(TraceModelPackage.eINSTANCE.getAlternativeFeature2Variant());
 			}
@@ -255,7 +258,6 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 		List<Connection> connections = new ArrayList<>();
 		if (traceModel instanceof TraceModel) {
 			TraceModel tm = (TraceModel) traceModel;
-
 			if (element instanceof GenericTraceLink) {
 				if (element instanceof RelatedTo) {
 					RelatedTo trace = (RelatedTo) element;
@@ -364,7 +366,6 @@ public class VariabilityTraceMetaModelAdapter implements TraceMetaModelAdapter {
 			}
 		}
 		return connections;
-
 	}
 
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
