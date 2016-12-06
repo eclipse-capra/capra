@@ -44,6 +44,8 @@
 		<module>org.eclipse.capra.ui.plantuml</module>
 		<module>org.eclipse.capra.releng.target</module>
 		<module>org.eclipse.capra.releng.p2</module>
+		<module>org.eclipse.capra.ui.cdt</module>
+		<module>org.eclipse.capra.ui.jdt</module>
 	</modules>
 
 	<properties>
