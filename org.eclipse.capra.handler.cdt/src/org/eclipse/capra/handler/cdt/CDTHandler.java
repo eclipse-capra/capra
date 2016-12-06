@@ -15,8 +15,10 @@ import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -54,8 +56,11 @@ public class CDTHandler implements ArtifactHandler, IAnnotateArtifact {
 
 	@Override
 	public void annotateArtifact(EObject artifact, String annotation) throws AnnotationException {
-		ICElement handle = resolveArtifact(artifact);
-		CDTAnnotate.annotateArtifact(handle, annotation);
+		IEclipsePreferences preferences = CDTPreferences.getPreferences();
+		if (preferences.getBoolean(CDTPreferences.ANNOTATE_CDT, CDTPreferences.ANNOTATE_CDT_DEFAULT)) {
+			ICElement handle = resolveArtifact(artifact);
+			CDTAnnotate.annotateArtifact(handle, annotation);
+		}
 	}
 
 }

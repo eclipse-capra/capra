@@ -12,6 +12,7 @@ package org.eclipse.capra.handler.cdt;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.core.resources.IProject;
@@ -30,6 +31,9 @@ public class CDTAnnotateTest {
 	@Before
 	public void setupTestProject() throws CoreException, BuildException {
 		project = TestUtil.setupTestProject("cdt");
+		CDTPreferences.getPreferences().putBoolean(CDTPreferences.ANNOTATE_CDT, true);
+		CDTPreferences.getPreferences().put(CDTPreferences.ANNOTATE_CDT_TAG, "req");
+		CDTPreferences.getPreferences().put(CDTPreferences.ANNOTATE_CDT_TAG_PREFIX, "@");
 	}
 
 	@After
