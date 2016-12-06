@@ -74,8 +74,6 @@ public class TraceCreationHandler extends AbstractHandler {
 		if (chosenType.isPresent()) {
 			EObject root = traceAdapter.createTrace(chosenType.get(), traceModel, selectionAsEObjects);
 			persistenceAdapter.saveTracesAndArtifacts(root, artifactModel);
-
-			// TODO: user should be able to disable annotation
 			annotateTrace(traceAdapter, traceModel, selectionAsEObjects);
 		}
 	}
