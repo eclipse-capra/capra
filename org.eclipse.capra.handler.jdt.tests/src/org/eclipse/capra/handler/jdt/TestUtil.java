@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.jdt;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
@@ -22,6 +24,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -32,9 +35,12 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.launching.StandardVMType;
 import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
+import org.eclipse.jdt.launching.VMStandin;
 import org.junit.Before;
 
 public class TestUtil {
@@ -60,14 +66,27 @@ public class TestUtil {
 		IFolder binFolder = project.getFolder("bin");
 		javaProject.setOutputLocation(binFolder.getFullPath(), null);
 
-		// Set classpath
+		// Manually set Java Runtime Environment to make sure it is not null
+		// even for Mac OS where the default is not set
+		@SuppressWarnings("restriction")
+		final IVMInstallType vmInstallType = JavaRuntime.getVMInstallType(StandardVMType.ID_STANDARD_VM_TYPE);
+		String id = UUID.randomUUID().toString();
+		VMStandin newVm = new VMStandin(vmInstallType, id);
+		newVm.setName("Default-VM");
+		String javaHome = System.getProperty("java.home");
+		File installLocation = new File(javaHome);
+		newVm.setInstallLocation(installLocation);
+		IVMInstall realVm = newVm.convertToRealVM();
+		JavaRuntime.setDefaultVMInstall(realVm, new NullProgressMonitor());
+
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+		// add libs to project class path
 		IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
 		LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
 		for (LibraryLocation element : locations) {
 			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 		}
-		// add libs to project class path
+		// Set classpath
 		javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 
 		// Create source folder
