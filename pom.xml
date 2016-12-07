@@ -46,6 +46,7 @@
 		<module>org.eclipse.capra.releng.p2</module>
 		<module>org.eclipse.capra.ui.cdt</module>
 		<module>org.eclipse.capra.ui.jdt</module>
+		<module>org.eclipse.capra.ui.zest</module>
 	</modules>
 
 	<properties>
