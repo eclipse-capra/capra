@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
@@ -50,12 +49,11 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 
 	@Override
 	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection) {
-
 		GenericTraceModel TM = (GenericTraceModel) traceModel;
 		EObject trace = GenericTraceMetaModelFactory.eINSTANCE.create(traceType);
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
-		
+
 		TM.getTraces().add(RelatedToTrace);
 		return TM;
 	}
@@ -69,13 +67,20 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
 		GenericTraceModel root = (GenericTraceModel) traceModel;
-		List<RelatedTo> traces = root.getTraces();
-		for (RelatedTo trace : traces) {
+		List<RelatedTo> relevantLinks = new ArrayList<RelatedTo>();
+		List<RelatedTo> allTraces = root.getTraces();
+
+		for (RelatedTo trace : allTraces) {
 			if (firstElement != secondElement) {
-				return trace.getItem().contains(firstElement) && trace.getItem().contains(secondElement);
+				if (trace.getItem().contains(firstElement) && trace.getItem().contains(secondElement)) {
+					relevantLinks.add(trace);
+				}
 			}
 		}
-		return false;
+		if (relevantLinks.size() > 0) {
+			return true;
+		} else
+			return false;
 	}
 
 	@Override
