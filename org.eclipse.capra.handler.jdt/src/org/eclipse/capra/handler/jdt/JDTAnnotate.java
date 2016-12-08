@@ -13,7 +13,9 @@ package org.eclipse.capra.handler.jdt;
 import java.util.List;
 
 import org.eclipse.capra.core.handlers.AnnotationException;
+import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
@@ -41,7 +43,7 @@ import org.eclipse.text.edits.TextEdit;
 
 public class JDTAnnotate {
 
-	private static final String TAG_NAME = "@req";
+	private static final String TAG_PREFIX = "@";
 	private static final String ANNOTATION_FAILED = "Annotation failed";
 
 	@SuppressWarnings("unchecked")
@@ -69,12 +71,15 @@ public class JDTAnnotate {
 
 				ListRewrite tagsRewriter = rewrite.getListRewrite(javaDoc, Javadoc.TAGS_PROPERTY);
 
-				// TODO: Get tag name from somewhere else
+				// Get preferred tag name
+				IEclipsePreferences preferences = JDTPreferences.getPreferences();
+				String tagName = TAG_PREFIX + preferences.get(JDTPreferences.ANNOTATE_JDT_TAG,
+						JDTPreferences.ANNOTATE_JDT_TAG_DEFAULT).trim();
 
 				// Remove existing tags
 				((List<TagElement>)javaDoc.tags())
 					.stream()
-					.filter(t -> t.getTagName() != null && t.getTagName().equals(TAG_NAME))
+					.filter(t -> t.getTagName() != null && t.getTagName().equals(tagName))
 					.forEach(t -> tagsRewriter.remove(t, null));
 
 				// Create new tag
@@ -82,7 +87,7 @@ public class JDTAnnotate {
 				TextElement text = ast.newTextElement();
 				text.setText(annotation);
 				tag.fragments().add(text);
-				tag.setTagName(TAG_NAME);
+				tag.setTagName(tagName);
 
 				tagsRewriter.insertLast(tag, null);
 

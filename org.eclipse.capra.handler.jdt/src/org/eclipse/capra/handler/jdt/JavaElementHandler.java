@@ -15,6 +15,8 @@ import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
@@ -58,7 +60,10 @@ public class JavaElementHandler implements ArtifactHandler, IAnnotateArtifact {
 
 	@Override
 	public void annotateArtifact(EObject artifact, String annotation) throws AnnotationException {
-		IJavaElement handle = resolveArtifact(artifact);
-		JDTAnnotate.annotateArtifact(handle, annotation);
+		IEclipsePreferences preferences = JDTPreferences.getPreferences();
+		if (preferences.getBoolean(JDTPreferences.ANNOTATE_JDT, JDTPreferences.ANNOTATE_JDT_DEFAULT)) {
+			IJavaElement handle = resolveArtifact(artifact);
+			JDTAnnotate.annotateArtifact(handle, annotation);
+		}
 	}
 }

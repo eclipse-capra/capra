@@ -12,6 +12,7 @@ package org.eclipse.capra.handler.jdt;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
@@ -29,6 +30,8 @@ public class JDTAnnotateTest {
 	@Before
 	public void createTestProject() throws CoreException {
 		project = TestUtil.createTestProject("jdt");
+		JDTPreferences.getPreferences().putBoolean(JDTPreferences.ANNOTATE_JDT, true);
+		JDTPreferences.getPreferences().put(JDTPreferences.ANNOTATE_JDT_TAG, "req");
 	}
 
 	@After
