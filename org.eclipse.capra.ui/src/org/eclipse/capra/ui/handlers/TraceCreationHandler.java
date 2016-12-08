@@ -4,21 +4,26 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.capra.ui.handlers;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -39,6 +44,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class TraceCreationHandler extends AbstractHandler {
 
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 		createTrace(window, (traceTypes, selection) -> getTraceTypeToCreate(window, traceTypes, selection));
@@ -68,6 +74,49 @@ public class TraceCreationHandler extends AbstractHandler {
 		if (chosenType.isPresent()) {
 			EObject root = traceAdapter.createTrace(chosenType.get(), traceModel, selectionAsEObjects);
 			persistenceAdapter.saveTracesAndArtifacts(root, artifactModel);
+
+			// TODO: user should be able to disable annotation
+			annotateTrace(traceAdapter, traceModel, selectionAsEObjects);
+		}
+	}
+
+	private void annotateTrace(TraceMetaModelAdapter traceAdapter, EObject traceModel,
+			List<EObject> artifacts) {
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
+		// Annotate if possible
+		for (EObject artifact : artifacts) {
+			ArtifactHandler handler = adapter.getArtifactHandlerInstance(artifact);
+			if (handler instanceof IAnnotateArtifact) {
+				IAnnotateArtifact h = (IAnnotateArtifact) handler;
+				try {
+					// Get unique connected artifacts, not including this element
+					// TODO: maybe add an adapter method for this?
+					Set<EObject> connectedElements = new HashSet<EObject>();
+					final StringBuilder annotation = new StringBuilder();
+					List<Connection> connections = traceAdapter.getConnectedElements(artifact, traceModel);
+					connections.forEach(c -> {
+						c.getTargets().forEach(t -> {
+							if (t != artifact) {
+								connectedElements.add(t);
+							}
+						});
+					});
+
+					// Build annotation string
+					connectedElements.forEach(e -> {
+						if (annotation.length() > 0) {
+							annotation.append(", ");
+						}
+						String name = adapter.getArtifactName(e);
+						annotation.append(name);
+					});
+
+					h.annotateArtifact(artifact, annotation.toString());
+				} catch (Exception e) {
+					// Ignore
+				}
+			}
 		}
 	}
 
