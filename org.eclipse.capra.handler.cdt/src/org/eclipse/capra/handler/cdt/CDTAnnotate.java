@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.cdt;
 import java.util.List;
 
 import org.eclipse.capra.core.handlers.AnnotationException;
+import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
 import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTNodeSelector;
@@ -26,6 +27,7 @@ import org.eclipse.cdt.core.model.ISourceReference;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ltk.core.refactoring.Change;
 
 public class CDTAnnotate {
@@ -61,18 +63,20 @@ public class CDTAnnotate {
 		}
 	}
 
-	// TODO: Get tag from somewhere else
 	private static String createNewCommentString(IASTComment comment, String annotation) {
+		IEclipsePreferences preferences = CDTPreferences.getPreferences();
+		String tag = preferences.get(CDTPreferences.ANNOTATE_CDT_TAG_PREFIX, CDTPreferences.ANNOTATE_CDT_TAG_PREFIX_DEFAULT).trim() +
+				preferences.get(CDTPreferences.ANNOTATE_CDT_TAG, CDTPreferences.ANNOTATE_CDT_TAG_DEFAULT).trim();
 		String text;
 		if (comment != null) {
 			text = comment.getRawSignature();
-			if (text.contains("@req")) {
-				text = text.replaceAll("@req .*", "@req " + annotation);
+			if (text.contains(tag)) {
+				text = text.replaceAll(tag + " .*", tag + " " + annotation);
 			} else {
-				text = text.replaceAll("\\*/", "* @req " + annotation + System.lineSeparator() + " */");
+				text = text.replaceAll("\\*/", "* " + tag + " " + annotation + System.lineSeparator() + " */");
 			}
 		} else {
-			text = "/**" + System.lineSeparator() + " * @req " + annotation + System.lineSeparator() + " */";
+			text = "/**" + System.lineSeparator() + " * " + tag + " " + annotation + System.lineSeparator() + " */";
 		}
 
 		return text;
