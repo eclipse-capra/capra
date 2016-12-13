@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.papyrus;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
 
@@ -38,4 +39,8 @@ public class PapyrusHandler implements ArtifactHandler {
 		return null;
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

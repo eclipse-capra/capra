@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.emf;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -31,6 +32,11 @@ public class EMFHandler implements ArtifactHandler {
 	@Override
 	public Object resolveArtifact(EObject artifact) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
 	}
 }

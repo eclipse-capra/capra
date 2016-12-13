@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.hudson;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.BuildElement;
 import org.eclipse.mylyn.builds.internal.core.TestElement;
@@ -37,13 +38,13 @@ public class HudsonHandler implements ArtifactHandler {
 
 			// TODO Need to get the URI for where the test is
 			EObject testWrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), test.getLabel(),
-					test.getLabel());
+					test.getLabel(), test.eResource().getURI().toString());
 			return testWrapper;
 		} else if (selection instanceof BuildElement) {
 			BuildElement build = (BuildElement) selection;
 
 			EObject buildWrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), build.getUrl(),
-					build.getLabel());
+					build.getLabel(), build.getUrl());
 			return buildWrapper;
 		}
 
@@ -68,4 +69,8 @@ public class HudsonHandler implements ArtifactHandler {
 
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

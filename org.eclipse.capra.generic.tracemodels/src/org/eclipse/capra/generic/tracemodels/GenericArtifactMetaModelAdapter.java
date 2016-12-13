@@ -14,6 +14,8 @@ import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelFactory;
 import org.eclipse.capra.core.adapters.AbstractArtifactMetaModelAdapter;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -41,7 +43,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 
 	@Override
 	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
-			String artifactName) {
+			String artifactName, String artifactPath) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri);
 		if (existingWrapper != null)
@@ -51,6 +53,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		wrapper.setArtifactHandler(artifactHandler);
 		wrapper.setUri(artifactUri);
 		wrapper.setName(artifactName);
+		wrapper.setPath(artifactPath);
 		container.getArtifacts().add(wrapper);
 
 		return wrapper;
@@ -83,4 +86,12 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		return null;
 	}
 
+	@Override
+	public IPath getArtifactPath(EObject artifact) {
+		if (artifact instanceof ArtifactWrapper) {
+			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
+			return new Path(wrapper.getPath());
+		}
+		return null;
+	}
 }

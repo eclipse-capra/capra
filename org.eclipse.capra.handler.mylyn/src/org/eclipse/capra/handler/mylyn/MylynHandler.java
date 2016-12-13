@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.mylyn;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.tasks.core.ITask;
 
@@ -31,7 +32,7 @@ public class MylynHandler implements ArtifactHandler {
 		ITask task = (ITask) selection;
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(),
-				task.getSummary());
+				task.getSummary(), task.getUrl());
 		return wrapper;
 	}
 
@@ -47,4 +48,8 @@ public class MylynHandler implements ArtifactHandler {
 		return task.getTaskId() + " : " + task.getSummary();
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

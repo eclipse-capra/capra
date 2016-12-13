@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.reqif;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.rmf.reqif10.SpecObject;
@@ -57,4 +58,8 @@ public class ReqIfHandler implements ArtifactHandler {
 		return specObject.getIdentifier();
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

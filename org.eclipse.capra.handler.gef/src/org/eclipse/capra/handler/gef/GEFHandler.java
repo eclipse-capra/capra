@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.gef;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
@@ -43,4 +44,8 @@ public class GEFHandler implements ArtifactHandler {
 		return null;
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

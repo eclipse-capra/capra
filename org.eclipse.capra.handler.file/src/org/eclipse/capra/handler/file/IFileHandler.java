@@ -16,6 +16,7 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -33,7 +34,8 @@ public class IFileHandler implements ArtifactHandler {
 		IFile selectionAsFile = (IFile) selection;
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				selectionAsFile.getFullPath().toString(), selectionAsFile.getName());
+				selectionAsFile.getFullPath().toString(), selectionAsFile.getName(),
+				selectionAsFile.getFullPath().toString());
 		return wrapper;
 	}
 
@@ -48,5 +50,11 @@ public class IFileHandler implements ArtifactHandler {
 	public String getDisplayName(Object selection) {
 		IFile selectionAsFile = (IFile) selection;
 		return selectionAsFile.getName();
+	}
+
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return delta.getResource().getName()
+				+ " has been changed. Please check if associated trace links are still valid.";
 	}
 }

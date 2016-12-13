@@ -7,6 +7,7 @@ Export-Package: org.eclipse.capra.handler.reqif
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.jface,
  org.eclipse.capra.core;bundle-version="0.7.0",
- org.eclipse.rmf.reqif10.pror;bundle-version="0.13.0"
+ org.eclipse.rmf.reqif10.pror;bundle-version="0.13.0",
+ org.eclipse.core.resources
 Import-Package: org.eclipse.papyrus.infra.emf.utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

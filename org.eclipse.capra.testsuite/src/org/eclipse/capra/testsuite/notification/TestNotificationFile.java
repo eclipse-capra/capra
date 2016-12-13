@@ -88,7 +88,7 @@ public class TestNotificationFile {
 
 		// Delete file and wait a bit for the ResourceChangedListener to trigger
 		testFile1.delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -98,7 +98,7 @@ public class TestNotificationFile {
 		// Repeat the process for the second file
 		testFile2.delete(true, new NullProgressMonitor());
 		root.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
@@ -139,7 +139,7 @@ public class TestNotificationFile {
 		assertTrue(projectExists("TestProject2"));
 		Path movePath_file1 = new Path(testFile1.getFullPath().toString().replaceFirst("TestProject1", "TestProject2"));
 		testFile1.move(movePath_file1, true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -149,7 +149,7 @@ public class TestNotificationFile {
 		// Repeat the process for the second file
 		Path movePath_file2 = new Path(testFile2.getFullPath().toString().replaceFirst("TestProject1", "TestProject2"));
 		testFile2.move(movePath_file2, true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
@@ -187,7 +187,7 @@ public class TestNotificationFile {
 		// Rename file and wait a bit for the ResourceChangedListener to trigger
 		Path renamePath_file1 = new Path(testFile1.getFullPath().toString().replaceFirst("TestFile1", "TestFile3"));
 		testFile1.move(renamePath_file1, true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -197,7 +197,7 @@ public class TestNotificationFile {
 		// Repeat the process for the second file
 		Path renamePath_file2 = new Path(testFile2.getFullPath().toString().replaceFirst("TestFile2", "TestFile4"));
 		testFile2.move(renamePath_file2, true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
@@ -229,24 +229,24 @@ public class TestNotificationFile {
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkersSize = markers.length;
 
 		// Edit file and wait a bit for the ResourceChangedListener to trigger
 		testFile1.appendContents(new ByteArrayInputStream("\nhello again 1!".getBytes()), true, true,
 				new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
-		markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 		currMarkersSize = markers.length;
 
 		// Repeat the process for the second file
 		testFile2.appendContents(new ByteArrayInputStream("\nhello again 2!".getBytes()), true, true,
 				new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
-		markers = root.findMarkers(TestHelper.CAPRA_FILE_CHANGED_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize + 1, markers.length);
 	}
 }

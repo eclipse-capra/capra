@@ -15,6 +15,7 @@ import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -33,7 +34,7 @@ public class CDTHandler implements ArtifactHandler {
 		ICElement cu = (ICElement) selection;
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), cu.getHandleIdentifier(),
-				cu.getElementName());
+				cu.getElementName(), cu.getPath().toString());
 		return wrapper;
 	}
 
@@ -50,4 +51,8 @@ public class CDTHandler implements ArtifactHandler {
 		return cu.getElementName();
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

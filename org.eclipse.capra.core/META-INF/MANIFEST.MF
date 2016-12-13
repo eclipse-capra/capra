@@ -4,7 +4,8 @@ Bundle-Name: Capra core functionality
 Bundle-SymbolicName: org.eclipse.capra.core;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;bundle-version="2.11.2";visibility:=reexport
+ org.eclipse.emf.ecore;bundle-version="2.11.2";visibility:=reexport,
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.core.adapters,
