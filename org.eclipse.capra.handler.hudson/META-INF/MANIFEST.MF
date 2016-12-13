@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.capra.handler.hudson;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.mylyn.hudson.core,
  org.eclipse.mylyn.builds.core,
- org.eclipse.capra.core
+ org.eclipse.capra.core,
+ org.eclipse.core.resources
 Export-Package: org.eclipse.capra.handler.hudson
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Capra Development Team

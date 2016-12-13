@@ -5,6 +5,7 @@ class ArtifactWrapperContainer {
 }
 
 class ArtifactWrapper {
+	String path
 	String uri
 	String name
 	String ArtifactHandler

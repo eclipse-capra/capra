@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -35,7 +36,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -50,17 +50,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 
 public class ResourceListener implements IResourceChangeListener {
-	// TODO Change into enumeration
-	
+
 	/**
 	 * ID of Capra custom marker for reporting a generic problem.
 	 */
 	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
-
-	/**
-	 * ID of Capra custom marker for reporting a change in a file.
-	 */
-	public static final String CAPRA_FILE_CHANGED_MARKER_ID = "org.eclipse.capra.ui.notification.capraFileChangedMarker";
 
 	public enum IssueType {
 		ARTIFACT_RENAMED, ARTIFACT_MOVED, ARTIFACT_DELETED, ARTIFACT_CHANGED
@@ -68,181 +62,156 @@ public class ResourceListener implements IResourceChangeListener {
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		URI uri;
-		TracePersistenceAdapter tracePersistenceAdapter;
-		ResourceSet resourceSet = new ResourceSetImpl();
-		EObject awc;
 
-		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		uri = EcoreUtil.getURI(awc);
-		EList<ArtifactWrapper> artifactlist = ((ArtifactWrapperContainer) awc).getArtifacts();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject awc = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EList<ArtifactWrapper> artifactList = ((ArtifactWrapperContainer) awc).getArtifacts();
 
-		// check if artifact model contains anything
+		if (artifactList.size() == 0)
+			return;
 
-		if (artifactlist.size() > 0) {
-			uri = EcoreUtil.getURI(awc);
-			IPath path = new Path(uri.toPlatformString(false));
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		URI uri = EcoreUtil.getURI(awc);
+		IPath path = new Path(uri.toPlatformString(false));
+		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-			IResourceDelta delta = event.getDelta();
-			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-
-				@Override
-				public boolean visit(IResourceDelta delta) throws CoreException {
-
-					IPath toPath = delta.getMovedToPath();
-
-					if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
-
-						if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
-							markupJob(delta, IssueType.ARTIFACT_MOVED, file, awc);
-						else
-							markupJob(delta, IssueType.ARTIFACT_RENAMED, file, awc);
-					}
-					if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
-						markupJob(delta, IssueType.ARTIFACT_DELETED, file, awc);
-					}
-
-					if (delta.getKind() == IResourceDelta.CHANGED) {
-						markupJob(delta, IssueType.ARTIFACT_CHANGED, file, awc);
-					}
-					return true;
-				}
-			};
-			try {
-				delta.accept(visitor);
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * The job responsible for adding problem markers to the artifact wrapper
-	 * model in case of changes affecting the trace model
-	 * 
-	 * @param delta
-	 *            The changes from the workspace
-	 * 
-	 * @param IssueType
-	 *            Type of change that occurred. Can be file changed, deleted,
-	 *            moved or renamed.
-	 * @param file
-	 *            The file containing the artifact wrapper model
-	 * @param awc
-	 *            The artifact wrapper model
-	 */
-	public void markupJob(IResourceDelta delta, IssueType issue, IFile file, EObject awc) {
-
-		WorkspaceJob job = new WorkspaceJob("CapraNotificationJob") {
+		IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 
 			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+			public boolean visit(IResourceDelta delta) throws CoreException {
 
-				try {
-					EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
-					for (ArtifactWrapper aw : list) {
+				WorkspaceJob job = new WorkspaceJob("CapraNotificationJob") {
 
-						if (aw.getName().equals(delta.getResource().getName())) {
+					@Override
+					public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 
-							if (issue == IssueType.ARTIFACT_RENAMED) {
-								IMarker marker = file
-										.createMarker(CAPRA_PROBLEM_MARKER_ID);
-								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+						EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
+						for (ArtifactWrapper aw : list) {
 
-								marker.setAttribute(IMarker.MESSAGE,
-										delta.getFullPath() + " has been renamed to " + delta.getMovedToPath());
-								marker.setAttribute("DeltaMovedToPath", delta.getMovedToPath().toString());
-								marker.setAttribute("oldFileName", delta.getResource().getName());
-								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
-								marker.setAttribute("issueType", "Rename");
-							} else if (issue == IssueType.ARTIFACT_MOVED) {
-								IMarker marker = file
-										.createMarker(CAPRA_PROBLEM_MARKER_ID);
-								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+							Optional<ArtifactHandler> artifactHandler = ExtensionPointHelper
+									.getArtifactHandler(aw.getArtifactHandler());
+							if (!artifactHandler.isPresent())
+								return Status.CANCEL_STATUS;
 
-								marker.setAttribute(IMarker.MESSAGE,
-										delta.getResource().getName() + " has been moved from " + delta.getFullPath()
-												+ " to " + delta.getMovedToPath());
-								marker.setAttribute("DeltaMovedToPath", delta.getMovedToPath().toString());
-								marker.setAttribute("oldFileName", delta.getResource().getName());
-								marker.setAttribute("newFileName", delta.getMovedToPath().toFile().getName());
-								marker.setAttribute("issueType", "Move");
-							} else if (issue == IssueType.ARTIFACT_DELETED) {
-								IMarker marker = file
-										.createMarker(CAPRA_PROBLEM_MARKER_ID);
-								marker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-								marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+							if (aw.getPath().equals(delta.getFullPath().toString())) {
+								HashMap<String, String> markerInfo = null;
+								int changeType = delta.getKind();
 
-								marker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
-										+ " has been deleted from " + delta.getFullPath());
-								marker.setAttribute("issueType", "Delete");
-								marker.setAttribute("fileName", delta.getResource().getName());
-							} else if (issue == IssueType.ARTIFACT_CHANGED) {
-								addFileChangedMarker(file, delta);
+								if (changeType == IResourceDelta.REMOVED) {
+									IPath toPath = delta.getMovedToPath();
 
+									if (toPath == null)
+										markerInfo = generateMarkerInfo(delta, IssueType.ARTIFACT_DELETED);
+									else {
+										if (delta.getFullPath().toFile().getName()
+												.equalsIgnoreCase(toPath.toFile().getName()))
+											markerInfo = generateMarkerInfo(delta, IssueType.ARTIFACT_MOVED);
+										else
+											markerInfo = generateMarkerInfo(delta, IssueType.ARTIFACT_RENAMED);
+									}
+
+									createMarker(wrapperContainer, aw.getUri(), markerInfo);
+									break;
+								} else if (changeType == IResourceDelta.CHANGED) {
+									markerInfo = new HashMap<String, String>();
+									String message = artifactHandler.get().generateMarkerMessage(delta, aw.getUri());
+
+									if (message != null && !message.isEmpty()) {
+										markerInfo.put("issueType", "fileChanged");
+										markerInfo.put(IMarker.MESSAGE, message);
+										createMarker(wrapperContainer, aw.getUri(), markerInfo);
+									}
+								}
 							}
-
 						}
+						return Status.OK_STATUS;
 					}
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-				return Status.OK_STATUS;
+				};
+				job.schedule();
+				return true;
 			}
 		};
-		job.schedule();
-
+		try {
+			IResourceDelta delta = event.getDelta();
+			if (delta != null)
+				delta.accept(visitor);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * Checks if the marker for file changes already exists in the same file.To
-	 * make sure a new marker is not generated every time a change is made.
+	 * Creates a Capra marker from the provided information about the artifact
+	 * and the change that occurred.
 	 * 
-	 * @param file
-	 *            The file containing artifact wrappers
-	 *
-	 * @param delta
-	 *            The change that occurred in the workspace
-	 * 
+	 * @param wContainer
+	 *            file that holds the artifact model
+	 * @param wUri
+	 *            uri of the associated artifact
+	 * @param markerInfo
+	 *            contains attributes that are to be assigned to the created
+	 *            marker
 	 */
-	protected void addFileChangedMarker(IFile file, IResourceDelta delta) throws CoreException {
+	private void createMarker(IFile wContainer, String wUri, HashMap<String, String> markerInfo) {
+		if (markerInfo == null || markerInfo.isEmpty())
+			return;
 
-		IMarker[] markers = file.findMarkers(CAPRA_FILE_CHANGED_MARKER_ID, false, 0);
-		List<IMarker> markerList = Arrays.asList(markers);
-		List<String> changedFiles = new ArrayList<>();
+		try {
+			IMarker[] markers = wContainer.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
+			for (IMarker marker : markers)
+				if (marker.getAttribute("elementIdentifier", null).contentEquals(wUri)
+						&& marker.getAttribute(IMarker.MESSAGE, null).contentEquals(markerInfo.get(IMarker.MESSAGE)))
+					return;
 
-		if (!markerList.isEmpty()) {
+			IMarker marker = wContainer.createMarker(CAPRA_PROBLEM_MARKER_ID);
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+			marker.setAttribute("elementIdentifier", wUri);
 
-			markerList.stream().forEach(m -> {
-				changedFiles.add((String) m.getAttribute("fileName", null));
-			});
+			for (Entry<String, String> entry : markerInfo.entrySet())
+				marker.setAttribute(entry.getKey(), entry.getValue());
 
-			String changedFile = delta.getResource().getName();
-			if (!changedFiles.contains(changedFile)) {
-				IMarker fileChangedMarker = file
-						.createMarker(CAPRA_FILE_CHANGED_MARKER_ID);
-				fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-				fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+		} catch (CoreException e) {
+			if (wContainer.exists())
+				e.printStackTrace();
+		}
+	}
 
-				fileChangedMarker.setAttribute("changedFile", delta.getResource().getName());
-				fileChangedMarker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
-						+ "has been changed. Please check if associated trace links are still valid");
-				fileChangedMarker.setAttribute("issueType", "fileChanged");
-			}
-		} else {
-			IMarker fileChangedMarker = file.createMarker(CAPRA_FILE_CHANGED_MARKER_ID);
-			fileChangedMarker.setAttribute("DeltaFullPath", delta.getFullPath().toString());
-			fileChangedMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+	/**
+	 * Generates the attributes that will later be assigned (in the createMarker
+	 * method) to a Capra change marker.
+	 * 
+	 * @param delta
+	 *            represents changes in the state of a resource
+	 * @param issue
+	 *            the type of change that occurred
+	 * @return a key value HashMap, containing the attributes to be assigned to
+	 *         a Capra change marker and their keys (IDs).
+	 */
+	private HashMap<String, String> generateMarkerInfo(IResourceDelta delta, IssueType issue) {
+		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
-			fileChangedMarker.setAttribute("fileName", delta.getResource().getName());
-			fileChangedMarker.setAttribute(IMarker.MESSAGE, delta.getResource().getName()
-					+ "has been changed. Please check if associated trace links are still valid");
-			fileChangedMarker.setAttribute("issueType", "fileChanged");
+		if (issue == IssueType.ARTIFACT_RENAMED) {
+			markerInfo.put("DeltaMovedToPath", delta.getMovedToPath().toString());
+			markerInfo.put("newFileName", delta.getMovedToPath().toFile().getName());
+			markerInfo.put("issueType", "Rename");
+			markerInfo.put(IMarker.MESSAGE,
+					delta.getFullPath() + " has been renamed to " + delta.getMovedToPath() + ".");
+
+		} else if (issue == IssueType.ARTIFACT_MOVED) {
+			markerInfo.put("DeltaMovedToPath", delta.getMovedToPath().toString());
+			markerInfo.put("newFileName", delta.getMovedToPath().toFile().getName());
+			markerInfo.put("issueType", "Move");
+			markerInfo.put(IMarker.MESSAGE, delta.getResource().getName() + " has been moved from "
+					+ delta.getFullPath() + " to " + delta.getMovedToPath() + ".");
+		} else if (issue == IssueType.ARTIFACT_DELETED) {
+			markerInfo.put("issueType", "Delete");
+			markerInfo.put(IMarker.MESSAGE,
+					delta.getResource().getName() + " has been deleted from " + delta.getFullPath() + ".");
 		}
 
+		if (!markerInfo.isEmpty()) {
+			markerInfo.put("oldFileName", delta.getResource().getName());
+		}
+
+		return markerInfo;
 	}
 }

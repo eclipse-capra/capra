@@ -105,13 +105,22 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	int ARTIFACT_WRAPPER = 1;
 
 	/**
+	 * The feature id for the '<em><b>Path</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARTIFACT_WRAPPER__PATH = 0;
+
+	/**
 	 * The feature id for the '<em><b>Uri</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__URI = 0;
+	int ARTIFACT_WRAPPER__URI = 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -120,7 +129,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__NAME = 1;
+	int ARTIFACT_WRAPPER__NAME = 2;
 
 	/**
 	 * The feature id for the '<em><b>Artifact Handler</b></em>' attribute.
@@ -129,7 +138,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 2;
+	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 3;
 
 	/**
 	 * The number of structural features of the '<em>Artifact Wrapper</em>' class.
@@ -138,7 +147,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER_FEATURE_COUNT = 3;
+	int ARTIFACT_WRAPPER_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Artifact Wrapper</em>' class.
@@ -180,6 +189,17 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getArtifactWrapper();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath <em>Path</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Path</em>'.
+	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath()
+	 * @see #getArtifactWrapper()
+	 * @generated
+	 */
+	EAttribute getArtifactWrapper_Path();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getUri <em>Uri</em>}'.
@@ -264,6 +284,14 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ARTIFACT_WRAPPER = eINSTANCE.getArtifactWrapper();
+
+		/**
+		 * The meta object literal for the '<em><b>Path</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARTIFACT_WRAPPER__PATH = eINSTANCE.getArtifactWrapper_Path();
 
 		/**
 		 * The meta object literal for the '<em><b>Uri</b></em>' attribute feature.

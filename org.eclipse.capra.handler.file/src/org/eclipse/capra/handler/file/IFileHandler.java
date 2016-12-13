@@ -16,6 +16,7 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -27,7 +28,7 @@ public class IFileHandler extends AbstractArtifactHandler<IFile> {
 	public EObject createWrapper(IFile file, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				file.getFullPath().toString(), file.getName());
+				file.getFullPath().toString(), file.getName(), file.getFullPath().toString());
 		return wrapper;
 	}
 
@@ -43,6 +44,12 @@ public class IFileHandler extends AbstractArtifactHandler<IFile> {
 	@Override
 	public String getDisplayName(IFile file) {
 		return file.getName();
+	}
+
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return delta.getResource().getName()
+				+ " has been changed. Please check if associated trace links are still valid.";
 	}
 
 }

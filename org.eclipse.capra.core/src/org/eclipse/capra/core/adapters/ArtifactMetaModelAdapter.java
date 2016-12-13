@@ -11,6 +11,7 @@
 package org.eclipse.capra.core.adapters;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -39,7 +40,8 @@ public interface ArtifactMetaModelAdapter {
 	 *            Name of artifact
 	 * @return new or existing artifact
 	 */
-	EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactName);
+	EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactName,
+			String artifactFilePath);
 
 	/**
 	 * Get artifact with given handler and uri.
@@ -75,6 +77,14 @@ public interface ArtifactMetaModelAdapter {
 	 * @return artifact uri
 	 */
 	String getArtifactUri(EObject artifact);
+
+	/**
+	 * Get the path of the given artifact.
+	 * 
+	 * @param artifact
+	 * @return path of the file, referenced by the artifact
+	 */
+	IPath getArtifactPath(EObject artifact);
 
 	/**
 	 * Get an instance of the artifact handler.

@@ -132,7 +132,7 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArtifactWrapper_Uri() {
+	public EAttribute getArtifactWrapper_Path() {
 		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -141,7 +141,7 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArtifactWrapper_Name() {
+	public EAttribute getArtifactWrapper_Uri() {
 		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -150,8 +150,17 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArtifactWrapper_ArtifactHandler() {
+	public EAttribute getArtifactWrapper_Name() {
 		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getArtifactWrapper_ArtifactHandler() {
+		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -186,6 +195,7 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 		createEReference(artifactWrapperContainerEClass, ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS);
 
 		artifactWrapperEClass = createEClass(ARTIFACT_WRAPPER);
+		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__PATH);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__URI);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__NAME);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__ARTIFACT_HANDLER);
@@ -228,6 +238,7 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 		initEReference(getArtifactWrapperContainer_Artifacts(), this.getArtifactWrapper(), null, "artifacts", null, 0, -1, ArtifactWrapperContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(artifactWrapperEClass, ArtifactWrapper.class, "ArtifactWrapper", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getArtifactWrapper_Path(), theEcorePackage.getEString(), "path", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_Uri(), theEcorePackage.getEString(), "uri", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_Name(), theEcorePackage.getEString(), "name", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_ArtifactHandler(), theEcorePackage.getEString(), "ArtifactHandler", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

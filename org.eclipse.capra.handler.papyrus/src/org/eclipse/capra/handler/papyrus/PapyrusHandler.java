@@ -39,5 +39,10 @@ public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> 
 		EObject sel = EMFHelper.getEObject(artifact);
 		return org.eclipse.capra.core.helpers.EMFHelper.getIdentifier(sel); // TODO
 	}
+	
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 
 }

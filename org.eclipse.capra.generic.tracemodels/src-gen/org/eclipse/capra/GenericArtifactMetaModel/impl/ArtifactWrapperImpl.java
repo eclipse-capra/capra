@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getUri <em>Uri</em>}</li>
  *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getArtifactHandler <em>Artifact Handler</em>}</li>
@@ -28,6 +29,26 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * @generated
  */
 public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements ArtifactWrapper {
+	/**
+	 * The default value of the '{@link #getPath() <em>Path</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPath()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PATH_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getPath() <em>Path</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPath()
+	 * @generated
+	 * @ordered
+	 */
+	protected String path = PATH_EDEFAULT;
+
 	/**
 	 * The default value of the '{@link #getUri() <em>Uri</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -112,6 +133,27 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPath(String newPath) {
+		String oldPath = path;
+		path = newPath;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH, oldPath, path));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getUri() {
 		return uri;
 	}
@@ -178,6 +220,8 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+				return getPath();
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
 				return getUri();
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
@@ -196,6 +240,9 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+				setPath((String)newValue);
+				return;
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
 				setUri((String)newValue);
 				return;
@@ -217,6 +264,9 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+				setPath(PATH_EDEFAULT);
+				return;
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
 				setUri(URI_EDEFAULT);
 				return;
@@ -238,6 +288,8 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
+			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+				return PATH_EDEFAULT == null ? path != null : !PATH_EDEFAULT.equals(path);
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
 				return URI_EDEFAULT == null ? uri != null : !URI_EDEFAULT.equals(uri);
 			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
@@ -258,7 +310,9 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (uri: ");
+		result.append(" (path: ");
+		result.append(path);
+		result.append(", uri: ");
 		result.append(uri);
 		result.append(", name: ");
 		result.append(name);

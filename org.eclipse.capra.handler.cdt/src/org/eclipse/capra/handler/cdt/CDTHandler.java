@@ -20,6 +20,7 @@ import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -32,7 +33,7 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	public EObject createWrapper(ICElement element, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				element.getHandleIdentifier(), element.getElementName());
+				element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
 		return wrapper;
 	}
 
@@ -63,4 +64,8 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 		}
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }

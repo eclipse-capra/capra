@@ -20,6 +20,7 @@ import static org.eclipse.capra.testsuite.TestHelper.projectExists;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -99,13 +100,11 @@ public class TestNotificationJavaMethod {
 		// ResourceChangedListener to trigger
 		IMethod method = (IMethod) javaClass.getChildren()[0];
 		method.delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
-		// assertEquals(currMarkerLength + 1, markers.length);
-		// Deleting a java method doesn't trigger the notification.
-		// For now this test fails.
+		assertEquals(currMarkerLength + 1, markers.length);
 	}
 
 	/**
@@ -147,13 +146,11 @@ public class TestNotificationJavaMethod {
 		// ResourceChangedListener to trigger
 		IMethod method = (IMethod) javaClass.getChildren()[0];
 		method.rename("stillDoNothing", true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
-		// assertEquals(currMarkerLength + 1, markers.length);
-		// Renaming a java method doesn't trigger the notification.
-		// For now this test fails.
+		assertEquals(currMarkerLength + 1, markers.length);
 	}
 
 	/**
@@ -200,12 +197,10 @@ public class TestNotificationJavaMethod {
 		buffer.append("\n");
 		buffer.append("public class TestClass { public void doNothing() { boolean doNothing = true; } }");
 		pack.createCompilationUnit("TestClass.java", buffer.toString(), true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(100);
+		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
-		// assertEquals(currMarkerLength + 1, markers.length);
-		// Editing a java method doesn't trigger the notification.
-		// For now this test fails.
+		assertEquals(currMarkerLength + 1, markers.length);
 	}
 }

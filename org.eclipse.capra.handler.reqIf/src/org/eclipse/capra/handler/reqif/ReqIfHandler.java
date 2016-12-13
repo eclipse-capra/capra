@@ -11,6 +11,8 @@
 package org.eclipse.capra.handler.reqif;
 
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.rmf.reqif10.SpecHierarchy;
 import org.eclipse.rmf.reqif10.SpecObject;
@@ -35,4 +37,8 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 		return specObject.getIdentifier();
 	}
 
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		return null;
+	}
 }
