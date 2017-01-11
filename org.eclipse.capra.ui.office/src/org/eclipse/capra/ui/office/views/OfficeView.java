@@ -11,9 +11,12 @@
 
 package org.eclipse.capra.ui.office.views;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +30,13 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.xmlbeans.SchemaTypeLoaderException;
 import org.eclipse.capra.ui.office.Activator;
-import org.eclipse.capra.ui.office.utils.OfficeSourceProvider;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
+import org.eclipse.capra.ui.office.utils.OfficeSourceProvider;
 import org.eclipse.capra.ui.office.utils.OfficeTransferType;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -41,6 +44,7 @@ import org.eclipse.emf.edit.ui.dnd.ViewerDragAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -55,11 +59,15 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
@@ -120,7 +128,7 @@ public class OfficeView extends ViewPart {
 	 */
 	private OfficeSourceProvider provider = (OfficeSourceProvider) ((ISourceProviderService) PlatformUI.getWorkbench()
 			.getService(ISourceProviderService.class)).getSourceProvider(OfficeSourceProvider.CAPRA_OFFICE_OBJECT);
-	
+
 	/**
 	 * The content provider class used by the view.
 	 */
@@ -185,7 +193,7 @@ public class OfficeView extends ViewPart {
 				dropToSelection(data);
 			} catch (CapraOfficeFileNotSupportedException e) {
 				e.printStackTrace();
-				showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 				return false;
 			}
 			return true;
@@ -318,7 +326,7 @@ public class OfficeView extends ViewPart {
 			else
 				workBook = new HSSFWorkbook(new FileInputStream(officeFile));
 		} catch (OldExcelFormatException e) {
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -327,7 +335,36 @@ public class OfficeView extends ViewPart {
 
 		String selectedSheetName = "";
 		if (!sheetSelect || selection.isEmpty()) {
-			selectedSheetName = workBook.getSheetName(workBook.getActiveSheetIndex());
+
+			// This try block is necessary as there is a bug in the
+			// Workbook.getActiveSheetIndex() and Workbook.getFirstVisibleTab()
+			// methods; they throw a NullPointerException whenever the
+			// woorkbook doesn't hold information about which sheet is active
+			// and/or visible (maybe it occurs when the file is auto-generated).
+			int activeSheetIndex;
+			try {
+				activeSheetIndex = workBook.getActiveSheetIndex();
+			} catch (NullPointerException e1) {
+				e1.printStackTrace();
+				try {
+					activeSheetIndex = workBook.getFirstVisibleTab();
+				} catch (NullPointerException e2) {
+					e2.printStackTrace();
+					activeSheetIndex = 0;					
+				}
+			}
+
+			try {
+				selectedSheetName = workBook.getSheetName(activeSheetIndex);
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				String url = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=503313#add_comment";
+				String hyperlinkMessage = "It looks like the file doesn't contain any sheets. Please report the issue to our <a href=\""
+						+ url + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
+				showErrorMessage(ERROR_TITLE, hyperlinkMessage, url);
+				return;
+			}
+
 			// If sheet is empty, prompt user to select another
 			if (workBook.getSheet(selectedSheetName).getLastRowNum() == 0)
 				sheetSelect = true;
@@ -372,7 +409,7 @@ public class OfficeView extends ViewPart {
 					selection.add(cRow);
 			}
 		}
-		
+
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
 	}
@@ -392,11 +429,11 @@ public class OfficeView extends ViewPart {
 			paragraphs = (xwpfDoc).getParagraphs();
 		} catch (IOException e) {
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		} catch (SchemaTypeLoaderException e) {
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		}
 
@@ -410,7 +447,7 @@ public class OfficeView extends ViewPart {
 					selection.add(cRequirement);
 			}
 		}
-		
+
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
 	}
@@ -450,7 +487,7 @@ public class OfficeView extends ViewPart {
 			officeObject.showOfficeObjectInNativeEnvironment();
 		} catch (CapraOfficeObjectNotFound e) {
 			e.printStackTrace();
-			showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 		}
 
 	}
@@ -481,7 +518,7 @@ public class OfficeView extends ViewPart {
 					dropToSelection(new String[] { file.getAbsolutePath() });
 				} catch (CapraOfficeFileNotSupportedException e) {
 					e.printStackTrace();
-					showMessage(viewer.getControl().getShell(), SWT.ERROR, ERROR_TITLE, e.getMessage());
+					showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 				}
 				viewer.refresh();
 			}
@@ -527,14 +564,6 @@ public class OfficeView extends ViewPart {
 		viewer.refresh();
 	}
 
-	private int showMessage(Shell parentShell, int style, String caption, String message) {
-		MessageBox dialog = new MessageBox(parentShell, style);
-		dialog.setText(caption);
-		dialog.setMessage(message);
-
-		return dialog.open();
-	}
-
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
@@ -545,5 +574,75 @@ public class OfficeView extends ViewPart {
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, viewer);
+	}
+
+	private void showErrorMessage(String caption, String message, String url) {
+		new HyperlinkDialog(viewer.getControl().getShell(), ERROR_TITLE, null, MessageDialog.ERROR,
+				new String[] { "OK" }, 0, message, url).open();
+	}
+
+	/**
+	 * A pop-up dialog that can contain a hyperlink that, on click, opens a
+	 * browser window at the provided url.
+	 */
+	class HyperlinkDialog extends MessageDialog {
+
+		private String hyperlinkMessage;
+		private String url;
+
+		/**
+		 * A constructor that creates the dialog with the provided parameters.
+		 * Call open() in order to display the dialog.
+		 * 
+		 * @param parentShell
+		 *            the parent shell
+		 * @param dialogTitle
+		 *            the title of the dialog
+		 * @param dialogTitleImage
+		 *            the dialog title image, or null if none
+		 * @param dialogImageType
+		 *            one of the static values from MessageDialog class (NONE,
+		 *            ERROR, INFORMATION, QUESTION, WARNING)
+		 * @param dialogButtonLabels
+		 *            varargs of Strings for the button labels in the button bar
+		 * @param defaultIndex
+		 *            the index in the button label array of the default button
+		 * @param hyperlinkMessage
+		 *            a String that will be shown to the user and can contain a
+		 *            hyperlink, that will, on click, open a browser window at
+		 *            the provided url
+		 * @param url
+		 *            the hyperlink to the web page, or null, if not required
+		 */
+		public HyperlinkDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, int dialogImageType,
+				String[] dialogButtonLabels, int defaultIndex, String hyperlinkMessage, String url) {
+			super(parentShell, dialogTitle, dialogTitleImage, null, dialogImageType, dialogButtonLabels, defaultIndex);
+			this.hyperlinkMessage = hyperlinkMessage;
+			this.url = url;
+		}
+
+		protected Control createCustomArea(Composite parent) {
+			Link link = new Link(parent, SWT.None);
+			link.setText(hyperlinkMessage);
+			GridData gd = new GridData();
+			gd.widthHint = 300;
+			link.setLayoutData(gd);
+			if (url != null && !url.contentEquals("")) {
+				link.setToolTipText(url);
+				link.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						try {
+							Desktop.getDesktop().browse(new URI(url));
+							HyperlinkDialog.this.okPressed();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						} catch (URISyntaxException e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
+			}
+			return link;
+		}
 	}
 }
