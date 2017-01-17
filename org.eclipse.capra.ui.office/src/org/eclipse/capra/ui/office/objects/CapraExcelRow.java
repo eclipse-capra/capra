@@ -62,11 +62,6 @@ public class CapraExcelRow extends CapraOfficeObject {
 	private static final String CELL_DELIMITER = " | ";
 
 	/**
-	 * Delimiter between sheetId and rowId as used in the uri.
-	 */
-	private static final String ID_DELIMITER = "-";
-
-	/**
 	 * A constant that is used if the row index isn't found when opening object
 	 * details.
 	 */
@@ -122,7 +117,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 			Matcher m = p.matcher(rowBuilder);
 
 			String rowContent = (m.replaceAll(" ")).trim();
-			String rowUriEnd = row.getSheet().getSheetName() + ID_DELIMITER + rowId;
+			String rowUriEnd = row.getSheet().getSheetName() + CapraOfficeObject.URI_DELIMITER + rowId;
 			String rowUri = CapraOfficeObject.createUri(officeFile, rowUriEnd);
 
 			this.setData(rowContent);
@@ -215,14 +210,14 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 */
 	public String getSheetName() {
 		String itemId = getId();
-		int lastIndexOfDelimiter = itemId.lastIndexOf(ID_DELIMITER);
+		int lastIndexOfDelimiter = itemId.indexOf(CapraOfficeObject.URI_DELIMITER);
 		return itemId.substring(0, lastIndexOfDelimiter);
 	}
 
 	private String getRowIdFromObjectUri() {
 		String itemId = getId();
-		int lastIndexOfDelimiter = itemId.lastIndexOf(ID_DELIMITER);
-		return itemId.substring(lastIndexOfDelimiter + 1);
+		int lastIndexOfDelimiter = itemId.indexOf(CapraOfficeObject.URI_DELIMITER);
+		return itemId.substring(lastIndexOfDelimiter + CapraOfficeObject.URI_DELIMITER.length());
 	}
 
 	private String getRowIdFromExcelRow(Row row) {

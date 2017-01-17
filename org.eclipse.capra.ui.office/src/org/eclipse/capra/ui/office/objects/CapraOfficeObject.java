@@ -34,6 +34,12 @@ public class CapraOfficeObject {
 	public static final String XLSX = "xlsx";
 
 	/**
+	 * The String that separates the file-path from the object-id in the
+	 * OfficeObject uri.
+	 */
+	public static final String URI_DELIMITER = "\\\\::";
+
+	/**
 	 * The description of the object (row in Excel, requirement in Word)
 	 */
 	private String data = "";
@@ -90,16 +96,16 @@ public class CapraOfficeObject {
 	 * Returns the ID of the OfficeObject.
 	 */
 	public String getId() {
-		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
-		return uri.substring(lastDelimiterIndex + 1);
+		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
+		return uri.substring(firstDelimiterIndex + URI_DELIMITER.length());
 	}
 
 	/**
 	 * Returns the File reference of the file that contains the OfficeObject
 	 */
 	public File getFile() {
-		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
-		return new File(uri.substring(0, lastDelimiterIndex));
+		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
+		return new File(uri.substring(0, firstDelimiterIndex));
 	}
 
 	/**
@@ -109,9 +115,9 @@ public class CapraOfficeObject {
 	 * @return a readable name of the OfficeObject
 	 */
 	public String getName() {
-		return getFile().getName() + File.separator + getId();
+		return getFile().getName() + URI_DELIMITER + getId();
 	}
-	
+
 	/**
 	 * Extracts the ID of the object from uri of the OfficeObject.
 	 * 
@@ -120,8 +126,8 @@ public class CapraOfficeObject {
 	 * @return ID of the object
 	 */
 	public static String getIdFromUri(String uri) {
-		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
-		return uri.substring(lastDelimiterIndex + 1);
+		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
+		return uri.substring(firstDelimiterIndex + URI_DELIMITER.length());
 	}
 
 	/**
@@ -132,8 +138,8 @@ public class CapraOfficeObject {
 	 * @return file-path of the file that contains the object
 	 */
 	public static String getFilePathFromUri(String uri) {
-		int lastDelimiterIndex = uri.lastIndexOf(File.separator);
-		return uri.substring(0, lastDelimiterIndex);
+		int delimiterIndex = uri.indexOf(URI_DELIMITER);
+		return uri.substring(0, delimiterIndex);
 	}
 
 	/**
@@ -166,7 +172,7 @@ public class CapraOfficeObject {
 	 * @return a uri of the object in the form of filePath/objectID
 	 */
 	public static String createUri(File officeFile, Object objectId) {
-		return officeFile.getAbsolutePath() + File.separator + objectId;
+		return officeFile.getAbsolutePath() + URI_DELIMITER + objectId;
 	}
 
 	/**
