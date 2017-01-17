@@ -40,10 +40,6 @@
             id="org.eclipse.capra.ui.office.openfile"
             name="Open File">
       </command>
-      <command
-            id="org.eclipse.capra.ui.office.selectsheet"
-            name="Select Sheet">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -59,10 +55,6 @@
             class="org.eclipse.capra.ui.office.handlers.OpenFileHandler"
             commandId="org.eclipse.capra.ui.office.openfile">
       </handler>
-      <handler
-            class="org.eclipse.capra.ui.office.handlers.SelectSheetHandler"
-            commandId="org.eclipse.capra.ui.office.selectsheet">
-      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -74,16 +66,19 @@
                style="push"
                tooltip="Triggers the file selection dialog">
          </command>
-         <command
-         	   commandId="org.eclipse.capra.ui.office.selectsheet"
+         <menu
                label="Select Sheet"
-               style="push"
-               tooltip="Select which sheet in the Excel workbook to display">
+               tooltip="Select the Excel sheet that you want to work with.">
+            <dynamic
+                  class="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu"
+                  id="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu">
+            </dynamic>
             <visibleWhen>
-    		   <reference
-    		   	   definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression"/>
-			</visibleWhen>
-         </command>
+               <reference
+                     definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
+               </reference>
+            </visibleWhen>
+         </menu>
          <command
                commandId="org.eclipse.capra.ui.office.clearselection"
                label="Clear Selection"

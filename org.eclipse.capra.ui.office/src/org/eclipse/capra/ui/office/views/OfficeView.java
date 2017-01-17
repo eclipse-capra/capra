@@ -77,6 +77,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 /**
@@ -95,19 +96,6 @@ public class OfficeView extends ViewPart {
 	public static final String ID = "org.eclipse.capra.ui.views.OfficeView";
 
 	/**
-	 * A constant that is used to specify that the user should be prompted to
-	 * select a sheet when opening an excel document.
-	 */
-	public static final boolean SHEET_SELECT_REQUIRED = true;
-
-	/**
-	 * A constant that is used to specify that the user doesn't have to be
-	 * prompted to select a sheet and the currently active sheet will be
-	 * displayed.
-	 */
-	public static final boolean SHEET_SELECT_NOT_REQUIRED = false;
-
-	/**
 	 * The caption that is shown when a message dialog appears describing an
 	 * error.
 	 */
@@ -122,6 +110,16 @@ public class OfficeView extends ViewPart {
 	 * The collection that contains the Excel/Word contents.
 	 */
 	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
+
+	/**
+	 * The names of all the sheets, contained in the selected workbook.
+	 */
+	private String[] sheetNames;
+
+	/**
+	 * The name of the sheet that is currently displayed in the Office view.
+	 */
+	private String selectedSheetName;
 
 	/**
 	 * Instance of OfficeSourceProvider (used for hiding context menu options)
@@ -265,15 +263,6 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Getter method for the selection that is displayed by the view.
-	 * 
-	 * @return currently displayed selection
-	 */
-	public List<CapraOfficeObject> getSelection() {
-		return this.selection;
-	}
-
-	/**
 	 * A method that is called when the user drags a file into the OfficeView.
 	 * Its main task is to parse the dragged file and display its contents in
 	 * the OfficeView. It only parses the file if it is of type xlsx, xls, or
@@ -296,13 +285,11 @@ public class OfficeView extends ViewPart {
 		String fileExtension = Files.getFileExtension(file.getName());
 
 		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS))
-			parseExcelDocument(file, SHEET_SELECT_NOT_REQUIRED);
+			parseExcelDocument(file, null);
 		else if (fileExtension.equals(CapraOfficeObject.DOCX))
 			parseWordDocument(file);
 		else
 			throw new CapraOfficeFileNotSupportedException(fileExtension);
-
-		viewer.refresh();
 	}
 
 	/**
@@ -310,12 +297,14 @@ public class OfficeView extends ViewPart {
 	 *
 	 * @param officeFile
 	 *            the File object pointing to the Excel document that was
-	 *            dragged into the view.
-	 * @param sheetSelect
-	 *            true if the user has to be prompted to select a sheet, false
-	 *            otherwise
+	 *            dragged into the view
+	 * @param sheetName
+	 *            the name of the sheet that should be displayed in the Office
+	 *            view. If null, the currently active sheet will be displayed.
 	 */
-	private void parseExcelDocument(File officeFile, boolean sheetSelect) {
+	private void parseExcelDocument(File officeFile, String sheetName) {
+
+		clearSelection();
 
 		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
 		Workbook workBook;
@@ -333,9 +322,7 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		String selectedSheetName = "";
-		if (!sheetSelect || selection.isEmpty()) {
-
+		if (Strings.isNullOrEmpty(sheetName)) {
 			// This try block is necessary as there is a bug in the
 			// Workbook.getActiveSheetIndex() and Workbook.getFirstVisibleTab()
 			// methods; they throw a NullPointerException whenever the
@@ -350,12 +337,12 @@ public class OfficeView extends ViewPart {
 					activeSheetIndex = workBook.getFirstVisibleTab();
 				} catch (NullPointerException e2) {
 					e2.printStackTrace();
-					activeSheetIndex = 0;					
+					activeSheetIndex = 0;
 				}
 			}
 
 			try {
-				selectedSheetName = workBook.getSheetName(activeSheetIndex);
+				sheetName = workBook.getSheetName(activeSheetIndex);
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 				String url = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=503313#add_comment";
@@ -364,42 +351,15 @@ public class OfficeView extends ViewPart {
 				showErrorMessage(ERROR_TITLE, hyperlinkMessage, url);
 				return;
 			}
-
-			// If sheet is empty, prompt user to select another
-			if (workBook.getSheet(selectedSheetName).getLastRowNum() == 0)
-				sheetSelect = true;
 		}
 
-		if (sheetSelect) {
-			String activeSheetName;
-			if (selectedSheetName.isEmpty())
-				activeSheetName = ((CapraExcelRow) selection.get(0)).getSheetName();
-			else
-				activeSheetName = selectedSheetName;
-
-			String[] sNames = new String[workBook.getNumberOfSheets()];
-
-			// Fill sNames with sheetNames, with the active sheet at index 0
-			int counter = 0;
-			sNames[counter++] = activeSheetName;
-			for (int i = 0; i < sNames.length; i++) {
-				String sName = workBook.getSheetName(i);
-				if (sName.equals(activeSheetName))
-					continue;
-				sNames[counter++] = workBook.getSheetName(i);
-			}
-
-			selectedSheetName = new SelectSheetDialog(viewer.getControl().getShell(),
-					SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, sNames).open();
-		}
-
-		if (selectedSheetName.isEmpty())
+		if (Strings.isNullOrEmpty(sheetName))
 			return;
+		else
+			selectedSheetName = sheetName;
 
-		Sheet sheet = workBook.getSheet(selectedSheetName);
-
-		clearSelection();
-
+		// Populate the view with Excel rows
+		Sheet sheet = workBook.getSheet(sheetName);
 		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
 		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
@@ -410,8 +370,16 @@ public class OfficeView extends ViewPart {
 			}
 		}
 
+		// Save info about the type of the data displayed in the Office view.
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
+
+		// Fill sheetNames to correctly populate the select sheet menu.
+		sheetNames = new String[workBook.getNumberOfSheets()];
+		for (int i = 0; i < sheetNames.length; i++)
+			sheetNames[i] = workBook.getSheetName(i);
+
+		viewer.refresh();
 	}
 
 	/**
@@ -422,8 +390,10 @@ public class OfficeView extends ViewPart {
 	 *            into the view.
 	 */
 	private void parseWordDocument(File officeFile) {
-		List<XWPFParagraph> paragraphs;
 
+		clearSelection();
+
+		List<XWPFParagraph> paragraphs;
 		try (FileInputStream fs = new FileInputStream(officeFile)) {
 			XWPFDocument xwpfDoc = new XWPFDocument(fs);
 			paragraphs = (xwpfDoc).getParagraphs();
@@ -437,8 +407,6 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		clearSelection();
-
 		for (int i = 0; i < paragraphs.size(); i++) {
 			XWPFParagraph paragraph = paragraphs.get(i);
 			if (paragraph != null) {
@@ -450,6 +418,8 @@ public class OfficeView extends ViewPart {
 
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
+
+		viewer.refresh();
 	}
 
 	/**
@@ -493,12 +463,14 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Clears the OfficeView.
+	 * Clears the OfficeView as well as all the static variables.
 	 */
 	public void clearSelection() {
 		selection.clear();
 		viewer.refresh();
 		provider.setResource(null);
+		selectedSheetName = null;
+		sheetNames = null;
 	}
 
 	/**
@@ -520,23 +492,41 @@ public class OfficeView extends ViewPart {
 					e.printStackTrace();
 					showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 				}
-				viewer.refresh();
 			}
 		}
 	}
 
 	/**
-	 * Opens a pop-up window that allows the user to select which excel sheet
-	 * should be displayed.
+	 * Displays the provided sheet from the current workbook.
+	 * 
+	 * @param sheetName
+	 *            the name of the sheet to be displayed in the Office view.
 	 */
-	public void selectSheet() {
+	public void selectSheet(String sheetName) {
 
 		if (selection.isEmpty())
 			return;
-		else if (selection.get(0) instanceof CapraExcelRow) {
-			parseExcelDocument(selection.get(0).getFile(), SHEET_SELECT_REQUIRED);
-			viewer.refresh();
-		}
+		else if (selection.get(0) instanceof CapraExcelRow)
+			parseExcelDocument(selection.get(0).getFile(), sheetName);
+	}
+
+	/**
+	 * Getter method for the names of sheets contained in the current workbook.
+	 * 
+	 * @return names of all the sheets contained in the current workbook or null
+	 *         if a workbook isn't opened.
+	 */
+	public String[] getSheetNames() {
+		return sheetNames;
+	}
+
+	/**
+	 * Getter method for the name of currently displayed sheet.
+	 * 
+	 * @return name of currently displayed sheet or null if none is displayed.
+	 */
+	public String getSelectedSheetName() {
+		return selectedSheetName;
 	}
 
 	/**
@@ -554,14 +544,18 @@ public class OfficeView extends ViewPart {
 		return null;
 	}
 
+	/**
+	 * Refreshes the Office view.
+	 */
 	public void refreshView() {
 
 		if (selection.isEmpty())
 			return;
-		else if (selection.get(0) instanceof CapraExcelRow)
-			parseExcelDocument(selection.get(0).getFile(), SHEET_SELECT_NOT_REQUIRED);
 
-		viewer.refresh();
+		if (selection.get(0) instanceof CapraExcelRow)
+			parseExcelDocument(selection.get(0).getFile(), selectedSheetName);
+		else if (selection.get(0) instanceof CapraWordRequirement)
+			parseWordDocument(selection.get(0).getFile());
 	}
 
 	private void hookContextMenu() {
