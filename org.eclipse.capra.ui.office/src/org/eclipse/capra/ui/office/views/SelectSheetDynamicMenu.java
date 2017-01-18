@@ -11,6 +11,8 @@
 
 package org.eclipse.capra.ui.office.views;
 
+import java.util.HashMap;
+
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,11 +32,14 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 	@Override
 	public void fill(Menu menu, int index) {
 
-		String[] sheetNames = getSheetNames();
+		HashMap<String, Boolean> isSheetEmptyMap = OfficeView.getOpenedView().getIsSheetEmptyMap();
+		
+		if (isSheetEmptyMap == null)
+			return;
 
-		for (String sheetName : sheetNames) {
+		for (String sheetName : isSheetEmptyMap.keySet()) {
 			MenuItem menuItem = new MenuItem(menu, SWT.CHECK, index);
-			menuItem.setText(sheetName);
+
 			menuItem.addSelectionListener(new SelectionListener() {
 
 				@Override
@@ -50,15 +55,13 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 
 			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheetName))
 				menuItem.setSelection(true);
-		}
-	}
 
-	/**
-	 * Gets all the sheet names contained in the currently opened workbook.
-	 * 
-	 * @return Array of all sheet names from the current workbook.
-	 */
-	private String[] getSheetNames() {
-		return OfficeView.getOpenedView().getSheetNames();
+			if (isSheetEmptyMap.get(sheetName))
+				menuItem.setText(sheetName);
+			else {
+				menuItem.setText(sheetName + " (Empty)");
+				menuItem.setEnabled(false);
+			}
+		}
 	}
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.poi.hssf.OldExcelFormatException;
@@ -102,6 +103,11 @@ public class OfficeView extends ViewPart {
 	private static final String ERROR_TITLE = "Error";
 
 	/**
+	 * The URL for the Bugzilla Office handler page
+	 */
+	private static final String BUGZILLA_OFFICE_URL = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=503313#add_comment";
+
+	/**
 	 * The actual view that contains the contents of the documents.
 	 */
 	private TableViewer viewer;
@@ -112,9 +118,10 @@ public class OfficeView extends ViewPart {
 	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
 
 	/**
-	 * The names of all the sheets, contained in the selected workbook.
+	 * The names (<String>) of all the sheets, contained in the selected
+	 * workbook and information about whether they are empty or not (<Boolean>).
 	 */
-	private String[] sheetNames;
+	private HashMap<String, Boolean> isSheetEmptyMap;
 
 	/**
 	 * The name of the sheet that is currently displayed in the Office view.
@@ -304,8 +311,6 @@ public class OfficeView extends ViewPart {
 	 */
 	private void parseExcelDocument(File officeFile, String sheetName) {
 
-		clearSelection();
-
 		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
 		Workbook workBook;
 
@@ -345,24 +350,60 @@ public class OfficeView extends ViewPart {
 				sheetName = workBook.getSheetName(activeSheetIndex);
 			} catch (NullPointerException e) {
 				e.printStackTrace();
-				String url = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=503313#add_comment";
 				String hyperlinkMessage = "It looks like the file doesn't contain any sheets. Please report the issue to our <a href=\""
-						+ url + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
-				showErrorMessage(ERROR_TITLE, hyperlinkMessage, url);
+						+ BUGZILLA_OFFICE_URL + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
+				showErrorMessage(ERROR_TITLE, hyperlinkMessage, BUGZILLA_OFFICE_URL);
 				return;
 			}
 		}
 
-		if (Strings.isNullOrEmpty(sheetName))
+		Sheet sheetToDisplay = workBook.getSheet(sheetName);
+		// In theory, this could only happen if someone uses the selectSheet
+		// (public) method and provides a non-valid sheetName. The method is
+		// currently only used for changing the displayed sheet through the
+		// tool-bar menu, where all the names are valid.
+		// TODO The best way to tackle this would probably be to introduce a new
+		// exception (CapraOfficeSheetNotFoundException?), but to do that, a bit
+		// of reordering and partitioning of the methods would be required -
+		// ideally, the selectSheet (public) method would throw the exception,
+		// not this one.
+		if (sheetToDisplay == null) {
+			String hyperlinkMessage = "It appears that there is something wrong with the file. Please report the issue to our <a href=\""
+					+ BUGZILLA_OFFICE_URL + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
+			showErrorMessage(ERROR_TITLE, hyperlinkMessage, BUGZILLA_OFFICE_URL);
 			return;
-		else
-			selectedSheetName = sheetName;
+		}
+		
+		// Clear the Office view and all static variables
+		clearSelection();
+		
+		// Check if the sheet-to-display isn't empty and find a first non-empty
+		// sheet if that is the case, and fill isSheetEmpty HashMap with sheet
+		// names for keys and info about whether they are not empty for values
+		boolean nonEmptySheetFound = sheetToDisplay.getLastRowNum() > 0;
+		isSheetEmptyMap = new HashMap<String, Boolean>();
+		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
+			Sheet s = workBook.getSheetAt(i);
+			isSheetEmptyMap.put(s.getSheetName(), s.getLastRowNum() > 0);
+
+			if (!nonEmptySheetFound && s.getLastRowNum() > 0) {
+				nonEmptySheetFound = true;
+				sheetToDisplay = s;
+			}
+		}
+		
+		if (!nonEmptySheetFound) {
+			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
+			clearSelection();
+			return;
+		}
+
+		selectedSheetName = sheetToDisplay.getSheetName();
 
 		// Populate the view with Excel rows
-		Sheet sheet = workBook.getSheet(sheetName);
 		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
-		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
-			Row row = sheet.getRow(i);
+		for (int i = 0; i <= sheetToDisplay.getLastRowNum(); i++) {
+			Row row = sheetToDisplay.getRow(i);
 			if (row != null) {
 				CapraExcelRow cRow = new CapraExcelRow(officeFile, row, idColumn);
 				if (!cRow.getData().isEmpty())
@@ -373,11 +414,6 @@ public class OfficeView extends ViewPart {
 		// Save info about the type of the data displayed in the Office view.
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
-
-		// Fill sheetNames to correctly populate the select sheet menu.
-		sheetNames = new String[workBook.getNumberOfSheets()];
-		for (int i = 0; i < sheetNames.length; i++)
-			sheetNames[i] = workBook.getSheetName(i);
 
 		viewer.refresh();
 	}
@@ -390,8 +426,6 @@ public class OfficeView extends ViewPart {
 	 *            into the view.
 	 */
 	private void parseWordDocument(File officeFile) {
-
-		clearSelection();
 
 		List<XWPFParagraph> paragraphs;
 		try (FileInputStream fs = new FileInputStream(officeFile)) {
@@ -407,6 +441,9 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
+		clearSelection();
+
+		// Populate the view with Word requirements
 		for (int i = 0; i < paragraphs.size(); i++) {
 			XWPFParagraph paragraph = paragraphs.get(i);
 			if (paragraph != null) {
@@ -470,7 +507,7 @@ public class OfficeView extends ViewPart {
 		viewer.refresh();
 		provider.setResource(null);
 		selectedSheetName = null;
-		sheetNames = null;
+		isSheetEmptyMap = null;
 	}
 
 	/**
@@ -511,13 +548,15 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Getter method for the names of sheets contained in the current workbook.
+	 * Getter method for the HashMap that contains the sheet names and
+	 * information about whether they are empty or not
 	 * 
-	 * @return names of all the sheets contained in the current workbook or null
-	 *         if a workbook isn't opened.
+	 * @return names and information about "emptiness" of all the sheets
+	 *         contained in the current workbook or null if a workbook isn't
+	 *         opened.
 	 */
-	public String[] getSheetNames() {
-		return sheetNames;
+	public HashMap<String, Boolean> getIsSheetEmptyMap() {
+		return isSheetEmptyMap;
 	}
 
 	/**
