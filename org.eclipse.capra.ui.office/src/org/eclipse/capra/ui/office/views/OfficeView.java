@@ -373,10 +373,10 @@ public class OfficeView extends ViewPart {
 			showErrorMessage(ERROR_TITLE, hyperlinkMessage, BUGZILLA_OFFICE_URL);
 			return;
 		}
-		
+
 		// Clear the Office view and all static variables
 		clearSelection();
-		
+
 		// Check if the sheet-to-display isn't empty and find a first non-empty
 		// sheet if that is the case, and fill isSheetEmpty HashMap with sheet
 		// names for keys and info about whether they are not empty for values
@@ -391,7 +391,7 @@ public class OfficeView extends ViewPart {
 				sheetToDisplay = s;
 			}
 		}
-		
+
 		if (!nonEmptySheetFound) {
 			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
 			clearSelection();
@@ -455,6 +455,10 @@ public class OfficeView extends ViewPart {
 
 		if (!selection.isEmpty())
 			provider.setResource(selection.get(0));
+		else {
+			showErrorMessage(ERROR_TITLE, "There are no fields with the specified field name in this document.", null);
+			return;
+		}
 
 		viewer.refresh();
 	}
