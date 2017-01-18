@@ -19,6 +19,7 @@
 	<artifactId>parent</artifactId>
 	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+        <name>Capra</name>
 
 	<modules>
 		<module>org.eclipse.capra.core</module>
@@ -55,6 +56,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>0.24.0</tycho-version>
+		<org.jboss.tools.tycho-plugins.version>0.23.2</org.jboss.tools.tycho-plugins.version>
 	</properties>
 
 	<profiles>
