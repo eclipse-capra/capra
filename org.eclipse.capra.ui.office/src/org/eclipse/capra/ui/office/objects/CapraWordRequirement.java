@@ -19,7 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.eclipse.capra.ui.office.utils.OfficeProperties;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -49,19 +48,23 @@ public class CapraWordRequirement extends CapraOfficeObject {
 	/**
 	 * Start and end XML tags of MS Word field commands
 	 */
-	private static final String REQ_FIELD_TAG = "w:instrText";
-
-	/**
-	 * The name of the requirement field as defined in Word.
-	 */
-	private static final String REQ_FIELD_NAME = OfficeProperties.getInstance().getProperty("req_fieldName");
+	private static final String FIELD_TAG = "w:instrText";
 
 	/**
 	 * A constructor that generates a new instance of CapraWordRequirement where
-	 * the parent properties are extracted from the provided Word paragraph and
-	 * File object that contains containing the paragraph.
+	 * the parent properties are extracted from the provided paragraph, the file
+	 * that contains the paragraph and the id (name) of the field that denotes
+	 * the data that is to be extracted.
+	 * 
+	 * @param officeFile
+	 *            the file that contains the paragraph
+	 * @param paragraph
+	 *            a Word paragraph
+	 * @param fieldName
+	 *            the name of the field that denotes the data that is to be
+	 *            extracted from the paragraph
 	 */
-	public CapraWordRequirement(XWPFParagraph paragraph, File officeFile) {
+	public CapraWordRequirement(File officeFile, XWPFParagraph paragraph, String fieldName) {
 		// TODO This solution assumes that there is only one requirement per
 		// paragraph. Should it be different?
 		super();
@@ -78,14 +81,14 @@ public class CapraWordRequirement extends CapraOfficeObject {
 			return;
 		}
 
-		NodeList nodeList = doc.getElementsByTagName(REQ_FIELD_TAG);
+		NodeList nodeList = doc.getElementsByTagName(FIELD_TAG);
 		if (nodeList.getLength() > 0) {
 			// TODO Use a for loop if the solution needs to parse multiple
 			// requirements in a single paragraph. In that case,
 			// paragraph.getText() should be replaced with something from the
 			// org.w3c.dom.Document class.
 			String[] parts = nodeList.item(0).getTextContent().split(WORD_FIELD_SPLIT_DELIMITERS);
-			if (Arrays.asList(parts).contains(REQ_FIELD_NAME) && parts.length > 2) {
+			if (Arrays.asList(parts).contains(fieldName) && parts.length > 2) {
 				rText = paragraph.getText();
 				rId = parts[2].trim();
 			}

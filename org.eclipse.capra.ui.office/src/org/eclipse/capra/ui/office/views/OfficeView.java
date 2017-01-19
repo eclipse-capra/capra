@@ -444,10 +444,11 @@ public class OfficeView extends ViewPart {
 		clearSelection();
 
 		// Populate the view with Word requirements
+		String fieldName = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.WORD_FIELD_NAME);
 		for (int i = 0; i < paragraphs.size(); i++) {
 			XWPFParagraph paragraph = paragraphs.get(i);
 			if (paragraph != null) {
-				CapraWordRequirement cRequirement = new CapraWordRequirement(paragraph, officeFile);
+				CapraWordRequirement cRequirement = new CapraWordRequirement(officeFile, paragraph, fieldName);
 				if (!cRequirement.getData().isEmpty())
 					selection.add(cRequirement);
 			}

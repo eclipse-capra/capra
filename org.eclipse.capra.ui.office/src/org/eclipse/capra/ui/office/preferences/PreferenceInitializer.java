@@ -35,5 +35,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				OfficePreferences.EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
 		store.setDefault(OfficePreferences.EXCEL_CUSTOM_COLUMN, OfficePreferences.EXCEL_CUSTOM_COLUMN_DEFAULT);
 		store.setDefault(OfficePreferences.EXCEL_COLUMN_VALUE, OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT);
+		store.setDefault(OfficePreferences.WORD_FIELD_NAME, OfficePreferences.WORD_FIELD_NAME_DEFAULT);
 	}
 }
