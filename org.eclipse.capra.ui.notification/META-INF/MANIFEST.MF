@@ -14,3 +14,4 @@ Import-Package: org.eclipse.capra.ui.helpers,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.resource.impl,
  org.eclipse.emf.edit.ui.util
+Export-Package: org.eclipse.capra.ui.notification

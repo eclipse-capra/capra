@@ -48,7 +48,7 @@ public class JavaElementHandler implements ArtifactHandler {
 		IJavaElement cu = (IJavaElement) selection;
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), cu.getHandleIdentifier(),
-				cu.getElementName(), cu.getPath().toString());
+				cu.getElementName(), cu.getHandleIdentifier());
 		return wrapper;
 	}
 
@@ -120,7 +120,7 @@ public class JavaElementHandler implements ArtifactHandler {
 				}
 			}
 		}
-		
+
 		return message;
 	}
 }

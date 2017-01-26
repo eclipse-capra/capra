@@ -20,11 +20,11 @@ import org.eclipse.ui.IMarkerResolution;
  * 
  * @author Salome Maro
  */
-public class FileChangedQuickFix implements IMarkerResolution {
+public class ChangeQuickFix implements IMarkerResolution {
 
 	private String label;
 
-	public FileChangedQuickFix(String label) {
+	public ChangeQuickFix(String label) {
 		this.label = label;
 	}
 
@@ -38,9 +38,7 @@ public class FileChangedQuickFix implements IMarkerResolution {
 		try {
 			marker.delete();
 		} catch (CoreException e) {
-
 			e.printStackTrace();
 		}
 	}
-
 }

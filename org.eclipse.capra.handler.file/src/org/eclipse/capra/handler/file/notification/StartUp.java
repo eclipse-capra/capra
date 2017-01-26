@@ -8,7 +8,7 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.ui.notification;
+package org.eclipse.capra.handler.file.notification;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.IStartup;
@@ -20,6 +20,6 @@ public class StartUp implements IStartup {
 
 	@Override
 	public void earlyStartup() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(new ResourceListener());
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(new FileChangeListener());
 	}
 }
