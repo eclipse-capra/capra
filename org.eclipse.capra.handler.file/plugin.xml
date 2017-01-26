@@ -19,5 +19,11 @@
             class="org.eclipse.capra.handler.file.IFileHandler">
       </artifactHandler>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.capra.handler.file.notification.StartUp">
+      </startup>
+   </extension>
 
 </plugin>

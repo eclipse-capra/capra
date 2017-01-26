@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,8 +71,9 @@ public class TestNotificationJavaMethod {
 	@Test
 	public void testDeleteMethod() throws CoreException, IOException, InterruptedException {
 
-		// Create a project
+		// Create a project with a Java source file
 		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IMethod method = (IMethod) javaClass.getChildren()[0];
 		assertTrue(projectExists("TestProject"));
 
 		// Create a model and persist
@@ -86,10 +86,10 @@ public class TestNotificationJavaMethod {
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 		SelectionView.getOpenedView().dropToSelection(A);
-		SelectionView.getOpenedView().dropToSelection(javaClass);
-		assertFalse(thereIsATraceBetween(A, javaClass));
+		SelectionView.getOpenedView().dropToSelection(method);
+		assertFalse(thereIsATraceBetween(A, method));
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-		assertTrue(thereIsATraceBetween(A, javaClass));
+		assertTrue(thereIsATraceBetween(A, method));
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -98,7 +98,6 @@ public class TestNotificationJavaMethod {
 
 		// Delete method and wait a bit for the
 		// ResourceChangedListener to trigger
-		IMethod method = (IMethod) javaClass.getChildren()[0];
 		method.delete(true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(300);
 
@@ -118,8 +117,9 @@ public class TestNotificationJavaMethod {
 	@Test
 	public void testRenameMethod() throws CoreException, IOException, InterruptedException {
 
-		// Create a project
+		// Create a project with a Java source file
 		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IMethod method = (IMethod) javaClass.getChildren()[0];
 		assertTrue(projectExists("TestProject"));
 
 		// Create a model and persist
@@ -132,10 +132,10 @@ public class TestNotificationJavaMethod {
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 		SelectionView.getOpenedView().dropToSelection(A);
-		SelectionView.getOpenedView().dropToSelection(javaClass);
-		assertFalse(thereIsATraceBetween(A, javaClass));
+		SelectionView.getOpenedView().dropToSelection(method);
+		assertFalse(thereIsATraceBetween(A, method));
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-		assertTrue(thereIsATraceBetween(A, javaClass));
+		assertTrue(thereIsATraceBetween(A, method));
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -144,7 +144,6 @@ public class TestNotificationJavaMethod {
 
 		// Rename method and wait a bit for the
 		// ResourceChangedListener to trigger
-		IMethod method = (IMethod) javaClass.getChildren()[0];
 		method.rename("stillDoNothing", true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(300);
 
@@ -162,10 +161,11 @@ public class TestNotificationJavaMethod {
 	 * @throws InterruptedException
 	 */
 	@Test
-	public void testEditMethod() throws CoreException, IOException, InterruptedException {
+	public void testDeleteProjectOfMethod() throws CoreException, IOException, InterruptedException {
 
-		// Create a project
+		// Create a project with a Java source file
 		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IMethod method = (IMethod) javaClass.getChildren()[0];
 		assertTrue(projectExists("TestProject"));
 
 		// Create a model and persist
@@ -178,25 +178,19 @@ public class TestNotificationJavaMethod {
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 		SelectionView.getOpenedView().dropToSelection(A);
-		SelectionView.getOpenedView().dropToSelection(javaClass);
-		assertFalse(thereIsATraceBetween(A, javaClass));
+		SelectionView.getOpenedView().dropToSelection(method);
+		assertFalse(thereIsATraceBetween(A, method));
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-		assertTrue(thereIsATraceBetween(A, javaClass));
+		assertTrue(thereIsATraceBetween(A, method));
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		int currMarkerLength = markers.length;
 
-		// Edit method and wait a bit for the
+		// Delete method and wait a bit for the
 		// ResourceChangedListener to trigger
-		IMethod method = (IMethod) javaClass.getChildren()[0];
-		IPackageFragment pack = method.getDeclaringType().getPackageFragment();
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("package " + pack.getElementName() + ";\n");
-		buffer.append("\n");
-		buffer.append("public class TestClass { public void doNothing() { boolean doNothing = true; } }");
-		pack.createCompilationUnit("TestClass.java", buffer.toString(), true, new NullProgressMonitor());
+		testProject.delete(true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers

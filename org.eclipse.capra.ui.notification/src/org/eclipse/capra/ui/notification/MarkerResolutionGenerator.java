@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
+import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 
 /**
- * Registers the possible quick fix resolutions for consistency issues detected
- * in the traceability model.
+ * Registers the possible quick fix resolutions for issues that are detected in
+ * the traced objects.
  * 
  * @author Michael Warne
  */
@@ -26,26 +27,22 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator {
 	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		try {
+			String issue = (String) marker.getAttribute(CapraNotificationHelper.ISSUE_TYPE);
 
-			String problem = (String) marker.getAttribute("issueType");
-			if (problem.equals("Rename")) {
+			if (issue.equals(IssueType.RENAMED.getValue()) || issue.equals(IssueType.MOVED.getValue()))
 				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation.") };
-			}
-			if (problem.equals("Move")) {
-				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation.") };
-			}
-			if (problem.equals("Delete")) {
+
+			if (issue.equals(IssueType.DELETED.getValue()))
 				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link.") };
-			}
-			if (problem.equals("fileChanged")) {
+
+			if (issue.equals(IssueType.CHANGED.getValue()))
 				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link."),
-						new FileChangedQuickFix("Do not update existing trace link") };
-			} else
-				return null;
+						new ChangeQuickFix("Do not update existing trace link.") };
+
+			return null;
 
 		} catch (CoreException e) {
 			return new IMarkerResolution[0];
 		}
 	}
-
 }

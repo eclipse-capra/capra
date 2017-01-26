@@ -32,6 +32,7 @@ import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -60,6 +61,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -77,11 +79,6 @@ public class TestHelper {
 	 * ID of Capra custom marker for reporting a generic problem.
 	 */
 	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
-
-	/**
-	 * ID of Capra custom marker for reporting a change in a file.
-	 */
-	public static final String CAPRA_FILE_CHANGED_MARKER_ID = "org.eclipse.capra.ui.notification.capraFileChangedMarker";
 
 	/**
 	 * Creates an empty project
@@ -288,7 +285,7 @@ public class TestHelper {
 	 *            Java element
 	 * @return true if a trace exists between the two objects, false otherwise
 	 */
-	public static boolean thereIsATraceBetween(EObject a, IType b) {
+	public static boolean thereIsATraceBetween(EObject a, IJavaElement b) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
@@ -321,7 +318,7 @@ public class TestHelper {
 	 *            C or C++ element
 	 * @return true if a trace exists between the two objects, false otherwise
 	 */
-	public static boolean thereIsATraceBetween(EObject a, ICProject b) {
+	public static boolean thereIsATraceBetween(EObject a, ICElement b) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
@@ -393,7 +390,7 @@ public class TestHelper {
 	 * @throws OperationCanceledException
 	 * @throws CoreException
 	 */
-	public static ICProject createCDTProject(String projectName) throws OperationCanceledException, CoreException {
+	public static ICProject createCDTProject(String projectName) throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		IProject project = root.getProject(projectName);

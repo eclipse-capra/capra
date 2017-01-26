@@ -41,7 +41,7 @@ class VisualizationHelper {
 	«ENDFOR» 
 	@enduml
 	''' 
-	} 
+	}
 } 
   
 

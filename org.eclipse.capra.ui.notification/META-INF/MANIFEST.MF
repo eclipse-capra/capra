@@ -19,3 +19,4 @@ Import-Package: org.eclipse.capra.ui.helpers,
  org.eclipse.emf.ecore.resource.impl,
  org.eclipse.emf.edit.ui.util
 Bundle-Vendor: Capra Development Team
+Export-Package: org.eclipse.capra.ui.notification

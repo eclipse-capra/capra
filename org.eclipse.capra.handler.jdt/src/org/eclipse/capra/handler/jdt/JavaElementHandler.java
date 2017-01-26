@@ -42,7 +42,7 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 	public EObject createWrapper(IJavaElement element, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), element.getHandleIdentifier(),
-				element.getElementName(), element.getPath().toString());
+				element.getElementName(), element.getPath().toString(), element.getPath().toString());
 		return wrapper;
 	}
 
@@ -122,7 +122,7 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 				}
 			}
 		}
-		
+
 		return message;
 	}
 }
