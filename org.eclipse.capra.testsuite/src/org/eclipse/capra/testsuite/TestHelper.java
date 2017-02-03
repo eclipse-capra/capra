@@ -31,9 +31,17 @@ import org.eclipse.capra.ui.handlers.TraceCreationHandler;
 import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
+import org.eclipse.cdt.core.CProjectNature;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.cdt.core.model.ICProject;
+import org.eclipse.cdt.core.model.ISourceRoot;
+import org.eclipse.cdt.core.model.ITranslationUnit;
+import org.eclipse.cdt.core.settings.model.ICProjectDescription;
+import org.eclipse.cdt.managedbuilder.core.BuildException;
+import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
+import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
+import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -46,9 +54,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -73,6 +79,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * A helper class for writing JUnit tests for the Capra tool.
  */
+@SuppressWarnings("restriction")
 public class TestHelper {
 
 	/**
@@ -385,28 +392,55 @@ public class TestHelper {
 	 * Creates an empty C or C++ project.
 	 * 
 	 * @param projectName
-	 *            the name of the created project
+	 *            the name of the project to be created
 	 * @return a handle to the created project
-	 * @throws OperationCanceledException
 	 * @throws CoreException
+	 * @throws BuildException
 	 */
-	public static ICProject createCDTProject(String projectName) throws CoreException {
+	public static ICProject createCDTProject(String projectName) throws CoreException, BuildException {
+		IProject project = getProject(projectName);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		IProject project = root.getProject(projectName);
 		IProjectDescription description = workspace.newProjectDescription(projectName);
 		project = CCorePlugin.getDefault().createCDTProject(description, project, new NullProgressMonitor());
-		project.open(null);
 
-		try {
-			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, null);
-		} catch (Exception e) {
-			// Ignore
-		}
+		// Create build info and managed project
+		ICProjectDescription cProjectDescription = CoreModel.getDefault().createProjectDescription(project, false);
+		ManagedBuildManager.createBuildInfo(project);
+		Configuration config = new Configuration(new ManagedProject(cProjectDescription), null, "myId", "myName");
+		config.getEditableBuilder().setManagedBuildOn(false);
+		cProjectDescription.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID,
+				config.getConfigurationData());
 
-		ICProject tu = CoreModel.getDefault().create(project);
+		CoreModel.getDefault().setProjectDescription(project, cProjectDescription);
+		CProjectNature.addCNature(project, new NullProgressMonitor());
 
-		return tu;
+		return CoreModel.getDefault().create(project);
+	}
+
+	/**
+	 * Creates a C source file in the provided C project.
+	 * 
+	 * @param fileName
+	 *            the name of the C source file to be created in the project
+	 * @param cProject
+	 *            the project in which the file is to be created
+	 * @return the created TranslationUnit
+	 * @throws CoreException
+	 */
+	public static ITranslationUnit createCSourceFileInProject(String fileName, ICProject cProject)
+			throws CoreException {
+
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("#include <stdio.h>\n");
+		buffer.append("\n");
+		buffer.append("int main() {\n");
+		buffer.append("\tprintf(\"Hello, World!\");\n");
+		buffer.append("\treturn 0;\n");
+		buffer.append("}\n");
+		IFile cSourceFile = cProject.getProject().getFile(fileName);
+		cSourceFile.create(new ByteArrayInputStream(buffer.toString().getBytes()), true, new NullProgressMonitor());
+
+		return ((ISourceRoot) (cProject.getChildren()[0])).getTranslationUnits()[0];
 	}
 
 	/**

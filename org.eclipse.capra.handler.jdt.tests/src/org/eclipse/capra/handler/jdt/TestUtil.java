@@ -133,7 +133,7 @@ public class TestUtil {
 
 	public static EObject createWrapper(EObject artifactModel, String uri, String name) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.jdt.JavaElementHandler", uri, name);
+		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.jdt.JavaElementHandler", uri, name,uri);
 	}
 
 }

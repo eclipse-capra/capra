@@ -32,6 +32,7 @@ import java.io.IOException;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
+import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -127,7 +128,7 @@ public class TestCreateTrace {
 	}
 
 	@Test
-	public void testLinkCreationCElementToEClass() throws OperationCanceledException, CoreException, IOException {
+	public void testLinkCreationCElementToEClass() throws OperationCanceledException, CoreException, IOException, BuildException {
 		// Create a project
 		ICProject cFile = createCDTProject("TestProject");
 		assertTrue(projectExists("TestProject"));
