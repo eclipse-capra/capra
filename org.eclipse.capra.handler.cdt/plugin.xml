@@ -19,5 +19,11 @@
             class="org.eclipse.capra.handler.cdt.CDTHandler">
       </artifactHandler>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.capra.handler.cdt.notification.StartUp">
+      </startup>
+   </extension>
 
 </plugin>
