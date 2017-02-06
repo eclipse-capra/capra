@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.testsuite.TestHelper;
+import org.eclipse.capra.testsuite.TestRetry;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.IFunction;
@@ -46,9 +47,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 
 /**
  * Contains tests to check the functioning of the Capra C notification system.
@@ -65,7 +63,7 @@ public class TestNotificationCMethod {
 	}
 
 	@Rule
-	public Retry retry = new Retry(5);
+	public TestRetry retry = new TestRetry(5);
 
 	/**
 	 * Tests if a marker appears after deleting a C method that is referenced in
@@ -198,45 +196,5 @@ public class TestNotificationCMethod {
 		// Check if there are two new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 2, markers.length);
-	}
-
-	/**
-	 * A JUnit rule that allows the tests to run multiple times if they fail.
-	 * 
-	 * @author Dusan Kalanj
-	 *
-	 */
-	class Retry implements TestRule {
-		private int retryCount;
-
-		public Retry(int retryCount) {
-			this.retryCount = retryCount;
-		}
-
-		public Statement apply(Statement base, Description description) {
-			return statement(base, description);
-		}
-
-		private Statement statement(final Statement base, final Description description) {
-			return new Statement() {
-
-				@Override
-				public void evaluate() throws Throwable {
-					Throwable caughtThrowable = null;
-
-					for (int i = 0; i < retryCount; i++)
-						try {
-							base.evaluate();
-							return;
-						} catch (Throwable t) {
-							caughtThrowable = t;
-							System.err.println(description.getDisplayName() + ": run " + (i + 1) + " failed");
-						}
-
-					System.err.println(description.getDisplayName() + ": giving up after " + retryCount + " failures");
-					throw caughtThrowable;
-				}
-			};
-		}
 	}
 }
