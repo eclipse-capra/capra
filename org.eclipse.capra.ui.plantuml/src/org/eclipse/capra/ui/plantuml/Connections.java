@@ -56,6 +56,7 @@ public class Connections {
 		}
 
 		id2Label = new LinkedHashMap<>();
+
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
 			id2Label.put(id, getArtifactLabel(o));
