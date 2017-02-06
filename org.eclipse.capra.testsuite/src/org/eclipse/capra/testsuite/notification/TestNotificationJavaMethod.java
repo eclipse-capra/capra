@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.testsuite.TestHelper;
+import org.eclipse.capra.testsuite.TestRetry;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -42,6 +43,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -59,6 +61,9 @@ public class TestNotificationJavaMethod {
 		clearWorkspace();
 		resetSelectionView();
 	}
+	
+	@Rule
+	public TestRetry retry = new TestRetry(5);
 
 	/**
 	 * Tests if a marker appears after deleting a Java method that is referenced
