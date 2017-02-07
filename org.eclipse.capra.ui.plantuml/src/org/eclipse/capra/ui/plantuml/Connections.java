@@ -18,8 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -30,6 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class Connections {
 
+	private static final String CHARACTERS_TO_BE_REMOVED = "[\", \']";
 	private List<Connection> connections;
 	private EObject origin;
 
@@ -54,8 +58,7 @@ public class Connections {
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			String label = EMFHelper.getIdentifier(o);
-			id2Label.put(id, label);
+			id2Label.put(id, getArtifactLabel(o));
 		});
 	}
 
@@ -91,5 +94,43 @@ public class Connections {
 		});
 
 		return arrows;
+	}
+
+	/**
+	 * The method gets the label of the element to be used for display in the
+	 * plant UML graph view and matrix view
+	 * 
+	 * @param object
+	 *            The object for which the label is needed. This can be an EMF
+	 *            original representation or an artifact wrapper if the original
+	 *            object was not an EMF element
+	 * @return The label to be displayed
+	 */
+	public static String getArtifactLabel(EObject object) {
+		String artifactLabel = null;
+		if (object instanceof ArtifactWrapper) {
+			ArtifactWrapper wrapper = (ArtifactWrapper) object;
+			Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+
+			for (ArtifactHandler handler : artifactHandlers) {
+				String handlerName = handler.toString().substring(0, handler.toString().indexOf('@'));
+				if (handlerName.equals(wrapper.getArtifactHandler())) {
+					Object originalObject = handler.resolveArtifact(object);
+					if (originalObject != null) {
+						String artifactName = handler.getDisplayName(originalObject);
+						// remove unwanted characters like ", '
+						artifactLabel = artifactName.replaceAll(CHARACTERS_TO_BE_REMOVED, "");
+					} else { // original object cannot be resolved
+								// therefore use the wrapper name
+						String label = EMFHelper.getIdentifier(object);
+						artifactLabel = label.substring(0, label.indexOf(':'));
+					}
+				}
+			}
+		} else {
+			artifactLabel = EMFHelper.getIdentifier(object);
+		}
+		return artifactLabel;
+
 	}
 }
