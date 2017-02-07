@@ -12,7 +12,8 @@ package org.eclipse.capra.handler.papyrus;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
+import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.EObjectTreeElement;
+import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
 
 /**
  * A handler to create trace links from and to model elements created in
@@ -22,20 +23,25 @@ public class PapyrusHandler implements ArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
-		return selection instanceof TreeElement;
+		return selection instanceof EObjectTreeElement;
 	}
 
 	@Override
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
-		return EObject.class.cast((TreeElement) selection);
+		return EMFHelper.getEObject(selection);
 	}
 
 	@Override
 	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
-		return null;
+		return artifact;
+	}
+
+	@Override
+	public String getDisplayName(Object selection) {
+		EObject sel = EMFHelper.getEObject(selection);
+		return ArtifactHandler.super.getDisplayName(sel);
 	}
 
 }
