@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.file;
 
-import java.io.File;
-
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -41,7 +41,8 @@ public class IFileHandler implements ArtifactHandler {
 	public Object resolveArtifact(EObject artifact) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		String uri = adapter.getArtifactUri(artifact);
-		return new File(uri);
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri));
+		return file;
 	}
 
 	@Override
