@@ -12,6 +12,7 @@ package org.eclipse.capra.ui.plantuml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,9 +38,9 @@ public class Connections {
 	private List<Connection> connections;
 	private EObject origin;
 
-	private Set<EObject> allObjects;
 	private Map<EObject, String> object2Id;
 	private Map<String, String> id2Label;
+	public Set<EObject> allObjects;
 
 	Connections(List<Connection> connections, EObject selectedObject) {
 		this.connections = connections;
@@ -95,6 +96,30 @@ public class Connections {
 		});
 
 		return arrows;
+	}
+
+	public List<String> note(EObject Object) {
+		List<String> notes = new ArrayList<>();
+		List<EObject> allTargets = new ArrayList<>();
+
+		connections.forEach(c -> {
+			allTargets.addAll(c.getTargets());
+		});
+
+		// if (Collections.frequency(allTargets, Object) > 5) {
+		if (Collections.frequency(allTargets, Object) > AnalyseTraceModel.getThresholdPerTraceaLinkSet()) {
+			notes.add("note top of " + object2Id.get(Object)
+					+ ": This element has a high degree of centrality, suggesting a problem with coupling");
+		}
+		return notes;
+
+	}
+
+	public String floatingNote(EObject Object) {
+		String note = "note :  The network of this requrement" + originLabel() + " contains "
+				+ AnalyseTraceModel.getNumberOfNodesInNetwork(Object) + " requirements";
+		return note;
+
 	}
 
 	/**

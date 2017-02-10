@@ -39,6 +39,14 @@ class VisualizationHelper {
 	«FOR a:helper.arrows()» 
 	«a»
 	«ENDFOR» 
+	«IF ShowAnalysisFeatures.isShowAnalysis()»
+	«FOR o:helper.allObjects»
+	«FOR n:helper.note(o)» 
+	«n»
+	«ENDFOR» 
+	«ENDFOR» 
+	«helper.floatingNote(selectedObject)»
+	«ENDIF»
 	@enduml
 	''' 
 	} 

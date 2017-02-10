@@ -1,18 +1,77 @@
 package org.eclipse.capra.ui.plantuml;
 
+import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.plantuml.Connections;
+import org.eclipse.capra.ui.plantuml.ShowAnalysisFeatures;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {
   public static String createMatrix(final EObject traceModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method getArtifactLabel(EObject) is undefined for the type Class<Connections>"
-      + "\nThe method getArtifactLabel(EObject) is undefined for the type Class<Connections>");
+    String _xblockexpression = null;
+    {
+      Optional<TraceMetaModelAdapter> _traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter();
+      final TraceMetaModelAdapter traceAdapter = _traceMetamodelAdapter.get();
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("@startuml");
+      _builder.newLine();
+      _builder.append("salt");
+      _builder.newLine();
+      _builder.append("{#");
+      _builder.newLine();
+      {
+        boolean _notEquals = (!Objects.equal(firstElements, null));
+        if (_notEquals) {
+          _builder.append(".");
+          {
+            for(final EObject e : secondElements) {
+              _builder.append("|");
+              String _artifactLabel = Connections.getArtifactLabel(e);
+              _builder.append(_artifactLabel, "");
+            }
+          }
+          _builder.newLineIfNotEmpty();
+          {
+            for(final EObject first : firstElements) {
+              String _artifactLabel_1 = Connections.getArtifactLabel(first);
+              _builder.append(_artifactLabel_1, "");
+              _builder.append(" ");
+              {
+                for(final EObject second : secondElements) {
+                  _builder.append("|");
+                  {
+                    boolean _isThereATraceBetween = traceAdapter.isThereATraceBetween(first, second, traceModel);
+                    if (_isThereATraceBetween) {
+                      _builder.append("X");
+                    } else {
+                      _builder.append(".");
+                    }
+                  }
+                }
+              }
+              _builder.newLineIfNotEmpty();
+            }
+          }
+        } else {
+          _builder.append("Choose two containers to show a traceability matrix of their contents.");
+          _builder.newLine();
+        }
+      }
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("@enduml");
+      _builder.newLine();
+      _xblockexpression = _builder.toString();
+    }
+    return _xblockexpression;
   }
   
   public static String createNeighboursView(final List<Connection> connections, final EObject selectedObject) {
@@ -45,6 +104,25 @@ public class VisualizationHelper {
         List<String> _arrows = helper.arrows();
         for(final String a : _arrows) {
           _builder.append(a, "");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      {
+        boolean _isShowAnalysis = ShowAnalysisFeatures.isShowAnalysis();
+        if (_isShowAnalysis) {
+          {
+            for(final EObject o : helper.allObjects) {
+              {
+                List<String> _note = helper.note(o);
+                for(final String n : _note) {
+                  _builder.append(n, "");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+            }
+          }
+          String _floatingNote = helper.floatingNote(selectedObject);
+          _builder.append(_floatingNote, "");
           _builder.newLineIfNotEmpty();
         }
       }

@@ -25,12 +25,20 @@
             id="org.eclipse.capra.ui.plantuml.toggleTransitivity"
             name="Toggle Transitivity">
       </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.showAnalysisFeatures"
+            name="Show Analysis Features">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="org.eclipse.capra.ui.plantuml.DisplayTracesHandler"
             commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.ShowAnalysisFeatures"
+            commandId="org.eclipse.capra.ui.plantuml.showAnalysisFeatures">
       </handler>
    </extension>
 	<extension
@@ -40,6 +48,11 @@
          <command
                commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
                label="Toggle Transitivity"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.showAnalysisFeatures"
+               label="Show Analysis Features"
                style="push">
          </command>
          
