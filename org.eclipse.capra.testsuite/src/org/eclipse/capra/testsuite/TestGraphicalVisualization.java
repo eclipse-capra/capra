@@ -35,18 +35,15 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestTraceabiltyMatrix {
+public class TestGraphicalVisualization {
 
-	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|modelB : EPackage\n" + "modelA : EPackage |X\n" + "}\n" + "\n" + "@enduml\n";
+	private final static String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml\n"
+			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "o0--o1:RelatedTo\n"
+			+ "@enduml\n";
 
-	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |X|.|.\n" + "AA : EClass |.|X|.\n"
-			+ "modelA : EPackage |.|.|X\n" + "}\n" + "\n" + "@enduml\n";
-
-	private final static String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |.|X|.|.\n" + "B : EClass |X|.|.|.\n"
-			+ "AA : EClass |.|.|.|X\n" + "BB : EClass |.|.|X|.\n" + "}\n" + "\n" + "@enduml\n";
+	private final static String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml\n"
+			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "object \"C : EClass\" as o2\n"
+			+ "o0--o1:RelatedTo\n" + "o1--o2:RelatedTo\n" + "@enduml\n";
 
 	@Before
 	public void init() throws CoreException {
@@ -55,7 +52,7 @@ public class TestTraceabiltyMatrix {
 	}
 
 	@Test
-	public void testMatrix() throws CoreException, IOException, InterruptedException {
+	public void testPlantUMLGraphView() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
 		createSimpleProject("TestProject");
@@ -65,12 +62,11 @@ public class TestTraceabiltyMatrix {
 		IProject testProject = getProject("TestProject");
 		EPackage a = TestHelper.createEcoreModel("modelA");
 		createEClassInEPackage(a, "A");
-		createEClassInEPackage(a, "AA");
 		save(testProject, a);
 
 		EPackage b = createEcoreModel("modelB");
 		createEClassInEPackage(b, "B");
-		createEClassInEPackage(b, "BB");
+		createEClassInEPackage(b, "C");
 		save(testProject, b);
 
 		// Load them and choose the four classes
@@ -79,12 +75,11 @@ public class TestTraceabiltyMatrix {
 		EPackage _a = load(testProject, "modelA.ecore", rs);
 		assertEquals(_a.getName(), "modelA");
 		EClass _A = (EClass) _a.getEClassifier("A");
-		EClass _AA = (EClass) _a.getEClassifier("AA");
 
 		EPackage _b = load(testProject, "modelB.ecore", rs);
 		assertEquals(_b.getName(), "modelB");
 		EClass _B = (EClass) _b.getEClassifier("B");
-		EClass _BB = (EClass) _b.getEClassifier("BB");
+		EClass _C = (EClass) _b.getEClassifier("C");
 
 		// Add A and B to the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -97,68 +92,36 @@ public class TestTraceabiltyMatrix {
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(_A, _B));
 
-		// Clear the selection view
+		// Clear selection view
 		SelectionView.getOpenedView().clearSelection();
-		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 
-		// Add AA and BB to selection view
-		SelectionView.getOpenedView().dropToSelection(_AA);
-		SelectionView.getOpenedView().dropToSelection(_BB);
-		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
+		// Add B and C to selection view
+		SelectionView.getOpenedView().dropToSelection(_B);
+		SelectionView.getOpenedView().dropToSelection(_C);
 
-		// Create a trace between AA and BB
-		assertFalse(thereIsATraceBetween(_AA, _BB));
+		// Create a traceLink between B and C
+		assertFalse(thereIsATraceBetween(_B, _C));
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-
 		// Remove trace model from resource set to make sure the trace model is
 		// re-loaded to capture the second trace link
 		removeTraceModel(rs);
-		assertTrue(thereIsATraceBetween(_AA, _BB));
+		assertTrue(thereIsATraceBetween(_B, _C));
 
-		// create trace link between package A and B
-		// clear selection
-		SelectionView.getOpenedView().clearSelection();
-		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
-
-		// Add Package A and B to selection view
-		SelectionView.getOpenedView().dropToSelection(_a);
-		SelectionView.getOpenedView().dropToSelection(_b);
-		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
-
-		// Create a trace between Package A and B
-		assertFalse(thereIsATraceBetween(_a, _b));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-
-		// Remove trace model from resource set to make sure the trace model is
-		// re-loaded to capture the third trace link
-		removeTraceModel(rs);
-		assertTrue(thereIsATraceBetween(_a, _b));
-
-		// create a selection with Package A and B
-		List<Object> selectedPackages = new ArrayList<>();
-		selectedPackages.add(_a);
-		selectedPackages.add(_b);
+		// create a selection with class A
+		List<Object> selection = new ArrayList<>();
+		selection.add(_A);
 
 		// Test directly connected Elements
 		DisplayTracesHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
-		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages);
-		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
+		String DirectlyConnectedElements = provider.getDiagramText(selection);
+		assertTrue(DirectlyConnectedElements.equals(EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS));
 
 		// Test transitively connected Elements
 		DisplayTracesHandler.setTraceViewTransitive(true);
-		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages);
-		assertTrue(plantUMLTextForSelectedPackages_Transitive.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE));
+		String transitivelysConnectedElements = provider.getDiagramText(selection);
+		assertTrue(transitivelysConnectedElements.equals(EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS));
 
-		// test multiple classes selected
-		List<Object> selectedClasses = new ArrayList<>();
-		selectedClasses.add(_A);
-		selectedClasses.add(_B);
-		selectedClasses.add(_AA);
-		selectedClasses.add(_BB);
-
-		String plantUMLTextForSelectedClasses = provider.getDiagramText(selectedClasses);
-		assertTrue(plantUMLTextForSelectedClasses.equals(EXPECTED_TEXT_FOR_SELECTED_CLASSES));
 	}
 
 	private void removeTraceModel(ResourceSet rs) {
@@ -166,4 +129,5 @@ public class TestTraceabiltyMatrix {
 		EObject tm = persistenceAdapter.getTraceModel(rs);
 		rs.getResources().remove(tm.eResource());
 	}
+
 }
