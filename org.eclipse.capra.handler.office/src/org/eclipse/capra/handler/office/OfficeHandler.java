@@ -11,6 +11,7 @@
 
 package org.eclipse.capra.handler.office;
 
+import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -49,10 +50,23 @@ public class OfficeHandler implements ArtifactHandler {
 
 	@Override
 	public Object resolveArtifact(EObject artifact) {
-		// TODO Decide on how to resolve the artifact.
-		// Just return the appropriate row / requirement or display it in the
-		// OfficeView?
-		return null;
+		if (artifact instanceof ArtifactWrapper) {
+			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
+			String uri = wrapper.getUri();
+			CapraOfficeObject object = new CapraOfficeObject();
+			object.setUri(uri);
+			return object;
+		} else
+			return null;
+	}
+
+	@Override
+	public String getDisplayName(Object selection) {
+		if (selection instanceof CapraOfficeObject) {
+			CapraOfficeObject officeObject = (CapraOfficeObject) selection;
+			return officeObject.getName();
+		} else
+			return null;
 	}
 
 }
