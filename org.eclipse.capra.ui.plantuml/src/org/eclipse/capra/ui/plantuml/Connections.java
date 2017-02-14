@@ -117,9 +117,7 @@ public class Connections {
 				if (handlerName.equals(wrapper.getArtifactHandler())) {
 					Object originalObject = handler.resolveArtifact(object);
 					if (originalObject != null) {
-						String artifactName = handler.getDisplayName(originalObject);
-						// remove unwanted characters like ", '
-						artifactLabel = artifactName.replaceAll(CHARACTERS_TO_BE_REMOVED, "");
+						artifactLabel = handler.getDisplayName(originalObject);
 					} else { // original object cannot be resolved
 								// therefore use the wrapper name
 						String label = EMFHelper.getIdentifier(object);
@@ -130,7 +128,8 @@ public class Connections {
 		} else {
 			artifactLabel = EMFHelper.getIdentifier(object);
 		}
-		return artifactLabel;
+		// remove unwanted characters like ", '
+		return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
 
 	}
 }
