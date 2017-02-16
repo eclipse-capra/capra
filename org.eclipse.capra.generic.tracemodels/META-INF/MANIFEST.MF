@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
+Bundle-Name: Capra Generic Traceability Metamodel
 Bundle-SymbolicName: org.eclipse.capra.generic.tracemodels;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: %providerName
+Bundle-Vendor: Capra Development Team
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.GenericTraceMetaModel,

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ReqIFHandler
+Bundle-Name: Capra Handler for ReqIF Models
 Bundle-SymbolicName: org.eclipse.capra.handler.reqIf;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Export-Package: org.eclipse.capra.handler.reqif
@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.rmf.reqif10.pror;bundle-version="0.13.0"
 Import-Package: org.eclipse.papyrus.infra.emf.utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team

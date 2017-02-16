@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: EMFHandler
+Bundle-Name: Capra Handler for EMF Models
 Bundle-SymbolicName: org.eclipse.capra.handler.emf;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.capra.core;bundle-version="0.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team

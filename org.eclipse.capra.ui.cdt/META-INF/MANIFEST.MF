@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: UI contributions for Capra CDT handler
+Bundle-Name: Capra CDT Handler UI Contributions
 Bundle-SymbolicName: org.eclipse.capra.ui.cdt;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-Activator: org.eclipse.capra.ui.cdt.Activator
-Bundle-Vendor: eclipse.org
+Bundle-Vendor: Capra Development Team
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface,

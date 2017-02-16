@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra:  Traceability Management
+Bundle-Name: Capra User Interface Generic Functionality
 Bundle-SymbolicName: org.eclipse.capra.ui;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: Chalmers Institute of Technology
+Bundle-Vendor: Capra Development Team
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.equinox.registry,

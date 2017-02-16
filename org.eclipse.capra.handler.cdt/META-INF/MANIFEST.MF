@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CDThandler
+Bundle-Name: Capra Handler for C/C++ Elements
 Bundle-SymbolicName: org.eclipse.capra.handler.cdt;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-Vendor: rt-labs.com

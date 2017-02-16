@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.capra.office.feature"
-      label="Capra MS Office support"
+      label="Capra Microsoft Office Support"
       version="0.7.0.qualifier"
+      provider-name="Capra Development Team"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
 

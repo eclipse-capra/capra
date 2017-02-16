@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra:  Traceability Management
+Bundle-Name: Capra Microsoft Office Handler UI Contributions
 Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-ClassPath: .,
@@ -8,7 +8,7 @@ Bundle-ClassPath: .,
  lib/poi-ooxml-schemas-3.10.1-20140818.jar,
  lib/xmlbeans-2.6.0.jar,
  lib/poi-ooxml-3.10.1-filtered.jar
-Bundle-Vendor: Chalmers | University of Gothenburg
+Bundle-Vendor: Capra Development Team
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.equinox.registry,

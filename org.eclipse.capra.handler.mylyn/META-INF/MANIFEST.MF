@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Mylynhandler
+Bundle-Name: Capra Handler for Tasks in MyLyn
 Bundle-SymbolicName: org.eclipse.capra.handler.mylyn;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.mylyn.tasks.core;bundle-version="3.17.0",
  org.eclipse.capra.core;bundle-version="0.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team

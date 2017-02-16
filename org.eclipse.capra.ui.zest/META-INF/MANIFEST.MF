@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Zest
+Bundle-Name: Capra Trace Visualisation Support (Zest)
 Bundle-SymbolicName: org.eclipse.capra.ui.zest;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.capra.ui,
  org.eclipse.gef4.layout;bundle-version="1.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team

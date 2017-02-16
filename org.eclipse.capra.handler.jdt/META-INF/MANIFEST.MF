@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JavaHandler
+Bundle-Name: Capra Handler for Java Elements
 Bundle-SymbolicName: org.eclipse.capra.handler.jdt;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.jdt.core,
@@ -12,3 +12,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.handler.jdt,
  org.eclipse.capra.handler.jdt.preferences
 Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Capra Development Team
