@@ -12,10 +12,10 @@
  -->
 
 <plugin>
-   <extension-point id="org.eclipse.capra.configuration.TraceabilityMetaModel" name="TraceabilityMetamodel" schema="schema/org.eclipse.capra.configuration.TraceabilityMetaModel.exsd"/>
-   <extension-point id="org.eclipse.capra.configuration.persistenceHandler" name="persistenceHandler" schema="schema/org.eclipse.capra.configuration.persistenceHandler.exsd"/>
-   <extension-point id="org.eclipse.capra.configuration.artifactHandler" name="artifactHandler" schema="schema/org.eclipse.capra.configuration.artifactHandler.exsd"/>
-   <extension-point id="org.eclipse.capra.configuration.priorityHandler" name="Priority Handler for Artifact Handlers" schema="schema/org.eclipse.capra.configuration.priorityHandler.exsd"/>
-   <extension-point id="org.eclipse.capra.configuration.ArtifactMetaModel" name="ArtifactMetaModel" schema="schema/org.eclipse.capra.configuration.ArtifactMetaModel.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.traceabilityMetaModel" name="Traceability Meta-Model" schema="schema/org.eclipse.capra.configuration.traceabilityMetaModel.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.persistenceHandler" name="Trace Persistence Handler" schema="schema/org.eclipse.capra.configuration.persistenceHandler.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.artifactHandlers" name="Artifact Handlers" schema="schema/org.eclipse.capra.configuration.artifactHandlers.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.priorityHandlers" name="Priority Handlers for Artifact Handlers" schema="schema/org.eclipse.capra.configuration.priorityHandlers.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.artifactMetaModel" name="Artifact Meta-Model" schema="schema/org.eclipse.capra.configuration.artifactMetaModel.exsd"/>
 
 </plugin>

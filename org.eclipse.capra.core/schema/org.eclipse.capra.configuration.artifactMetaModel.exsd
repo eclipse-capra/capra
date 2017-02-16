@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.capra.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.capra.core" id="org.eclipse.capra.configuration.priorityHandler" name="Priority Handler for Artifact Handlers"/>
+         <meta.schema plugin="org.eclipse.capra.core" id="org.eclipse.capra.configuration.artifactMetaModel" name="Capra Artifact Metamodel"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,8 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="PriorityHandler"/>
+         <choice>
+            <element ref="ArtifactMetaModelAdapter"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="PriorityHandler">
+   <element name="ArtifactMetaModelAdapter">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.capra.core.handlers.PriorityHandler"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter"/>
                </appinfo>
             </annotation>
          </attribute>

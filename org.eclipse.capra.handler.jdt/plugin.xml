@@ -14,7 +14,7 @@
 <plugin>
    <extension
          id="org.eclipse.capra.handler.jdt.JavaElementHandler"
-         point="org.eclipse.capra.configuration.artifactHandler">
+         point="org.eclipse.capra.configuration.artifactHandlers">
       <artifactHandler
             class="org.eclipse.capra.handler.jdt.JavaElementHandler">
       </artifactHandler>

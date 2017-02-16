@@ -271,7 +271,7 @@ To define your own traceability metamodel follow the steps below:
 # Define your traceability metamodel as required. In our example, we add two types of traceability links i.e "implements" and "tests" <figure> 		<img src="../images/traceMetamodelDefinition.png" width="400"/>		<figcaption> 		Figure 15: Tracemetamodel Definition 		</figcaption> </figure> 
 # Open the @plugin.xml@ file of the new project and click on the "Extension Points" tab 
 # Un-check the check box that says "Show only extension points from the required plugins" 
-# In the text box for the "Extension point filter" type "Traceability" and select @org.eclipse.capra.configuration.TraceabilityMetaModel@
+# In the text box for the "Extension point filter" type "Traceability" and select @org.eclipse.capra.configuration.traceabilityMetaModel@
 # Click Finish. <figure> 		<img src="../images/addTraceExtension.png" width="500"/> 		<figcaption> 		Figure 16: Adding the Trace metamodel extension point 		</figcaption> </figure> 
 # Another pop up window will appear asking if you want to add the project @org.eclipse.capra.core@ to the list of plugin dependencies. Click Yes 
 # Right click on the newly added extension, and click on "New" then @TraceabilityMetaModelAdapter@. A new @TraceabilityMetaModelAdapter@ will be created 	<figure> 		<img src="../images/newTMAdapter.png" width="700"/> 		<figcaption> 		Figure 17: Adding the Trace metamodel extension point 		</figcaption> 	</figure> 	
@@ -288,7 +288,7 @@ To define your own artifact metamodel, follow the steps below:
 # Define the artifact metamodel as in the picture below. Note that you can modify this definition to fit your needs. <figure> 		<img src="../images/artifactMetamodelDefinition.png" width="400"/> 		<figcaption> 		Figure 20: Artifact Metamodel definition 		</figcaption> </figure> 
 # Next, open the @plugin.xml@ file of the project and click on the "Extension Points" tab
 # Un-check the checkbox that says "Show only extension points from the required plugins" 
-# In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.ArtifactMetamodel@
+# In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.artifactMetamodel@
 # Right click on the newly added extension, and click on "New" then @ArtifactMetamodelAdapter@. A new @ArtifactMetamodelAdapter@ will be created <figure> 		<img src="../images/newArtifactAdapter.png" width="600"/>		<figcaption> 		Figure 21: Artifact adapter definition 		</figcaption> </figure> 
 # Click on "Class" and a pop up window for creating a new class will appear. Make sure the folder is @src@ and name your class <figure> 		<img src="../images/newArtifactAdapterClass.png" width="500"/> 		<figcaption> 		Figure 22: Artifact adapter Class definition 		</figcaption> </figure> 
 # Click Finish and a class will be created with the methods to be implemented in it. 
@@ -307,7 +307,7 @@ As an example, we describe how the Java artifact handler was added using the fol
 # Expand the @META-INF@ folder , open the @MANIFEST.MF@ file and click on the "Extensions" tab
 # Click on Add. A pop up window will appear with a list of available extension points.
 # Un-check the checkbox that says "Show only extension points from the required plugins" 
-# In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.ArtifactMetaModel@ and click Finish.
+# In the textbox for "Extension point filter" type "Artifact" and select @org.eclipse.capra.configuration.artifactMetaModel@ and click Finish.
 # Another pop up window will appear asking if you want to add the project @org.eclipse.capra.core@ to the list of plugin dependencies. Click Yes 
 # Right click on the newly added extension, and click on "New", then "ArtifactHandler". A new @ArtifactHandler@ will be created. <figure> 		<img src="../images/newArtifactHandler.png" width="600"/>		<figcaption> 		Figure 23: New Artifact Handler definition 		</figcaption> </figure>
 # Click on the newly created @ArtifactHandler@. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 

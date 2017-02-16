@@ -17,7 +17,7 @@
 
 <plugin>
    <extension
-         point="org.eclipse.capra.configuration.ArtifactMetaModel">
+         point="org.eclipse.capra.configuration.artifactMetaModel">
       <ArtifactMetaModelAdapter
             class="org.eclipse.capra.generic.tracemodels.GenericArtifactMetaModelAdapter">
       </ArtifactMetaModelAdapter>
@@ -39,7 +39,7 @@
             genModel="model/artifact.xcore"/>
    </extension>
    <extension
-         point="org.eclipse.capra.configuration.TraceabilityMetaModel">
+         point="org.eclipse.capra.configuration.traceabilityMetaModel">
       <TraceabilityMetaModelAdapter
             class="org.eclipse.capra.generic.tracemodels.GenericMetaModelAdapter">
       </TraceabilityMetaModelAdapter>

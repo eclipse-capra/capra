@@ -34,8 +34,8 @@ Capra can be installed either through an update site or manually .
 * Click on "Releases" (Please note that the current release is a Pre-release and the official release will be available once the tool is an Eclipse project)
 * Download the file `Capra_v.0.1.zip` (Note the location of your download)
 * Open your Eclipse environment
-* Make sure that you have all the dependencied listed above installed
-* Click on Help >> Install New Softaware
+* Make sure that you have all the dependencies listed above installed
+* Click on Help >> Install New Software
 * Click on Add and select Archive
 * Select your zip file and click Add
 * You should see the features that Capra has grouped into several categories.
@@ -291,7 +291,7 @@ To define your own traceability metamodel follow the steps below:
 ![alt text](traceMetamodelDefinition.pdf =350x)   
 1. Open the `plugin.xml` file of the new project and click on the "Extension Points" tab  
 1. Un-check the check box that says "Show only extension points from the required plugins"  
-1. In the text box for the "Extension point filter" type "Traceability" and select `org.eclipse.capra.configuration.TraceabilityMetaModel`
+1. In the text box for the "Extension point filter" type "Traceability" and select `org.eclipse.capra.configuration.traceabilityMetaModel`
 1. Click Finish.   
 ![alt text](addTraceExtension.pdf =400x)   
 1. Another pop up window will appear asking is you want to add the project `org.eclipse.capra.core` to the list of plugin dependencies. Click Yes  

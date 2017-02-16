@@ -32,15 +32,15 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ExtensionPointHelper {
 
-	private static final String TRACE_ID = "org.eclipse.capra.configuration.TraceabilityMetaModel";
+	private static final String TRACE_ID = "org.eclipse.capra.configuration.traceabilityMetaModel";
 	private static final String TRACE_CONFIG = "class";
 	private static final String PERSISTENCE_ID = "org.eclipse.capra.configuration.persistenceHandler";
 	private static final String PERSISTENCE_CONFIG = "class";
-	private static final String ARTIFACT_ID = "org.eclipse.capra.configuration.ArtifactMetaModel";
+	private static final String ARTIFACT_ID = "org.eclipse.capra.configuration.artifactMetaModel";
 	private static final String ARTIFACT_CONFIG = "class";
-	private static final String ARTIFACT_HANDLER_ID = "org.eclipse.capra.configuration.artifactHandler";
+	private static final String ARTIFACT_HANDLER_ID = "org.eclipse.capra.configuration.artifactHandlers";
 	private static final String ARTIFACT_HANDLER_CONFIG = "class";
-	private static final String PRIORITY_HANDLER_ID = "org.eclipse.capra.configuration.priorityHandler";
+	private static final String PRIORITY_HANDLER_ID = "org.eclipse.capra.configuration.priorityHandlers";
 	private static final String PRIORITY_HANDLER_CONFIG = "class";
 
 	/**
