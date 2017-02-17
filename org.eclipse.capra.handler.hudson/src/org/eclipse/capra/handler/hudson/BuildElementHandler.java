@@ -11,42 +11,33 @@
 package org.eclipse.capra.handler.hudson;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.BuildElement;
 
 /**
- * A handler to allow tracing to and from elements handled by the continuous
- * integration server Hudson via the integrated Mylyn facilities. In particular,
- * it is possible to trace to tests and to builds.
+ * A handler to allow tracing to and from build elements handled by the continuous
+ * integration server Hudson via the integrated Mylyn facilities.
  */
-public class BuildElementHandler implements ArtifactHandler {
+public class BuildElementHandler extends AbstractArtifactHandler<BuildElement> {
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		return (selection instanceof BuildElement);
-	}
-
-	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
+	public EObject createWrapper(BuildElement build, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		BuildElement build = (BuildElement) selection;
-
-		EObject buildWrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), build.getUrl(),
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), build.getUrl(),
 				build.getLabel());
-		return buildWrapper;
+		return wrapper;
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
+	public BuildElement resolveWrapper(EObject wrapper) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getDisplayName(Object selection) {
-		BuildElement build = (BuildElement) selection;
+	public String getDisplayName(BuildElement build) {
 		return build.getName();
 	}
 

@@ -11,8 +11,8 @@
 package org.eclipse.capra.handler.jdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
@@ -25,45 +25,35 @@ import org.eclipse.jdt.core.JavaCore;
  * A handler to allow creating traces to and from java elements such as classes
  * and methods based on JDT.
  */
-public class JavaElementHandler implements ArtifactHandler, IAnnotateArtifact {
+public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> implements IAnnotateArtifact {
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		if (selection instanceof IJavaElement) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IJavaElement cu = (IJavaElement) selection;
+	public EObject createWrapper(IJavaElement element, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), cu.getHandleIdentifier(),
-				cu.getElementName());
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), element.getHandleIdentifier(),
+				element.getElementName());
 		return wrapper;
 	}
 
 	@Override
-	public IJavaElement resolveArtifact(EObject artifact) {
+	public IJavaElement resolveWrapper(EObject wrapper) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		String uri = adapter.getArtifactUri(artifact);
+		String uri = adapter.getArtifactUri(wrapper);
 		return JavaCore.create(uri);
 	}
 
 	@Override
-	public String getDisplayName(Object selection) {
-		IJavaElement cu = (IJavaElement) selection;
-		return cu.getElementName();
+	public String getDisplayName(IJavaElement element) {
+		return element.getElementName();
 	}
 
 	@Override
-	public void annotateArtifact(EObject artifact, String annotation) throws AnnotationException {
+	public void annotateArtifact(EObject wrapper, String annotation) throws AnnotationException {
 		IEclipsePreferences preferences = JDTPreferences.getPreferences();
 		if (preferences.getBoolean(JDTPreferences.ANNOTATE_JDT, JDTPreferences.ANNOTATE_JDT_DEFAULT)) {
-			IJavaElement handle = resolveArtifact(artifact);
+			IJavaElement handle = resolveWrapper(wrapper);
 			JDTAnnotate.annotateArtifact(handle, annotation);
 		}
 	}
+
 }

@@ -10,50 +10,28 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.reqif;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.rmf.reqif10.SpecHierarchy;
 import org.eclipse.rmf.reqif10.SpecObject;
-import org.eclipse.rmf.reqif10.impl.SpecHierarchyImpl;
 
-public class ReqIfHandler implements ArtifactHandler {
+public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
+
+	// TODO: This used to expect IStructuredSelection input, why?
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (!(structuredSelection.getFirstElement() == null)) {
-				Object element = structuredSelection.getFirstElement();
-				if (element instanceof SpecHierarchyImpl) {
-					return true;
-				}
-			}
-		}
-		return false;
-
+	public EObject createWrapper(SpecHierarchy spec, EObject artifactModel) {
+		return spec;
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-		Object element = structuredSelection.getFirstElement();
-		SpecHierarchyImpl specification = (SpecHierarchyImpl) element;
-		return specification;
-
+	public SpecHierarchy resolveWrapper(EObject wrapper) {
+		return (SpecHierarchy) wrapper;
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		return artifact;
-	}
-
-	@Override
-	public String getDisplayName(Object selection) {
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-		Object element = structuredSelection.getFirstElement();
-		SpecHierarchyImpl specification = (SpecHierarchyImpl) element;
-		SpecObject specObject = specification.getObject();
-
+	public String getDisplayName(SpecHierarchy spec) {
+		SpecObject specObject = spec.getObject();
 		return specObject.getIdentifier();
 	}
 

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.jface.action.IMenuListener;
@@ -91,9 +91,9 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-			List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-					.filter(handler -> handler.canHandleSelection(element)).collect(Collectors.toList());
+			Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+			List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
+					.filter(handler -> handler.canHandleArtifact(element)).collect(Collectors.toList());
 			if (availableHandlers.size() > 1) {
 				return availableHandlers.get(0).getDisplayName(element);
 			} else
@@ -209,9 +209,9 @@ public class SelectionView extends ViewPart {
 	}
 
 	private boolean validateSelection(Object target) {
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(target)).collect(Collectors.toList());
+		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
+				.filter(handler -> handler.canHandleArtifact(target)).collect(Collectors.toList());
 		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getSite().getShell(), "No handler for selected item",

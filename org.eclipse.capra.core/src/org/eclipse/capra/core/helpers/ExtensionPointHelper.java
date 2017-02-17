@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -45,13 +45,13 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Gets all extensions from the extension point ID and attribute passed.
-	 * 
+	 *
 	 * @param ID
 	 *            the ID of the extension point
-	 * 
+	 *
 	 * @param CONFIG
 	 *            the name of the attribute
-	 * 
+	 *
 	 * @return List of extensions
 	 */
 	public static List<Object> getExtensions(final String ID, final String CONFIG) {
@@ -70,17 +70,19 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Get the executable extension for the extension ID.
-	 * 
+	 *
 	 * @param extensionID
 	 *            The ID of the extension
 	 * @return extension
 	 */
-	public static Optional<ArtifactHandler> getExtension(String extensionID, String ID, String CONFIG) {
+	public static Optional<IArtifactHandler<Object>> getExtension(String extensionID, String ID, String CONFIG) {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtension extension = registry.getExtension(ID, extensionID);
 			IConfigurationElement[] elements = extension.getConfigurationElements();
-			return Optional.of((ArtifactHandler) elements[0].createExecutableExtension(CONFIG));
+			@SuppressWarnings("unchecked")
+			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) elements[0].createExecutableExtension(CONFIG);
+			return Optional.of(handler);
 		} catch (Exception e) {
 			return Optional.empty();
 		}
@@ -88,7 +90,7 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Gets the configured {@link TraceMetaModelAdapter}.
-	 * 
+	 *
 	 * @return The configured {@code TraceMetaModelAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
@@ -103,7 +105,7 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Gets the configured {@link TracePersistenceAdapter}.
-	 * 
+	 *
 	 * @return The configured {@code TracePersistenceAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
@@ -118,7 +120,7 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Gets the configured {@link ArtifactMetaModelAdapter}.
-	 * 
+	 *
 	 * @return The configured {@code ArtifactMetaModelAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
@@ -133,33 +135,33 @@ public class ExtensionPointHelper {
 
 	/**
 	 * Gets the available {@link ArtifactHandler} instances.
-	 * 
+	 *
 	 * @return A collection of all the artifact handlers available. This method
 	 *         collects all plugins that have an extension to the
 	 *         ArtifactHandler Extension point
 	 */
-	public static Collection<ArtifactHandler> getArtifactHandlers() {
+	public static Collection<IArtifactHandler<Object>> getArtifactHandlers() {
 		try {
-			return getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG).stream().map(ArtifactHandler.class::cast)
+			return getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG).stream().map(IArtifactHandler.class::cast)
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			return Collections.<ArtifactHandler>emptyList();
+			return Collections.<IArtifactHandler<Object>>emptyList();
 		}
 	}
 
 	/**
 	 * Return the artifact handler with the given ID.
-	 * 
+	 *
 	 * @param ID
 	 * @return ArtifactHandler
 	 */
-	public static Optional<ArtifactHandler> getArtifactHandler(String ID) {
+	public static Optional<IArtifactHandler<Object>> getArtifactHandler(String ID) {
 		return getExtension(ID, ARTIFACT_HANDLER_ID, ARTIFACT_CONFIG);
 	}
 
 	/**
 	 * Gets the configured {@link PriorityHandler}.
-	 * 
+	 *
 	 * @return The configured {@code PriorityHandler}. If none is configured, an
 	 *         empty instance of {@link Optional} is returned.
 	 */
