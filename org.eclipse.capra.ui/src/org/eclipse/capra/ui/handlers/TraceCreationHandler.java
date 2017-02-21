@@ -22,8 +22,8 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -64,7 +64,7 @@ public class TraceCreationHandler extends AbstractHandler {
 		// add artifact model to resource set
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 
 		List<EObject> selectionAsEObjects = mapSelectionToEObjects(window, artifactModel, artifactHandlers, selection);
 
@@ -84,7 +84,7 @@ public class TraceCreationHandler extends AbstractHandler {
 
 		// Annotate if possible
 		for (EObject artifact : artifacts) {
-			ArtifactHandler handler = adapter.getArtifactHandlerInstance(artifact);
+			IArtifactHandler<Object> handler = adapter.getArtifactHandlerInstance(artifact);
 			if (handler instanceof IAnnotateArtifact) {
 				IAnnotateArtifact h = (IAnnotateArtifact) handler;
 				try {
@@ -119,22 +119,22 @@ public class TraceCreationHandler extends AbstractHandler {
 	}
 
 	private List<EObject> mapSelectionToEObjects(IWorkbenchWindow window, EObject artifactModel,
-			Collection<ArtifactHandler> artifactHandlers, List<Object> selection) {
+			Collection<IArtifactHandler<Object>> artifactHandlers, List<Object> selection) {
 		return selection.stream().map(sel -> convertToEObject(window, sel, artifactHandlers, artifactModel))
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 	}
 
 	private Optional<EObject> convertToEObject(IWorkbenchWindow window, Object sel,
-			Collection<ArtifactHandler> artifactHandlers, EObject artifactModel) {
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(sel)).collect(Collectors.toList());
+			Collection<IArtifactHandler<Object>> artifactHandlers, EObject artifactModel) {
+		List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
+				.filter(handler -> handler.canHandleArtifact(sel)).collect(Collectors.toList());
 		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
 
 		if (availableHandlers.size() == 1) {
-			return Optional.of(availableHandlers.get(0).getEObjectForSelection(sel, artifactModel));
+			return Optional.of(availableHandlers.get(0).createWrapper(sel, artifactModel));
 		} else if (availableHandlers.size() > 1 && priorityHandler.isPresent()) {
-			ArtifactHandler selectedHandler = priorityHandler.get().getSelectedHandler(availableHandlers, sel);
-			return Optional.of(selectedHandler.getEObjectForSelection(sel, artifactModel));
+			IArtifactHandler<Object> selectedHandler = priorityHandler.get().getSelectedHandler(availableHandlers, sel);
+			return Optional.of(selectedHandler.createWrapper(sel, artifactModel));
 		} else {
 			MessageDialog.openWarning(window.getShell(), "No handler for selected item",
 					"There is no handler for " + sel + " so it will be ignored.");

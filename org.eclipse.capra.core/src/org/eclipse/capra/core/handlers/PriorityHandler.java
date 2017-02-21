@@ -31,6 +31,6 @@ public interface PriorityHandler {
 	 * @return one handler
 	 * 
 	 */
-	ArtifactHandler getSelectedHandler(Collection<ArtifactHandler> handlers, Object selectedElement);
+	IArtifactHandler<Object> getSelectedHandler(Collection<IArtifactHandler<Object>> handlers, Object selectedElement);
 
 }

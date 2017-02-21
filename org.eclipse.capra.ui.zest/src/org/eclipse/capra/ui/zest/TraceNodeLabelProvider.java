@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.jface.viewers.LabelProvider;
 
@@ -29,9 +29,9 @@ public class TraceNodeLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(element)).collect(Collectors.toList());
+		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
+				.filter(handler -> handler.canHandleArtifact(element)).collect(Collectors.toList());
 		if (availableHandlers.size() >= 1) {
 			return availableHandlers.get(0).getDisplayName(element);
 		} else

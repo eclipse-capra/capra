@@ -11,9 +11,8 @@
 
 package org.eclipse.capra.handler.office;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.emf.ecore.EObject;
@@ -24,49 +23,32 @@ import org.eclipse.emf.ecore.EObject;
  * @author Dusan Kalanj
  * 
  */
-public class OfficeHandler implements ArtifactHandler {
+public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		return selection instanceof CapraOfficeObject;
-	}
-
-	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
+	public EObject createWrapper(CapraOfficeObject officeObject, EObject artifactModel) {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
-		CapraOfficeObject officeObject = (CapraOfficeObject) selection;
-		if (officeObject != null) {
-			ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-			// TODO here artifactName is the same as the row/paragraph
-			// description. Should it be different?
-			EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-					officeObject.getName());
-			return wrapper;
-		} else {
-			return null;
-		}
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		// TODO here artifactName is the same as the row/paragraph
+		// description. Should it be different?
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
+				officeObject.getName());
+		return wrapper;
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		if (artifact instanceof ArtifactWrapper) {
-			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
-			String uri = wrapper.getUri();
-			CapraOfficeObject object = new CapraOfficeObject();
-			object.setUri(uri);
-			return object;
-		} else
-			return null;
+	public CapraOfficeObject resolveWrapper(EObject wrapper) {
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		String uri = adapter.getArtifactUri(wrapper);
+		CapraOfficeObject object = new CapraOfficeObject();
+		object.setUri(uri);
+		return object;
 	}
 
 	@Override
-	public String getDisplayName(Object selection) {
-		if (selection instanceof CapraOfficeObject) {
-			CapraOfficeObject officeObject = (CapraOfficeObject) selection;
-			return officeObject.getName();
-		} else
-			return null;
+	public String getDisplayName(CapraOfficeObject officeObject) {
+		return officeObject.getName();
 	}
 
 }

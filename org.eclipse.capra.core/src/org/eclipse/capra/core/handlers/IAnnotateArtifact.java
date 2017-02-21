@@ -21,12 +21,12 @@ public interface IAnnotateArtifact {
 	/**
 	 * Annotate artifact with given text
 	 *
-	 * @param artifact
-	 *            Artifact to be annotated
+	 * @param wrapper
+	 *            Wrapper for artifact to be annotated
 	 * @param annotation
 	 *            Annotation text
 	 * @throws AnnotationException
 	 *             Exception thrown by handler if annotation fails
 	 */
-	void annotateArtifact(EObject artifact, String annotation) throws AnnotationException;
+	void annotateArtifact(EObject wrapper, String annotation) throws AnnotationException;
 }

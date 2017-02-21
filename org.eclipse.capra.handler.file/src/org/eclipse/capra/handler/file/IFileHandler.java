@@ -11,7 +11,7 @@
 package org.eclipse.capra.handler.file;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -21,33 +21,28 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * Handler to allow tracing to and from arbitrary files in the file system.
  */
-public class IFileHandler implements ArtifactHandler {
+public class IFileHandler extends AbstractArtifactHandler<IFile> {
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		return selection instanceof IFile;
-	}
-
-	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IFile selectionAsFile = (IFile) selection;
+	public EObject createWrapper(IFile file, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				selectionAsFile.getFullPath().toString(), selectionAsFile.getName());
+				file.getFullPath().toString(), file.getName());
 		return wrapper;
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
+
+	public IFile resolveWrapper(EObject wrapper) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		String uri = adapter.getArtifactUri(artifact);
+		String uri = adapter.getArtifactUri(wrapper);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri));
 		return file;
 	}
 
 	@Override
-	public String getDisplayName(Object selection) {
-		IFile selectionAsFile = (IFile) selection;
-		return selectionAsFile.getName();
+	public String getDisplayName(IFile file) {
+		return file.getName();
 	}
+
 }

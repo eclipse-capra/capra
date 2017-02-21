@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
@@ -110,12 +110,12 @@ public class Connections {
 		String artifactLabel = null;
 		if (object instanceof ArtifactWrapper) {
 			ArtifactWrapper wrapper = (ArtifactWrapper) object;
-			Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+			Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 
-			for (ArtifactHandler handler : artifactHandlers) {
+			for (IArtifactHandler<Object> handler : artifactHandlers) {
 				String handlerName = handler.toString().substring(0, handler.toString().indexOf('@'));
 				if (handlerName.equals(wrapper.getArtifactHandler())) {
-					Object originalObject = handler.resolveArtifact(object);
+					Object originalObject = handler.resolveWrapper(object);
 					if (originalObject != null) {
 						artifactLabel = handler.getDisplayName(originalObject);
 					} else { // original object cannot be resolved
