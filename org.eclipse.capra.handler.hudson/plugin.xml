@@ -13,10 +13,17 @@
 
 <plugin>
    <extension
-         id="org.eclipse.capra.handler.hudson.HudsonHandler"
+         id="org.eclipse.capra.handler.hudson.BuildElementHandler"
          point="org.eclipse.capra.configuration.artifactHandlers">
       <artifactHandler
-            class="org.eclipse.capra.handler.hudson.HudsonHandler">
+            class="org.eclipse.capra.handler.hudson.BuildElementHandler">
+      </artifactHandler>
+   </extension>
+   <extension
+         id="org.eclipse.capra.handler.hudson.TestElementHandler"
+         point="org.eclipse.capra.configuration.artifactHandlers">
+      <artifactHandler
+            class="org.eclipse.capra.handler.hudson.TestElementHandler">
       </artifactHandler>
    </extension>
 
