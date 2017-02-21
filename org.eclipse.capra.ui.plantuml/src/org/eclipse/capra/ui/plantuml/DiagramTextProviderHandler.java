@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.TraceCreationHelper;
@@ -59,14 +60,13 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 		artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 		if (selectedModels.size() > 0) {
-			// check if there is a hander for the selected elements and if yes
-			// get its EObject representation
-			List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-					.filter(handler -> handler.canHandleSelection(selectedModels.get(0))).collect(Collectors.toList());
-			if (availableHandlers.size() >= 1) {
-				selectedObject = availableHandlers.get(0).getEObjectForSelection(selectedModels.get(0), artifactModel);
+			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+			// check if there is a hander for the selected and get its Wrapper
+			IArtifactHandler<Object> handler = artifactHelper.getHandler(selectedModels.get(0));
+			if (handler != null) {
+				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
 
 				if (selectedObject != null) {
 					resourceSet = selectedObject.eResource().getResourceSet();
@@ -82,33 +82,28 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 						return VisualizationHelper.createNeighboursView(traces, selectedObject);
 					} else if (selectedModels.size() == 2) {
 						if (DisplayTracesHandler.isTraceViewTransitive()) {
-							firstModelElements = EMFHelper.linearize(availableHandlers.get(0)
-									.getEObjectForSelection(selectedModels.get(0), artifactModel));
-							secondModelElements = EMFHelper.linearize(availableHandlers.get(0)
-									.getEObjectForSelection(selectedModels.get(1), artifactModel));
+							firstModelElements = EMFHelper
+									.linearize(handler.createWrapper(selectedModels.get(0), artifactModel));
+							secondModelElements = EMFHelper
+									.linearize(handler.createWrapper(selectedModels.get(1), artifactModel));
 						} else {
 							List<EObject> firstObject = new ArrayList<>();
-							firstObject.add(availableHandlers.get(0).getEObjectForSelection(selectedModels.get(0),
-									artifactModel));
+							firstObject.add(handler.createWrapper(selectedModels.get(0), artifactModel));
 							List<EObject> secondObject = new ArrayList<>();
-							secondObject.add(availableHandlers.get(0).getEObjectForSelection(selectedModels.get(1),
-									artifactModel));
+							secondObject.add(handler.createWrapper(selectedModels.get(1), artifactModel));
 							firstModelElements = firstObject;
 							secondModelElements = secondObject;
 						}
 					} else if (selectedModels.size() > 2) {
 						if (DisplayTracesHandler.isTraceViewTransitive()) {
 							firstModelElements = selectedModels.stream()
-									.flatMap(r -> EMFHelper
-											.linearize(
-													availableHandlers.get(0).getEObjectForSelection(r, artifactModel))
-											.stream())
+									.flatMap(r -> EMFHelper.linearize(handler.createWrapper(r, artifactModel)).stream())
 									.collect(Collectors.toList());
 							secondModelElements = firstModelElements;
 						} else {
 							List<EObject> Objects = new ArrayList<>();
 							selectedModels.stream().forEach(o -> {
-								Objects.add(availableHandlers.get(0).getEObjectForSelection(o, artifactModel));
+								Objects.add(handler.createWrapper(o, artifactModel));
 
 							});
 							firstModelElements = Objects;

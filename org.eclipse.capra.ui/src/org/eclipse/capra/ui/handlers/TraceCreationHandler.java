@@ -18,9 +18,10 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.core.helpers.TraceCreationHelper;
+import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -57,10 +58,11 @@ public class TraceCreationHandler extends AbstractHandler {
 		// add artifact model to resource set
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 
-		TraceCreationHelper helper = new TraceCreationHelper(traceModel, artifactModel);
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		TraceHelper traceHelper = new TraceHelper(traceModel);
 
 		// Create the artifact wrappers
-		List<EObject> wrappers = helper.createWrappers(artifacts);
+		List<EObject> wrappers = artifactHelper.createWrappers(artifacts);
 
 		// Get the type of trace to be created
 		Collection<EClass> traceTypes = traceAdapter.getAvailableTraceTypes(wrappers);
@@ -68,9 +70,9 @@ public class TraceCreationHandler extends AbstractHandler {
 
 		// Create trace
 		if (chosenType.isPresent()) {
-			helper.createTrace(wrappers, chosenType.get());
+			traceHelper.createTrace(wrappers, chosenType.get());
 			persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
-			helper.annotateTrace(wrappers);
+			traceHelper.annotateTrace(wrappers);
 		}
 	}
 
@@ -85,8 +87,7 @@ public class TraceCreationHandler extends AbstractHandler {
 		});
 		dialog.setTitle("Select the trace type you want to create");
 		dialog.setElements(traceTypes.toArray());
-		dialog.setMessage("Selection: "
-				+ wrappers.stream().map(EMFHelper::getIdentifier).collect(Collectors.toList()));
+		dialog.setMessage("Selection: " + wrappers.stream().map(EMFHelper::getIdentifier).collect(Collectors.toList()));
 
 		if (dialog.open() == Window.OK) {
 			return Optional.of((EClass) dialog.getFirstResult());
