@@ -55,25 +55,28 @@ public class CapraNotificationHelper {
 
 		try {
 			String newMarkerIssue = markerInfo.get(ISSUE_TYPE);
-			String artifactUri = markerInfo.get(OLD_URI);
+			String newMarkerUri = markerInfo.get(OLD_URI);
 
-			IMarker[] markers = wrapperContainer.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
-			for (IMarker marker : markers) {
-				String existingMarkerIssue = marker.getAttribute(ISSUE_TYPE, null);
-				String existingMarkerUri = marker.getAttribute(OLD_URI, null);
+			IMarker[] existingMarkers = wrapperContainer.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
+			for (IMarker existingMarker : existingMarkers) {
+				String existingMarkerIssue = existingMarker.getAttribute(ISSUE_TYPE, null);
+				String existingMarkerUri = existingMarker.getAttribute(OLD_URI, null);
 
-				// TODO: this looks cumbersome, but it works. The only thing
-				// that doesn't work with this solution is when a user renames
-				// or moves a file, renames/moves it back, and then deletes it.
-				// Markers will appear correctly for the first operation, but if
-				// they are not resolved, the deletion markers won't appear.
-				// This problem disappears if automatic marker removal is
-				// implemented (as described above at the elementChanged
-				// method).
-				if (existingMarkerUri.contentEquals(artifactUri) && (existingMarkerIssue.equals(newMarkerIssue)
-						|| (existingMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue())
-								&& newMarkerIssue.equals(IssueType.DELETED.getValue()))))
-					return;
+				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(newMarkerIssue))
+					existingMarker.delete();
+
+				// The code bellow deletes the marker that signifies a delete
+				// operation in case the new marker signifies a rename/move
+				// operation. The only thing that doesn't work with this
+				// solution is when a user renames/moves a file, renames/moves
+				// it back, and then deletes it. Markers will appear correctly
+				// for the first operation, but they will also stay there, if
+				// the user then deletes the object (there will be two markers,
+				// rename and delete). This problem disappears if automatic
+				// marker removal is implemented (already done for EMF).
+				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(IssueType.DELETED.getValue())
+						&& newMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue()))
+					existingMarker.delete();
 			}
 
 			IMarker marker = wrapperContainer.createMarker(CAPRA_PROBLEM_MARKER_ID);
@@ -87,6 +90,27 @@ public class CapraNotificationHelper {
 		} catch (CoreException e) {
 			if (wrapperContainer.exists())
 				e.printStackTrace();
+		}
+	}
+
+	public static void deleteCapraMarker(String uri, String[] issues, IFile containingFile) {
+		try {
+			IMarker[] markers = containingFile.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
+
+			for (IMarker marker : markers) {
+				String existingMarkerUri = marker.getAttribute(OLD_URI, null);
+				String existingMarkerIssue = marker.getAttribute(ISSUE_TYPE, null);
+
+				if (existingMarkerUri.equals(uri))
+					if (issues == null)
+						marker.delete();
+					else
+						for (String issue : issues)
+							if (existingMarkerIssue.equals(issue))
+								marker.delete();
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 }

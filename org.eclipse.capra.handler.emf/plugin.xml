@@ -19,5 +19,11 @@
             class="org.eclipse.capra.handler.emf.EMFHandler">
       </artifactHandler>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.capra.handler.emf.notification.StartUp">
+      </startup>
+   </extension>
 
 </plugin>

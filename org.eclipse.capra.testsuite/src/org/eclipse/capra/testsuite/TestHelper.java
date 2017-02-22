@@ -217,6 +217,20 @@ public class TestHelper {
 	}
 
 	/**
+	 * Nests a new EPackage inside the provided EPackage.
+	 * 
+	 * @param p
+	 *            a new EPackage
+	 * @param name
+	 *            the name of the created EPackage
+	 */
+	public static void createEPackageInEPackage(EPackage p, String name) {
+		EPackage pkg = EcoreFactory.eINSTANCE.createEPackage();
+		pkg.setName(name);
+		p.getESubpackages().add(pkg);
+	}
+
+	/**
 	 * Persists (saves) the provided Ecore model in the specified project.
 	 * 
 	 * @param project
