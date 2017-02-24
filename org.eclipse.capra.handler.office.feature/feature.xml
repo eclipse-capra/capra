@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.capra.handler.office.feature"
+      label="Capra Traceability for Microsoft Office Documents"
+      version="0.7.0.qualifier"
+      provider-name="Capra Development Team"
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
+
+   <copyright>
+      Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <requires>
+      <import feature="org.eclipse.capra.feature"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.capra.handler.office"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui.office"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.capra.office.feature"
-      label="Capra Microsoft Office Support"
+      id="org.eclipse.capra.ui.zest.feature"
+      label="Capra Traceability Visualisation with Eclipse Zest"
       version="0.7.0.qualifier"
       provider-name="Capra Development Team"
       license-feature="org.eclipse.license"
@@ -15,19 +15,8 @@
       %license
    </license>
 
-   <requires>
-      <import feature="org.eclipse.capra.feature"/>
-   </requires>
-
    <plugin
-         id="org.eclipse.capra.handler.office"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.ui.office"
+         id="org.eclipse.capra.ui.zest"
          download-size="0"
          install-size="0"
          version="0.0.0"

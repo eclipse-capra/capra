@@ -44,13 +44,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.capra.handler.cdt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.capra.handler.emf"
          download-size="0"
          install-size="0"
@@ -79,13 +72,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.capra.handler.jdt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.capra.handler.mylyn"
          download-size="0"
          install-size="0"
@@ -101,13 +87,6 @@
 
    <plugin
          id="org.eclipse.capra.ui.notification"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.ui.plantuml"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -133,24 +112,4 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.capra.ui.cdt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.ui.jdt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.ui.zest"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 </feature>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.capra.handler.feature"
-      label="Capra Traceability for Java"
+      label="Capra Traceability for Specific Artifacts"
       version="0.7.0.qualifier"
       provider-name="Capra Development Team"
       license-feature="org.eclipse.license"
