@@ -6,6 +6,9 @@
    <feature url="features/org.eclipse.capra.office.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.office.feature" version="0.7.0.qualifier">
       <category name="org.eclipse.capra"/>
    </feature>
+   <feature url="features/org.eclipse.capra.handler.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.feature" version="0.7.0.qualifier">
+      <category name="org.eclipse.capra"/>
+   </feature>
    <category-def name="org.eclipse.capra" label="Capra">
       <description>
          Capra is an extensible traceability mangement tool.
