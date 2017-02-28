@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt.preferences;
 
-import org.eclipse.capra.handler.cdt.Activator;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -18,7 +17,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 public class CDTPreferences {
 
     public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
-    public static final String PREFERENCE_NODE = Activator.PLUGIN_ID;
+    public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.cdt";
 
 	// Should annotate C source code?
 	public static final String ANNOTATE_CDT = "ANNOTATE_CDT";

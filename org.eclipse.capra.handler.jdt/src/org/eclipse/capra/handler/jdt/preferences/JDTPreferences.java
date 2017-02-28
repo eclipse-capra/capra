@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.jdt.preferences;
 
-import org.eclipse.capra.handler.jdt.Activator;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -18,7 +17,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 public class JDTPreferences {
 
     public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
-    public static final String PREFERENCE_NODE = Activator.PLUGIN_ID;
+    public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.jdt";
 
 	// Should annotate Java source code?
 	public static final String ANNOTATE_JDT = "ANNOTATE_JDT";
