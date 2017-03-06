@@ -45,6 +45,8 @@
 		<module>org.eclipse.capra.handler.reqIf.feature</module>
 		<module>org.eclipse.capra.handler.papyrus</module>
 		<module>org.eclipse.capra.handler.papyrus.feature</module>
+		<module>org.eclipse.capra.handler.php</module>
+		<module>org.eclipse.capra.handler.php.feature</module>
 		<module>org.eclipse.capra.ui</module>
 		<module>org.eclipse.capra.ui.notification</module>
 		<module>org.eclipse.capra.ui.plantuml</module>
