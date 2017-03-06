@@ -5,7 +5,13 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class CapraNotificationHelper {
 
@@ -15,7 +21,7 @@ public class CapraNotificationHelper {
 	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
 
 	public enum IssueType {
-		RENAMED("renamed"), MOVED("moved"), DELETED("deleted"), CHANGED("changed");
+		RENAMED("renamed"), MOVED("moved"), DELETED("deleted"), CHANGED("changed"), ADDED("added");
 
 		private final String value;
 
@@ -95,7 +101,7 @@ public class CapraNotificationHelper {
 
 	public static void deleteCapraMarker(String uri, String[] issues, IFile containingFile) {
 		try {
-			IMarker[] markers = containingFile.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
+			IMarker[] markers = containingFile.findMarkers(CAPRA_PROBLEM_MARKER_ID, true, 0);
 
 			for (IMarker marker : markers) {
 				String existingMarkerUri = marker.getAttribute(OLD_URI, null);
@@ -112,5 +118,52 @@ public class CapraNotificationHelper {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Converts the platform URI into a file URI. Returns the same object if it
+	 * already is a file URI.
+	 * 
+	 * @param uri
+	 *            the URI to be converted
+	 * @return the same URI in a file scheme
+	 */
+	public static URI convertToFileUri(URI uri) {
+
+		if (!uri.isPlatformResource())
+			return uri;
+		else {
+			String platformUri = uri.toPlatformString(true);
+			IPath filePath = ResourcesPlugin.getWorkspace().getRoot().findMember(platformUri).getRawLocation();
+			URI fileUri = URI.createFileURI(filePath.toString());
+
+			String fragment = uri.fragment();
+			if (fragment != null)
+				fileUri = fileUri.appendFragment(fragment);
+
+			return fileUri;
+		}
+	}
+
+	/**
+	 * Gets the file-scheme URI of an EObject.
+	 * 
+	 * @param eObject
+	 *            the eObject in question
+	 * @return the URI of the eObject with a file scheme
+	 */
+	public static URI getFileUri(EObject eObject) {
+		return convertToFileUri(EcoreUtil.getURI(eObject));
+	}
+
+	/**
+	 * Gets the file-scheme URI of a resource.
+	 * 
+	 * @param resource
+	 *            the resource in question
+	 * @return the URI of the resource with a file scheme
+	 */
+	public static URI getFileUri(Resource resource) {
+		return convertToFileUri(resource.getURI());
 	}
 }

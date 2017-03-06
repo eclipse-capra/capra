@@ -10,16 +10,21 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
+import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
+import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -49,27 +54,45 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 	public void run(IMarker marker) {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) awc).getArtifacts();
+		EObject model = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
 
-		String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
-		for (ArtifactWrapper aw : artifacts) {
-			if (aw.getUri().equals(oldArtifactUri)) {
-				String newArtifactUri = marker.getAttribute(CapraNotificationHelper.NEW_URI, null);
-				aw.setUri(newArtifactUri);
-				// TODO maybe this attribute can be deleted now? Wait and see if
-				// it is necessary in any of the handlers.
-				aw.setPath(newArtifactUri);
-				aw.setName(marker.getAttribute(CapraNotificationHelper.NEW_NAME, null));
-				break;
+		String artifactContainerFileName = model.eResource().getURI().lastSegment();
+		String markerFileName = new File(marker.getResource().toString()).getName();
+
+		if (markerFileName.equals(artifactContainerFileName)) {
+			List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) model).getArtifacts();
+			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
+			for (ArtifactWrapper aw : artifacts) {
+				if (aw.getUri().equals(oldArtifactUri)) {
+					String newArtifactUri = marker.getAttribute(CapraNotificationHelper.NEW_URI, null);
+					aw.setUri(newArtifactUri);
+					aw.setPath(newArtifactUri);
+					aw.setName(marker.getAttribute(CapraNotificationHelper.NEW_NAME, null));
+					break;
+				}
+			}
+
+		} else {
+			model = tracePersistenceAdapter.getTraceModel(resourceSet);
+			List<RelatedTo> traces = ((GenericTraceModel) model).getTraces();
+			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
+			URI markerUri = URI.createURI(oldArtifactUri);
+			for (RelatedTo trace : traces) {
+				for (EObject item : trace.getItem()) {
+					URI itemUri = CapraNotificationHelper.getFileUri(item);
+					if (markerUri.equals(itemUri)) {
+						URI newUri = URI.createURI(marker.getAttribute(CapraNotificationHelper.NEW_URI, null));
+						((InternalEObject) item).eSetProxyURI(newUri);
+					}
+				}
 			}
 		}
 
-		Resource resourceForArtifacts = resourceSet.createResource(EcoreUtil.getURI(awc));
-		resourceForArtifacts.getContents().add((ArtifactWrapperContainer) awc);
+		Resource resource = resourceSet.createResource(EcoreUtil.getURI(model));
+		resource.getContents().add(model);
 
 		try {
-			resourceForArtifacts.save(null);
+			resource.save(null);
 			marker.delete();
 		} catch (IOException e) {
 			e.printStackTrace();
