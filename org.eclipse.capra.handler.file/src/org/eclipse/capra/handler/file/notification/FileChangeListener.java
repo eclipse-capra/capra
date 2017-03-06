@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+<< * Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,6 @@ public class FileChangeListener implements IResourceChangeListener {
 		for (ArtifactWrapper aw : fileArtifacts) {
 
 			if (aw.getUri().equals(delta.getFullPath().toString())) {
-
 				int changeType = delta.getKind();
 				IssueType issueType = null;
 
@@ -107,15 +106,20 @@ public class FileChangeListener implements IResourceChangeListener {
 
 					if (toPath == null)
 						issueType = IssueType.DELETED;
-					else if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
+					else if (delta.getFullPath().toFile().getName().equals(toPath.toFile().getName()))
 						issueType = IssueType.MOVED;
 					else
 						issueType = IssueType.RENAMED;
 
 				} else if (changeType == IResourceDelta.CHANGED)
 					issueType = IssueType.CHANGED;
+				else if (changeType == IResourceDelta.ADDED)
+					issueType = IssueType.ADDED;
 
-				if (issueType != null) {
+				if (issueType == IssueType.ADDED)
+					CapraNotificationHelper.deleteCapraMarker(aw.getUri(),
+							new String[] { "moved", "renamed", "deleted" }, wrapperContainer);
+				else {
 					HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 					CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 				}
@@ -155,6 +159,8 @@ public class FileChangeListener implements IResourceChangeListener {
 			break;
 		case CHANGED:
 			message = oldArtifactUri + " has been changed. Please check if associated trace links are still valid.";
+			break;
+		case ADDED:
 			break;
 		}
 
