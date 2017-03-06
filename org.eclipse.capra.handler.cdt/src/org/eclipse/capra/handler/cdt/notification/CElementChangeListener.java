@@ -25,6 +25,7 @@ import org.eclipse.cdt.core.model.ElementChangedEvent;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.cdt.core.model.ICElementDelta;
 import org.eclipse.cdt.core.model.IElementChangedListener;
+import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -72,52 +73,73 @@ public class CElementChangeListener implements IElementChangedListener {
 	}
 
 	private void visit(ICElementDelta delta, List<ArtifactWrapper> cArtifacts, IFile wrapperContainer) {
-
 		// Visit all the affected children of affected element
 		for (ICElementDelta subDelta : delta.getAffectedChildren())
 			visit(subDelta, cArtifacts, wrapperContainer);
 
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
+		ICElement affectedElement = delta.getElement();
 		IssueType issueType = null;
 
+		if (changeType == ICElementDelta.ADDED)
+			issueType = IssueType.ADDED;
 		// TODO doesn't work if a source folder is renamed - it says that the
 		// children have been deleted, instead of that their ancestor was
 		// renamed. But renaming the src folder isn't good practice anyway.
-		if (changeType == ICElementDelta.REMOVED) {
+		else if (changeType == ICElementDelta.REMOVED) {
 
 			if ((flags & ICElementDelta.F_MOVED_TO) != 0)
-				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName()))
+				if (delta.getMovedToElement().getElementName().equals(affectedElement.getElementName()))
 					issueType = IssueType.MOVED;
 				else
 					issueType = IssueType.RENAMED;
-			else
-				issueType = IssueType.DELETED;
+			else {
+				if (!(affectedElement instanceof ITranslationUnit
+						&& ((ITranslationUnit) affectedElement).isWorkingCopy()))
+					issueType = IssueType.DELETED;
+			}
 
 		} else if (changeType == ICElementDelta.CHANGED)
 			issueType = IssueType.CHANGED;
 
 		if (issueType != null) {
-			String affectedElementUri = delta.getElement().getHandleIdentifier();
+			String affectedElementUri = affectedElement.getHandleIdentifier();
+			if (affectedElementUri != null) {
+				for (ArtifactWrapper aw : cArtifacts) {
+					String artifactUri = aw.getUri();
+					// If the change type is "CHANGED", meaning that the element
+					// wasn't deleted, renamed, added or moved, only consider
+					// making a marker if the URI of the affected element is the
+					// same as the URI in the wrapper.
+					if (issueType == IssueType.CHANGED && !artifactUri.equals(affectedElementUri))
+						continue;
+					// Otherwise (the change is either "delete", "move" or
+					// "rename"), consider making the marker for the affected
+					// element as well as its children, who's URIs have changed
+					// and need updating.
+					String[] markersToDelete = null;
+					String deleteMarkerUri = "";
+					if (issueType == IssueType.MOVED || issueType == IssueType.RENAMED) {
+						deleteMarkerUri = delta.getMovedToElement().getHandleIdentifier();
+						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+					} else if (issueType == IssueType.DELETED) {
+						markersToDelete = new String[] { "moved", "renamed", "changed" };
+						deleteMarkerUri = affectedElementUri;
+					} else if (issueType == IssueType.ADDED) {
+						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+						deleteMarkerUri = affectedElementUri;
+					}
 
-			for (ArtifactWrapper aw : cArtifacts) {
-				String artifactUri = aw.getUri();
+					if (!deleteMarkerUri.isEmpty() && artifactUri.contains(deleteMarkerUri))
+						CapraNotificationHelper.deleteCapraMarker(artifactUri, markersToDelete, wrapperContainer);
 
-				// If the change type is "CHANGED", meaning that the element
-				// wasn't deleted, renamed, added or moved, only consider making
-				// a marker if the URI of the affected element is the same as
-				// the URI in the wrapper.
-				if (changeType == ICElementDelta.CHANGED && !artifactUri.contentEquals(affectedElementUri))
-					continue;
-				// Otherwise (the change is either "delete", "move" or
-				// "rename"), consider making the marker for the affected
-				// element as well as its children, who's URIs have changed and
-				// need updating.
-				else if (artifactUri.contains(affectedElementUri)) {
-					HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
+					if (artifactUri.contains(affectedElementUri)) {
+						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 
-					if (markerInfo != null)
-						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+						if (markerInfo != null)
+							CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+					}
 				}
 			}
 		}
@@ -189,6 +211,8 @@ public class CElementChangeListener implements IElementChangedListener {
 			break;
 		case CHANGED:
 			message = aw.getUri() + " has been edited. Please check if associated trace links are still valid.";
+			break;
+		case ADDED:
 			break;
 		}
 

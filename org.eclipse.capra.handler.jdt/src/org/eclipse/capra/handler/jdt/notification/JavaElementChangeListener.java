@@ -81,7 +81,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	}
 
 	private void visit(IJavaElementDelta delta, List<ArtifactWrapper> javaArtifacts, IFile wrapperContainer) {
-
+		
 		// If the changes are not made manually (by typing in the
 		// editor) this recursion only goes as far as the source file. The
 		// changes to the child elements of the source file have to be
@@ -98,7 +98,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		int changeType = delta.getKind();
 		IssueType issueType = null;
 
-		if (changeType == IJavaElementDelta.REMOVED) {
+		if (changeType == IJavaElementDelta.ADDED)
+			issueType = IssueType.ADDED;
+		else if (changeType == IJavaElementDelta.REMOVED) {
 
 			if ((flags & IJavaElementDelta.F_MOVED_TO) != 0)
 				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName()))
@@ -113,25 +115,36 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			issueType = IssueType.CHANGED;
 
 		if (issueType != null) {
-			for (ArtifactWrapper aw : javaArtifacts) {
-				String artifactUri = aw.getUri();
+			String affectedElementUri = delta.getElement().getHandleIdentifier();
+			if (affectedElementUri != null) {
+				for (ArtifactWrapper aw : javaArtifacts) {
+					String artifactUri = aw.getUri();
+					// Only create a marker if a signature of a
+					// method/variable/class... has changed inside of a source
+					// file.
 
-				// Only create a marker if a signature of a
-				// method/variable/class... has changed inside of a source file.
-				IJavaElement el = JavaCore.create(artifactUri);
-				if (issueType.equals(IssueType.CHANGED) && el != null && el.exists())
-					continue;
+					String[] markersToDelete = null;
+					String deleteMarkerUri = "";
+					if (issueType == IssueType.MOVED || issueType == IssueType.RENAMED) {
+						deleteMarkerUri = delta.getMovedToElement().getHandleIdentifier();
+						markersToDelete = new String[] { "moved", "renamed", "deleted"};
+					} else if (issueType == IssueType.DELETED) {
+						markersToDelete = new String[] { "moved", "renamed", "changed" };
+						deleteMarkerUri = affectedElementUri;
+					} else if (issueType == IssueType.ADDED) {
+						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+						deleteMarkerUri = affectedElementUri;
+					}
+					
+					if (!deleteMarkerUri.isEmpty() && artifactUri.contains(deleteMarkerUri))
+						CapraNotificationHelper.deleteCapraMarker(artifactUri, markersToDelete, wrapperContainer);
 
-				if (artifactUri.contains(delta.getElement().getHandleIdentifier())) {
+					if (artifactUri.contains(affectedElementUri)) {
+						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 
-					// This is true if the Java element from the wrapper doesn't
-					// exist anymore (was deleted or had a change in signature)
-					// and if the delta contains an element that is in the
-					// wrapper or is an ancestor of the element in the wrapper.
-					HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
-
-					if (markerInfo != null)
-						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+						if (markerInfo != null)
+							CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+					}
 				}
 			}
 		}
