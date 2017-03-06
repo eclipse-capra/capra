@@ -87,7 +87,8 @@ public class ModelChangeListener extends EContentAdapter {
 					oldResource = newResourceSet.getResource(EcoreUtil.getURI(tracedItem).trimFragment(), true);
 
 				if (oldResource != null) {
-					if (getFileUri(oldResource).equals(getFileUri(changedResource))) {
+					if (CapraNotificationHelper.getFileUri(oldResource)
+							.equals(CapraNotificationHelper.getFileUri(changedResource))) {
 						IComparisonScope scope = new DefaultComparisonScope(changedResource, oldResource, null);
 						// Build a comparison object with EMFCompare and
 						// recursively resolve the Match elements.
@@ -114,8 +115,8 @@ public class ModelChangeListener extends EContentAdapter {
 			// Potentially deletes an existing marker, if the state of the
 			// newObject is the same as the state of the same object in the
 			// previously saved resource.
-			URI oldUri = getFileUri(tracedItem);
-			if (getFileUri(newObject).equals(oldUri))
+			URI oldUri = CapraNotificationHelper.getFileUri(tracedItem);
+			if (CapraNotificationHelper.getFileUri(newObject).equals(oldUri))
 				CapraNotificationHelper.deleteCapraMarker(oldUri.toString(), null, traceContainer);
 		}
 
@@ -146,14 +147,14 @@ public class ModelChangeListener extends EContentAdapter {
 	 *            the file to which the marker will be attached
 	 */
 	private void createCapraMarker(EObject tracedItem, Match match, DifferenceKind diffKind, IFile file) {
-		String oldUri = getFileUri(tracedItem).toString();
+		String oldUri = CapraNotificationHelper.getFileUri(tracedItem).toString();
 		String oldName = (String) tracedItem.eGet(tracedItem.eClass().getEStructuralFeature("name"));
 
 		EObject changedObject = match.getLeft();
 		String newUri = "";
 		String newName = "";
 		if (changedObject != null) {
-			newUri = getFileUri(changedObject).toString();
+			newUri = CapraNotificationHelper.getFileUri(changedObject).toString();
 			newName = (String) changedObject.eGet(changedObject.eClass().getEStructuralFeature("name"));
 		}
 
@@ -193,52 +194,5 @@ public class ModelChangeListener extends EContentAdapter {
 			markerInfo.put(CapraNotificationHelper.NEW_NAME, newName);
 			CapraNotificationHelper.createCapraMarker(markerInfo, file);
 		}
-	}
-
-	/**
-	 * Converts the platform URI into a file URI. Returns the same object if it
-	 * already is a file URI.
-	 * 
-	 * @param uri
-	 *            the URI to be converted
-	 * @return the same URI in a file scheme
-	 */
-	private URI convertToFileUri(URI uri) {
-
-		if (!uri.isPlatformResource())
-			return uri;
-		else {
-			String platformUri = uri.toPlatformString(true);
-			IPath filePath = ResourcesPlugin.getWorkspace().getRoot().findMember(platformUri).getRawLocation();
-			URI fileUri = URI.createFileURI(filePath.toString());
-
-			String fragment = uri.fragment();
-			if (fragment != null)
-				fileUri = fileUri.appendFragment(fragment);
-
-			return fileUri;
-		}
-	}
-
-	/**
-	 * Gets the file-scheme URI of an EObject.
-	 * 
-	 * @param eObject
-	 *            the eObject in question
-	 * @return the URI of the eObject with a file scheme
-	 */
-	private URI getFileUri(EObject eObject) {
-		return convertToFileUri(EcoreUtil.getURI(eObject));
-	}
-
-	/**
-	 * Gets the file-scheme URI of a resource.
-	 * 
-	 * @param resource
-	 *            the resource in question
-	 * @return the URI of the resource with a file scheme
-	 */
-	private URI getFileUri(Resource resource) {
-		return convertToFileUri(resource.getURI());
 	}
 }

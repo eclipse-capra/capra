@@ -11,6 +11,7 @@
 
 package org.eclipse.capra.ui.notification;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,29 +59,56 @@ public class DeleteQuickFix implements IMarkerResolution {
 
 		ResourceSet resourceSet = new ResourceSetImpl();
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
-		GenericTraceModel simpleTM = (GenericTraceModel) traceModel;
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactWrapperContainer awc = (ArtifactWrapperContainer) tracePersistenceAdapter
+				.getArtifactWrappers(resourceSet);
+		GenericTraceModel traceModel = (GenericTraceModel) tracePersistenceAdapter.getTraceModel(resourceSet);
 
-		List<RelatedTo> traces = simpleTM.getTraces();
+		List<RelatedTo> traces = traceModel.getTraces();
 		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		List<ArtifactWrapper> fileArtifacts = ((ArtifactWrapperContainer) awc).getArtifacts();
+		List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) awc).getArtifacts();
 		List<RelatedTo> toDelete = new ArrayList<>();
 
-		int index = 0;
-		for (ArtifactWrapper aw : fileArtifacts) {
-			if (aw.getUri().equals(marker.getAttribute(CapraNotificationHelper.OLD_URI, null))) {
-				List<Connection> connections = traceMetamodelAdapter.getConnectedElements(aw, traceModel);
-				connections.forEach(c -> {
-					for (RelatedTo t : traces)
-						if (c.getTlink().equals(t))
-							toDelete.add(t);
-				});
+		String artifactContainerFileName = awc.eResource().getURI().lastSegment();
+		String markerContainerFileName = new File(marker.getResource().toString()).getName();
+		String markerUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
 
-				break;
+		if (markerContainerFileName.equals(artifactContainerFileName)) {
+			int index = 0;
+			for (ArtifactWrapper aw : artifacts) {
+				if (aw.getUri().equals(markerUri)) {
+					List<Connection> connections = traceMetamodelAdapter.getConnectedElements(aw, traceModel);
+					connections.forEach(c -> {
+						for (RelatedTo t : traces)
+							if (c.getTlink().equals(t))
+								toDelete.add(t);
+					});
+					break;
+				}
+				index++;
 			}
 
-			index++;
+			ArtifactWrapper toRemove = awc.getArtifacts().get(index);
+			EcoreUtil.delete(toRemove);
+			URI artifactModelURI = EcoreUtil.getURI(awc);
+			Resource resourceForArtifacts = resourceSet.createResource(artifactModelURI);
+			resourceForArtifacts.getContents().add(awc);
+
+			try {
+				resourceForArtifacts.save(null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			URI deletedEObjectUri = URI.createURI(markerUri);
+			for (RelatedTo trace : traceModel.getTraces()) {
+				for (EObject item : trace.getItem()) {
+					URI itemUri = CapraNotificationHelper.getFileUri(item);
+					if (deletedEObjectUri.equals(itemUri)) {
+						toDelete.add(trace);
+						break;
+					}
+				}
+			}
 		}
 
 		traces.removeAll(toDelete);
@@ -89,20 +117,11 @@ public class DeleteQuickFix implements IMarkerResolution {
 		URI traceModelURI = EcoreUtil.getURI(traceModel);
 		Resource resourceForTraces = resourceSet.createResource(traceModelURI);
 		resourceForTraces.getContents().add(newTraceModel);
-		ArtifactWrapperContainer container = (ArtifactWrapperContainer) awc;
-		ArtifactWrapper toRemove = container.getArtifacts().get(index);
-		EcoreUtil.delete(toRemove);
-		URI artifactModelURI = EcoreUtil.getURI(awc);
-		Resource resourceForArtifacts = resourceSet.createResource(artifactModelURI);
-		resourceForArtifacts.getContents().add(container);
 
 		try {
 			resourceForTraces.save(null);
-			resourceForArtifacts.save(null);
 			marker.delete();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
+		} catch (IOException | CoreException e) {
 			e.printStackTrace();
 		}
 	}
