@@ -110,6 +110,15 @@ public class TestNotificationCMethod {
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		currMarkerLength = markers.length;
+
+		// Undo operation
+		cSourceFile.delete(true, new NullProgressMonitor());
+		createCSourceFileInProject("CSource.c", cProject);
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 
 	/**
@@ -157,6 +166,15 @@ public class TestNotificationCMethod {
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "changed");
+		currMarkerLength = markers.length;
+
+		// Undo operation
+		cSourceFile.delete(true, new NullProgressMonitor());
+		createCSourceFileInProject("CSource.c", cProject);
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 
 	/**
@@ -178,9 +196,15 @@ public class TestNotificationCMethod {
 		ITranslationUnit cSourceFile = createCSourceFileInProject("CSource.c", cProject);
 		IFunction method = (IFunction) cSourceFile.getChildrenOfType(74).get(0);
 
+		// Create a model
+		EPackage a = TestHelper.createEcoreModel("modelA");
+		createEClassInEPackage(a, "A");
+		save(cProject.getProject(), a);
+		EClass A = (EClass) a.getEClassifier("A");
+
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
-		SelectionView.getOpenedView().dropToSelection(cProject);
+		SelectionView.getOpenedView().dropToSelection(A);
 		SelectionView.getOpenedView().dropToSelection(method);
 		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
 
@@ -195,6 +219,15 @@ public class TestNotificationCMethod {
 
 		// Check if there are two new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
-		assertEquals(currMarkerLength + 2, markers.length);
+		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		currMarkerLength = markers.length;
+
+		// Undo operation
+		cProject = createCDTProject("TestProject");
+		createCSourceFileInProject("CSource.c", cProject);
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 }

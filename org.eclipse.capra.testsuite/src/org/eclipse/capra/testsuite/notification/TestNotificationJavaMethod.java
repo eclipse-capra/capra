@@ -24,7 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
@@ -61,7 +63,7 @@ public class TestNotificationJavaMethod {
 		clearWorkspace();
 		resetSelectionView();
 	}
-	
+
 	@Rule
 	public TestRetry retry = new TestRetry(5);
 
@@ -78,6 +80,7 @@ public class TestNotificationJavaMethod {
 
 		// Create a project with a Java source file
 		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		String classSource = javaClass.getSource();
 		IMethod method = (IMethod) javaClass.getChildren()[0];
 		assertTrue(projectExists("TestProject"));
 
@@ -109,6 +112,18 @@ public class TestNotificationJavaMethod {
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		currMarkerLength = markers.length;
+
+		// Undo operation
+		File classFile = javaClass.getResource().getLocation().makeAbsolute().toFile();
+		PrintWriter writer = new PrintWriter(classFile);
+		writer.write(classSource);
+		writer.close();		
+		root.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(3000);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 
 	/**
@@ -149,12 +164,22 @@ public class TestNotificationJavaMethod {
 
 		// Rename method and wait a bit for the
 		// ResourceChangedListener to trigger
+		String oldName = method.getElementName();
 		method.rename("stillDoNothing", true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(300);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		currMarkerLength = markers.length;
+		
+		// Undo operation
+		method = (IMethod) javaClass.getChildren()[0];
+		method.rename(oldName, true, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 
 	/**
@@ -201,5 +226,13 @@ public class TestNotificationJavaMethod {
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
+		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		currMarkerLength = markers.length;
+		
+		// Undo operation
+		createJavaProjectWithASingleJavaClass("TestProject");
+		TimeUnit.MILLISECONDS.sleep(300);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
 	}
 }
