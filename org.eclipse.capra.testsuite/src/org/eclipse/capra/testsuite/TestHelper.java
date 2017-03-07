@@ -94,12 +94,13 @@ public class TestHelper {
 	 *            the name of the project
 	 * @throws CoreException
 	 */
-	public static void createSimpleProject(String projectName) throws CoreException {
+	public static IProject createSimpleProject(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 
 		IProgressMonitor progressMonitor = new NullProgressMonitor();
 		project.create(progressMonitor);
 		project.open(progressMonitor);
+		return project;
 	}
 
 	/**
