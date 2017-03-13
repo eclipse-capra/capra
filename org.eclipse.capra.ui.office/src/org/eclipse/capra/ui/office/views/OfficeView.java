@@ -34,6 +34,7 @@ import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.objects.CapraExcelRow;
+import org.eclipse.capra.ui.office.objects.CapraGoogleSheetsRow;
 import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
 import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
@@ -127,6 +128,16 @@ public class OfficeView extends ViewPart {
 	 * The name of the sheet that is currently displayed in the Office view.
 	 */
 	private String selectedSheetName;
+
+	/**
+	 * The file that is currently displayed in the view.
+	 */
+	private File selectedFile;
+
+	/**
+	 * The ID of the file (non-null only if acquired from Google Drive)
+	 */
+	private String selectedFileId;
 
 	/**
 	 * Instance of OfficeSourceProvider (used for hiding context menu options)
@@ -292,7 +303,7 @@ public class OfficeView extends ViewPart {
 		String fileExtension = Files.getFileExtension(file.getName());
 
 		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS))
-			parseExcelDocument(file, null);
+			parseExcelDocument(file, null, null);
 		else if (fileExtension.equals(CapraOfficeObject.DOCX))
 			parseWordDocument(file);
 		else
@@ -308,8 +319,12 @@ public class OfficeView extends ViewPart {
 	 * @param sheetName
 	 *            the name of the sheet that should be displayed in the Office
 	 *            view. If null, the currently active sheet will be displayed.
+	 * @param fileId
+	 *            the id of the file. If provided it will be used when creating
+	 *            the URI of the objects, otherwise (if null) the path of the
+	 *            containing file will be used instead.
 	 */
-	private void parseExcelDocument(File officeFile, String sheetName) {
+	public void parseExcelDocument(File officeFile, String sheetName, String fileId) {
 
 		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
 		Workbook workBook;
@@ -337,11 +352,9 @@ public class OfficeView extends ViewPart {
 			try {
 				activeSheetIndex = workBook.getActiveSheetIndex();
 			} catch (NullPointerException e1) {
-				e1.printStackTrace();
 				try {
 					activeSheetIndex = workBook.getFirstVisibleTab();
 				} catch (NullPointerException e2) {
-					e2.printStackTrace();
 					activeSheetIndex = 0;
 				}
 			}
@@ -399,13 +412,20 @@ public class OfficeView extends ViewPart {
 		}
 
 		selectedSheetName = sheetToDisplay.getSheetName();
+		selectedFile = officeFile;
+		selectedFileId = fileId;
 
 		// Populate the view with Excel rows
 		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
 		for (int i = 0; i <= sheetToDisplay.getLastRowNum(); i++) {
 			Row row = sheetToDisplay.getRow(i);
 			if (row != null) {
-				CapraExcelRow cRow = new CapraExcelRow(officeFile, row, idColumn);
+				CapraOfficeObject cRow;
+				if (fileId == null)
+					cRow = new CapraExcelRow(officeFile, row, idColumn);
+				else
+					cRow = new CapraGoogleSheetsRow(officeFile, row, idColumn, fileId);
+
 				if (!cRow.getData().isEmpty())
 					selection.add(cRow);
 			}
@@ -442,6 +462,7 @@ public class OfficeView extends ViewPart {
 		}
 
 		clearSelection();
+		selectedFile = officeFile;
 
 		// Populate the view with Word requirements
 		String fieldName = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.WORD_FIELD_NAME);
@@ -512,6 +533,8 @@ public class OfficeView extends ViewPart {
 		viewer.refresh();
 		provider.setResource(null);
 		selectedSheetName = null;
+		selectedFile = null;
+		selectedFileId = null;
 		isSheetEmptyMap = null;
 	}
 
@@ -549,7 +572,7 @@ public class OfficeView extends ViewPart {
 		if (selection.isEmpty())
 			return;
 		else if (selection.get(0) instanceof CapraExcelRow)
-			parseExcelDocument(selection.get(0).getFile(), sheetName);
+			parseExcelDocument(selectedFile, sheetName, selectedFileId);
 	}
 
 	/**
@@ -597,9 +620,9 @@ public class OfficeView extends ViewPart {
 			return;
 
 		if (selection.get(0) instanceof CapraExcelRow)
-			parseExcelDocument(selection.get(0).getFile(), selectedSheetName);
+			parseExcelDocument(selectedFile, selectedSheetName, selectedFileId);
 		else if (selection.get(0) instanceof CapraWordRequirement)
-			parseWordDocument(selection.get(0).getFile());
+			parseWordDocument(selectedFile);
 	}
 
 	private void hookContextMenu() {

@@ -171,8 +171,8 @@ public class CapraOfficeObject {
 	 *
 	 * @return a uri of the object in the form of filePath/objectID
 	 */
-	public static String createUri(File officeFile, Object objectId) {
-		return officeFile.getAbsolutePath() + URI_DELIMITER + objectId;
+	public static String createUri(String fileId, String objectId) {
+		return fileId + URI_DELIMITER + objectId;
 	}
 
 	/**

@@ -1,0 +1,55 @@
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.capra.ui.views"
+			name="Capra Views">
+      </category>
+	  <view
+			category="org.eclipse.capra.ui.views"
+			class="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
+			icon="icons/selectionView.png"
+			id="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
+			name="Drive Selection View">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+			id="org.eclipse.capra.ui.drive.openInBrowser"
+            name="Open in browser">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.drive.openInOfficeView"
+            name="Open in Capra Office view">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.capra.ui.drive.CapraGoogleDriveView?after=additions">
+         <command
+               commandId="org.eclipse.capra.ui.drive.openInBrowser"
+               label="Open in browser"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.drive.openInOfficeView"
+               label="Open in Capra Office view"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.drive.OpenInBrowserHandler"
+            commandId="org.eclipse.capra.ui.drive.openInBrowser">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.drive.OpenInOfficeViewHandler"
+            commandId="org.eclipse.capra.ui.drive.openInOfficeView">
+      </handler>
+   </extension>
+</plugin>

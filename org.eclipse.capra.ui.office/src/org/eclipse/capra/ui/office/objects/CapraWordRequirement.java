@@ -97,7 +97,7 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		rText = rText.replaceAll(LINE_BREAKS_AND_CONTROL_REGEX, " ").trim();
 		if (!rText.isEmpty()) {
 			rText = "ID " + rId + ": " + rText;
-			String pUri = CapraOfficeObject.createUri(officeFile, rId);
+			String pUri = createUri(officeFile.getAbsolutePath(), rId);
 
 			this.setData(rText);
 			this.setUri(pUri);

@@ -118,7 +118,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 
 			String rowContent = (m.replaceAll(" ")).trim();
 			String rowUriEnd = row.getSheet().getSheetName() + CapraOfficeObject.URI_DELIMITER + rowId;
-			String rowUri = CapraOfficeObject.createUri(officeFile, rowUriEnd);
+			String rowUri = createUri(officeFile.getAbsolutePath(), rowUriEnd);
 
 			this.setData(rowContent);
 			this.setUri(rowUri);
@@ -220,7 +220,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		return itemId.substring(lastIndexOfDelimiter + CapraOfficeObject.URI_DELIMITER.length());
 	}
 
-	private String getRowIdFromExcelRow(Row row) {
+	protected String getRowIdFromExcelRow(Row row) {
 		String rowId = "";
 		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT))
 			rowId = Integer.toString(row.getRowNum() + 1);
