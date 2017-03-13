@@ -32,7 +32,7 @@
    </feature>
    <category-def name="org.eclipse.capra" label="Capra Traceability">
       <description>
-         Capra is an extensible traceability mangement tool.
+         Capra is an extensible traceability management tool.
       </description>
    </category-def>
    <category-def name="org.eclipse.capra.handler" label="Capra Traceability Handlers">
