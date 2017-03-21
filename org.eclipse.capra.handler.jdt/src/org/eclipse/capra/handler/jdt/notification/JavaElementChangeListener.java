@@ -8,7 +8,6 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-
 package org.eclipse.capra.handler.jdt.notification;
 
 import java.util.HashMap;
@@ -51,11 +50,6 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class JavaElementChangeListener implements IElementChangedListener {
 
-	// TODO Before checking (inside this method) if any markers should be
-	// created, would it also make sense to check, if any of the markers should
-	// be deleted (as a result of undo operations)? For example, if there are
-	// existing markers that say that a file has been deleted, there could be a
-	// simple exists() check on the element. If it does, remove the marker.
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 
@@ -74,13 +68,13 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		new WorkspaceJob(CapraNotificationHelper.NOTIFICATION_JOB) {
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-				visit(event.getDelta(), javaArtifacts, wrapperContainer);
+				handleDelta(event.getDelta(), javaArtifacts, wrapperContainer);
 				return Status.OK_STATUS;
 			}
 		}.schedule();
 	}
 
-	private void visit(IJavaElementDelta delta, List<ArtifactWrapper> javaArtifacts, IFile wrapperContainer) {
+	private void handleDelta(IJavaElementDelta delta, List<ArtifactWrapper> javaArtifacts, IFile wrapperContainer) {
 
 		// If the changes are not made manually (by typing in the
 		// editor) this recursion only goes as far as the source file. The
@@ -92,7 +86,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		if (!(delta.getElement() instanceof ICompilationUnit))
 			// Only go as far as the source file
 			for (IJavaElementDelta subDelta : delta.getAffectedChildren())
-				visit(subDelta, javaArtifacts, wrapperContainer);
+				handleDelta(subDelta, javaArtifacts, wrapperContainer);
 
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
@@ -123,14 +117,14 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					// method/variable/class... has changed inside of a source
 					// file.
 
-					String[] markersToDelete = null;
+					IssueType[] markersToDelete = null;
 					String deleteMarkerUri = "";
 					IJavaElement element = JavaCore.create(artifactUri);
 					if (element != null && element.exists()) {
 						deleteMarkerUri = artifactUri;
-						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED };
 					} else if (issueType == IssueType.DELETED) {
-						markersToDelete = new String[] { "moved", "renamed", "changed" };
+						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.CHANGED };
 						deleteMarkerUri = affectedElementUri;
 					}
 
@@ -139,9 +133,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 
 					if (artifactUri.contains(affectedElementUri)) {
 						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
-
-						if (!markerInfo.isEmpty())
-							CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
 				}
 			}
@@ -230,53 +222,52 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			break;
 		}
 
-		if (!message.isEmpty()) {
-			// The affected element has been renamed or moved.
-			if (newAffectedElementUri != null) {
+		// The affected element has been renamed or moved.
+		if (newAffectedElementUri != null) {
 
-				String newArtifactUri;
-				String newArtifactName;
-				if (oldArtifactUri.equals(oldAffectedElementUri)) {
-					// The element in the wrapper is the affected element.
-					newArtifactUri = newAffectedElementUri;
-					newArtifactName = newAffectedElementName;
-				} else {
-					// The element in the wrapper is a child of the affected
-					// element.
+			String newArtifactUri;
+			String newArtifactName;
+			if (oldArtifactUri.equals(oldAffectedElementUri)) {
+				// The element in the wrapper is the affected element.
+				newArtifactUri = newAffectedElementUri;
+				newArtifactName = newAffectedElementName;
+			} else {
+				// The element in the wrapper is a child of the affected
+				// element.
 
-					// Build new uri for the moved class
-					newArtifactUri = oldArtifactUri.replace(oldAffectedElementUri, newAffectedElementUri);
-					newArtifactName = oldArtifactName;
+				// Build new uri for the moved class
+				newArtifactUri = oldArtifactUri.replace(oldAffectedElementUri, newAffectedElementUri);
+				newArtifactName = oldArtifactName;
 
-					// Check if artifact belongs to the public class (because
-					// the
-					// public class changes with the file name)
-					if (newAffectedElement instanceof ICompilationUnit) {
-						String oldPublicClassName = oldAffectedElementName.replace(".java", "");
-						String newPublicClassName = newAffectedElementName.replace(".java", "");
+				// Check if artifact belongs to the public class (because
+				// the
+				// public class changes with the file name)
+				if (newAffectedElement instanceof ICompilationUnit) {
+					String oldPublicClassName = oldAffectedElementName.replace(".java", "");
+					String newPublicClassName = newAffectedElementName.replace(".java", "");
 
-						int classStartIndex = newAffectedElementUri.length() + 1;
-						int classEndIndex = classStartIndex + oldPublicClassName.length();
+					int classStartIndex = newAffectedElementUri.length() + 1;
+					int classEndIndex = classStartIndex + oldPublicClassName.length();
 
-						if (newArtifactUri.substring(classStartIndex, classEndIndex).equals(oldPublicClassName))
-							newArtifactUri = newArtifactUri.substring(0, classStartIndex) + newPublicClassName
-									+ newArtifactUri.substring(classEndIndex);
+					if (newArtifactUri.substring(classStartIndex, classEndIndex).equals(oldPublicClassName))
+						newArtifactUri = newArtifactUri.substring(0, classStartIndex) + newPublicClassName
+								+ newArtifactUri.substring(classEndIndex);
 
-						// The object in the artifact is the public class
-						// declaration.
-						if (newArtifactName.contentEquals(oldPublicClassName))
-							newArtifactName = newPublicClassName;
-					}
+					// The object in the artifact is the public class
+					// declaration.
+					if (newArtifactName.contentEquals(oldPublicClassName))
+						newArtifactName = newPublicClassName;
 				}
-
-				markerInfo.put(CapraNotificationHelper.NEW_URI, newArtifactUri);
-				markerInfo.put(CapraNotificationHelper.NEW_NAME, newArtifactName);
 			}
 
-			markerInfo.put(CapraNotificationHelper.ISSUE_TYPE, issueType.getValue());
-			markerInfo.put(CapraNotificationHelper.OLD_URI, oldArtifactUri);
-			markerInfo.put(CapraNotificationHelper.MESSAGE, message);
+			markerInfo.put(CapraNotificationHelper.NEW_URI, newArtifactUri);
+			markerInfo.put(CapraNotificationHelper.NEW_NAME, newArtifactName);
 		}
+
+		markerInfo.put(CapraNotificationHelper.ISSUE_TYPE, issueType.getValue());
+		markerInfo.put(CapraNotificationHelper.OLD_URI, oldArtifactUri);
+		markerInfo.put(CapraNotificationHelper.MESSAGE, message);
+
 		return markerInfo;
 	}
 

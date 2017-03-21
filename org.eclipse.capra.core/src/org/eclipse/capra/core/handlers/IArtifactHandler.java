@@ -13,6 +13,7 @@ package org.eclipse.capra.core.handlers;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -99,5 +100,20 @@ public interface IArtifactHandler<T> {
 	 * @return the type that
 	 */
 	Class<T> getHandledClass();
+
+
+	/**
+	 * When a change in the resource occurs, it generates the message that is to
+	 * be displayed by the Capra marker.
+	 * 
+	 * @param delta
+	 *            represents changes in the state of a resource
+	 * @param wrapperUri
+	 *            uri of the artifact that is associated with the change
+	 * @return the Capra marker message. Every marker must return a unique message.
+         *         If the message already exists it will be ignoored and a marker will 
+         *         not be created.
+	 */
+	String generateMarkerMessage(IResourceDelta delta, String wrapperUri);
 
 }

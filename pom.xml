@@ -57,6 +57,7 @@
 		<module>org.eclipse.capra.ui.cdt</module>
 		<module>org.eclipse.capra.ui.jdt</module>
 		<module>org.eclipse.capra.ui.office</module>
+		<module>org.eclipse.capra.ui.drive</module>
 		<module>org.eclipse.capra.ui.zest</module>
 		<module>org.eclipse.capra.ui.zest.feature</module>
 		<module>org.eclipse.capra.feature</module>

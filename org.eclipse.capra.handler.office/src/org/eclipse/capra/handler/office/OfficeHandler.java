@@ -33,7 +33,7 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// TODO here artifactName is the same as the row/paragraph
 		// description. Should it be different?
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-				officeObject.getId());
+				officeObject.getId(), officeObject.getUri());
 		return wrapper;
 	}
 
@@ -51,4 +51,11 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		return officeObject.getId();
 	}
 
+	@Override
+	public String generateMarkerMessage(org.eclipse.core.resources.IResourceDelta delta, String wrapperUri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

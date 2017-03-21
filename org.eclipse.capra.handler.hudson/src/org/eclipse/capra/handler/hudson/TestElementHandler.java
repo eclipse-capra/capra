@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.hudson;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.TestElement;
 
@@ -27,7 +28,7 @@ public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		// TODO Need to get the URI for where the test is
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), test.getLabel(),
-				test.getLabel());
+				test.getLabel(), test.getLabel());
 		return wrapper;
 	}
 
@@ -40,6 +41,12 @@ public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 	@Override
 	public String getDisplayName(TestElement test) {
 		return test.getLabel();
+	}
+
+	@Override
+	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

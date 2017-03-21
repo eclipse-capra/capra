@@ -35,8 +35,9 @@ public class ArtifactHelper {
 	 * @param artifacts
 	 * @return List of wrappers
 	 */
+	@SuppressWarnings("unchecked")
 	public List<EObject> createWrappers(List<?> artifacts) {
-		return artifacts.stream()
+		return (List<EObject>) (Object)artifacts.stream()
 			.map(vagueArtifact -> 
 				getHandler(vagueArtifact).map(h -> h.withCastedHandlerUnchecked(vagueArtifact, 
 					(handler, artifact) -> handler.createWrapper(artifact, artifactModel))))

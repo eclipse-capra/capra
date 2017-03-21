@@ -38,12 +38,12 @@ import org.junit.Test;
 public class TestGraphicalVisualization {
 
 	private final static String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml\n"
-			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "o0--o1:RelatedTo\n"
+			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "o0--o1: A : EClass B : EClass : RelatedTo\n"
 			+ "@enduml\n";
 
 	private final static String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml\n"
 			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "object \"C : EClass\" as o2\n"
-			+ "o0--o1:RelatedTo\n" + "o1--o2:RelatedTo\n" + "@enduml\n";
+			+ "o0--o1: A : EClass B : EClass : RelatedTo\n" + "o1--o2: B : EClass C : EClass : RelatedTo\n" + "@enduml\n";
 
 	@Before
 	public void init() throws CoreException {

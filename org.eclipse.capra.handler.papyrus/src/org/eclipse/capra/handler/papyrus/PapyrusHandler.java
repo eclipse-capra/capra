@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.papyrus;
 
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.EObjectTreeElement;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
