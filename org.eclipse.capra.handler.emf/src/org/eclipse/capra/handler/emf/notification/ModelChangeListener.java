@@ -122,10 +122,23 @@ public class ModelChangeListener extends EContentAdapter {
 
 		if (diffKind != null) {
 			EObject oldObject = match.getRight();
-			if (oldObject != null && oldObject.equals(tracedItem))
+			if (oldObject != null && oldObject.equals(tracedItem)) {
 				// If the match or a parent match contains a difference that
 				// affects the tracedItem, produce a marker.
-				createCapraMarker(tracedItem, match, diffKind, traceContainer);
+
+				IssueType issueType = null;
+				if (diffKind.equals(DifferenceKind.DELETE))
+					issueType = IssueType.DELETED;
+				else if (diffKind.equals(DifferenceKind.MOVE))
+					issueType = IssueType.MOVED;
+				else if (diffKind.equals(DifferenceKind.ADD))
+					issueType = IssueType.ADDED;
+				else if (diffKind.equals(DifferenceKind.CHANGE))
+					issueType = IssueType.RENAMED;
+
+				if (issueType != null)
+					createCapraMarker(tracedItem, match, issueType, traceContainer);
+			}
 		}
 	}
 
@@ -146,7 +159,7 @@ public class ModelChangeListener extends EContentAdapter {
 	 * @param file
 	 *            the file to which the marker will be attached
 	 */
-	private void createCapraMarker(EObject tracedItem, Match match, DifferenceKind diffKind, IFile file) {
+	private void createCapraMarker(EObject tracedItem, Match match, IssueType issueType, IFile file) {
 		String oldUri = CapraNotificationHelper.getFileUri(tracedItem).toString();
 		String oldName = (String) tracedItem.eGet(tracedItem.eClass().getEStructuralFeature("name"));
 
@@ -159,29 +172,25 @@ public class ModelChangeListener extends EContentAdapter {
 		}
 
 		String message = "";
-		IssueType issueType = null;
-		switch (diffKind) {
-		case DELETE:
-			if (changedObject == null) {
-				issueType = IssueType.DELETED;
+		switch (issueType) {
+		case DELETED:
+			if (changedObject == null)
 				message = oldUri + " has been deleted.";
-			}
 			break;
-		case MOVE:
-			if (!oldUri.equals(newUri)) {
-				issueType = IssueType.MOVED;
+		case MOVED:
+			if (!oldUri.equals(newUri))
 				message = oldName + " has been moved to " + newUri + ".";
-			}
 			break;
-		case CHANGE:
-			issueType = IssueType.RENAMED;
+		case RENAMED:
 			if (!newName.equals(oldName))
 				message = oldUri + " has been renamed to " + newName + ".";
 			else
 				message = "An ancestor of " + oldName + " has been renamed." + " The new URI of the element is "
 						+ newUri;
 			break;
-		case ADD:
+		case ADDED:
+			break;
+		case CHANGED:
 			break;
 		}
 

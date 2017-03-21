@@ -60,6 +60,7 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		String markerFileName = new File(marker.getResource().toString()).getName();
 
 		if (markerFileName.equals(artifactContainerFileName)) {
+			// The element that the marker points to is a Capra artifact.
 			List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) model).getArtifacts();
 			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
 			for (ArtifactWrapper aw : artifacts) {
@@ -73,6 +74,8 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 			}
 
 		} else {
+			// The element that the marker points to is an EObject and is not
+			// contained in the Capra artifact model.
 			model = tracePersistenceAdapter.getTraceModel(resourceSet);
 			List<RelatedTo> traces = ((GenericTraceModel) model).getTraces();
 			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
@@ -88,6 +91,7 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 			}
 		}
 
+		// Update references inside the model (can be artifact or trace model).
 		Resource resource = resourceSet.createResource(EcoreUtil.getURI(model));
 		resource.getContents().add(model);
 

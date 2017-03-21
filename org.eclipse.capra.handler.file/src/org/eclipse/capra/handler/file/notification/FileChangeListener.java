@@ -1,5 +1,5 @@
 /*******************************************************************************
-<< * Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,7 @@ public class FileChangeListener implements IResourceChangeListener {
 				return true;
 			}
 		};
+
 		try {
 			IResourceDelta delta = event.getDelta();
 			if (delta != null)
@@ -118,7 +119,8 @@ public class FileChangeListener implements IResourceChangeListener {
 
 				if (issueType == IssueType.ADDED)
 					CapraNotificationHelper.deleteCapraMarker(aw.getUri(),
-							new String[] { "moved", "renamed", "deleted" }, wrapperContainer);
+							new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED },
+							wrapperContainer);
 				else {
 					HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 					CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
@@ -164,14 +166,12 @@ public class FileChangeListener implements IResourceChangeListener {
 			break;
 		}
 
-		if (!message.isEmpty()) {
-			markerInfo.put(CapraNotificationHelper.ISSUE_TYPE, issueType.getValue());
-			markerInfo.put(CapraNotificationHelper.MESSAGE, message);
-			markerInfo.put(CapraNotificationHelper.OLD_URI, oldArtifactUri);
-			if (newArtifactUri != null) {
-				markerInfo.put(CapraNotificationHelper.NEW_URI, newArtifactUri.toString());
-				markerInfo.put(CapraNotificationHelper.NEW_NAME, newArtifactUri.toFile().getName());
-			}
+		markerInfo.put(CapraNotificationHelper.ISSUE_TYPE, issueType.getValue());
+		markerInfo.put(CapraNotificationHelper.MESSAGE, message);
+		markerInfo.put(CapraNotificationHelper.OLD_URI, oldArtifactUri);
+		if (newArtifactUri != null) {
+			markerInfo.put(CapraNotificationHelper.NEW_URI, newArtifactUri.toString());
+			markerInfo.put(CapraNotificationHelper.NEW_NAME, newArtifactUri.toFile().getName());
 		}
 
 		return markerInfo;

@@ -73,6 +73,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 		String markerUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
 
 		if (markerContainerFileName.equals(artifactContainerFileName)) {
+			// The element that the marker points to is a Capra artifact.
 			int index = 0;
 			for (ArtifactWrapper aw : artifacts) {
 				if (aw.getUri().equals(markerUri)) {
@@ -87,6 +88,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 				index++;
 			}
 
+			// Delete selected artifacts.
 			ArtifactWrapper toRemove = awc.getArtifacts().get(index);
 			EcoreUtil.delete(toRemove);
 			URI artifactModelURI = EcoreUtil.getURI(awc);
@@ -99,6 +101,8 @@ public class DeleteQuickFix implements IMarkerResolution {
 				e.printStackTrace();
 			}
 		} else {
+			// The element that the marker points to is an EObject and is not
+			// contained in the Capra artifact model.
 			URI deletedEObjectUri = URI.createURI(markerUri);
 			for (RelatedTo trace : traceModel.getTraces()) {
 				for (EObject item : trace.getItem()) {
@@ -111,6 +115,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 			}
 		}
 
+		// Delete selected traces.
 		traces.removeAll(toDelete);
 		GenericTraceModel newTraceModel = GenericTraceMetaModelFactory.eINSTANCE.createGenericTraceModel();
 		newTraceModel.getTraces().addAll(traces);

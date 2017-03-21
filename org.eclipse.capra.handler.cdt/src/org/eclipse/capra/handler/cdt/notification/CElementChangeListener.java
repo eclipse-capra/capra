@@ -65,17 +65,17 @@ public class CElementChangeListener implements IElementChangedListener {
 		new WorkspaceJob(CapraNotificationHelper.NOTIFICATION_JOB) {
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-				visit(event.getDelta(), cArtifacts, wrapperContainer);
+				handleDelta(event.getDelta(), cArtifacts, wrapperContainer);
 				return Status.OK_STATUS;
 			}
 		}.schedule();
-
 	}
 
-	private void visit(ICElementDelta delta, List<ArtifactWrapper> cArtifacts, IFile wrapperContainer) {
+	private void handleDelta(ICElementDelta delta, List<ArtifactWrapper> cArtifacts, IFile wrapperContainer) {
+
 		// Visit all the affected children of affected element
 		for (ICElementDelta subDelta : delta.getAffectedChildren())
-			visit(subDelta, cArtifacts, wrapperContainer);
+			handleDelta(subDelta, cArtifacts, wrapperContainer);
 
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
@@ -118,16 +118,16 @@ public class CElementChangeListener implements IElementChangedListener {
 					// "rename"), consider making the marker for the affected
 					// element as well as its children, who's URIs have changed
 					// and need updating.
-					String[] markersToDelete = null;
+					IssueType[] markersToDelete = null;
 					String deleteMarkerUri = "";
 					if (issueType == IssueType.MOVED || issueType == IssueType.RENAMED) {
 						deleteMarkerUri = delta.getMovedToElement().getHandleIdentifier();
-						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED };
 					} else if (issueType == IssueType.DELETED) {
-						markersToDelete = new String[] { "moved", "renamed", "changed" };
+						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.CHANGED };
 						deleteMarkerUri = affectedElementUri;
 					} else if (issueType == IssueType.ADDED) {
-						markersToDelete = new String[] { "moved", "renamed", "deleted" };
+						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED };
 						deleteMarkerUri = affectedElementUri;
 					}
 
@@ -136,9 +136,7 @@ public class CElementChangeListener implements IElementChangedListener {
 
 					if (artifactUri.contains(affectedElementUri)) {
 						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
-
-						if (markerInfo != null)
-							CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
 				}
 			}
@@ -215,9 +213,6 @@ public class CElementChangeListener implements IElementChangedListener {
 		case ADDED:
 			break;
 		}
-
-		if (message.isEmpty())
-			return null;
 
 		if (newAffectedElementUri != null) {
 			// The affected element has been renamed or moved.

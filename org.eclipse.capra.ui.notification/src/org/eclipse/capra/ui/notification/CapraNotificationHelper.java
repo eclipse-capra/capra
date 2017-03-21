@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *  Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *   Contributors:
+ *      Chalmers|Gothenburg University and rt-labs - initial API and implementation and/or initial documentation
+ *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
 import java.util.HashMap;
@@ -13,6 +23,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+/**
+ * Contains methods that support the Capra notification (marker) solution.
+ * 
+ * @author Dusan Kalanj
+ */
 public class CapraNotificationHelper {
 
 	/**
@@ -20,6 +35,9 @@ public class CapraNotificationHelper {
 	 */
 	public static final String CAPRA_PROBLEM_MARKER_ID = "org.eclipse.capra.ui.notification.capraProblemMarker";
 
+	/**
+	 * Custom enum that describes possible changes made to a traced element.
+	 */
 	public enum IssueType {
 		RENAMED("renamed"), MOVED("moved"), DELETED("deleted"), CHANGED("changed"), ADDED("added");
 
@@ -34,11 +52,34 @@ public class CapraNotificationHelper {
 		}
 	}
 
+	/**
+	 * Job ID for the capra notification solution.
+	 */
 	public static final String NOTIFICATION_JOB = "CapraNotificationJob";
+
+	/**
+	 * Key to be used to specify IssueType value in markerInfo HashMap
+	 */
 	public static final String ISSUE_TYPE = "issueType";
+
+	/**
+	 * Key to be used to specify oldArtifactUri value in markerInfo HashMap
+	 */
 	public static final String OLD_URI = "oldArtifactUri";
+
+	/**
+	 * Key to be used to specify newArtifactUri value in markerInfo HashMap
+	 */
 	public static final String NEW_URI = "newArtifactUri";
+
+	/**
+	 * Key to be used to specify newArtifactName value in markerInfo HashMap
+	 */
 	public static final String NEW_NAME = "newArtifactName";
+
+	/**
+	 * Key to be used to specify message value in markerInfo HashMap
+	 */
 	public static final String MESSAGE = "message";
 
 	// TODO necessary to specify all the fields that have to be filled out in
@@ -51,19 +92,16 @@ public class CapraNotificationHelper {
 	 * @param markerInfo
 	 *            contains attributes that are to be assigned to the created
 	 *            marker
-	 * @param wrapperContainer
-	 *            file that contains the artifact model and to which the markers
-	 *            will be attached to
+	 * @param container
+	 *            file that the created marker will be attached to
 	 */
-	public static void createCapraMarker(HashMap<String, String> markerInfo, IFile wrapperContainer) {
-		if (markerInfo.isEmpty())
-			return;
+	public static void createCapraMarker(HashMap<String, String> markerInfo, IFile container) {
 
 		try {
 			String newMarkerIssue = markerInfo.get(ISSUE_TYPE);
 			String newMarkerUri = markerInfo.get(OLD_URI);
 
-			IMarker[] existingMarkers = wrapperContainer.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
+			IMarker[] existingMarkers = container.findMarkers(CAPRA_PROBLEM_MARKER_ID, false, 0);
 			for (IMarker existingMarker : existingMarkers) {
 				String existingMarkerIssue = existingMarker.getAttribute(ISSUE_TYPE, null);
 				String existingMarkerUri = existingMarker.getAttribute(OLD_URI, null);
@@ -83,23 +121,42 @@ public class CapraNotificationHelper {
 				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(IssueType.DELETED.getValue())
 						&& newMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue()))
 					existingMarker.delete();
+				
+				if (existingMarkerUri.equals(newMarkerUri) && newMarkerIssue.equals(IssueType.ADDED))
+					existingMarker.delete();
 			}
+			
+			String message = markerInfo.get(MESSAGE);
+			if (message == null || message.isEmpty())
+				return;
 
-			IMarker marker = wrapperContainer.createMarker(CAPRA_PROBLEM_MARKER_ID);
+			IMarker marker = container.createMarker(CAPRA_PROBLEM_MARKER_ID);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-			marker.setAttribute(IMarker.MESSAGE, markerInfo.get(MESSAGE));
+			marker.setAttribute(IMarker.MESSAGE, message);
 			markerInfo.remove(MESSAGE);
 
 			for (Entry<String, String> entry : markerInfo.entrySet())
 				marker.setAttribute(entry.getKey(), entry.getValue());
 
 		} catch (CoreException e) {
-			if (wrapperContainer.exists())
+			if (container.exists())
 				e.printStackTrace();
 		}
 	}
 
-	public static void deleteCapraMarker(String uri, String[] issues, IFile containingFile) {
+	/**
+	 * Deletes an existing marker.
+	 * 
+	 * @param uri
+	 *            the uri of the artifact/element that the marker points to
+	 * @param issues
+	 *            an array of issues - only markers that describe the provided
+	 *            issues will be deleted. If null is provided, all will be
+	 *            deleted.
+	 * @param containingFile
+	 *            the file that contains the marker to be deleted
+	 */
+	public static void deleteCapraMarker(String uri, IssueType[] issues, IFile containingFile) {
 		try {
 			IMarker[] markers = containingFile.findMarkers(CAPRA_PROBLEM_MARKER_ID, true, 0);
 
@@ -111,8 +168,8 @@ public class CapraNotificationHelper {
 					if (issues == null)
 						marker.delete();
 					else
-						for (String issue : issues)
-							if (existingMarkerIssue.equals(issue))
+						for (IssueType issue : issues)
+							if (existingMarkerIssue.equals(issue.getValue()))
 								marker.delete();
 			}
 		} catch (CoreException e) {
