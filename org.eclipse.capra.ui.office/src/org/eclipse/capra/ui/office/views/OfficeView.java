@@ -13,7 +13,6 @@ package org.eclipse.capra.ui.office.views;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,22 +21,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.poi.hssf.OldExcelFormatException;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.xmlbeans.SchemaTypeLoaderException;
 import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeFileNotSupportedException;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
-import org.eclipse.capra.ui.office.objects.CapraExcelRow;
-import org.eclipse.capra.ui.office.objects.CapraGoogleSheetsRow;
-import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
-import org.eclipse.capra.ui.office.objects.CapraWordRequirement;
+import org.eclipse.capra.ui.office.model.CapraExcelRow;
+import org.eclipse.capra.ui.office.model.CapraGoogleSheetsRow;
+import org.eclipse.capra.ui.office.model.CapraOfficeObject;
+import org.eclipse.capra.ui.office.model.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
+import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
 import org.eclipse.capra.ui.office.utils.OfficeSourceProvider;
 import org.eclipse.capra.ui.office.utils.OfficeTransferType;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -79,7 +76,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 /**
@@ -119,8 +115,8 @@ public class OfficeView extends ViewPart {
 	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
 
 	/**
-	 * The names (<String>) of all the sheets, contained in the selected
-	 * workbook and information about whether they are empty or not (<Boolean>).
+	 * The names (String) of all the sheets, contained in the selected workbook
+	 * and information about whether they are empty or not (Boolean).
 	 */
 	private HashMap<String, Boolean> isSheetEmptyMap;
 
@@ -135,7 +131,8 @@ public class OfficeView extends ViewPart {
 	private File selectedFile;
 
 	/**
-	 * The ID of the file (non-null only if acquired from Google Drive)
+	 * The ID of the file that is currently displayed in the view (non-null only
+	 * if acquired from Google Drive).
 	 */
 	private String selectedFileId;
 
@@ -206,7 +203,11 @@ public class OfficeView extends ViewPart {
 		@Override
 		public boolean performDrop(Object data) {
 			try {
-				dropToSelection(data);
+				if (data instanceof String[]) {
+					File file = new File(((String[]) data)[0]);
+					if (file != null && file.exists())
+						parseGenericFile(file);
+				}
 			} catch (CapraOfficeFileNotSupportedException e) {
 				e.printStackTrace();
 				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
@@ -240,9 +241,8 @@ public class OfficeView extends ViewPart {
 				TableItem[] items = viewer.getTable().getSelection();
 				ArrayList<CapraOfficeObject> officeObjects = new ArrayList<CapraOfficeObject>();
 
-				for (int i = 0; i < items.length; i++) {
+				for (int i = 0; i < items.length; i++)
 					officeObjects.add((CapraOfficeObject) items[i].getData());
-				}
 
 				event.data = officeObjects;
 			}
@@ -281,25 +281,16 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * A method that is called when the user drags a file into the OfficeView.
-	 * Its main task is to parse the dragged file and display its contents in
-	 * the OfficeView. It only parses the file if it is of type xlsx, xls, or
-	 * docx.
+	 * A method that is called when the user drags file (word or excel) into the
+	 * OfficeView. Its main task is to parse the dragged file and display its
+	 * contents in the OfficeView. It only parses the file if it is of type
+	 * xlsx, xls, or docx.
 	 *
 	 * @param data
 	 *            the object that was dragged into the view
 	 * @throws CapraOfficeFileNotSupportedException
 	 */
-	private void dropToSelection(Object data) throws CapraOfficeFileNotSupportedException {
-
-		File file = null;
-
-		if (data instanceof String[])
-			file = new File(((String[]) data)[0]);
-
-		if (file == null)
-			return;
-
+	private void parseGenericFile(File file) throws CapraOfficeFileNotSupportedException {
 		String fileExtension = Files.getFileExtension(file.getName());
 
 		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS))
@@ -316,24 +307,24 @@ public class OfficeView extends ViewPart {
 	 * @param officeFile
 	 *            the File object pointing to the Excel document that was
 	 *            dragged into the view
+	 * @param googleDriveFileId
+	 *            the id of the file from Google drive (shown in the URL when a
+	 *            user opens a file inside Google Drive). If provided it will be
+	 *            used when creating the URI of the objects, otherwise (if null)
+	 *            the path of the containing file will be used instead. That
+	 *            also means that, if googleDriveFileId is provided, the Objects
+	 *            in the OfficeView will be of type CapraGoogleSheetsRow,
+	 *            otherwise of type CapraExcelRow.
 	 * @param sheetName
 	 *            the name of the sheet that should be displayed in the Office
 	 *            view. If null, the currently active sheet will be displayed.
-	 * @param fileId
-	 *            the id of the file. If provided it will be used when creating
-	 *            the URI of the objects, otherwise (if null) the path of the
-	 *            containing file will be used instead.
 	 */
-	public void parseExcelDocument(File officeFile, String sheetName, String fileId) {
+	public void parseExcelDocument(File officeFile, String googleDriveFileId, String sheetName) {
 
-		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
+		// Get Excel Workbook
 		Workbook workBook;
-
 		try {
-			if (fileType.equals(CapraOfficeObject.XLSX))
-				workBook = new XSSFWorkbook(new FileInputStream(officeFile));
-			else
-				workBook = new HSSFWorkbook(new FileInputStream(officeFile));
+			workBook = CapraOfficeUtils.getExcelWorkbook(officeFile);
 		} catch (OldExcelFormatException e) {
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
@@ -342,89 +333,54 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		if (Strings.isNullOrEmpty(sheetName)) {
-			// This try block is necessary as there is a bug in the
-			// Workbook.getActiveSheetIndex() and Workbook.getFirstVisibleTab()
-			// methods; they throw a NullPointerException whenever the
-			// woorkbook doesn't hold information about which sheet is active
-			// and/or visible (maybe it occurs when the file is auto-generated).
-			int activeSheetIndex;
-			try {
-				activeSheetIndex = workBook.getActiveSheetIndex();
-			} catch (NullPointerException e1) {
-				try {
-					activeSheetIndex = workBook.getFirstVisibleTab();
-				} catch (NullPointerException e2) {
-					activeSheetIndex = 0;
-				}
-			}
-
-			try {
-				sheetName = workBook.getSheetName(activeSheetIndex);
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-				String hyperlinkMessage = "It looks like the file doesn't contain any sheets. Please report the issue to our <a href=\""
-						+ BUGZILLA_OFFICE_URL + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
-				showErrorMessage(ERROR_TITLE, hyperlinkMessage, BUGZILLA_OFFICE_URL);
-				return;
-			}
-		}
-
-		Sheet sheetToDisplay = workBook.getSheet(sheetName);
-		// In theory, this could only happen if someone uses the selectSheet
-		// (public) method and provides a non-valid sheetName. The method is
-		// currently only used for changing the displayed sheet through the
-		// tool-bar menu, where all the names are valid.
-		// TODO The best way to tackle this would probably be to introduce a new
-		// exception (CapraOfficeSheetNotFoundException?), but to do that, a bit
-		// of reordering and partitioning of the methods would be required -
-		// ideally, the selectSheet (public) method would throw the exception,
-		// not this one.
-		if (sheetToDisplay == null) {
-			String hyperlinkMessage = "It appears that there is something wrong with the file. Please report the issue to our <a href=\""
+		// Get Excel sheet with provided sheetName from provided workBook
+		Sheet sheet = CapraOfficeUtils.getSheet(workBook, sheetName);
+		if (sheet == null) {
+			// In theory, this could only happen if someone uses the selectSheet
+			// (public) method and provides a non-valid sheetName. The method is
+			// currently only used for changing the displayed sheet through the
+			// tool-bar menu, where all the names are valid. TODO The best way
+			// to tackle this would probably be to introduce a new exception
+			// (CapraOfficeSheetNotFoundException?), but to do that, a bit of
+			// reordering and partitioning of the methods would be required -
+			// ideally, the selectSheet (public) method would throw the
+			// exception, not this one.
+			String hyperlinkMessage = "It appears that the file doesn't contain any sheets. If that is not true, please report the issue to our <a href=\""
 					+ BUGZILLA_OFFICE_URL + "\"> Bugzilla project page </a> and we will do our best to resolve it.";
 			showErrorMessage(ERROR_TITLE, hyperlinkMessage, BUGZILLA_OFFICE_URL);
+			return;
+		}
+
+		// Check if the whole workbook (all of the sheets) is empty.
+		HashMap<String, Boolean> isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(workBook);
+		if (!isSheetEmptyMap.values().contains(false)) {
+			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
+			clearSelection();
 			return;
 		}
 
 		// Clear the Office view and all static variables
 		clearSelection();
 
-		// Check if the sheet-to-display isn't empty and find a first non-empty
-		// sheet if that is the case, and fill isSheetEmpty HashMap with sheet
-		// names for keys and info about whether they are not empty for values
-		boolean nonEmptySheetFound = sheetToDisplay.getLastRowNum() > 0;
-		isSheetEmptyMap = new HashMap<String, Boolean>();
-		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
-			Sheet s = workBook.getSheetAt(i);
-			isSheetEmptyMap.put(s.getSheetName(), s.getLastRowNum() > 0);
-
-			if (!nonEmptySheetFound && s.getLastRowNum() > 0) {
-				nonEmptySheetFound = true;
-				sheetToDisplay = s;
-			}
-		}
-
-		if (!nonEmptySheetFound) {
-			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
-			clearSelection();
-			return;
-		}
-
-		selectedSheetName = sheetToDisplay.getSheetName();
-		selectedFile = officeFile;
-		selectedFileId = fileId;
+		// Save new values to properties
+		this.selectedSheetName = sheet.getSheetName();
+		this.selectedFile = officeFile;
+		this.selectedFileId = googleDriveFileId;
+		this.isSheetEmptyMap = isSheetEmptyMap;
 
 		// Populate the view with Excel rows
 		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
-		for (int i = 0; i <= sheetToDisplay.getLastRowNum(); i++) {
-			Row row = sheetToDisplay.getRow(i);
+		boolean isGoogleSheet = googleDriveFileId != null;
+		for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+			Row row = sheet.getRow(i);
 			if (row != null) {
 				CapraOfficeObject cRow;
-				if (fileId == null)
-					cRow = new CapraExcelRow(officeFile, row, idColumn);
+				// If the file is in the java's "temporary-file" folder, it was
+				// obtained from Google drive
+				if (isGoogleSheet)
+					cRow = new CapraGoogleSheetsRow(officeFile, row, idColumn, googleDriveFileId);
 				else
-					cRow = new CapraGoogleSheetsRow(officeFile, row, idColumn, fileId);
+					cRow = new CapraExcelRow(officeFile, row, idColumn);
 
 				if (!cRow.getData().isEmpty())
 					selection.add(cRow);
@@ -448,9 +404,8 @@ public class OfficeView extends ViewPart {
 	private void parseWordDocument(File officeFile) {
 
 		List<XWPFParagraph> paragraphs;
-		try (FileInputStream fs = new FileInputStream(officeFile)) {
-			XWPFDocument xwpfDoc = new XWPFDocument(fs);
-			paragraphs = (xwpfDoc).getParagraphs();
+		try {
+			paragraphs = CapraOfficeUtils.getWordParagraphs(officeFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
@@ -461,8 +416,14 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
+		if (paragraphs.isEmpty())
+			return;
+
+		// Clear the Office view and all static variables
 		clearSelection();
-		selectedFile = officeFile;
+
+		// Save new values to properties
+		this.selectedFile = officeFile;
 
 		// Populate the view with Word requirements
 		String fieldName = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.WORD_FIELD_NAME);
@@ -479,6 +440,7 @@ public class OfficeView extends ViewPart {
 			provider.setResource(selection.get(0));
 		else {
 			showErrorMessage(ERROR_TITLE, "There are no fields with the specified field name in this document.", null);
+			clearSelection();
 			return;
 		}
 
@@ -486,8 +448,8 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Shows the details of the object in its native environment (MS Word or MS
-	 * Excel).
+	 * Shows the details of the object in its native environment (MS Word, MS
+	 * Excel or Google Drive (sheets)).
 	 * 
 	 * @param event
 	 *            Should be of type DoubleClickEvent or ExecutionEvent, hold the
@@ -550,9 +512,9 @@ public class OfficeView extends ViewPart {
 
 		if (filePath != null && !filePath.isEmpty()) {
 			File file = new File(filePath);
-			if (file != null) {
+			if (file != null && file.exists()) {
 				try {
-					dropToSelection(new String[] { file.getAbsolutePath() });
+					parseGenericFile(file);
 				} catch (CapraOfficeFileNotSupportedException e) {
 					e.printStackTrace();
 					showErrorMessage(ERROR_TITLE, e.getMessage(), null);
@@ -567,12 +529,11 @@ public class OfficeView extends ViewPart {
 	 * @param sheetName
 	 *            the name of the sheet to be displayed in the Office view.
 	 */
-	public void selectSheet(String sheetName) {
-
+	public void displaySheet(String sheetName) {
 		if (selection.isEmpty())
 			return;
 		else if (selection.get(0) instanceof CapraExcelRow)
-			parseExcelDocument(selectedFile, sheetName, selectedFileId);
+			parseExcelDocument(selectedFile, selectedFileId, sheetName);
 	}
 
 	/**
@@ -584,6 +545,17 @@ public class OfficeView extends ViewPart {
 	 *         opened.
 	 */
 	public HashMap<String, Boolean> getIsSheetEmptyMap() {
+
+		// isSheetEmptyMap is used by the SelectSheetDynamicMenu class.
+		if (isSheetEmptyMap == null) {
+			try {
+				isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(
+						CapraOfficeUtils.getExcelWorkbook(((CapraExcelRow) (selection.get(0))).getFile()));
+			} catch (OldExcelFormatException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		return isSheetEmptyMap;
 	}
 
@@ -620,11 +592,14 @@ public class OfficeView extends ViewPart {
 			return;
 
 		if (selection.get(0) instanceof CapraExcelRow)
-			parseExcelDocument(selectedFile, selectedSheetName, selectedFileId);
+			parseExcelDocument(selectedFile, selectedFileId, selectedSheetName);
 		else if (selection.get(0) instanceof CapraWordRequirement)
 			parseWordDocument(selectedFile);
 	}
 
+	/**
+	 * Enable context menu for this view.
+	 */
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);

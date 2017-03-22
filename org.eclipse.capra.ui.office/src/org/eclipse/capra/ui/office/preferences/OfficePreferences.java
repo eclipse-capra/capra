@@ -79,6 +79,17 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	private Text excel_customIdColumnName;
 	private Text word_fieldName;
 
+	/**
+	 * Creates a swt widget that takes the numColumns of grid space inside the
+	 * parent.
+	 * 
+	 * @param parent
+	 *            the element that will hold the widget
+	 * @param numColumns
+	 *            the number of columns that the widget will take inside the
+	 *            grid of the parent.
+	 * @return the created widget
+	 */
 	private Composite createComposite(Composite parent, int numColumns) {
 		Composite composite = new Composite(parent, SWT.NULL);
 
@@ -99,6 +110,9 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
 
+	/**
+	 * Saves the input values on click-apply or click-ok
+	 */
 	private void storeValues() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
@@ -122,6 +136,10 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		store.setValue(WORD_FIELD_NAME, word_fieldName.getText());
 	}
 
+	/**
+	 * Fills the text fields and radio buttons with stored values when the
+	 * preference page is opened.
+	 */
 	private void initializeValues() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
@@ -139,6 +157,9 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		word_fieldName.setText(store.getString(WORD_FIELD_NAME));
 	}
 
+	/**
+	 * Sets the default values if the user clicks on restore defaults option.
+	 */
 	private void initializeDefaults() {
 		excel_rowIdIsRowNumber.setSelection(EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
 		excel_rowIdIsCustomColumn.setSelection(!EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
@@ -203,6 +224,18 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		return new Composite(parent, SWT.NULL);
 	}
 
+	/**
+	 * Creates a label widget that takes the width of numOfColumns grid cells
+	 * inside a parent.
+	 * 
+	 * @param parent
+	 *            the element that will hold the label.
+	 * @param text
+	 *            the text of the label.
+	 * @param numOfColumns
+	 *            the width (in grid cells) of the label.
+	 * @return newly created Label object
+	 */
 	private Label createLabel(Composite parent, String text, int numOfColumns) {
 		Label label = new Label(parent, SWT.LEFT);
 		label.setText(text);
@@ -213,6 +246,18 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		return label;
 	}
 
+	/**
+	 * Creates a Text widget that takes the width of numOfColumns grid cells
+	 * inside a parent.
+	 * 
+	 * @param parent
+	 *            the element that will hold the label.
+	 * @param numOfColumns
+	 *            the width (in grid cells) of the widget.
+	 * @param minimumWidth
+	 *            the minimum width of the Text widget.
+	 * @return the newly created Text widget.
+	 */
 	private Text createTextField(Composite parent, int numOfColumns, int minimumWidth) {
 		Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		GridData data = new GridData();
@@ -226,6 +271,18 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		return text;
 	}
 
+	/**
+	 * Creates a Button widget that takes the width of numOfColumns grid cells
+	 * inside a parent.
+	 * 
+	 * @param parent
+	 *            the element that will hold the label.
+	 * @param label
+	 *            the text of the widget.
+	 * @param numOfColumns
+	 *            the width (in grid cells) of the widget.
+	 * @return the newly created Button widget.
+	 */
 	private Button createRadioButton(Composite parent, String label, int numOfColumns) {
 		Button button = new Button(parent, SWT.RADIO | SWT.LEFT);
 		button.setText(label);

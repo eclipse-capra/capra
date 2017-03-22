@@ -9,11 +9,12 @@
  * 	   Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.capra.ui.office.objects;
+package org.eclipse.capra.ui.office.model;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 
@@ -93,7 +94,8 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the ID of the OfficeObject.
+	 * Returns the ID of the OfficeObject from its URI. The format of the URI
+	 * should always be fileId + DELIMITER + objectId.
 	 */
 	public String getId() {
 		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
@@ -101,51 +103,55 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the File reference of the file that contains the OfficeObject
+	 * Returns the File reference of the file that contains the OfficeObject.
+	 * The format of the URI should always be fileId + DELIMITER + objectId.
 	 */
-	public File getFile() {
+	public File getFile() throws NoSuchFileException {
+		String fileId = getFileId();
+		File officeFile = new File(fileId);
+		if (officeFile.exists())
+			return officeFile;
+		else
+			throw new NoSuchFileException(fileId);
+	}
+
+	/**
+	 * Returns the ID of the file - the first part of the URI. The format of the
+	 * URI should always be fileId + DELIMITER + objectId.
+	 */
+	public String getFileId() {
 		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
-		return new File(uri.substring(0, firstDelimiterIndex));
+		return uri.substring(0, firstDelimiterIndex);
 	}
 
 	/**
-	 * Generates a readable name for the purpose of supplying it to
-	 * createArtifact method in the OfficeHandler.
-	 * 
-	 * @return a readable name of the OfficeObject
-	 */
-	public String getName() {
-		return getFile().getName() + URI_DELIMITER + getId();
-	}
-
-	/**
-	 * Extracts the ID of the object from uri of the OfficeObject.
+	 * Extracts the objectId from the provided CapraOfficeObject uri. The format
+	 * of the URI should always be fileId + DELIMITER + objectId.
 	 * 
 	 * @param uri
 	 *            uri of the object
 	 * @return ID of the object
 	 */
-	public static String getIdFromUri(String uri) {
+	public static String getObjectIdFromUri(String uri) {
 		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
 		return uri.substring(firstDelimiterIndex + URI_DELIMITER.length());
 	}
 
 	/**
-	 * Extracts the file-path from uri of the OfficeObject.
+	 * Extracts the fileId from the provided CapraOfficeObject uri. The format
+	 * of the URI should always be fileId + DELIMITER + objectId.
 	 * 
 	 * @param uri
 	 *            uri of the object
 	 * @return file-path of the file that contains the object
 	 */
-	public static String getFilePathFromUri(String uri) {
+	public static String getFileIdFromUri(String uri) {
 		int delimiterIndex = uri.indexOf(URI_DELIMITER);
 		return uri.substring(0, delimiterIndex);
 	}
 
 	/**
-	 * Opens the OfficeObject in its native environment. If object is of class
-	 * OfficeObject (parent object), then the method does nothing but return an
-	 * error string
+	 * Opens the OfficeObject in its native environment.
 	 * 
 	 * @return an OK or ERROR message
 	 * @throws CapraOfficeObjectNotFound
@@ -160,15 +166,13 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Generates a uri given the file-path of the file that contains the object
-	 * and an objectID
+	 * Generates a uri given the fileId of the file that contains the object and
+	 * an objectId.
 	 * 
-	 * @param officeFile
-	 *            File object containing the absolute file-path of the file that
-	 *            contains the object
+	 * @param fileId
+	 *            ID of the file that contains the object with objectId
 	 * @param objectID
-	 *            ID of the object - usually its index in the file
-	 *
+	 *            ID of the object
 	 * @return a uri of the object in the form of filePath/objectID
 	 */
 	public static String createUri(String fileId, String objectId) {
@@ -176,8 +180,7 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the description of the OfficeObject. If the description is too
-	 * long, it limits the return value.
+	 * Returns the data of the OfficeObject.
 	 */
 	@Override
 	public String toString() {

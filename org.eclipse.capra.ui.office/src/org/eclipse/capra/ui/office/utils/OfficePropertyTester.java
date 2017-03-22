@@ -11,7 +11,7 @@
 
 package org.eclipse.capra.ui.office.utils;
 
-import org.eclipse.capra.ui.office.objects.CapraExcelRow;
+import org.eclipse.capra.ui.office.model.CapraExcelRow;
 import org.eclipse.core.expressions.PropertyTester;
 
 /**

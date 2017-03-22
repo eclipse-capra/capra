@@ -32,11 +32,15 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 	@Override
 	public void fill(Menu menu, int index) {
 
+		// A HashMap that holds information about the emptiness of sheets. Key -
+		// sheetName, value - true if map is empty, false otherwise
 		HashMap<String, Boolean> isSheetEmptyMap = OfficeView.getOpenedView().getIsSheetEmptyMap();
-		
+
 		if (isSheetEmptyMap == null)
 			return;
 
+		// Add sheetNames to the dynamic context menu and make them
+		// un-selectable if they are empty
 		for (String sheetName : isSheetEmptyMap.keySet()) {
 			MenuItem menuItem = new MenuItem(menu, SWT.CHECK, index);
 
@@ -44,19 +48,19 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					OfficeView.getOpenedView().selectSheet(menuItem.getText());
+					OfficeView.getOpenedView().displaySheet(menuItem.getText());
 				}
 
 				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
-					OfficeView.getOpenedView().selectSheet(menuItem.getText());
+					OfficeView.getOpenedView().displaySheet(menuItem.getText());
 				}
 			});
 
 			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheetName))
 				menuItem.setSelection(true);
 
-			if (isSheetEmptyMap.get(sheetName))
+			if (!isSheetEmptyMap.get(sheetName))
 				menuItem.setText(sheetName);
 			else {
 				menuItem.setText(sheetName + " (Empty)");

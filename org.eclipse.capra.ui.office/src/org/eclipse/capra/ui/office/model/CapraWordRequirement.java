@@ -9,20 +9,16 @@
  * 	   Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.capra.ui.office.objects;
+package org.eclipse.capra.ui.office.model;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.Arrays;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * This class extends the CapraOfficeObject and provides an object to describe a
@@ -75,12 +71,14 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		CTP pCtp = paragraph.getCTP();
 		Document doc;
 		try {
-			doc = loadXMLFromString(pCtp.toString());
+			doc = CapraOfficeUtils.createDOMDocument(pCtp.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 
+		// Get all nodes from the paragraph (there should be just one node if
+		// the TODO bellow isn't implemented)
 		NodeList nodeList = doc.getElementsByTagName(FIELD_TAG);
 		if (nodeList.getLength() > 0) {
 			// TODO Use a for loop if the solution needs to parse multiple
@@ -88,6 +86,7 @@ public class CapraWordRequirement extends CapraOfficeObject {
 			// paragraph.getText() should be replaced with something from the
 			// org.w3c.dom.Document class.
 			String[] parts = nodeList.item(0).getTextContent().split(WORD_FIELD_SPLIT_DELIMITERS);
+			// Extract text from the paragraph and the ID of the requirement.
 			if (Arrays.asList(parts).contains(fieldName) && parts.length > 2) {
 				rText = paragraph.getText();
 				rId = parts[2].trim();
@@ -95,6 +94,7 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		}
 
 		rText = rText.replaceAll(LINE_BREAKS_AND_CONTROL_REGEX, " ").trim();
+		// Set the data and uri properties of the CapraOfficeObject
 		if (!rText.isEmpty()) {
 			rText = "ID " + rId + ": " + rText;
 			String pUri = createUri(officeFile.getAbsolutePath(), rId);
@@ -102,12 +102,5 @@ public class CapraWordRequirement extends CapraOfficeObject {
 			this.setData(rText);
 			this.setUri(pUri);
 		}
-	}
-
-	private Document loadXMLFromString(String xml) throws Exception {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		InputSource is = new InputSource(new StringReader(xml));
-		return builder.parse(is);
 	}
 }

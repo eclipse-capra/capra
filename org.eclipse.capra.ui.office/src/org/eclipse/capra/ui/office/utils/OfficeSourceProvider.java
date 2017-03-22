@@ -14,7 +14,7 @@ package org.eclipse.capra.ui.office.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
+import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 

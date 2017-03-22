@@ -14,7 +14,7 @@ package org.eclipse.capra.handler.office;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
+import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -33,7 +33,7 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// TODO here artifactName is the same as the row/paragraph
 		// description. Should it be different?
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-				officeObject.getName());
+				officeObject.getId());
 		return wrapper;
 	}
 
@@ -48,7 +48,7 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 
 	@Override
 	public String getDisplayName(CapraOfficeObject officeObject) {
-		return officeObject.getName();
+		return officeObject.getId();
 	}
 
 }

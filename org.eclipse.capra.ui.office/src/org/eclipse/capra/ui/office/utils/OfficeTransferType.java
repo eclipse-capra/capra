@@ -18,7 +18,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.capra.ui.office.objects.CapraOfficeObject;
+import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;

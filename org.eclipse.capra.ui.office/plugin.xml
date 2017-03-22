@@ -102,7 +102,7 @@
                   tooltip="Shows the details of the selected row">
                <visibleWhen>
      	          <iterate ifEmpty="false">
-                     <instanceof value="org.eclipse.capra.ui.office.objects.CapraOfficeObject"/>
+                     <instanceof value="org.eclipse.capra.ui.office.model.CapraOfficeObject"/>
                   </iterate>
                </visibleWhen>
             </command>
@@ -137,7 +137,7 @@
             id="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
             namespace="org.eclipse.capra.ui.office.utils"
             properties="isViewPopulated, isExcelObject"
-            type="org.eclipse.capra.ui.office.objects.CapraOfficeObject">
+            type="org.eclipse.capra.ui.office.model.CapraOfficeObject">
       </propertyTester>
    </extension>
    <extension

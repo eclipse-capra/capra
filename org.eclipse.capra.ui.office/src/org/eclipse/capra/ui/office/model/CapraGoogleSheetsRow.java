@@ -8,9 +8,13 @@
  * Contributors:
  * 	   Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.ui.office.objects;
+package org.eclipse.capra.ui.office.model;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
@@ -52,6 +56,10 @@ public class CapraGoogleSheetsRow extends CapraExcelRow {
 
 	@Override
 	public void showOfficeObjectInNativeEnvironment() throws CapraOfficeObjectNotFound {
-		// TODO
+		try {
+			Desktop.getDesktop().browse(new URI("https://docs.google.com/spreadsheets/d/" + this.getFileId()));
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
 	}
 }
