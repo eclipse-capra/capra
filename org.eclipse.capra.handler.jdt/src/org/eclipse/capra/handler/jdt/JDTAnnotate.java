@@ -97,6 +97,7 @@ public class JDTAnnotate {
 
 				String newSource = document.get();
 				cu.getBuffer().setContents(newSource);
+				cu.save(null, false);
 			} catch (JavaModelException e) {
 				throw new AnnotationException(e.getStatus());
 			} catch (MalformedTreeException e) {
