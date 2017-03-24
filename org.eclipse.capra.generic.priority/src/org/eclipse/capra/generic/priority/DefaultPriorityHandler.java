@@ -11,31 +11,46 @@
 package org.eclipse.capra.generic.priority;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
-import org.eclipse.capra.handler.hudson.BuildElementHandler;
-import org.eclipse.capra.handler.hudson.TestElementHandler;
-import org.eclipse.mylyn.builds.internal.core.BuildElement;
-import org.eclipse.mylyn.builds.internal.core.TestElement;
 
 /**
- * Provides a simple default policy for selecting an {@link ArtifactHandler} in
- * cases where tests or builds from Hudson are selected by returning the first
- * available {@link TestElementHandler} or {@link BuildElementHandler}.
+ * Provides a simple default policy for selecting an {@link IArtifactHandler} by
+ * selecting the one which handles the more specific type. This is determined by
+ * comparing the assignability of the classes handled by the
+ * <code>ArtifactHandlers</code>.
  */
 public class DefaultPriorityHandler implements PriorityHandler {
 
 	@Override
-	public <T> IArtifactHandler<? extends T> getSelectedHandler(Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact) {
-		// TODO: is this needed if HudsonHandler is split into Build/TestElementHandler?
-		if (artifact instanceof TestElement) {
-			return handlers.stream().filter(h -> h.getClass().isAssignableFrom(TestElementHandler.class)).findAny().get();
+	public <T> IArtifactHandler<? extends T> getSelectedHandler(
+			Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact) {
+		return handlers.stream().max(new ArtifactHandlerPriorityComparator()).get();
+	}
 
-		} else if (artifact instanceof BuildElement) {
-			return handlers.stream().filter(h -> h.getClass().isAssignableFrom(BuildElementHandler.class)).findAny().get();
+	/**
+	 * A comparator that compares two classes by whether the handled classes are
+	 * assignable to each other. If instance A is of a type that is a superclass
+	 * or superinterface of instance B, it will return A>B. A=B if the
+	 * assignment works in both directions or if the assignment does not work at
+	 * all.
+	 */
+	private class ArtifactHandlerPriorityComparator implements Comparator<IArtifactHandler<?>> {
+
+		@Override
+		public int compare(IArtifactHandler<?> o1, IArtifactHandler<?> o2) {
+			if (!o1.getHandledClass().isAssignableFrom(o2.getHandledClass())
+					&& o2.getHandledClass().isAssignableFrom(o1.getHandledClass())) {
+				return 1;
+			} else if (o1.getHandledClass().isAssignableFrom(o2.getHandledClass())
+					&& !o2.getHandledClass().isAssignableFrom(o1.getHandledClass())) {
+				return -1;
+			} else {
+				return 0;
+			}
 		}
-		return null;
 	}
 
 }

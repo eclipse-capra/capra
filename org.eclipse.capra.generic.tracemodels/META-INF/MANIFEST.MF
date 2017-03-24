@@ -7,8 +7,14 @@ Bundle-ClassPath: .
 Bundle-Vendor: Capra Development Team
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.capra.GenericArtifactMetaModel;x-friends:="org.eclipse.capra.testsuite",
- org.eclipse.capra.GenericTraceMetaModel;x-friends:="org.eclipse.capra.testsuite"
+Export-Package: org.eclipse.capra.GenericArtifactMetaModel;
+  x-friends:="org.eclipse.capra.testsuite",
+ org.eclipse.capra.GenericArtifactMetaModel.impl,
+ org.eclipse.capra.GenericArtifactMetaModel.util,
+ org.eclipse.capra.GenericTraceMetaModel;
+  x-friends:="org.eclipse.capra.testsuite",
+ org.eclipse.capra.GenericTraceMetaModel.impl,
+ org.eclipse.capra.GenericTraceMetaModel.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,
