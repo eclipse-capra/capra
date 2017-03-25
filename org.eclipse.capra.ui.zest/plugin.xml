@@ -24,4 +24,33 @@
       </view>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.capra.ui.zest.ToggleTransitivityHandler"
+            id="org.eclipse.capra.ui.zest.toggleTransitivity"
+            name="Toggle Transitivity">
+      </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.zest.ToggleTransitivityHandler"
+            commandId="org.eclipse.capra.ui.zest.toggleTransitivity">
+      </handler>
+   </extension>
+
+	<extension
+         point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="menu:org.eclipse.capra.ui.zest.zestView?after=additions">
+       <command
+             commandId="org.eclipse.capra.ui.zest.toggleTransitivity"
+             label="Toggle Transitivity"
+             style="toggle">
+       </command>
+    </menuContribution>
+   </extension>
+
 </plugin>
