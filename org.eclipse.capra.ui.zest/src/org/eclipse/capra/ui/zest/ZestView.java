@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -18,6 +18,8 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.TraceCreationHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.gef4.common.adapt.inject.AdapterInjectionSupport;
+import org.eclipse.gef4.common.adapt.inject.AdapterInjectionSupport.LoggingMode;
 import org.eclipse.gef4.layout.ILayoutAlgorithm;
 import org.eclipse.gef4.layout.algorithms.TreeLayoutAlgorithm;
 import org.eclipse.gef4.zest.fx.jface.ZestContentViewer;
@@ -28,8 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
-
-import com.google.inject.Module;
 
 /**
  * This class creates the view to hold the content of the model displayed as a
@@ -48,6 +48,13 @@ public class ZestView extends ViewPart {
 	static ZestContentViewer viewer = null;
 	private ISelectionListener selectionListener;
 
+	public class ZestViewModule extends ZestFxJFaceModule {
+		@Override
+		protected void enableAdapterMapInjection() {
+			install(new AdapterInjectionSupport(LoggingMode.PRODUCTION));
+		}
+	}
+
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -55,7 +62,7 @@ public class ZestView extends ViewPart {
 
 		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 
-		viewer = new ZestContentViewer((Module) new ZestFxJFaceModule());
+		viewer = new ZestContentViewer(new ZestViewModule());
 		viewer.createControl(parent, SWT.NONE);
 		viewer.setLabelProvider(new TraceNodeLabelProvider());
 		ILayoutAlgorithm layout = new TreeLayoutAlgorithm();
@@ -93,7 +100,7 @@ public class ZestView extends ViewPart {
 
 	@Override
 	public void dispose() {
-		getSite().getPage().removeSelectionListener((ISelectionListener) selectionListener);
+		getSite().getPage().removeSelectionListener(selectionListener);
 		super.dispose();
 	}
 
