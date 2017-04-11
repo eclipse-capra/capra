@@ -47,7 +47,7 @@ public class TraceCreationHandler extends AbstractHandler {
 
 	public void createTrace(IWorkbenchWindow window,
 			BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
-		List<Object> artifacts = SelectionView.getOpenedView().getSelection();
+		List<?> artifacts = SelectionView.getOpenedView().getSelection();
 
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();

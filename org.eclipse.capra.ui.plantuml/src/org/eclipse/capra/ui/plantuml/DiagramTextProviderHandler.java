@@ -11,7 +11,6 @@
 package org.eclipse.capra.ui.plantuml;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,11 +59,13 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 		artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 
-		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 		if (selectedModels.size() > 0) {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			// check if there is a hander for the selected and get its Wrapper
-			IArtifactHandler<Object> handler = artifactHelper.getHandler(selectedModels.get(0));
+			@SuppressWarnings("unchecked")
+			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) 
+				artifactHelper.getHandler(selectedModels.get(0)).orElse(null);
+			
 			if (handler != null) {
 				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
 

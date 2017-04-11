@@ -82,6 +82,6 @@ public interface ArtifactMetaModelAdapter {
 	 * @param artifact
 	 * @return artifact handler instance
 	 */
-	IArtifactHandler<Object> getArtifactHandlerInstance(EObject artifact);
+	IArtifactHandler<?> getArtifactHandlerInstance(EObject artifact);
 
 }

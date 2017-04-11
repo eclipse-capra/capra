@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
 public abstract class AbstractArtifactMetaModelAdapter implements ArtifactMetaModelAdapter {
 
 	@Override
-	public IArtifactHandler<Object> getArtifactHandlerInstance(EObject artifact) {
+	public IArtifactHandler<?> getArtifactHandlerInstance(EObject artifact) {
 		String handler = getArtifactHandler(artifact);
 		return ExtensionPointHelper.getArtifactHandler(handler).orElse(null);
 	}

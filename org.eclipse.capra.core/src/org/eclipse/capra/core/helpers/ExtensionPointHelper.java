@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
@@ -75,15 +76,14 @@ public class ExtensionPointHelper {
 	 *            The ID of the extension
 	 * @return extension
 	 */
-	public static Optional<IArtifactHandler<Object>> getExtension(String extensionID, String ID, String CONFIG) {
+	public static Optional<IArtifactHandler<?>> getExtension(String extensionID, String ID, String CONFIG) {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtension extension = registry.getExtension(ID, extensionID);
 			IConfigurationElement[] elements = extension.getConfigurationElements();
-			@SuppressWarnings("unchecked")
-			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) elements[0].createExecutableExtension(CONFIG);
-			return Optional.of(handler);
+			return Optional.of((IArtifactHandler<?>) elements[0].createExecutableExtension(CONFIG));
 		} catch (Exception e) {
+			// Don't catch Exception! It can easily hide bugs!
 			return Optional.empty();
 		}
 	}
@@ -140,13 +140,22 @@ public class ExtensionPointHelper {
 	 *         collects all plugins that have an extension to the
 	 *         ArtifactHandler Extension point
 	 */
-	public static Collection<IArtifactHandler<Object>> getArtifactHandlers() {
-		try {
-			return getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG).stream().map(IArtifactHandler.class::cast)
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			return Collections.<IArtifactHandler<Object>>emptyList();
-		}
+	// Change type to IArtifactHandler<?>, since IArtifactHandler<Object> means a handler which
+	// can handle ALL kinds of objects.
+	public static Collection<IArtifactHandler<?>> getArtifactHandlers() {
+			List<Object> extensions = getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG);
+
+			List<Object> illegalClasses = extensions.stream()
+				.filter(c -> !(c instanceof IArtifactHandler))
+				.collect(toList());
+			
+			if (!illegalClasses.isEmpty()) {
+				throw new IllegalStateException("Illegal classes at " + ARTIFACT_HANDLER_ID + ": "+ illegalClasses);
+			}
+			
+			return extensions.stream()
+				.map(IArtifactHandler.class::cast)
+				.collect(toList());
 	}
 
 	/**
@@ -155,7 +164,7 @@ public class ExtensionPointHelper {
 	 * @param ID
 	 * @return ArtifactHandler
 	 */
-	public static Optional<IArtifactHandler<Object>> getArtifactHandler(String ID) {
+	public static Optional<IArtifactHandler<?>> getArtifactHandler(String ID) {
 		return getExtension(ID, ARTIFACT_HANDLER_ID, ARTIFACT_CONFIG);
 	}
 

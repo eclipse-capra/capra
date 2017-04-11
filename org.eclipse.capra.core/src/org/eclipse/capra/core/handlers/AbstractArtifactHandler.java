@@ -11,11 +11,31 @@
 package org.eclipse.capra.core.handlers;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> {
 
 	@Override
-	public boolean canHandleArtifact(T artifact) {
+	public <R> Optional<R> withCastedHandler(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction) {
+		if (canHandleArtifact(artifact)) {
+			@SuppressWarnings("unchecked")
+			T a = (T) artifact;
+			return Optional.of(handleFunction.apply(this, a));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public <R> R withCastedHandlerUnchecked(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction) {
+		return withCastedHandler(artifact, handleFunction).orElseThrow(
+			() -> new IllegalArgumentException("withCastedHanderUnchecked called with unhandleble artifact."
+				+ " Artifact: " + artifact + ", handler: " + this));
+	}
+
+	@Override
+	public boolean canHandleArtifact(Object artifact) {
 		try {
 			Class<?> genericType = ((Class<?>) ((ParameterizedType) this.getClass().getGenericSuperclass())
 					.getActualTypeArguments()[0]);

@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.zest;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.jface.viewers.LabelProvider;
 
@@ -28,15 +25,12 @@ public class TraceNodeLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
-
-		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleArtifact(element)).collect(Collectors.toList());
-		if (availableHandlers.size() >= 1) {
-			return availableHandlers.get(0).getDisplayName(element);
-		} else
-			return element.toString();
-
+		return ExtensionPointHelper.getArtifactHandlers().stream()
+			.map(handler -> handler.withCastedHandler(element, (h, e) -> h.getDisplayName(e)))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.findFirst()
+			.orElseGet(element::toString);
 	}
 
 	// TODO Add labels for the edges

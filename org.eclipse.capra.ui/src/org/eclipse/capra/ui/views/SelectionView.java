@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.views;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,14 +93,13 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-			List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
-					.filter(handler -> handler.canHandleArtifact(element)).collect(Collectors.toList());
-			if (availableHandlers.size() > 1) {
-				return availableHandlers.get(0).getDisplayName(element);
-			} else
-				return element.toString();
-		};
+			return ExtensionPointHelper.getArtifactHandlers().stream()
+				.map(handler -> handler.withCastedHandler(element, (h, e) -> h.getDisplayName(e)))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.findFirst()
+				.orElseGet(element::toString);
+		}
 
 		@Override
 		public String getColumnText(Object obj, int index) {
@@ -209,9 +210,11 @@ public class SelectionView extends ViewPart {
 	}
 
 	private boolean validateSelection(Object target) {
-		Collection<IArtifactHandler<Object>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		List<IArtifactHandler<Object>> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleArtifact(target)).collect(Collectors.toList());
+		Collection<IArtifactHandler<?>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		List<IArtifactHandler<?>> availableHandlers = artifactHandlers.stream()
+				.filter(handler -> handler.canHandleArtifact(target))
+				.collect(toList());
+		
 		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getSite().getShell(), "No handler for selected item",
@@ -222,9 +225,9 @@ public class SelectionView extends ViewPart {
 		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
 			// TODO check if the priority handler can give exactly one artifact
 			// handler, if not flag for multiple selections
-		} else
+		} else {
 			return true;
-
+		}
 		return false;
 	}
 

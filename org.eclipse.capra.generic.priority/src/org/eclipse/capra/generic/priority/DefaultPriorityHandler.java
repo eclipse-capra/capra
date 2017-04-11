@@ -27,12 +27,12 @@ import org.eclipse.mylyn.builds.internal.core.TestElement;
 public class DefaultPriorityHandler implements PriorityHandler {
 
 	@Override
-	public IArtifactHandler<Object> getSelectedHandler(Collection<IArtifactHandler<Object>> handlers, Object selectedElement) {
+	public <T> IArtifactHandler<? extends T> getSelectedHandler(Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact) {
 		// TODO: is this needed if HudsonHandler is split into Build/TestElementHandler?
-		if (selectedElement instanceof TestElement) {
+		if (artifact instanceof TestElement) {
 			return handlers.stream().filter(h -> h.getClass().isAssignableFrom(TestElementHandler.class)).findAny().get();
 
-		} else if (selectedElement instanceof BuildElement) {
+		} else if (artifact instanceof BuildElement) {
 			return handlers.stream().filter(h -> h.getClass().isAssignableFrom(BuildElementHandler.class)).findAny().get();
 		}
 		return null;

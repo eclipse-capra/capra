@@ -1,9 +1,10 @@
 package org.eclipse.capra.core.helpers;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
@@ -11,8 +12,15 @@ import org.eclipse.emf.ecore.EObject;
 
 public class ArtifactHelper {
 	private EObject artifactModel;
-	private Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
-	private Collection<IArtifactHandler<Object>> handlers = ExtensionPointHelper.getArtifactHandlers();
+	// Switch to Optional here to express potential absence in the type
+	private static Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
+	
+	// This is a tricky type... It is not really necessary here, but let's take it as a generics tutorial example! 
+	// 
+	// I used it during development because this type can contain collections both of type IArtifactHandler<?> 
+	// AND of IArtifactHandler<Object>. The simpler type Collection<IArtifactHandler<?>> can only hold 
+	// IArtifactHandler<?>. 
+	private static Collection<? extends IArtifactHandler<?>> handlers = ExtensionPointHelper.getArtifactHandlers();
 
 	/**
 	 * @param artifactModel
@@ -27,43 +35,45 @@ public class ArtifactHelper {
 	 * @param artifacts
 	 * @return List of wrappers
 	 */
-	public List<EObject> createWrappers(List<Object> artifacts) {
-		List<EObject> wrappers = artifacts.stream().map(a -> createWrapper(a)).collect(Collectors.toList());
-		return wrappers;
+	public List<EObject> createWrappers(List<?> artifacts) {
+		return artifacts.stream()
+			.map(vagueArtifact -> 
+				getHandler(vagueArtifact).map(h -> h.withCastedHandlerUnchecked(vagueArtifact, 
+					(handler, artifact) -> handler.createWrapper(artifact, artifactModel))))
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(toList());
+
 	}
 
 	/**
 	 * Creates wrapper for artifact
 	 *
-	 * @param artifact
+	 * @param vagueArtifact
 	 * @return wrapper of null if no handler exists
 	 */
-	public EObject createWrapper(Object artifact) {
-		IArtifactHandler<Object> handler = getHandler(artifact);
-		if (handler == null) {
-			return null;
-		}
-		return handler.createWrapper(artifact, artifactModel);
+	public EObject createWrapper(Object vagueArtifact) {
+		Optional<EObject> wrapped = getHandler(vagueArtifact).map(
+			vagueHandler -> vagueHandler.withCastedHandlerUnchecked(vagueArtifact, 
+				(handler, artifact) -> handler.createWrapper(artifact, artifactModel)));
+		
+		return wrapped.orElse(null);
 	}
+	
+	// Returns handler for same type as the argument
+	public <T> Optional<IArtifactHandler<?>> getHandler(Object artifact) {
 
-	/**
-	 * Get a handler for the artifact
-	 * 
-	 * @param artifact
-	 * @return handler or null if no handler exists
-	 */
-	public IArtifactHandler<Object> getHandler(Object artifact) {
-		List<IArtifactHandler<Object>> availableHandlers = handlers.stream().filter(h -> h.canHandleArtifact(artifact))
-				.collect(Collectors.toList());
-
-		// TODO: Could this be folded into the pipeline above?
-		if (availableHandlers.size() == 1) {
-			return availableHandlers.get(0);
-		} else if (availableHandlers.size() > 1 && priorityHandler.isPresent()) {
-			return priorityHandler.get().getSelectedHandler(availableHandlers, artifact);
+		List<IArtifactHandler<?>> availableHandlers = handlers.stream()
+			.filter(h -> h.canHandleArtifact(artifact))
+			.collect(toList());
+		
+		if (availableHandlers.isEmpty()) {
+			return Optional.empty();
+		} else if (availableHandlers.size() == 1) {
+			return Optional.of(availableHandlers.get(0));
 		} else {
-			return null;
+			return priorityHandler
+				.map(h -> h.getSelectedHandler(availableHandlers, artifact));
 		}
 	}
-
 }

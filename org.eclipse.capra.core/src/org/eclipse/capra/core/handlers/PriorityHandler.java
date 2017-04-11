@@ -31,6 +31,6 @@ public interface PriorityHandler {
 	 * @return one handler
 	 * 
 	 */
-	IArtifactHandler<Object> getSelectedHandler(Collection<IArtifactHandler<Object>> handlers, Object selectedElement);
-
+	// Use wildcard in the return type, because we don't know the type they can handle.
+	<T> IArtifactHandler<? extends T> getSelectedHandler(Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact);
 }

@@ -56,7 +56,8 @@ public class TraceHelper {
 	public void annotateTrace(List<EObject> wrappers) {
 		// Annotate if possible
 		for (EObject wrapper : wrappers) {
-			IArtifactHandler<Object> handler = artifactAdapter.getArtifactHandlerInstance(wrapper);
+			IArtifactHandler<?> handler = artifactAdapter.getArtifactHandlerInstance(wrapper);
+
 			if (handler instanceof IAnnotateArtifact) {
 				IAnnotateArtifact h = (IAnnotateArtifact) handler;
 				try {
