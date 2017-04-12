@@ -16,8 +16,10 @@ import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
+import org.eclipse.cdt.core.model.CModelException;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 
@@ -50,9 +52,17 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	@Override
 	public void annotateArtifact(EObject wrapper, String annotation) throws AnnotationException {
 		IEclipsePreferences preferences = CDTPreferences.getPreferences();
-		if (preferences.getBoolean(CDTPreferences.ANNOTATE_CDT, CDTPreferences.ANNOTATE_CDT_DEFAULT)) {
-			ICElement handle = resolveWrapper(wrapper);
+		
+		if (!preferences.getBoolean(CDTPreferences.ANNOTATE_CDT, CDTPreferences.ANNOTATE_CDT_DEFAULT)) return;
+		
+		ICElement handle = resolveWrapper(wrapper);
+		
+		try {
 			CDTAnnotate.annotateArtifact(handle, annotation);
+		} catch (CModelException e) {
+			throw new AnnotationException(e.getStatus());
+		} catch (CoreException e) {
+			throw new AnnotationException(e.getStatus());
 		}
 	}
 
