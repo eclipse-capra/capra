@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.plantuml.Connections;
 import org.eclipse.emf.ecore.EObject;
@@ -33,15 +32,15 @@ public class VisualizationHelper {
           {
             for(final EObject e : secondElements) {
               _builder.append("|");
-              String _identifier = EMFHelper.getIdentifier(e);
-              _builder.append(_identifier, "");
+              String _artifactLabel = Connections.getArtifactLabel(e);
+              _builder.append(_artifactLabel, "");
             }
           }
           _builder.newLineIfNotEmpty();
           {
             for(final EObject first : firstElements) {
-              String _identifier_1 = EMFHelper.getIdentifier(first);
-              _builder.append(_identifier_1, "");
+              String _artifactLabel_1 = Connections.getArtifactLabel(first);
+              _builder.append(_artifactLabel_1, "");
               _builder.append(" ");
               {
                 for(final EObject second : secondElements) {

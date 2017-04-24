@@ -46,4 +46,10 @@ public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> 
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<T> getHandledClass() {
+		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+
 }
