@@ -58,8 +58,8 @@ public class TestUtil {
 		assertNotNull(projectType); // Fail early if required bundles not
 									// present
 
-		System.out.println("owner " + cdtProject.getName());
-		System.out.println("id" + projectType.getId());
+		System.out.println("Owner: " + cdtProject.getName());
+		System.out.println("ID: " + projectType.getId());
 
 		IManagedProject managedProject = ManagedBuildManager.createManagedProject(cdtProject, projectType);
 		info.setManagedProject(managedProject);
@@ -71,6 +71,8 @@ public class TestUtil {
 			IConfiguration config = managedProject.createConfiguration(cfg, id);
 			config.setArtifactName(project.getName());
 
+			
+			System.out.println("Create config: " + cfg.getId());
 			// creates/add the configuration to the project description
 			cdtDescription.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, config.getConfigurationData());
 		}
@@ -94,8 +96,12 @@ public class TestUtil {
 			contents = "";
 		}
 
+		System.out.println("Creating file: " + file.getName());
+		
 		InputStream inputStream = new ByteArrayInputStream(contents.getBytes());
 		file.create(inputStream, true, null);
+
+		System.out.println("Created file: " + file.getName());
 		return file;
 	}
 

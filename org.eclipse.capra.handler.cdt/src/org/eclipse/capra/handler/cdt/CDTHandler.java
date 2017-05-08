@@ -16,7 +16,6 @@ import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
-import org.eclipse.cdt.core.model.CModelException;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.core.runtime.CoreException;
@@ -59,8 +58,6 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 		
 		try {
 			CDTAnnotate.annotateArtifact(handle, annotation);
-		} catch (CModelException e) {
-			throw new AnnotationException(e.getStatus());
 		} catch (CoreException e) {
 			throw new AnnotationException(e.getStatus());
 		}

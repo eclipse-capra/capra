@@ -22,6 +22,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests the annotate capability of the CDTHandler. 
+ */
 public class CDTAnnotateTest {
 
 	private static final String NL = "\n";
@@ -32,10 +35,12 @@ public class CDTAnnotateTest {
 
 	@Before
 	public void setupTestProject() throws CoreException, BuildException {
+		System.out.println("Setting up test project");
 		project = TestUtil.setupTestProject("cdt");
 		CDTPreferences.getPreferences().putBoolean(CDTPreferences.ANNOTATE_CDT, true);
 		CDTPreferences.getPreferences().put(CDTPreferences.ANNOTATE_CDT_TAG, "req");
 		CDTPreferences.getPreferences().put(CDTPreferences.ANNOTATE_CDT_TAG_PREFIX, "@");
+		System.out.println("Done setting up test project");
 	}
 
 	@After
@@ -68,7 +73,8 @@ public class CDTAnnotateTest {
 
 		assertEquals(expected, actual);
 	}
-
+	
+	@Test
 	public void shouldReplaceAnnotation() throws Exception {
 		String source = "" +
 			"/**" + NL +
@@ -95,6 +101,7 @@ public class CDTAnnotateTest {
 		assertEquals(expected, actual);
 	}
 
+	@Test
 	public void shouldPreserveComments() throws Exception {
 		String source = "" +
 				"/**" + NL +
