@@ -36,9 +36,6 @@ public interface IArtifactHandler<T> {
 	 * @return <code>true</code> if object can be handled, <code>false</code>
 	 *         otherwise.
 	 */
-	// It should be possible to test any object if it is of the right type, even
-	// if the type of this
-	// handler is unknown. Therefore use Object here instead of T.
 	boolean canHandleArtifact(Object artifact);
 
 	/**
@@ -57,11 +54,6 @@ public interface IArtifactHandler<T> {
 	 * @return An optional with the result returned from the handle function if
 	 *         the artifact can be handled; otherwise an empty optional.
 	 */
-	// This method works by casting the artifact and the handler to the right
-	// type. This it not type safe
-	// in itself, but by doing these casts with this methods a caller can be
-	// sure that artifacts and handlers
-	// of incompatible types are not mixed up.
 	<R> Optional<R> withCastedHandler(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction);
 
 	/**
