@@ -65,7 +65,7 @@
 
               <associateSites>
                 <site>http://download.eclipse.org/releases/neon</site>
-                <site>http://basar.idi.ntnu.no/svn/tdt4100/anonymous/trunk/updatesite</site>
+                <site>http://files.idi.ntnu.no/publish/plantuml/repository/</site>
                 <site>http://download.eclipse.org/rmf/updates/releases</site>
               </associateSites>
             </configuration>

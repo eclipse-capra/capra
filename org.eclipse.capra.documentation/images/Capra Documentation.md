@@ -16,7 +16,7 @@ This section describes the prerequisites to run Capra and how to install the too
 
 Before downloading and using Capra, first download a distribution of the Eclipse Modeling Environment (Eclipse V 4.5 (Mars)) and make sure you have the following installed:
 
-* [PlantUML](http://plantuml.com/eclipse.html): Use the nightlies [update site](http://basar.idi.ntnu.no/svn/tdt4100/anonymous/trunk/updatesite) in Eclipse's "Install new software..." feature. Version 1.1.11 or higher should be installed through this link. Older versions advertised on the website will not work! It might also be necessary to install [Graphviz](http://www.graphviz.org) binaries on your system to view the visualisation of trace links.
+* [PlantUML](http://plantuml.com/eclipse.html): Use the nightlies [update site](http://files.idi.ntnu.no/publish/plantuml/repository/) in Eclipse's "Install new software..." feature. Version 1.1.11 or higher should be installed through this link. Older versions advertised on the website will not work! It might also be necessary to install [Graphviz](http://www.graphviz.org) binaries on your system to view the visualisation of trace links.
 * [Xcore](https://wiki.eclipse.org/Xcore): Install through Eclipse's "Install new software..." feature
 * [Mylyn](https://www.eclipse.org/mylyn/): Install the "Mylyn Builds Connector: Hudson/Jenkins" through Eclipse's "Install new software..." feature
 * [C/C++ Development Tools](https://www.eclipse.org/cdt/): : Use Eclipse's "Install new software..." feature
