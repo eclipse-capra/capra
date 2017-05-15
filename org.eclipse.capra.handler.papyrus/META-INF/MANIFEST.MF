@@ -6,7 +6,7 @@ Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.capra.ui,
  org.eclipse.emf.ecore,
- org.eclipse.papyrus.emf.facet.custom.metamodel;bundle-version="1.1.4",
+ org.eclipse.papyrus.emf.facet.custom.metamodel,
  org.eclipse.papyrus.infra.emf
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Capra Development Team

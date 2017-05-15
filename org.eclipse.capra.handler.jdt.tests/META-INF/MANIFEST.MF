@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JDT Handler tests
 Bundle-SymbolicName: org.eclipse.capra.handler.jdt.tests
 Bundle-Version: 0.7.0.qualifier
-Fragment-Host: org.eclipse.capra.handler.jdt;bundle-version="0.7.0"
+Fragment-Host: org.eclipse.capra.handler.jdt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit,
  org.eclipse.core.resources,

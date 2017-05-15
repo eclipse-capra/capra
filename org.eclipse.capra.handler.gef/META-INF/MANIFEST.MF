@@ -4,9 +4,9 @@ Bundle-Name: Capra Handler for GEF Models
 Bundle-SymbolicName: org.eclipse.capra.handler.gef;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.capra.core,
- org.eclipse.papyrus.infra.gmfdiag.css;bundle-version="1.1.4",
- org.eclipse.papyrus.infra.emf;bundle-version="1.1.4",
- org.eclipse.gmf.runtime.diagram.ui;bundle-version="1.8.0"
+ org.eclipse.papyrus.infra.gmfdiag.css,
+ org.eclipse.papyrus.infra.emf,
+ org.eclipse.gmf.runtime.diagram.ui
 Import-Package: org.eclipse.capra.ui.helpers
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Capra Development Team

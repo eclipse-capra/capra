@@ -5,6 +5,6 @@ Bundle-SymbolicName: org.eclipse.capra.handler.office;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.capra.core,
- org.eclipse.capra.ui.office;bundle-version="0.7.0",
+ org.eclipse.capra.ui.office,
  org.eclipse.capra.generic.tracemodels
 Bundle-Vendor: Capra Development Team
