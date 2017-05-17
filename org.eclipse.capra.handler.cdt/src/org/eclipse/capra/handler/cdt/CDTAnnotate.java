@@ -19,8 +19,10 @@ import java.util.regex.Pattern;
 
 import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
 import org.eclipse.cdt.core.dom.ast.IASTComment;
+import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.cdt.core.dom.rewrite.ASTRewrite.CommentPosition;
@@ -35,8 +37,14 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * Code for updating requirement annotation tag in Doxygen comments. Gets comments from the CDT element, matches
- * out the requirement tag and replaces it with the new annotation. 
+ * Code for updating requirement annotation tag in Doxygen comments. Gets
+ * comments from the CDT element, matches out the requirement tag and replaces
+ * it with the new annotation.
+ * 
+ * TODO: This code doesn't work for the declaration of C++ class members. For
+ * some reason comments on C++ members are parsed as trailing to previous
+ * element instead of leading the one we want it to be associated with. Because
+ * of that we don't find them.
  */
 public class CDTAnnotate {
 
@@ -104,12 +112,10 @@ public class CDTAnnotate {
 	{
 		ITranslationUnit translationUnit = sourceRef.getTranslationUnit();
 		IASTTranslationUnit ast = translationUnit.getAST();
-		ISourceRange sourceRange = sourceRef.getSourceRange();
-		IASTNode node = ast.getNodeSelector(null)
-			.findEnclosingNode(sourceRange.getStartPos(), sourceRange.getLength());
-		
-		String newline = findNewlineBefore(translationUnit.getBuffer(), node.getFileLocation().getNodeOffset());
-		
+
+		IASTNode node = findNode(sourceRef, ast);
+		String newline = findNewlineAndIndentationBefore(translationUnit.getBuffer(), node.getFileLocation().getNodeOffset());
+
 		// Use ASTRewrite just to get comments for node
 		ASTRewrite rewrite = ASTRewrite.create(ast);
 		Optional<IASTComment> oldCommentNode = getDoxygenComment(rewrite.getComments(node, CommentPosition.leading));
@@ -126,7 +132,25 @@ public class CDTAnnotate {
 		}
 
 		translationUnit.getBuffer().save(new NullProgressMonitor(), false);
-}
+	}
+
+	
+	private static IASTNode findNode(ISourceReference sourceRef, IASTTranslationUnit ast) throws CModelException {
+		ISourceRange sourceRange = sourceRef.getSourceRange();
+		IASTNode node = ast.getNodeSelector(null)
+			.findEnclosingNode(sourceRange.getStartPos(), sourceRange.getLength());
+		
+		// If this is a struct with a typedef then the annotation should go on the typedef instead
+		if (node instanceof IASTCompositeTypeSpecifier) {
+			IASTNode parent = ((IASTCompositeTypeSpecifier) node).getParent();
+			
+			if (parent instanceof IASTSimpleDeclaration) {
+				return parent;
+			}
+		}
+		
+		return node;
+	}
 
 	/**
 	 * @return A new comment, either with the tag section in comment substituted by the content of 
@@ -139,7 +163,8 @@ public class CDTAnnotate {
 			// There were no previous comment, create a new one
 			String newComment = "/**" + nl;
 			if (addFileTag) newComment += " * @file" + nl;
-			newComment += " * " + tag + " " + annotation + nl + " */" + nl;
+			newComment += " * " + tag + " " + annotation + nl 
+				+ " */" + nl;
 			return newComment;
 		}
 		
@@ -175,7 +200,7 @@ public class CDTAnnotate {
 			
 			if (commentEndMatcher.find()) {
 				return oldComment.substring(0, commentEndMatcher.start(1))
-					+ nl + " * " + tag + " " + annotation + nl + " */" + nl;
+					+ nl + " * " + tag + " " + annotation + nl + " */";
 			}
 		}
 		
@@ -224,14 +249,21 @@ public class CDTAnnotate {
 		} 
 	}
 	
+	private static final Pattern NON_SPACES_PATTERN = Pattern.compile("\\S");
+
 	/**
 	 * Returns the newline and indentation chars for the line on offset.
 	 */
-	private static String findNewlineBefore(IBuffer text, int offset) {
+	private static String findNewlineAndIndentationBefore(IBuffer text, int offset) {
 		for (int charIx = offset; charIx >= 0; charIx--) {
 			String newline = getNewline(text, charIx);
 			if (newline != null) {
-				return newline + text.getText(charIx + 1, offset - charIx - 1);
+				// Get text from end of newline, to end of indentation (first non-space),
+				String indentation = text.getText(charIx + 1, offset - charIx - 1);
+
+				// Even if offset was for something with other char before it, we indent using
+				// only whitespace
+				return newline + NON_SPACES_PATTERN.matcher(indentation).replaceAll(" ");
 			}
 		}
 		

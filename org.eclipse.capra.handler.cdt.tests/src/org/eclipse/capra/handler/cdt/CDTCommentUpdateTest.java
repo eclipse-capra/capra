@@ -27,7 +27,7 @@ public class CDTCommentUpdateTest {
 			+ "/**\n"
 			+ " * Comment\n"
 			+ " * @tag annotation\n"
-			+ " */\n";
+			+ " */";
 
 		String result = CDTAnnotate.createNewCommentString(Optional.of(input), "annotation", "@tag", NL, false);
 
@@ -60,7 +60,7 @@ public class CDTCommentUpdateTest {
 		String expected = ""
 			+ "/** Comment\n"
 			+ " * @tag annotation\n"
-			+ " */\n";
+			+ " */";
 
 		String result = CDTAnnotate.createNewCommentString(Optional.of(input), "annotation", "@tag", NL, false);
 		assertEquals(expected, result);
