@@ -11,9 +11,11 @@
 package org.eclipse.capra.ui.zest;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -29,11 +31,9 @@ public class ToggleTransitivityHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (isTraceViewTransitive())
-			setTraceViewTransitive(false);
-		else
-			setTraceViewTransitive(true);
-
+		Command command = event.getCommand();
+		boolean oldValue = HandlerUtil.toggleCommandState(command);
+		setTraceViewTransitive(!oldValue);
 		return null;
 	}
 
@@ -46,7 +46,7 @@ public class ToggleTransitivityHandler extends AbstractHandler {
 	public static boolean isTraceViewTransitive() {
 		Preferences transitivity = getPreference();
 
-		return transitivity.get("option", "direct").equals("transitive");
+		return transitivity.get("option", "direct").equals("direct");
 	}
 
 	/**

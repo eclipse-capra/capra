@@ -30,6 +30,10 @@
             defaultHandler="org.eclipse.capra.ui.zest.ToggleTransitivityHandler"
             id="org.eclipse.capra.ui.zest.toggleTransitivity"
             name="Toggle Transitivity">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
       </command>
    </extension>
 
@@ -47,7 +51,7 @@
           locationURI="menu:org.eclipse.capra.ui.zest.zestView?after=additions">
        <command
              commandId="org.eclipse.capra.ui.zest.toggleTransitivity"
-             label="Toggle Transitivity"
+             label="Show transitive links"
              style="toggle">
        </command>
     </menuContribution>
