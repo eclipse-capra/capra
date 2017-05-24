@@ -63,9 +63,9 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			// check if there is a hander for the selected and get its Wrapper
 			@SuppressWarnings("unchecked")
-			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) 
-				artifactHelper.getHandler(selectedModels.get(0)).orElse(null);
-			
+			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper
+					.getHandler(selectedModels.get(0)).orElse(null);
+
 			if (handler != null) {
 				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
 
@@ -74,15 +74,16 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 					traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
 					if (selectedModels.size() == 1) {
-						if (DisplayTracesHandler.isTraceViewTransitive()) {
+						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel);
 						} else {
 							traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel);
 						}
 
-						return VisualizationHelper.createNeighboursView(traces, selectedObject);
+						return VisualizationHelper.createNeighboursView(traces,
+								EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
 					} else if (selectedModels.size() == 2) {
-						if (DisplayTracesHandler.isTraceViewTransitive()) {
+						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = EMFHelper
 									.linearize(handler.createWrapper(selectedModels.get(0), artifactModel));
 							secondModelElements = EMFHelper
@@ -96,19 +97,42 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 							secondModelElements = secondObject;
 						}
 					} else if (selectedModels.size() > 2) {
-						if (DisplayTracesHandler.isTraceViewTransitive()) {
+						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = selectedModels.stream()
 									.flatMap(r -> EMFHelper.linearize(handler.createWrapper(r, artifactModel)).stream())
 									.collect(Collectors.toList());
 							secondModelElements = firstModelElements;
 						} else {
-							List<EObject> Objects = new ArrayList<>();
+							List<EObject> wrappers = new ArrayList<>();
 							selectedModels.stream().forEach(o -> {
-								Objects.add(handler.createWrapper(o, artifactModel));
+								wrappers.add(handler.createWrapper(o, artifactModel));
 
 							});
-							firstModelElements = Objects;
-							secondModelElements = firstModelElements;
+
+							// User selected to display a graph with only the
+							// selected elements
+							if (ToggleDisplayGraphHandler.isDisplayGraph()) {
+								for (EObject object : wrappers) {
+									traces.addAll(metamodelAdapter.getConnectedElements(object, traceModel));
+								}
+
+								List<Connection> relevantTraces = new ArrayList<>();
+								for (Connection connection : traces) {
+									if (selectedModels.contains(connection.getOrigin())
+											&& selectedModels.stream().anyMatch(connection.getTargets()::contains)) {
+										Connection newConnection = new Connection(
+												connection.getOrigin(), connection.getTargets().stream()
+														.filter(selectedModels::contains).collect(Collectors.toList()),
+												connection.getTlink());
+										relevantTraces.add(newConnection);
+
+									}
+								}
+								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);
+							} else {
+								firstModelElements = wrappers;
+								secondModelElements = firstModelElements;
+							}
 						}
 					}
 				}

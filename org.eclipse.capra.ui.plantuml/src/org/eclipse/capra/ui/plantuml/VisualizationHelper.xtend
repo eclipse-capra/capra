@@ -28,8 +28,8 @@ class VisualizationHelper {
 	'''
 	} 
 	
-	def static String createNeighboursView(List<Connection> connections, EObject selectedObject){
-	var helper = new Connections(connections, selectedObject);
+	def static String createNeighboursView(List<Connection> connections, List<EObject> selectedObjects){
+	var helper = new Connections(connections, selectedObjects);
 	'''
 	@startuml
 	object "«helper.originLabel()»" as «helper.originId()» #pink

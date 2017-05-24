@@ -73,10 +73,10 @@ public class VisualizationHelper {
     return _xblockexpression;
   }
   
-  public static String createNeighboursView(final List<Connection> connections, final EObject selectedObject) {
+  public static String createNeighboursView(final List<Connection> connections, final List<EObject> selectedObjects) {
     String _xblockexpression = null;
     {
-      Connections helper = new Connections(connections, selectedObject);
+      Connections helper = new Connections(connections, selectedObjects);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");
       _builder.newLine();

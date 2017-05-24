@@ -23,7 +23,7 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
-import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
+import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -112,13 +112,13 @@ public class TestGraphicalVisualization {
 		selection.add(_A);
 
 		// Test directly connected Elements
-		DisplayTracesHandler.setTraceViewTransitive(false);
+		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String DirectlyConnectedElements = provider.getDiagramText(selection);
 		assertTrue(DirectlyConnectedElements.equals(EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS));
 
 		// Test transitively connected Elements
-		DisplayTracesHandler.setTraceViewTransitive(true);
+		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		String transitivelysConnectedElements = provider.getDiagramText(selection);
 		assertTrue(transitivelysConnectedElements.equals(EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS));
 

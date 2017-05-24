@@ -23,7 +23,7 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
-import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
+import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -140,13 +140,13 @@ public class TestTraceabiltyMatrix {
 		selectedPackages.add(_b);
 
 		// Test directly connected Elements
-		DisplayTracesHandler.setTraceViewTransitive(false);
+		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages);
 		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
 
 		// Test transitively connected Elements
-		DisplayTracesHandler.setTraceViewTransitive(true);
+		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages);
 		assertTrue(plantUMLTextForSelectedPackages_Transitive.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE));
 
