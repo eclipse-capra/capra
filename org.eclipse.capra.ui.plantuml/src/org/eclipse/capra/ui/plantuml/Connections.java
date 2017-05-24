@@ -12,11 +12,13 @@ package org.eclipse.capra.ui.plantuml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.Connection;
@@ -41,12 +43,12 @@ public class Connections {
 	private Map<EObject, String> object2Id;
 	private Map<String, String> id2Label;
 
-	Connections(List<Connection> connections, EObject selectedObject) {
+	Connections(List<Connection> connections, List<EObject> selectedObjects) {
 		this.connections = connections;
-		origin = selectedObject;
+		origin = selectedObjects.get(0);
 
 		allObjects = new LinkedHashSet<>();
-		allObjects.add(origin);
+		allObjects.addAll(selectedObjects);
 		connections.forEach(c -> allObjects.addAll(c.getTargets()));
 
 		object2Id = new LinkedHashMap<>();
@@ -82,7 +84,7 @@ public class Connections {
 	}
 
 	public List<String> arrows() {
-		List<String> arrows = new ArrayList<>();
+		Set<String> arrows = new HashSet<>();
 
 		connections.forEach(c -> {
 			c.getTargets().forEach(trg -> {
@@ -93,7 +95,7 @@ public class Connections {
 			});
 		});
 
-		return arrows;
+		return arrows.stream().collect(Collectors.toList());
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class Connections {
 					Object originalObject = handler.resolveWrapper(object);
 					if (originalObject != null) {
 						artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
-							.orElseThrow(IllegalArgumentException::new);
+								.orElseThrow(IllegalArgumentException::new);
 					} else { // original object cannot be resolved
 								// therefore use the wrapper name
 						String label = EMFHelper.getIdentifier(object);
