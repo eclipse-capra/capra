@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Sheets
+Bundle-Name: Capra Office Handler (Google Drive) UI Contributions
+Bundle-Vendor: Capra Development Team 
 Bundle-SymbolicName: org.eclipse.capra.ui.drive;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
