@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.generic.tracemodels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,8 +23,14 @@ import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Provides generic functionality to deal with traceability meta models.
@@ -77,11 +84,6 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		return TM;
 	}
 
-	@Override
-	public void deleteTrace(EObject first, EObject second, EObject traceModel) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
@@ -146,4 +148,40 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		return getTransitivelyConnectedElements(element, traceModel, accumulator);
 	}
 
+	@Override
+	public List<Connection> getAllTraceLinks(EObject traceModel) {
+		GenericTraceModel model = (GenericTraceModel) traceModel;
+		List<Connection> allLinks = new ArrayList<>();
+
+		for (RelatedTo trace : model.getTraces()) {
+			EObject origin = trace.getItem().get(0);
+			trace.getItem().remove(0);
+			allLinks.add(new Connection(origin, trace.getItem(), trace));
+		}
+		return allLinks;
+	}
+
+	@Override
+	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
+		if(traceModel instanceof GenericTraceModel) {
+			GenericTraceModel TModel = (GenericTraceModel) traceModel;
+			EList<RelatedTo> links = TModel.getTraces();
+			ResourceSet resourceSet = new ResourceSetImpl();
+			for (Connection c : toDelete) {
+				links.remove(c.getTlink());
+			}
+			GenericTraceModel newTraceModel = GenericTraceMetaModelFactory.eINSTANCE.createGenericTraceModel();
+			newTraceModel.getTraces().addAll(links);
+			URI traceModelURI = EcoreUtil.getURI(traceModel);
+			Resource resourceForTraces = resourceSet.createResource(traceModelURI);
+			resourceForTraces.getContents().add(newTraceModel);
+	
+			try {
+				resourceForTraces.save(null);
+                          	// TODO: Think of a way to let the developer handle such sitations (e.g., via an Exception)
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+	}
 }

@@ -25,6 +25,12 @@ import org.eclipse.emf.ecore.EObject;
  *
  */
 public interface TraceMetaModelAdapter {
+	
+	/**
+	 * Create a new model for the trace links.
+	 * 
+	 * @return the new trace model
+	 */
 
 	EObject createModel();
 
@@ -55,30 +61,17 @@ public interface TraceMetaModelAdapter {
 	 */
 	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection);
 
-	/**
-	 * Used to delete a trace
-	 * 
-	 * @param traceModel
-	 *            Trace model to delete from
-	 * @param first
-	 *            First object
-	 * @param second
-	 *            Second object
-	 */
-	void deleteTrace(EObject first, EObject second, EObject traceModel);
-
-	/**
-	 * Decide if two objects are connected according to the given trace model
-	 * 
-	 * @param first
-	 *            First object
-	 * @param second
-	 *            Second object
-	 * @param traceModel
-	 *            Trace model to base decision on
-	 * @return <code>true</code> if object are connected, <code>false</code>
-	 *         otherwise
-	 */
+	/** Decide if two objects are connected according to the given trace model
+	* 
+	* @param first
+	*            First object
+	* @param second
+	*            Second object
+	* @param traceModel
+	*            Trace model to base decision on
+	* @return <code>true</code> if object are connected, <code>false</code>
+	*         otherwise
+	*/
 	boolean isThereATraceBetween(EObject first, EObject second, EObject traceModel);
 
 	/**
@@ -109,4 +102,25 @@ public interface TraceMetaModelAdapter {
 	 */
 	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel);
 
+	/**
+	 * Given a trace model, this method returns a list of all trace links in the
+	 * model
+	 * 
+	 * @param traceModel
+	 * @return A list of all connections in the trace model with the following
+	 *         structure [Source, target(s) and the connecting trace link]
+	 */
+	List<Connection> getAllTraceLinks(EObject traceModel);
+
+	/**
+	 * Deletes specific trace links from a given trace model. This is useful for
+	 * example when you want to delete links based on a quick fix from the
+	 * notification feature
+	 * 
+	 * @param toDelete
+	 *            a list of links to be deleted
+	 * @param traceModel
+	 *            the trace model to delete the links from
+	 */
+	void deleteTrace(List<Connection> toDelete, EObject traceModel);
 }

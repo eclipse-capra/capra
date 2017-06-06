@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -90,6 +91,14 @@ public class TraceHelper {
 				}
 			}
 		}
+	}
+	
+	public List<EObject> getTracedElements(Connection connection) {
+		List<EObject> tracedElements = new ArrayList<>();
+		tracedElements.add(connection.getOrigin());
+		tracedElements.addAll(connection.getTargets());
+		return tracedElements;
+		
 	}
 
 }

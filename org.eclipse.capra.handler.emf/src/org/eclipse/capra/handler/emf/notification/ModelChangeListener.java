@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.emf.notification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
@@ -69,32 +70,37 @@ public class ModelChangeListener extends EContentAdapter {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSetImpl newResourceSet = new ResourceSetImpl();
 		EObject traceModel = persistenceAdapter.getTraceModel(newResourceSet);
-		EList<RelatedTo> traces = ((GenericTraceModel) traceModel).getTraces();
+		if (traceModel != null) {
 
-		if (traces.size() == 0)
-			return;
+			IPath path = new Path(EcoreUtil.getURI(traceModel).toPlatformString(false));
+			IFile traceContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-		IPath path = new Path(EcoreUtil.getURI(traceModel).toPlatformString(false));
-		IFile traceContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+			TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
-		// Traverse the traces and the items that they are referencing and
-		// check, if the items are from the same resource as the one that was
-		// changed. If yes, check if the changes affect the items.
-		for (RelatedTo trace : traces) {
-			for (EObject tracedItem : trace.getItem()) {
-				Resource oldResource = tracedItem.eResource();
-				if (oldResource == null)
-					oldResource = newResourceSet.getResource(EcoreUtil.getURI(tracedItem).trimFragment(), true);
+			List<Connection> connections = traceMetamodelAdapter
+					.getAllTraceLinks(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+			if (!connections.isEmpty()) {
+				for (Connection c : connections) {
+					List<EObject> tempList = new ArrayList<>();
+					tempList.add(c.getOrigin());
+					tempList.addAll(c.getTargets());
 
-				if (oldResource != null) {
-					if (CapraNotificationHelper.getFileUri(oldResource)
-							.equals(CapraNotificationHelper.getFileUri(changedResource))) {
-						IComparisonScope scope = new DefaultComparisonScope(changedResource, oldResource, null);
-						// Build a comparison object with EMFCompare and
-						// recursively resolve the Match elements.
-						Comparison comparison = EMFCompare.builder().build().compare(scope);
-						for (Match match : comparison.getMatches())
-							resolveMatch(tracedItem, match, null, traceContainer);
+					for (EObject tracedItem : tempList) {
+						Resource oldResource = tracedItem.eResource();
+						if (oldResource == null)
+							oldResource = newResourceSet.getResource(EcoreUtil.getURI(tracedItem).trimFragment(), true);
+
+						if (oldResource != null) {
+							if (CapraNotificationHelper.getFileUri(oldResource)
+									.equals(CapraNotificationHelper.getFileUri(changedResource))) {
+								IComparisonScope scope = new DefaultComparisonScope(changedResource, oldResource, null);
+								// Build a comparison object with EMFCompare and
+								// recursively resolve the Match elements.
+								Comparison comparison = EMFCompare.builder().build().compare(scope);
+								for (Match match : comparison.getMatches())
+									resolveMatch(tracedItem, match, null, traceContainer);
+							}
+						}
 					}
 				}
 			}

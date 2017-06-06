@@ -12,14 +12,16 @@ package org.eclipse.capra.ui.notification;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
@@ -54,7 +56,10 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 	public void run(IMarker marker) {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		EObject model = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
+		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TraceHelper traceHelper = new TraceHelper(traceModel);
 
 		String artifactContainerFileName = model.eResource().getURI().lastSegment();
 		String markerFileName = new File(marker.getResource().toString()).getName();
@@ -76,12 +81,11 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		} else {
 			// The element that the marker points to is an EObject and is not
 			// contained in the Capra artifact model.
-			model = tracePersistenceAdapter.getTraceModel(resourceSet);
-			List<RelatedTo> traces = ((GenericTraceModel) model).getTraces();
+			List<Connection> traces = traceMetaModelAdapter.getAllTraceLinks(traceModel);
 			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
 			URI markerUri = URI.createURI(oldArtifactUri);
-			for (RelatedTo trace : traces) {
-				for (EObject item : trace.getItem()) {
+			for (Connection c : traces) {
+				for (EObject item : traceHelper.getTracedElements(c)) {
 					URI itemUri = CapraNotificationHelper.getFileUri(item);
 					if (markerUri.equals(itemUri)) {
 						URI newUri = URI.createURI(marker.getAttribute(CapraNotificationHelper.NEW_URI, null));
