@@ -8,5 +8,11 @@
             class="org.eclipse.capra.handler.php.PhpHandler">
       </artifactHandler>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.capra.handler.php.notification.StartUp">
+      </startup>
+   </extension>
 
 </plugin>

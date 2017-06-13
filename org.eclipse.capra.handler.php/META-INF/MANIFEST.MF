@@ -8,6 +8,9 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.php.core,
  org.eclipse.dltk.core,
  org.eclipse.core.resources,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.capra.generic.tracemodels,
+ org.eclipse.capra.ui.notification,
+ org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Capra Development Team
