@@ -55,7 +55,7 @@ import com.google.api.services.drive.model.File;
 /**
  * Provides a Capra perspective view for displaying the contents of Google
  * sheets from Google Drive.
- * 
+ *
  * @author Dusan Kalanj
  *
  */
@@ -109,7 +109,7 @@ public class CapraGoogleDriveView extends ViewPart {
 
 	/**
 	 * Creates an authorized Credential object.
-	 * 
+	 *
 	 * @return an authorized Credential object.
 	 * @throws IOException
 	 */
@@ -129,7 +129,7 @@ public class CapraGoogleDriveView extends ViewPart {
 
 	/**
 	 * Build and return an authorized Drive client service.
-	 * 
+	 *
 	 * @return an authorized Drive client service
 	 * @throws IOException
 	 */
@@ -140,19 +140,18 @@ public class CapraGoogleDriveView extends ViewPart {
 
 	/**
 	 * Fills the Capra Drive view with Google sheet files from the Drive
-	 * 
+	 *
 	 * @param driveService
 	 *            authorized Drive client service
 	 */
 	private void fillSelection() {
 		try {
 			driveService = getAuthorizedDriveService();
-			List<File> files = driveService.files().list().setFields("nextPageToken, files(id, name, mimeType)")
-					.execute().getFiles();
+			List<File> files = driveService.files().list().setQ("mimeType='application/vnd.google-apps.spreadsheet'")
+					.setSpaces("drive").setFields("nextPageToken, files(id, name)").execute().getFiles();
 			if (files != null && files.size() > 0)
 				for (File file : files)
-					if (file.getMimeType().equals("application/vnd.google-apps.spreadsheet"))
-						selection.add(file);
+					selection.add(file);
 			viewer.refresh();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -244,7 +243,7 @@ public class CapraGoogleDriveView extends ViewPart {
 
 	/**
 	 * Getter for the authorized drive service object.
-	 * 
+	 *
 	 * @return authorized drive service
 	 */
 	public static Drive getDriveService() {
@@ -253,7 +252,7 @@ public class CapraGoogleDriveView extends ViewPart {
 
 	/**
 	 * Displays the sheet with the provided ID in the Capra Office view.
-	 * 
+	 *
 	 * @param spreadSheetId
 	 *            the ID of the sheet
 	 */
@@ -274,6 +273,7 @@ public class CapraGoogleDriveView extends ViewPart {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 			}
 		});
