@@ -28,7 +28,7 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.handlers.TraceCreationHandler;
-import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
+import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.CProjectNature;
@@ -481,7 +481,7 @@ public class TestHelper {
 	 */
 	public static void resetSelectionView() {
 		SelectionView.getOpenedView().clearSelection();
-		DisplayTracesHandler.setTraceViewTransitive(true);
+		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 	}
 }
