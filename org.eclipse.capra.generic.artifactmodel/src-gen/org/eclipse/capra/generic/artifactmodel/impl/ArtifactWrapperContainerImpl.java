@@ -1,12 +1,12 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.impl;
+package org.eclipse.capra.generic.artifactmodel.impl;
 
 import java.util.Collection;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
+import org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperContainerImpl#getArtifacts <em>Artifacts</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperContainerImpl#getArtifacts <em>Artifacts</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,7 +60,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return GenericArtifactMetaModelPackage.Literals.ARTIFACT_WRAPPER_CONTAINER;
+		return ArtifactmodelPackage.Literals.ARTIFACT_WRAPPER_CONTAINER;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	 */
 	public EList<ArtifactWrapper> getArtifacts() {
 		if (artifacts == null) {
-			artifacts = new EObjectContainmentEList<ArtifactWrapper>(ArtifactWrapper.class, this, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS);
+			artifacts = new EObjectContainmentEList<ArtifactWrapper>(ArtifactWrapper.class, this, ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS);
 		}
 		return artifacts;
 	}
@@ -83,7 +83,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
 				return ((InternalEList<?>)getArtifacts()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -97,7 +97,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
 				return getArtifacts();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -112,7 +112,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
 				getArtifacts().clear();
 				getArtifacts().addAll((Collection<? extends ArtifactWrapper>)newValue);
 				return;
@@ -128,7 +128,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
 				getArtifacts().clear();
 				return;
 		}
@@ -143,7 +143,7 @@ public class ArtifactWrapperContainerImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS:
 				return artifacts != null && !artifacts.isEmpty();
 		}
 		return super.eIsSet(featureID);

@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.impl;
+package org.eclipse.capra.generic.artifactmodel.impl;
 
-import org.eclipse.capra.GenericArtifactMetaModel.*;
+import org.eclipse.capra.generic.artifactmodel.*;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -18,24 +18,24 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class GenericArtifactMetaModelFactoryImpl extends EFactoryImpl implements GenericArtifactMetaModelFactory {
+public class ArtifactmodelFactoryImpl extends EFactoryImpl implements ArtifactmodelFactory {
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static GenericArtifactMetaModelFactory init() {
+	public static ArtifactmodelFactory init() {
 		try {
-			GenericArtifactMetaModelFactory theGenericArtifactMetaModelFactory = (GenericArtifactMetaModelFactory)EPackage.Registry.INSTANCE.getEFactory(GenericArtifactMetaModelPackage.eNS_URI);
-			if (theGenericArtifactMetaModelFactory != null) {
-				return theGenericArtifactMetaModelFactory;
+			ArtifactmodelFactory theArtifactmodelFactory = (ArtifactmodelFactory)EPackage.Registry.INSTANCE.getEFactory(ArtifactmodelPackage.eNS_URI);
+			if (theArtifactmodelFactory != null) {
+				return theArtifactmodelFactory;
 			}
 		}
 		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new GenericArtifactMetaModelFactoryImpl();
+		return new ArtifactmodelFactoryImpl();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class GenericArtifactMetaModelFactoryImpl extends EFactoryImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericArtifactMetaModelFactoryImpl() {
+	public ArtifactmodelFactoryImpl() {
 		super();
 	}
 
@@ -56,8 +56,8 @@ public class GenericArtifactMetaModelFactoryImpl extends EFactoryImpl implements
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER: return createArtifactWrapperContainer();
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER: return createArtifactWrapper();
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER: return createArtifactWrapperContainer();
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER: return createArtifactWrapper();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -88,8 +88,8 @@ public class GenericArtifactMetaModelFactoryImpl extends EFactoryImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericArtifactMetaModelPackage getGenericArtifactMetaModelPackage() {
-		return (GenericArtifactMetaModelPackage)getEPackage();
+	public ArtifactmodelPackage getArtifactmodelPackage() {
+		return (ArtifactmodelPackage)getEPackage();
 	}
 
 	/**
@@ -99,8 +99,8 @@ public class GenericArtifactMetaModelFactoryImpl extends EFactoryImpl implements
 	 * @generated
 	 */
 	@Deprecated
-	public static GenericArtifactMetaModelPackage getPackage() {
-		return GenericArtifactMetaModelPackage.eINSTANCE;
+	public static ArtifactmodelPackage getPackage() {
+		return ArtifactmodelPackage.eINSTANCE;
 	}
 
-} //GenericArtifactMetaModelFactoryImpl
+} //ArtifactmodelFactoryImpl

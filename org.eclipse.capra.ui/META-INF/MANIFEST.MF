@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.equinox.registry,
  org.eclipse.ui.ide,
  org.eclipse.ui,
  org.eclipse.core.resources,
- org.eclipse.capra.core
+ org.eclipse.capra.core,
+ org.eclipse.capra.generic.artifactmodel
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.handlers,
  org.eclipse.capra.ui.helpers,

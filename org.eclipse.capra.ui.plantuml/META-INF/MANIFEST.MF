@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.capra.ui,
  org.eclipse.capra.generic.tracemodels,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend.lib
+ org.eclipse.xtend.lib,
+ org.eclipse.capra.generic.artifactmodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.ui.plantuml
 Bundle-Vendor: Capra Development Team

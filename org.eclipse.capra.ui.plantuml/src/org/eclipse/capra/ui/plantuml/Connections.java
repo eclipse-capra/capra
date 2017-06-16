@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -20,17 +20,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * Helper class for generating PlantUML diagrams from a collection of
  * {@link Connection}
- * 
+ *
  * @author Anthony Anjorin, Salome Maro
  */
 public class Connections {
@@ -101,7 +101,7 @@ public class Connections {
 	/**
 	 * The method gets the label of the element to be used for display in the
 	 * plant UML graph view and matrix view
-	 * 
+	 *
 	 * @param object
 	 *            The object for which the label is needed. This can be an EMF
 	 *            original representation or an artifact wrapper if the original
@@ -133,6 +133,5 @@ public class Connections {
 		}
 		// remove unwanted characters like ", '
 		return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
-
 	}
 }

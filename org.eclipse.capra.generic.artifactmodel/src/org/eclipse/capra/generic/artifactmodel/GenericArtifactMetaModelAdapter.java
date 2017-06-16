@@ -1,18 +1,15 @@
+package org.eclipse.capra.generic.artifactmodel;
 /*******************************************************************************
  * Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.generic.tracemodels;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelFactory;
 import org.eclipse.capra.core.adapters.AbstractArtifactMetaModelAdapter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -29,9 +26,10 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 
 	@Override
 	public EObject createModel() {
-		return GenericArtifactMetaModelFactory.eINSTANCE.createArtifactWrapperContainer();
+		return ArtifactmodelFactory.eINSTANCE.createArtifactWrapperContainer();
 	}
 
+	@Override
 	public EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		for (ArtifactWrapper artifact : container.getArtifacts()) {
@@ -49,7 +47,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		if (existingWrapper != null)
 			return existingWrapper;
 
-		ArtifactWrapper wrapper = GenericArtifactMetaModelFactory.eINSTANCE.createArtifactWrapper();
+		ArtifactWrapper wrapper = ArtifactmodelFactory.eINSTANCE.createArtifactWrapper();
 		wrapper.setArtifactHandler(artifactHandler);
 		wrapper.setUri(artifactUri);
 		wrapper.setName(artifactName);

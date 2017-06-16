@@ -1,9 +1,9 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.impl;
+package org.eclipse.capra.generic.artifactmodel.impl;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -20,10 +20,10 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getPath <em>Path</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getUri <em>Uri</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl#getArtifactHandler <em>Artifact Handler</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getPath <em>Path</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getUri <em>Uri</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getArtifactHandler <em>Artifact Handler</em>}</li>
  * </ul>
  *
  * @generated
@@ -125,7 +125,7 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return GenericArtifactMetaModelPackage.Literals.ARTIFACT_WRAPPER;
+		return ArtifactmodelPackage.Literals.ARTIFACT_WRAPPER;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		String oldPath = path;
 		path = newPath;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH, oldPath, path));
+			eNotify(new ENotificationImpl(this, Notification.SET, ArtifactmodelPackage.ARTIFACT_WRAPPER__PATH, oldPath, path));
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		String oldUri = uri;
 		uri = newUri;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI, oldUri, uri));
+			eNotify(new ENotificationImpl(this, Notification.SET, ArtifactmodelPackage.ARTIFACT_WRAPPER__URI, oldUri, uri));
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME, oldName, name));
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		String oldArtifactHandler = artifactHandler;
 		artifactHandler = newArtifactHandler;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER, oldArtifactHandler, artifactHandler));
+			eNotify(new ENotificationImpl(this, Notification.SET, ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER, oldArtifactHandler, artifactHandler));
 	}
 
 	/**
@@ -220,13 +220,13 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__PATH:
 				return getPath();
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__URI:
 				return getUri();
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				return getName();
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				return getArtifactHandler();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -240,16 +240,16 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__PATH:
 				setPath((String)newValue);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__URI:
 				setUri((String)newValue);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				setName((String)newValue);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				setArtifactHandler((String)newValue);
 				return;
 		}
@@ -264,16 +264,16 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__PATH:
 				setPath(PATH_EDEFAULT);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__URI:
 				setUri(URI_EDEFAULT);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				setArtifactHandler(ARTIFACT_HANDLER_EDEFAULT);
 				return;
 		}
@@ -288,13 +288,13 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__PATH:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__PATH:
 				return PATH_EDEFAULT == null ? path != null : !PATH_EDEFAULT.equals(path);
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__URI:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__URI:
 				return URI_EDEFAULT == null ? uri != null : !URI_EDEFAULT.equals(uri);
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__NAME:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				return ARTIFACT_HANDLER_EDEFAULT == null ? artifactHandler != null : !ARTIFACT_HANDLER_EDEFAULT.equals(artifactHandler);
 		}
 		return super.eIsSet(featureID);
