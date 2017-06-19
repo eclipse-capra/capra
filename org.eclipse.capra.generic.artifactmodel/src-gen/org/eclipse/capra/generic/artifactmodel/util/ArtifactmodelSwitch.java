@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.util;
+package org.eclipse.capra.generic.artifactmodel.util;
 
-import org.eclipse.capra.GenericArtifactMetaModel.*;
+import org.eclipse.capra.generic.artifactmodel.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -19,17 +19,17 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage
+ * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage
  * @generated
  */
-public class GenericArtifactMetaModelSwitch<T> extends Switch<T> {
+public class ArtifactmodelSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static GenericArtifactMetaModelPackage modelPackage;
+	protected static ArtifactmodelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -37,9 +37,9 @@ public class GenericArtifactMetaModelSwitch<T> extends Switch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericArtifactMetaModelSwitch() {
+	public ArtifactmodelSwitch() {
 		if (modelPackage == null) {
-			modelPackage = GenericArtifactMetaModelPackage.eINSTANCE;
+			modelPackage = ArtifactmodelPackage.eINSTANCE;
 		}
 	}
 
@@ -66,13 +66,13 @@ public class GenericArtifactMetaModelSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER_CONTAINER: {
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER_CONTAINER: {
 				ArtifactWrapperContainer artifactWrapperContainer = (ArtifactWrapperContainer)theEObject;
 				T result = caseArtifactWrapperContainer(artifactWrapperContainer);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case GenericArtifactMetaModelPackage.ARTIFACT_WRAPPER: {
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER: {
 				ArtifactWrapper artifactWrapper = (ArtifactWrapper)theEObject;
 				T result = caseArtifactWrapper(artifactWrapper);
 				if (result == null) result = defaultCase(theEObject);
@@ -128,4 +128,4 @@ public class GenericArtifactMetaModelSwitch<T> extends Switch<T> {
 		return null;
 	}
 
-} //GenericArtifactMetaModelSwitch
+} //ArtifactmodelSwitch

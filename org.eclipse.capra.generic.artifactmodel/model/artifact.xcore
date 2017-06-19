@@ -1,4 +1,4 @@
-package org.eclipse.capra.GenericArtifactMetaModel
+package  org.eclipse.capra.generic.artifactmodel
 
 class ArtifactWrapperContainer {
 	contains ArtifactWrapper [0..*] artifacts 
@@ -9,5 +9,4 @@ class ArtifactWrapper {
 	String uri
 	String name
 	String ArtifactHandler
-}    
-   
+}

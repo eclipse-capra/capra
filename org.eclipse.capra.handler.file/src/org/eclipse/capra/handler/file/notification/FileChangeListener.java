@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.file.IFileHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -41,7 +41,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 /**
  * Checks for changes in workspace files and produces a Capra warning marker if
  * the changes affect a file that is traced.
- * 
+ *
  * @author Michael Warne
  */
 public class FileChangeListener implements IResourceChangeListener {
@@ -87,7 +87,7 @@ public class FileChangeListener implements IResourceChangeListener {
 	/**
 	 * Checks if the provided delta affects any of the artifacts and if it does,
 	 * produces a marker and attaches it to the wrapperContainer.
-	 * 
+	 *
 	 * @param delta
 	 *            represents changes in the state of the file
 	 * @param fileArtifacts
@@ -132,7 +132,7 @@ public class FileChangeListener implements IResourceChangeListener {
 	/**
 	 * Generates the attributes that will be assigned (in the createMarker
 	 * method) to a Capra warning marker.
-	 * 
+	 *
 	 * @param aw
 	 *            ArtifactWrapper that links to the file in the delta
 	 * @param delta

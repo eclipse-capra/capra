@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel;
+package org.eclipse.capra.generic.artifactmodel;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -15,17 +15,17 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer#getArtifacts <em>Artifacts</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer#getArtifacts <em>Artifacts</em>}</li>
  * </ul>
  *
- * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapperContainer()
+ * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapperContainer()
  * @model
  * @generated
  */
 public interface ArtifactWrapperContainer extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Artifacts</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper}.
+	 * The list contents are of type {@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Artifacts</em>' containment reference list isn't clear,
@@ -33,7 +33,7 @@ public interface ArtifactWrapperContainer extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Artifacts</em>' containment reference list.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapperContainer_Artifacts()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapperContainer_Artifacts()
 	 * @model containment="true"
 	 * @generated
 	 */

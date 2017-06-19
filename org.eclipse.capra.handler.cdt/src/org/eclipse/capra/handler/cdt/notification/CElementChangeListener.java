@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -43,7 +43,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * Checks for changes of C/C++ elements to determine if they affect the trace
  * model. Creates markers on the artifact model if the changes affect artifact
  * wrappers.
- * 
+ *
  * @author Dusan Kalanj
  */
 public class CElementChangeListener implements IElementChangedListener {
@@ -146,7 +146,7 @@ public class CElementChangeListener implements IElementChangedListener {
 	/**
 	 * Generates the attributes that will later be assigned (in the createMarker
 	 * method in the CapraNotificationHelper) to a Capra change marker.
-	 * 
+	 *
 	 * @param aw
 	 *            ArtifactWrapper that links to the element in the delta or to a
 	 *            child of the element in the delta

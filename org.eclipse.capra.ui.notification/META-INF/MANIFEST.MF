@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.ui.ide,
  org.eclipse.emf.ecore,
  org.eclipse.capra.generic.tracemodels,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.eclipse.capra.generic.artifactmodel
 Import-Package: org.eclipse.capra.ui.helpers,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
