@@ -28,6 +28,7 @@
 		<module>org.eclipse.capra.generic.persistence</module>
 		<module>org.eclipse.capra.generic.priority</module>
 		<module>org.eclipse.capra.generic.tracemodels</module>
+		<module>org.eclipse.capra.generic.artifactmodel</module>
 		<module>org.eclipse.capra.generic.feature</module>
 		<module>org.eclipse.capra.handler.cdt</module>
 		<module>org.eclipse.capra.handler.cdt.tests</module>

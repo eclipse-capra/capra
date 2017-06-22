@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -45,7 +45,7 @@ import org.eclipse.jdt.core.JavaCore;
  * Checks for changes of JavaElements to determine if they affect the trace
  * model. Creates markers on the artifact model if the changes affect artifact
  * wrappers.
- * 
+ *
  * @author Dusan Kalanj
  */
 public class JavaElementChangeListener implements IElementChangedListener {
@@ -86,7 +86,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		if (!(delta.getElement() instanceof ICompilationUnit))
 			// Only go as far as the source file
 			for (IJavaElementDelta subDelta : delta.getAffectedChildren())
-				handleDelta(subDelta, javaArtifacts, wrapperContainer);
+			handleDelta(subDelta, javaArtifacts, wrapperContainer);
 
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
@@ -143,7 +143,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	/**
 	 * Generates the attributes that will later be assigned (in the createMarker
 	 * method) to a Capra change marker.
-	 * 
+	 *
 	 * @param aw
 	 *            ArtifactWrapper that links to the element in the delta or to a
 	 *            child of the element in the delta

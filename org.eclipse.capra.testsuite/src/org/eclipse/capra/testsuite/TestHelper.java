@@ -4,7 +4,7 @@
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers|Gothenburg University and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.handlers.TraceCreationHandler;
@@ -89,7 +89,7 @@ public class TestHelper {
 
 	/**
 	 * Creates an empty project
-	 * 
+	 *
 	 * @param projectName
 	 *            the name of the project
 	 * @throws CoreException
@@ -105,7 +105,7 @@ public class TestHelper {
 
 	/**
 	 * Creates a Java project and a Java class declaration inside it.
-	 * 
+	 *
 	 * @param projectName
 	 *            the name of the project
 	 * @return the created Java class
@@ -157,7 +157,7 @@ public class TestHelper {
 
 	/**
 	 * Clears the active workspace by deleting all the contents.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	public static void clearWorkspace() throws CoreException {
@@ -168,7 +168,7 @@ public class TestHelper {
 
 	/**
 	 * Checks if the project with the provided name exists.
-	 * 
+	 *
 	 * @param projectName
 	 *            the name of the project
 	 * @return true if the project exists in the active workspace, false
@@ -180,7 +180,7 @@ public class TestHelper {
 
 	/**
 	 * Returns a handle to the project resource with the given name.
-	 * 
+	 *
 	 * @param projectName
 	 *            the name of the project
 	 * @return a handle to the project resource
@@ -192,7 +192,7 @@ public class TestHelper {
 
 	/**
 	 * Creates an empty Ecore model.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the model
 	 * @return
@@ -205,7 +205,7 @@ public class TestHelper {
 
 	/**
 	 * Creates an EClass entity in the provided model.
-	 * 
+	 *
 	 * @param p
 	 *            an Ecore model
 	 * @param name
@@ -219,7 +219,7 @@ public class TestHelper {
 
 	/**
 	 * Nests a new EPackage inside the provided EPackage.
-	 * 
+	 *
 	 * @param p
 	 *            a new EPackage
 	 * @param name
@@ -233,7 +233,7 @@ public class TestHelper {
 
 	/**
 	 * Persists (saves) the provided Ecore model in the specified project.
-	 * 
+	 *
 	 * @param project
 	 *            a handle to the project in which the model is to be persisted
 	 * @param pack
@@ -250,7 +250,7 @@ public class TestHelper {
 
 	/**
 	 * Returns an Ecore model entity from the specified project.
-	 * 
+	 *
 	 * @param project
 	 *            the project containing the model
 	 * @param p
@@ -267,7 +267,7 @@ public class TestHelper {
 
 	/**
 	 * Creates a trace between the objects that are in the Selection view.
-	 * 
+	 *
 	 * @param traceType
 	 *            the type of the trace that is to connect the objects
 	 */
@@ -284,7 +284,7 @@ public class TestHelper {
 
 	/**
 	 * Checks if there is a trace between the provided EObjects.
-	 * 
+	 *
 	 * @param a
 	 *            first EObject
 	 * @param b
@@ -300,7 +300,7 @@ public class TestHelper {
 
 	/**
 	 * Checks if there is a trace between the provided EObject and Java element.
-	 * 
+	 *
 	 * @param a
 	 *            EObject element
 	 * @param b
@@ -333,7 +333,7 @@ public class TestHelper {
 	/**
 	 * Checks if there is a trace between the provided EObject and C or C++
 	 * element.
-	 * 
+	 *
 	 * @param a
 	 *            EObject element
 	 * @param b
@@ -364,7 +364,7 @@ public class TestHelper {
 
 	/**
 	 * Checks if there is a trace between the provided resources.
-	 * 
+	 *
 	 * @param r1
 	 *            first resource
 	 * @param r2
@@ -405,7 +405,7 @@ public class TestHelper {
 
 	/**
 	 * Creates an empty C or C++ project.
-	 * 
+	 *
 	 * @param projectName
 	 *            the name of the project to be created
 	 * @return a handle to the created project
@@ -434,7 +434,7 @@ public class TestHelper {
 
 	/**
 	 * Creates a C source file in the provided C project.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the C source file to be created in the project
 	 * @param cProject
@@ -460,7 +460,7 @@ public class TestHelper {
 
 	/**
 	 * Creates an empty file in the project with the provided name.
-	 * 
+	 *
 	 * @param fileName
 	 *            the name of the created file
 	 * @param projectName

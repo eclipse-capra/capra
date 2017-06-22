@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.util;
+package org.eclipse.capra.generic.artifactmodel.util;
 
-import org.eclipse.capra.GenericArtifactMetaModel.*;
+import org.eclipse.capra.generic.artifactmodel.*;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -16,17 +16,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage
+ * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage
  * @generated
  */
-public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
+public class ArtifactmodelAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static GenericArtifactMetaModelPackage modelPackage;
+	protected static ArtifactmodelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -34,9 +34,9 @@ public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericArtifactMetaModelAdapterFactory() {
+	public ArtifactmodelAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = GenericArtifactMetaModelPackage.eINSTANCE;
+			modelPackage = ArtifactmodelPackage.eINSTANCE;
 		}
 	}
 
@@ -65,8 +65,8 @@ public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected GenericArtifactMetaModelSwitch<Adapter> modelSwitch =
-		new GenericArtifactMetaModelSwitch<Adapter>() {
+	protected ArtifactmodelSwitch<Adapter> modelSwitch =
+		new ArtifactmodelSwitch<Adapter>() {
 			@Override
 			public Adapter caseArtifactWrapperContainer(ArtifactWrapperContainer object) {
 				return createArtifactWrapperContainerAdapter();
@@ -96,13 +96,13 @@ public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer <em>Artifact Wrapper Container</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer <em>Artifact Wrapper Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer
 	 * @generated
 	 */
 	public Adapter createArtifactWrapperContainerAdapter() {
@@ -110,13 +110,13 @@ public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper <em>Artifact Wrapper</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper <em>Artifact Wrapper</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper
 	 * @generated
 	 */
 	public Adapter createArtifactWrapperAdapter() {
@@ -135,4 +135,4 @@ public class GenericArtifactMetaModelAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //GenericArtifactMetaModelAdapterFactory
+} //ArtifactmodelAdapterFactory

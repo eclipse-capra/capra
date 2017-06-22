@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel;
+package org.eclipse.capra.generic.artifactmodel;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -19,19 +19,19 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelFactory
+ * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel basePackage='org.eclipse.capra'"
+ *        annotation="http://www.eclipse.org/emf/2002/GenModel basePackage='org.eclipse.capra.generic'"
  * @generated
  */
-public interface GenericArtifactMetaModelPackage extends EPackage {
+public interface ArtifactmodelPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNAME = "GenericArtifactMetaModel";
+	String eNAME = "artifactmodel";
 
 	/**
 	 * The package namespace URI.
@@ -39,7 +39,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "org.eclipse.capra.GenericArtifactMetaModel";
+	String eNS_URI = "org.eclipse.capra.generic.artifactmodel";
 
 	/**
 	 * The package namespace name.
@@ -47,7 +47,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_PREFIX = "GenericArtifactMetaModel";
+	String eNS_PREFIX = "artifactmodel";
 
 	/**
 	 * The singleton instance of the package.
@@ -55,14 +55,14 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	GenericArtifactMetaModelPackage eINSTANCE = org.eclipse.capra.GenericArtifactMetaModel.impl.GenericArtifactMetaModelPackageImpl.init();
+	ArtifactmodelPackage eINSTANCE = org.eclipse.capra.generic.artifactmodel.impl.ArtifactmodelPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperContainerImpl <em>Artifact Wrapper Container</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperContainerImpl <em>Artifact Wrapper Container</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperContainerImpl
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.GenericArtifactMetaModelPackageImpl#getArtifactWrapperContainer()
+	 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperContainerImpl
+	 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactmodelPackageImpl#getArtifactWrapperContainer()
 	 * @generated
 	 */
 	int ARTIFACT_WRAPPER_CONTAINER = 0;
@@ -95,11 +95,11 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	int ARTIFACT_WRAPPER_CONTAINER_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl <em>Artifact Wrapper</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl <em>Artifact Wrapper</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.GenericArtifactMetaModelPackageImpl#getArtifactWrapper()
+	 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl
+	 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactmodelPackageImpl#getArtifactWrapper()
 	 * @generated
 	 */
 	int ARTIFACT_WRAPPER = 1;
@@ -160,75 +160,75 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer <em>Artifact Wrapper Container</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer <em>Artifact Wrapper Container</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Artifact Wrapper Container</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer
 	 * @generated
 	 */
 	EClass getArtifactWrapperContainer();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer#getArtifacts <em>Artifacts</em>}'.
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer#getArtifacts <em>Artifacts</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the containment reference list '<em>Artifacts</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer#getArtifacts()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer#getArtifacts()
 	 * @see #getArtifactWrapperContainer()
 	 * @generated
 	 */
 	EReference getArtifactWrapperContainer_Artifacts();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper <em>Artifact Wrapper</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper <em>Artifact Wrapper</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Artifact Wrapper</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper
 	 * @generated
 	 */
 	EClass getArtifactWrapper();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath <em>Path</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Path</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath()
 	 * @see #getArtifactWrapper()
 	 * @generated
 	 */
 	EAttribute getArtifactWrapper_Path();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getUri <em>Uri</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri <em>Uri</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Uri</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getUri()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri()
 	 * @see #getArtifactWrapper()
 	 * @generated
 	 */
 	EAttribute getArtifactWrapper_Uri();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getName <em>Name</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getName()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getName()
 	 * @see #getArtifactWrapper()
 	 * @generated
 	 */
 	EAttribute getArtifactWrapper_Name();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Artifact Handler</em>'.
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getArtifactHandler()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler()
 	 * @see #getArtifactWrapper()
 	 * @generated
 	 */
@@ -241,7 +241,7 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 * @return the factory that creates the instances of the model.
 	 * @generated
 	 */
-	GenericArtifactMetaModelFactory getGenericArtifactMetaModelFactory();
+	ArtifactmodelFactory getArtifactmodelFactory();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -258,11 +258,11 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperContainerImpl <em>Artifact Wrapper Container</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperContainerImpl <em>Artifact Wrapper Container</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperContainerImpl
-		 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.GenericArtifactMetaModelPackageImpl#getArtifactWrapperContainer()
+		 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperContainerImpl
+		 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactmodelPackageImpl#getArtifactWrapperContainer()
 		 * @generated
 		 */
 		EClass ARTIFACT_WRAPPER_CONTAINER = eINSTANCE.getArtifactWrapperContainer();
@@ -276,11 +276,11 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 		EReference ARTIFACT_WRAPPER_CONTAINER__ARTIFACTS = eINSTANCE.getArtifactWrapperContainer_Artifacts();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl <em>Artifact Wrapper</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl <em>Artifact Wrapper</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.ArtifactWrapperImpl
-		 * @see org.eclipse.capra.GenericArtifactMetaModel.impl.GenericArtifactMetaModelPackageImpl#getArtifactWrapper()
+		 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl
+		 * @see org.eclipse.capra.generic.artifactmodel.impl.ArtifactmodelPackageImpl#getArtifactWrapper()
 		 * @generated
 		 */
 		EClass ARTIFACT_WRAPPER = eINSTANCE.getArtifactWrapper();
@@ -319,4 +319,4 @@ public interface GenericArtifactMetaModelPackage extends EPackage {
 
 	}
 
-} //GenericArtifactMetaModelPackage
+} //ArtifactmodelPackage

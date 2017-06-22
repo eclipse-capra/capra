@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel;
+package org.eclipse.capra.generic.artifactmodel;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -13,13 +13,13 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath <em>Path</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getUri <em>Uri</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri <em>Uri</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}</li>
  * </ul>
  *
- * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapper()
+ * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper()
  * @model
  * @generated
  */
@@ -34,14 +34,14 @@ public interface ArtifactWrapper extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Path</em>' attribute.
 	 * @see #setPath(String)
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapper_Path()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_Path()
 	 * @model unique="false"
 	 * @generated
 	 */
 	String getPath();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getPath <em>Path</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Path</em>' attribute.
@@ -60,14 +60,14 @@ public interface ArtifactWrapper extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Uri</em>' attribute.
 	 * @see #setUri(String)
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapper_Uri()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_Uri()
 	 * @model unique="false"
 	 * @generated
 	 */
 	String getUri();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getUri <em>Uri</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri <em>Uri</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Uri</em>' attribute.
@@ -86,14 +86,14 @@ public interface ArtifactWrapper extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapper_Name()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_Name()
 	 * @model unique="false"
 	 * @generated
 	 */
 	String getName();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
@@ -112,14 +112,14 @@ public interface ArtifactWrapper extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Artifact Handler</em>' attribute.
 	 * @see #setArtifactHandler(String)
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#getArtifactWrapper_ArtifactHandler()
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_ArtifactHandler()
 	 * @model unique="false"
 	 * @generated
 	 */
 	String getArtifactHandler();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Artifact Handler</em>' attribute.

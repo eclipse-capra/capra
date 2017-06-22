@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.php.PhpHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;

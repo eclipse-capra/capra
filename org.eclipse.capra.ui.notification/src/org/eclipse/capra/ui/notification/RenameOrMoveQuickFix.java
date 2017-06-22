@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -12,16 +12,15 @@ package org.eclipse.capra.ui.notification;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
@@ -36,7 +35,7 @@ import org.eclipse.ui.IMarkerResolution;
 /**
  * Renames and updates the properties in the associated artifact wrapper to
  * reflect changes in the original object represented by the wrapper.
- * 
+ *
  * @author Michael Warne
  */
 public class RenameOrMoveQuickFix implements IMarkerResolution {

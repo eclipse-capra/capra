@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -16,14 +16,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
@@ -38,7 +38,7 @@ import org.eclipse.ui.IMarkerResolution;
 /**
  * A quick fix to delete a trace link if one of the linked objects is no longer
  * available.
- * 
+ *
  * @author Michael Warne
  */
 public class DeleteQuickFix implements IMarkerResolution {
@@ -66,7 +66,6 @@ public class DeleteQuickFix implements IMarkerResolution {
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) awc).getArtifacts();
-		
 
 		String artifactContainerFileName = awc.eResource().getURI().lastSegment();
 		String markerContainerFileName = new File(marker.getResource().toString()).getName();

@@ -1,11 +1,11 @@
 /**
  */
-package org.eclipse.capra.GenericArtifactMetaModel.impl;
+package org.eclipse.capra.generic.artifactmodel.impl;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelFactory;
-import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
+import org.eclipse.capra.generic.artifactmodel.ArtifactmodelFactory;
+import org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
  * <!-- end-user-doc -->
  * @generated
  */
-public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements GenericArtifactMetaModelPackage {
+public class ArtifactmodelPackageImpl extends EPackageImpl implements ArtifactmodelPackage {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,12 +47,12 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage#eNS_URI
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private GenericArtifactMetaModelPackageImpl() {
-		super(eNS_URI, GenericArtifactMetaModelFactory.eINSTANCE);
+	private ArtifactmodelPackageImpl() {
+		super(eNS_URI, ArtifactmodelFactory.eINSTANCE);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>This method is used to initialize {@link GenericArtifactMetaModelPackage#eINSTANCE} when that field is accessed.
+	 * <p>This method is used to initialize {@link ArtifactmodelPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,11 +74,11 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static GenericArtifactMetaModelPackage init() {
-		if (isInited) return (GenericArtifactMetaModelPackage)EPackage.Registry.INSTANCE.getEPackage(GenericArtifactMetaModelPackage.eNS_URI);
+	public static ArtifactmodelPackage init() {
+		if (isInited) return (ArtifactmodelPackage)EPackage.Registry.INSTANCE.getEPackage(ArtifactmodelPackage.eNS_URI);
 
 		// Obtain or create and register package
-		GenericArtifactMetaModelPackageImpl theGenericArtifactMetaModelPackage = (GenericArtifactMetaModelPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof GenericArtifactMetaModelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new GenericArtifactMetaModelPackageImpl());
+		ArtifactmodelPackageImpl theArtifactmodelPackage = (ArtifactmodelPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof ArtifactmodelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new ArtifactmodelPackageImpl());
 
 		isInited = true;
 
@@ -86,18 +86,18 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 		EcorePackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
-		theGenericArtifactMetaModelPackage.createPackageContents();
+		theArtifactmodelPackage.createPackageContents();
 
 		// Initialize created meta-data
-		theGenericArtifactMetaModelPackage.initializePackageContents();
+		theArtifactmodelPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
-		theGenericArtifactMetaModelPackage.freeze();
+		theArtifactmodelPackage.freeze();
 
   
 		// Update the registry and return the package
-		EPackage.Registry.INSTANCE.put(GenericArtifactMetaModelPackage.eNS_URI, theGenericArtifactMetaModelPackage);
-		return theGenericArtifactMetaModelPackage;
+		EPackage.Registry.INSTANCE.put(ArtifactmodelPackage.eNS_URI, theArtifactmodelPackage);
+		return theArtifactmodelPackage;
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericArtifactMetaModelFactory getGenericArtifactMetaModelFactory() {
-		return (GenericArtifactMetaModelFactory)getEFactoryInstance();
+	public ArtifactmodelFactory getArtifactmodelFactory() {
+		return (ArtifactmodelFactory)getEFactoryInstance();
 	}
 
 	/**
@@ -247,4 +247,4 @@ public class GenericArtifactMetaModelPackageImpl extends EPackageImpl implements
 		createResource(eNS_URI);
 	}
 
-} //GenericArtifactMetaModelPackageImpl
+} //ArtifactmodelPackageImpl
