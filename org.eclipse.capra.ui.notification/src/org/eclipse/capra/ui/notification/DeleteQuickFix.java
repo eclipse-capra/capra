@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
@@ -62,7 +61,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ArtifactWrapperContainer awc = (ArtifactWrapperContainer) tracePersistenceAdapter
 				.getArtifactWrappers(resourceSet);
-		GenericTraceModel traceModel = (GenericTraceModel) tracePersistenceAdapter.getTraceModel(resourceSet);
+		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) awc).getArtifacts();

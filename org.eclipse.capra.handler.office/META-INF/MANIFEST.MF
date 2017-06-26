@@ -6,6 +6,5 @@ Bundle-Version: 0.7.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.capra.ui.office,
- org.eclipse.capra.generic.tracemodels,
  org.eclipse.core.resources
 Bundle-Vendor: Capra Development Team

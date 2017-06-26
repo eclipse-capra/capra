@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui.ide,
  org.eclipse.capra.core,
  org.eclipse.capra.ui.notification,
- org.eclipse.capra.generic.tracemodels,
  org.eclipse.core.runtime,
  org.eclipse.capra.generic.artifactmodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
