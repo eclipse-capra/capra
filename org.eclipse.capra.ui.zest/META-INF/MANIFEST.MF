@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.eclipse.capra.ui.zest;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.capra.core,
- org.eclipse.capra.generic.tracemodels,
  com.google.inject,
  org.eclipse.gef4.zest.fx.jface,
  org.eclipse.zest.layouts,
