@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.file.IFileHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -45,19 +44,24 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @author Michael Warne
  */
 public class FileChangeListener implements IResourceChangeListener {
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
-		List<ArtifactWrapper> fileArtifacts = ((ArtifactWrapperContainer) awc).getArtifacts().stream()
-				.filter(p -> p.getArtifactHandler().equals(IFileHandler.class.getName())).collect(Collectors.toList());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+
+		// get all artifacts
+		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
+		List<EObject> fileArtifacts = allArtifacts.stream()
+				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(IFileHandler.class.getName()))
+				.collect(Collectors.toList());
 
 		if (fileArtifacts.size() == 0)
 			return;
 
-		IPath path = new Path(EcoreUtil.getURI(awc).toPlatformString(false));
+		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
 		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 
@@ -95,10 +99,10 @@ public class FileChangeListener implements IResourceChangeListener {
 	 * @param wrapperContainer
 	 *            the file that contains the ArtifactWrapper model
 	 */
-	private void handleDelta(IResourceDelta delta, List<ArtifactWrapper> fileArtifacts, IFile wrapperContainer) {
-		for (ArtifactWrapper aw : fileArtifacts) {
+	private void handleDelta(IResourceDelta delta, List<EObject> fileArtifacts, IFile wrapperContainer) {
+		for (EObject aw : fileArtifacts) {
 
-			if (aw.getUri().equals(delta.getFullPath().toString())) {
+			if (artifactAdapter.getArtifactUri(aw).equals(delta.getFullPath().toString())) {
 				int changeType = delta.getKind();
 				IssueType issueType = null;
 
@@ -118,7 +122,7 @@ public class FileChangeListener implements IResourceChangeListener {
 					issueType = IssueType.ADDED;
 
 				if (issueType == IssueType.ADDED)
-					CapraNotificationHelper.deleteCapraMarker(aw.getUri(),
+					CapraNotificationHelper.deleteCapraMarker(artifactAdapter.getArtifactUri(aw),
 							new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED },
 							wrapperContainer);
 				else {
@@ -142,7 +146,7 @@ public class FileChangeListener implements IResourceChangeListener {
 	 * @return a key value HashMap, containing the attributes to be assigned to
 	 *         a Capra change marker and their keys (IDs).
 	 */
-	private HashMap<String, String> generateMarkerInfo(ArtifactWrapper aw, IResourceDelta delta, IssueType issueType) {
+	private HashMap<String, String> generateMarkerInfo(EObject aw, IResourceDelta delta, IssueType issueType) {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		String oldArtifactUri = delta.getFullPath().toString();

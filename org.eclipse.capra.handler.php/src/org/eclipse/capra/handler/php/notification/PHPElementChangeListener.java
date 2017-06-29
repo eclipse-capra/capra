@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.php.PhpHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -50,17 +49,22 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class PHPElementChangeListener implements IElementChangedListener {
 
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
-		List<ArtifactWrapper> phpArtifacts = ((ArtifactWrapperContainer) awc).getArtifacts().stream()
-				.filter(p -> p.getArtifactHandler().equals(PhpHandler.class.getName())).collect(Collectors.toList());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		// get all artifacts
+		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
+		List<EObject> phpArtifacts = allArtifacts.stream()
+				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(PhpHandler.class.getName()))
+				.collect(Collectors.toList());
 
 		if (phpArtifacts.size() == 0)
 			return;
 
-		IPath path = new Path(EcoreUtil.getURI(awc).toPlatformString(false));
+		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
 		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
 		new WorkspaceJob(CapraNotificationHelper.NOTIFICATION_JOB) {
@@ -72,7 +76,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 		}.schedule();
 	}
 
-	private void handleDelta(IModelElementDelta delta, List<ArtifactWrapper> phpArtifacts, IFile wrapperContainer) {
+	private void handleDelta(IModelElementDelta delta, List<EObject> phpArtifacts, IFile wrapperContainer) {
 		if (!(delta.getElement() instanceof ISourceModule))
 			// Only go as far as the source file
 			for (IModelElementDelta subDelta : delta.getAffectedChildren())
@@ -101,8 +105,8 @@ public class PHPElementChangeListener implements IElementChangedListener {
 		if (issueType != null) {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
 			if (affectedElementUri != null) {
-				for (ArtifactWrapper aw : phpArtifacts) {
-					String artifactUri = aw.getUri();
+				for (EObject aw : phpArtifacts) {
+					String artifactUri = artifactAdapter.getArtifactUri(aw);
 					// Only create a marker if a signature of a
 					// method/variable/class... has changed inside of a source
 					// file.
@@ -149,13 +153,12 @@ public class PHPElementChangeListener implements IElementChangedListener {
 	// translates to a deleted classes/methods/variables because the delta does
 	// not keep track of
 	// the new name of the class. It just knows about the old name.
-	private HashMap<String, String> generateMarkerInfo(ArtifactWrapper aw, IModelElementDelta delta,
-			IssueType issueType) {
+	private HashMap<String, String> generateMarkerInfo(EObject aw, IModelElementDelta delta, IssueType issueType) {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		// Properties from the PHP element in the wrapper
-		String oldArtifactUri = aw.getUri();
-		String oldArtifactName = aw.getName();
+		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
+		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected PHP element with its former path
 		String oldAffectedElementUri = delta.getElement().getHandleIdentifier();
@@ -195,7 +198,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 			IModelElement el = DLTKCore.create(oldArtifactUri);
 			if (el == null || !el.exists()) {
 				issueType = IssueType.DELETED;
-				message = aw.getUri();
+				message = artifactAdapter.getArtifactUri(aw);
 
 				if (el instanceof ISourceReference && !(el instanceof ISourceModule))
 					message += " has been deleted or has had its signature changed.";

@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -49,20 +48,23 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Dusan Kalanj
  */
 public class JavaElementChangeListener implements IElementChangedListener {
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
-		List<ArtifactWrapper> javaArtifacts = ((ArtifactWrapperContainer) awc).getArtifacts().stream()
-				.filter(p -> p.getArtifactHandler().equals(JavaElementHandler.class.getName()))
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		// get all artifacts
+		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
+		List<EObject> javaArtifacts = allArtifacts.stream()
+				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(JavaElementHandler.class.getName()))
 				.collect(Collectors.toList());
 
 		if (javaArtifacts.size() == 0)
 			return;
 
-		IPath path = new Path(EcoreUtil.getURI(awc).toPlatformString(false));
+		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
 		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
 		new WorkspaceJob(CapraNotificationHelper.NOTIFICATION_JOB) {
@@ -74,7 +76,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		}.schedule();
 	}
 
-	private void handleDelta(IJavaElementDelta delta, List<ArtifactWrapper> javaArtifacts, IFile wrapperContainer) {
+	private void handleDelta(IJavaElementDelta delta, List<EObject> javaArtifacts, IFile wrapperContainer) {
 
 		// If the changes are not made manually (by typing in the
 		// editor) this recursion only goes as far as the source file. The
@@ -111,8 +113,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		if (issueType != null) {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
 			if (affectedElementUri != null) {
-				for (ArtifactWrapper aw : javaArtifacts) {
-					String artifactUri = aw.getUri();
+				for (EObject aw : javaArtifacts) {
+					String artifactUri = artifactAdapter.getArtifactUri(aw);
 					// Only create a marker if a signature of a
 					// method/variable/class... has changed inside of a source
 					// file.
@@ -165,13 +167,12 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	// the same, compare the signature. The problem is that there can be methods
 	// and variables with identical bodies, although highly unlikely. Either
 	// way, I don't think there is a completely foolproof solution for this.
-	private HashMap<String, String> generateMarkerInfo(ArtifactWrapper aw, IJavaElementDelta delta,
-			IssueType issueType) {
+	private HashMap<String, String> generateMarkerInfo(EObject aw, IJavaElementDelta delta, IssueType issueType) {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		// Properties from the Java element in the wrapper (all elements)
-		String oldArtifactUri = aw.getUri();
-		String oldArtifactName = aw.getName();
+		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
+		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected Java element with its former path
 		// (files, folder, packages... not variables, methods or classes)
@@ -212,7 +213,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			IJavaElement el = JavaCore.create(oldArtifactUri);
 			if (el == null || !el.exists()) {
 				issueType = IssueType.DELETED;
-				message = aw.getUri();
+				message = artifactAdapter.getArtifactUri(aw);
 
 				if (el instanceof ISourceReference && !(el instanceof ICompilationUnit))
 					message += " has been deleted or has had its signature changed.";

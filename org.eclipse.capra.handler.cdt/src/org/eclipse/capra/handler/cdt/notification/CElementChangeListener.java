@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -47,19 +46,22 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @author Dusan Kalanj
  */
 public class CElementChangeListener implements IElementChangedListener {
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject awc = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
-		List<ArtifactWrapper> cArtifacts = ((ArtifactWrapperContainer) awc).getArtifacts().stream()
-				.filter(p -> p.getArtifactHandler().equals(CDTHandler.class.getName())).collect(Collectors.toList());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
+		List<EObject> cArtifacts = allArtifacts.stream()
+				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(CDTHandler.class.getName()))
+				.collect(Collectors.toList());
 
 		if (cArtifacts.size() == 0)
 			return;
 
-		IPath path = new Path(EcoreUtil.getURI(awc).toPlatformString(false));
+		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
 		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
 		new WorkspaceJob(CapraNotificationHelper.NOTIFICATION_JOB) {
@@ -71,7 +73,7 @@ public class CElementChangeListener implements IElementChangedListener {
 		}.schedule();
 	}
 
-	private void handleDelta(ICElementDelta delta, List<ArtifactWrapper> cArtifacts, IFile wrapperContainer) {
+	private void handleDelta(ICElementDelta delta, List<EObject> cArtifacts, IFile wrapperContainer) {
 
 		// Visit all the affected children of affected element
 		for (ICElementDelta subDelta : delta.getAffectedChildren())
@@ -106,8 +108,8 @@ public class CElementChangeListener implements IElementChangedListener {
 		if (issueType != null) {
 			String affectedElementUri = affectedElement.getHandleIdentifier();
 			if (affectedElementUri != null) {
-				for (ArtifactWrapper aw : cArtifacts) {
-					String artifactUri = aw.getUri();
+				for (EObject aw : cArtifacts) {
+					String artifactUri = artifactAdapter.getArtifactUri(aw);
 					// If the change type is "CHANGED", meaning that the element
 					// wasn't deleted, renamed, added or moved, only consider
 					// making a marker if the URI of the affected element is the
@@ -157,12 +159,12 @@ public class CElementChangeListener implements IElementChangedListener {
 	 * @return a key value HashMap, containing the attributes to be assigned to
 	 *         a Capra change marker and their keys (IDs).
 	 */
-	private HashMap<String, String> generateMarkerInfo(ArtifactWrapper aw, ICElementDelta delta, IssueType issueType) {
+	private HashMap<String, String> generateMarkerInfo(EObject aw, ICElementDelta delta, IssueType issueType) {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		// Properties from the C/C++ element in the wrapper (all elements)
-		String oldArtifactUri = aw.getUri();
-		String oldArtifactName = aw.getName();
+		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
+		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected C/C++ element before the change.
 		ICElement oldAffectedElement = delta.getElement();
@@ -205,10 +207,11 @@ public class CElementChangeListener implements IElementChangedListener {
 						+ newAffectedElementUri;
 			break;
 		case DELETED:
-			message = aw.getUri() + " has been deleted or has had its signature changed.";
+			message = artifactAdapter.getArtifactUri(aw) + " has been deleted or has had its signature changed.";
 			break;
 		case CHANGED:
-			message = aw.getUri() + " has been edited. Please check if associated trace links are still valid.";
+			message = artifactAdapter.getArtifactUri(aw)
+					+ " has been edited. Please check if associated trace links are still valid.";
 			break;
 		case ADDED:
 			break;

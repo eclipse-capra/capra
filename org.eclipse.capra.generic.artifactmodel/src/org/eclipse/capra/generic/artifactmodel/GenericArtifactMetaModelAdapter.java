@@ -10,6 +10,8 @@ package org.eclipse.capra.generic.artifactmodel;
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
+import java.util.List;
+
 import org.eclipse.capra.core.adapters.AbstractArtifactMetaModelAdapter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -91,5 +93,12 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 			return new Path(wrapper.getPath());
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<EObject> getAllArtifacts(EObject artifactModel) {
+		ArtifactWrapperContainer container = getContainer(artifactModel);
+		return (List<EObject>) (Object) container.getArtifacts();
 	}
 }

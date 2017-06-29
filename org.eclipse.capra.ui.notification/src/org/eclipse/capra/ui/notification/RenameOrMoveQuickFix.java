@@ -14,13 +14,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
@@ -40,6 +39,8 @@ import org.eclipse.ui.IMarkerResolution;
  */
 public class RenameOrMoveQuickFix implements IMarkerResolution {
 
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
 	private String label;
 
 	RenameOrMoveQuickFix(String label) {
@@ -56,23 +57,23 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
-		EObject model = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
 		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 
-		String artifactContainerFileName = model.eResource().getURI().lastSegment();
+		String artifactContainerFileName = artifactModel.eResource().getURI().lastSegment();
 		String markerFileName = new File(marker.getResource().toString()).getName();
 
 		if (markerFileName.equals(artifactContainerFileName)) {
 			// The element that the marker points to is a Capra artifact.
-			List<ArtifactWrapper> artifacts = ((ArtifactWrapperContainer) model).getArtifacts();
+			List<EObject> artifacts = artifactAdapter.getAllArtifacts(artifactModel);
 			String oldArtifactUri = marker.getAttribute(CapraNotificationHelper.OLD_URI, null);
-			for (ArtifactWrapper aw : artifacts) {
-				if (aw.getUri().equals(oldArtifactUri)) {
+			for (EObject aw : artifacts) {
+				if (artifactAdapter.getArtifactUri(aw).equals(oldArtifactUri)) {
 					String newArtifactUri = marker.getAttribute(CapraNotificationHelper.NEW_URI, null);
-					aw.setUri(newArtifactUri);
-					aw.setPath(newArtifactUri);
-					aw.setName(marker.getAttribute(CapraNotificationHelper.NEW_NAME, null));
+					artifactAdapter.createArtifact(artifactModel, artifactAdapter.getArtifactHandler(aw),
+							newArtifactUri, marker.getAttribute(CapraNotificationHelper.NEW_NAME, null),
+							newArtifactUri);
 					break;
 				}
 			}
@@ -95,8 +96,8 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		}
 
 		// Update references inside the model (can be artifact or trace model).
-		Resource resource = resourceSet.createResource(EcoreUtil.getURI(model));
-		resource.getContents().add(model);
+		Resource resource = resourceSet.createResource(EcoreUtil.getURI(artifactModel));
+		resource.getContents().add(artifactModel);
 
 		try {
 			resource.save(null);

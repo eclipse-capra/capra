@@ -4,11 +4,13 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.capra.core.adapters;
+
+import java.util.List;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.core.runtime.IPath;
@@ -22,7 +24,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Create a new model for artifacts.
-	 * 
+	 *
 	 * @return the new model
 	 */
 	EObject createModel();
@@ -31,7 +33,7 @@ public interface ArtifactMetaModelAdapter {
 	 * Create a new artifact. The list of artifacts is searched for an existing
 	 * artifact with the same handler and uri. If found, the existing artifact
 	 * is returned, otherwise a new artifact is created.
-	 * 
+	 *
 	 * @param artifactHandler
 	 *            Handler of artifact
 	 * @param artifactUri
@@ -45,7 +47,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get artifact with given handler and uri.
-	 * 
+	 *
 	 * @param artifactHandler
 	 *            Handler of artifact
 	 * @param artifactUri
@@ -56,7 +58,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get a handler for the given artifact
-	 * 
+	 *
 	 * @param artifact
 	 * @return artifact handler
 	 */
@@ -64,7 +66,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get the name of the given artifact.
-	 * 
+	 *
 	 * @param artifact
 	 * @return artifact name
 	 */
@@ -72,7 +74,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get the URI of the given artifact.
-	 * 
+	 *
 	 * @param artifact
 	 * @return artifact uri
 	 */
@@ -80,7 +82,7 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get the path of the given artifact.
-	 * 
+	 *
 	 * @param artifact
 	 * @return path of the file, referenced by the artifact
 	 */
@@ -88,10 +90,18 @@ public interface ArtifactMetaModelAdapter {
 
 	/**
 	 * Get an instance of the artifact handler.
-	 * 
+	 *
 	 * @param artifact
 	 * @return artifact handler instance
 	 */
 	IArtifactHandler<?> getArtifactHandlerInstance(EObject artifact);
+
+	/**
+	 * Returns a list of all artifacts in an artifact model
+	 *
+	 * @param artifactModel
+	 * @return a list of all artifacts in the artifact model as EObjects
+	 */
+	List<EObject> getAllArtifacts(EObject artifactModel);
 
 }
