@@ -30,28 +30,36 @@ public interface ArtifactMetaModelAdapter {
 	EObject createModel();
 
 	/**
-	 * Create a new artifact. The list of artifacts is searched for an existing
-	 * artifact with the same handler and uri. If found, the existing artifact
-	 * is returned, otherwise a new artifact is created.
-	 *
-	 * @param artifactHandler
-	 *            Handler of artifact
-	 * @param artifactUri
-	 *            Uri of artifact
-	 * @param artifactName
-	 *            Name of artifact
-	 * @return new or existing artifact
+	 * TODO: The implementation of this method delegates to the other methods
+	 * with the same name. It exists to enables implementing objects to work
+	 * with both the old and the new API during a transmission period.
 	 */
-	EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactName,
-			String artifactFilePath);
+	default EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, 
+		String artifactName, String artifactFilePath) {
+		return createArtifact(artifactModel, artifactHandler, artifactUri, artifactUri, artifactName, artifactFilePath);
+	}
 
 	/**
-	 * Get artifact with given handler and uri.
+	 * Create a new artifact. The list of artifacts is searched for an existing
+	 * artifact with the same handler and URI. If found, the existing artifact
+	 * is returned, otherwise a new artifact is created.
+	 * <p/>
+	 * TODO: The implementation of this method delegates to the other methods
+	 * with the same name. It exists to enables implementing objects to work
+	 * with both the old and the new API during a transmission period.
+	 */
+	default EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, 
+		String artifactId, String artifactName, String artifactFilePath) {
+		return createArtifact(artifactModel, artifactHandler, artifactId, artifactName, artifactFilePath);
+	}
+
+	/**
+	 * Get artifact with given handler and URI.
 	 *
 	 * @param artifactHandler
 	 *            Handler of artifact
 	 * @param artifactUri
-	 *            Uri of artifact
+	 *            URI of artifact
 	 * @return artifact if found, null otherwise
 	 */
 	EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri);
@@ -73,13 +81,31 @@ public interface ArtifactMetaModelAdapter {
 	String getArtifactName(EObject artifact);
 
 	/**
-	 * Get the URI of the given artifact.
+	 * Get the URI of the given artifact. The URI be a string with a valid URI
+	 * syntax. 
+	 * <p/>
+	 * The path part should refer to a concrete resource, such as a
+	 * file or a web page. 
+	 * <p/>
+	 * The fragment part should (if necessary) uniquely
+	 * identify the artifact within the resource. It can consists of a sequence of sub-parts separated '/'. In that
+	 * way tools that work with artifacts can used the sub-parts of the fragment for their own purposes.
+	 * <p/>
+	 * Example: The JDT artifact handler uses the following encoding scheme for artifact URI:s:
+	 * {@code platform:/Project_name/path/to/file.java#com.pack.ClassName/methodName(int, String)}.
 	 *
 	 * @param artifact
 	 * @return artifact uri
 	 */
 	String getArtifactUri(EObject artifact);
 
+	/**
+	 * @return An internal string that handlers use to locate and reconstruct the artifact.
+	 */
+	default String getArtifactIdentifier(EObject artifact) {
+		return getArtifactUri(artifact);
+	}
+	
 	/**
 	 * Get the path of the given artifact.
 	 *

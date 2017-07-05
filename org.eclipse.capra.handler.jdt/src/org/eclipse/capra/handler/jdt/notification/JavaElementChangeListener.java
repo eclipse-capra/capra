@@ -114,26 +114,26 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
 			if (affectedElementUri != null) {
 				for (EObject aw : javaArtifacts) {
-					String artifactUri = artifactAdapter.getArtifactUri(aw);
+					String artifactId = artifactAdapter.getArtifactIdentifier(aw);
 					// Only create a marker if a signature of a
 					// method/variable/class... has changed inside of a source
 					// file.
 
 					IssueType[] markersToDelete = null;
 					String deleteMarkerUri = "";
-					IJavaElement element = JavaCore.create(artifactUri);
+					IJavaElement element = JavaCore.create(artifactId);
 					if (element != null && element.exists()) {
-						deleteMarkerUri = artifactUri;
+						deleteMarkerUri = artifactId;
 						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED };
 					} else if (issueType == IssueType.DELETED) {
 						markersToDelete = new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.CHANGED };
 						deleteMarkerUri = affectedElementUri;
 					}
 
-					if (!deleteMarkerUri.isEmpty() && artifactUri.contains(deleteMarkerUri))
-						CapraNotificationHelper.deleteCapraMarker(artifactUri, markersToDelete, wrapperContainer);
+					if (!deleteMarkerUri.isEmpty() && artifactId.contains(deleteMarkerUri))
+						CapraNotificationHelper.deleteCapraMarker(artifactId, markersToDelete, wrapperContainer);
 
-					if (artifactUri.contains(affectedElementUri)) {
+					if (artifactId.contains(affectedElementUri)) {
 						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
@@ -171,7 +171,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		// Properties from the Java element in the wrapper (all elements)
-		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
+		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);
 		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected Java element with its former path

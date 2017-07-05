@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui.ide,
  org.eclipse.capra.core,
  org.eclipse.capra.ui.notification,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.handler.jdt,
  org.eclipse.capra.handler.jdt.preferences

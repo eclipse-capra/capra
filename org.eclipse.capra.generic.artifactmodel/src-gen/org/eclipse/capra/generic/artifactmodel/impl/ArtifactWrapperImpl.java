@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getUri <em>Uri</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getIdentifier <em>Identifier</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.impl.ArtifactWrapperImpl#getArtifactHandler <em>Artifact Handler</em>}</li>
  * </ul>
  *
@@ -88,6 +89,26 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIdentifier()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String IDENTIFIER_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getIdentifier()
+	 * @generated
+	 * @ordered
+	 */
+	protected String identifier = IDENTIFIER_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getArtifactHandler() <em>Artifact Handler</em>}' attribute.
@@ -196,6 +217,27 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setIdentifier(String newIdentifier) {
+		String oldIdentifier = identifier;
+		identifier = newIdentifier;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ArtifactmodelPackage.ARTIFACT_WRAPPER__IDENTIFIER, oldIdentifier, identifier));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getArtifactHandler() {
 		return artifactHandler;
 	}
@@ -226,6 +268,8 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 				return getUri();
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				return getName();
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__IDENTIFIER:
+				return getIdentifier();
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				return getArtifactHandler();
 		}
@@ -248,6 +292,9 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 				return;
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				setName((String)newValue);
+				return;
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__IDENTIFIER:
+				setIdentifier((String)newValue);
 				return;
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				setArtifactHandler((String)newValue);
@@ -273,6 +320,9 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				setName(NAME_EDEFAULT);
 				return;
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__IDENTIFIER:
+				setIdentifier(IDENTIFIER_EDEFAULT);
+				return;
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				setArtifactHandler(ARTIFACT_HANDLER_EDEFAULT);
 				return;
@@ -294,6 +344,8 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 				return URI_EDEFAULT == null ? uri != null : !URI_EDEFAULT.equals(uri);
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case ArtifactmodelPackage.ARTIFACT_WRAPPER__IDENTIFIER:
+				return IDENTIFIER_EDEFAULT == null ? identifier != null : !IDENTIFIER_EDEFAULT.equals(identifier);
 			case ArtifactmodelPackage.ARTIFACT_WRAPPER__ARTIFACT_HANDLER:
 				return ARTIFACT_HANDLER_EDEFAULT == null ? artifactHandler != null : !ARTIFACT_HANDLER_EDEFAULT.equals(artifactHandler);
 		}
@@ -316,6 +368,8 @@ public class ArtifactWrapperImpl extends MinimalEObjectImpl.Container implements
 		result.append(uri);
 		result.append(", name: ");
 		result.append(name);
+		result.append(", identifier: ");
+		result.append(identifier);
 		result.append(", ArtifactHandler: ");
 		result.append(artifactHandler);
 		result.append(')');

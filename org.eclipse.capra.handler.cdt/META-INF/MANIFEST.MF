@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.cdt.core,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
- org.eclipse.capra.ui.notification
+ org.eclipse.capra.ui.notification,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore
 Export-Package: org.eclipse.capra.handler.cdt,
  org.eclipse.capra.handler.cdt.preferences
 Bundle-Activator: org.eclipse.capra.handler.cdt.Activator

@@ -10,38 +10,60 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
+import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * Handler to allow tracing to and from elements of C such as files and
  * functions. Uses CDT as the foundation.
+ * </p>
+ * This handler encodes a locator to the C element in artifact URI:s in the following way:
+ * {@code platform:/Project_name/path/to/file.c#classOrStructName/memberName}
+ * <p/>
+ * {@code platform:/Project_name/path/to/file.c#functionClassOrStructName}.
  */
 public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IAnnotateArtifact {
 
 	@Override
 	public EObject createWrapper(ICElement element, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
-		return wrapper;
+		ICompositeType type = (ICompositeType) element.getParent().getAncestor(ICElement.C_CLASS);
+		if (type == null) type = (ICompositeType) element.getParent().getAncestor(ICElement.C_STRUCT);
+		if (type == null) type = (ICompositeType) element.getParent().getAncestor(ICElement.C_UNION);
+		
+		// TODO: Will this be unique? I don't know.
+		String typePrefix = type == null ? "" : type.getName() + "/";
+
+		// TODO: This does not take C++ function overloading on argument types into account when
+		// constructing the URI
+		String uri = new URIBuilder()
+			.setScheme("platform")
+			.setPath("/resource" + element.getPath())
+			.setFragment(typePrefix + element.getElementName())
+			.toString();
+
+			ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+			EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
+					uri, element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
+
+			return wrapper;
 	}
 
 	@Override
 	public ICElement resolveWrapper(EObject wrapper) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		String uri = adapter.getArtifactUri(wrapper);
-		return CoreModel.create(uri);
+		return CoreModel.create(adapter.getArtifactIdentifier(wrapper));
 	}
 
 	@Override

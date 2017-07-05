@@ -42,7 +42,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	}
 
 	@Override
-	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
+	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactId,
 			String artifactName, String artifactPath) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri);
@@ -54,6 +54,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		wrapper.setUri(artifactUri);
 		wrapper.setName(artifactName);
 		wrapper.setPath(artifactPath);
+		wrapper.setIdentifier(artifactId);
 		container.getArtifacts().add(wrapper);
 
 		return wrapper;
@@ -87,6 +88,15 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	}
 
 	@Override
+	public String getArtifactIdentifier(EObject artifact) {
+		if (artifact instanceof ArtifactWrapper) {
+			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
+			return wrapper.getIdentifier();
+		}
+		return null;
+	}
+
+	@Override
 	public IPath getArtifactPath(EObject artifact) {
 		if (artifact instanceof ArtifactWrapper) {
 			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
@@ -101,4 +111,5 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		return (List<EObject>) (Object) container.getArtifacts();
 	}
+
 }

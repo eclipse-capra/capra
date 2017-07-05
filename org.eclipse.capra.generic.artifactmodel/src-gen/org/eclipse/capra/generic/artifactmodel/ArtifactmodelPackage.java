@@ -132,13 +132,22 @@ public interface ArtifactmodelPackage extends EPackage {
 	int ARTIFACT_WRAPPER__NAME = 2;
 
 	/**
+	 * The feature id for the '<em><b>Identifier</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARTIFACT_WRAPPER__IDENTIFIER = 3;
+
+	/**
 	 * The feature id for the '<em><b>Artifact Handler</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 3;
+	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 4;
 
 	/**
 	 * The number of structural features of the '<em>Artifact Wrapper</em>' class.
@@ -147,7 +156,7 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER_FEATURE_COUNT = 4;
+	int ARTIFACT_WRAPPER_FEATURE_COUNT = 5;
 
 	/**
 	 * The number of operations of the '<em>Artifact Wrapper</em>' class.
@@ -222,6 +231,17 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getArtifactWrapper_Name();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier <em>Identifier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Identifier</em>'.
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier()
+	 * @see #getArtifactWrapper()
+	 * @generated
+	 */
+	EAttribute getArtifactWrapper_Identifier();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}'.
@@ -308,6 +328,14 @@ public interface ArtifactmodelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ARTIFACT_WRAPPER__NAME = eINSTANCE.getArtifactWrapper_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Identifier</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARTIFACT_WRAPPER__IDENTIFIER = eINSTANCE.getArtifactWrapper_Identifier();
 
 		/**
 		 * The meta object literal for the '<em><b>Artifact Handler</b></em>' attribute feature.

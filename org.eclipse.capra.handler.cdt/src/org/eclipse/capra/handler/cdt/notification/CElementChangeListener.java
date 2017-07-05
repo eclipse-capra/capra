@@ -109,12 +109,12 @@ public class CElementChangeListener implements IElementChangedListener {
 			String affectedElementUri = affectedElement.getHandleIdentifier();
 			if (affectedElementUri != null) {
 				for (EObject aw : cArtifacts) {
-					String artifactUri = artifactAdapter.getArtifactUri(aw);
+					String artifactId = artifactAdapter.getArtifactIdentifier(aw);
 					// If the change type is "CHANGED", meaning that the element
 					// wasn't deleted, renamed, added or moved, only consider
 					// making a marker if the URI of the affected element is the
 					// same as the URI in the wrapper.
-					if (issueType == IssueType.CHANGED && !artifactUri.equals(affectedElementUri))
+					if (issueType == IssueType.CHANGED && !artifactId.equals(affectedElementUri))
 						continue;
 					// Otherwise (the change is either "delete", "move" or
 					// "rename"), consider making the marker for the affected
@@ -133,10 +133,10 @@ public class CElementChangeListener implements IElementChangedListener {
 						deleteMarkerUri = affectedElementUri;
 					}
 
-					if (!deleteMarkerUri.isEmpty() && artifactUri.contains(deleteMarkerUri))
-						CapraNotificationHelper.deleteCapraMarker(artifactUri, markersToDelete, wrapperContainer);
+					if (!deleteMarkerUri.isEmpty() && artifactId.contains(deleteMarkerUri))
+						CapraNotificationHelper.deleteCapraMarker(artifactId, markersToDelete, wrapperContainer);
 
-					if (artifactUri.contains(affectedElementUri)) {
+					if (artifactId.contains(affectedElementUri)) {
 						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
@@ -163,7 +163,7 @@ public class CElementChangeListener implements IElementChangedListener {
 		HashMap<String, String> markerInfo = new HashMap<String, String>();
 
 		// Properties from the C/C++ element in the wrapper (all elements)
-		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
+		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);
 		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected C/C++ element before the change.

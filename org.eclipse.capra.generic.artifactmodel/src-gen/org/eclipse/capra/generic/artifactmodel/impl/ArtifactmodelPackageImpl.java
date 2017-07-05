@@ -159,8 +159,17 @@ public class ArtifactmodelPackageImpl extends EPackageImpl implements Artifactmo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getArtifactWrapper_ArtifactHandler() {
+	public EAttribute getArtifactWrapper_Identifier() {
 		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getArtifactWrapper_ArtifactHandler() {
+		return (EAttribute)artifactWrapperEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -198,6 +207,7 @@ public class ArtifactmodelPackageImpl extends EPackageImpl implements Artifactmo
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__PATH);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__URI);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__NAME);
+		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__IDENTIFIER);
 		createEAttribute(artifactWrapperEClass, ARTIFACT_WRAPPER__ARTIFACT_HANDLER);
 	}
 
@@ -241,6 +251,7 @@ public class ArtifactmodelPackageImpl extends EPackageImpl implements Artifactmo
 		initEAttribute(getArtifactWrapper_Path(), theEcorePackage.getEString(), "path", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_Uri(), theEcorePackage.getEString(), "uri", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_Name(), theEcorePackage.getEString(), "name", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getArtifactWrapper_Identifier(), theEcorePackage.getEString(), "identifier", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getArtifactWrapper_ArtifactHandler(), theEcorePackage.getEString(), "ArtifactHandler", null, 0, 1, ArtifactWrapper.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource

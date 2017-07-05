@@ -61,7 +61,7 @@ public class JDTAnnotateTest {
 				"public class bar {\n" +
 				"};\n";
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class JDTAnnotateTest {
 				"int foo() { return 0; }\n" +
 				"};\n";
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class JDTAnnotateTest {
 				"int foo() { return 0; }\n" +
 				"};\n";
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class JDTAnnotateTest {
 				"int foo() { return 0; }\n" +
 				"};\n";
 
-		assertEquals(actual, expected);
+		assertEquals(expected, actual);
 	}
 
 }

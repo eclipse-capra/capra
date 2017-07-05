@@ -320,7 +320,7 @@ public class TestHelper {
 				if (obj instanceof ArtifactWrapper) {
 					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
 					if ((wrapper.getArtifactHandler().equals(JavaElementHandler.class.getName()))) {
-						return (wrapper.getUri().equals(b.getHandleIdentifier()));
+						return (wrapper.getIdentifier().equals(b.getHandleIdentifier()));
 					}
 				}
 			}
@@ -353,7 +353,7 @@ public class TestHelper {
 				if (obj instanceof ArtifactWrapper) {
 					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
 					if ((wrapper.getArtifactHandler().equals(CDTHandler.class.getName()))) {
-						return (wrapper.getUri().equals(b.getHandleIdentifier()));
+						return (wrapper.getIdentifier().equals(b.getHandleIdentifier()));
 					}
 				}
 			}
