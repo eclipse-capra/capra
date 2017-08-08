@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -94,11 +95,8 @@ public class SelectionView extends ViewPart {
 		@Override
 		public String getText(Object element) {
 			return ExtensionPointHelper.getArtifactHandlers().stream()
-				.map(handler -> handler.withCastedHandler(element, (h, e) -> h.getDisplayName(e)))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.findFirst()
-				.orElseGet(element::toString);
+					.map(handler -> handler.withCastedHandler(element, (h, e) -> h.getDisplayName(e)))
+					.filter(Optional::isPresent).map(Optional::get).findFirst().orElseGet(element::toString);
 		}
 
 		@Override
@@ -120,7 +118,7 @@ public class SelectionView extends ViewPart {
 	/**
 	 * Leaves the order of objects unchanged by returning 0 for all combinations
 	 * of objects.
-	 * 
+	 *
 	 * @see ViewerComparator#compare(Viewer, Object, Object)
 	 */
 	class NoChangeComparator extends ViewerComparator {
@@ -180,6 +178,7 @@ public class SelectionView extends ViewPart {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 
 			}
@@ -189,6 +188,7 @@ public class SelectionView extends ViewPart {
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
@@ -203,6 +203,10 @@ public class SelectionView extends ViewPart {
 			Collection<Object> arrayselection = (Collection<Object>) data;
 			if (arrayselection.stream().allMatch(this::validateSelection))
 				selection.addAll(arrayselection);
+		} else if (data instanceof IStructuredSelection) {
+			IStructuredSelection iselection = (IStructuredSelection) data;
+			if (iselection.toList().stream().allMatch(this::validateSelection))
+				selection.addAll(iselection.toList());
 		} else if (validateSelection(data))
 			selection.add(data);
 
@@ -212,9 +216,8 @@ public class SelectionView extends ViewPart {
 	private boolean validateSelection(Object target) {
 		Collection<IArtifactHandler<?>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 		List<IArtifactHandler<?>> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleArtifact(target))
-				.collect(toList());
-		
+				.filter(handler -> handler.canHandleArtifact(target)).collect(toList());
+
 		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getSite().getShell(), "No handler for selected item",
