@@ -12,10 +12,12 @@ package org.eclipse.capra.handler.jdt;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -38,7 +40,8 @@ import org.eclipse.jdt.core.JavaCore;
  * A handler to allow creating traces to and from java elements such as classes
  * and methods based on JDT.
  * </p>
- * This handler encodes a locator to the Java element in artifact URI:s in the following way:
+ * This handler encodes a locator to the Java element in artifact URI:s in the
+ * following way:
  * {@code platform:/Project_name/path/to/file.java#com.pack.ClassName/methodName}.
  */
 public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> implements IAnnotateArtifact {
@@ -46,34 +49,32 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 	@Override
 	public EObject createWrapper(IJavaElement element, EObject artifactModel) {
 		IType type = (IType) element.getParent().getAncestor(IJavaElement.TYPE);
-		
+
 		String fragment;
 		if (type == null) {
 			if (element.getElementType() == IJavaElement.TYPE) {
 				// Top level classes get their fully qualified name
 				fragment = ((IType) element).getFullyQualifiedName();
 			} else {
-				// This will probably never happen, if something doesn't 
+				// This will probably never happen, if something doesn't
 				// have a type ancestor it is always a type itself
 				fragment = element.getElementName();
 			}
 		} else {
-			// Case for members: A list of '/' separated type names, followed by a member name
+			// Case for members: A list of '/' separated type names, followed by
+			// a member name
 			fragment = type.getFullyQualifiedName().replaceAll("\\$", "/") + "/" + element.getElementName();
 		}
-		
-		URIBuilder uriBuilder = new URIBuilder()
-			.setScheme("platform")
-			.setPath("/resource" + element.getPath())
-			.setFragment(fragment);
+
+		URIBuilder uriBuilder = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
+				.setFragment(fragment);
 
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
 		String displayName = (type == null ? "" : (type.getElementName() + ".")) + element.getElementName();
-		
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), 
-			uriBuilder.toString(), element.getHandleIdentifier(), 
-			displayName,  element.getPath().toString());
+
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uriBuilder.toString(),
+				element.getHandleIdentifier(), displayName, element.getPath().toString());
 
 		return wrapper;
 	}
@@ -155,5 +156,18 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 		}
 
 		return message;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

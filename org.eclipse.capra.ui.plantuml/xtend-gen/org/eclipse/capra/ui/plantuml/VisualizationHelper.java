@@ -45,6 +45,7 @@ public class VisualizationHelper {
               {
                 for(final EObject second : secondElements) {
                   _builder.append("|");
+                  _builder.newLineIfNotEmpty();
                   {
                     boolean _isThereATraceBetween = traceAdapter.isThereATraceBetween(first, second, traceModel);
                     if (_isThereATraceBetween) {
@@ -55,6 +56,7 @@ public class VisualizationHelper {
                   }
                 }
               }
+              _builder.append("\t");
               _builder.newLineIfNotEmpty();
             }
           }

@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  */
 public interface TraceMetaModelAdapter {
-	
+
 	/**
 	 * Create a new model for the trace links.
 	 * 
@@ -61,17 +61,18 @@ public interface TraceMetaModelAdapter {
 	 */
 	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection);
 
-	/** Decide if two objects are connected according to the given trace model
-	* 
-	* @param first
-	*            First object
-	* @param second
-	*            Second object
-	* @param traceModel
-	*            Trace model to base decision on
-	* @return <code>true</code> if object are connected, <code>false</code>
-	*         otherwise
-	*/
+	/**
+	 * Decide if two objects are connected according to the given trace model
+	 * 
+	 * @param first
+	 *            First object
+	 * @param second
+	 *            Second object
+	 * @param traceModel
+	 *            Trace model to base decision on
+	 * @return <code>true</code> if object are connected, <code>false</code>
+	 *         otherwise
+	 */
 	boolean isThereATraceBetween(EObject first, EObject second, EObject traceModel);
 
 	/**
@@ -97,10 +98,51 @@ public interface TraceMetaModelAdapter {
 	 *            Note that this element could be a trace in the trace model
 	 * @param traceModel
 	 *            Trace model to base calculation on
+	 * @param selectedRelationshipTypes
+	 *            List of selected relationship types from the context menu of
+	 *            plantuml
 	 * @return A Map with the following structure: [Trace object t -> {list of
 	 *         all objects connected to element via t}]
 	 */
-	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel);
+	List<Connection> getConnectedElements(EObject element, EObject traceModel, List<String> selectedRelationshipTypes);
+
+	/**
+	 * Determine a list of all objects connected to element according to the
+	 * given trace model
+	 * 
+	 * @param element
+	 *            The element used to determine the list of connected objects.
+	 *            Note that this element could be a trace in the trace model
+	 * @param traceModel
+	 *            Trace model to base calculation on
+	 * @param transitivityDepth
+	 *            The maximum depth the user wants to go down transitively. 0
+	 *            indicates no limit.
+	 * @return A Map with the following structure: [Trace object t -> {list of
+	 *         all objects connected to element via t}]
+	 */
+	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int transitivityDepth);
+
+	/**
+	 * Determine a list of all objects connected to element according to the
+	 * given trace model
+	 * 
+	 * @param element
+	 *            The element used to determine the list of connected objects.
+	 *            Note that this element could be a trace in the trace model
+	 * @param traceModel
+	 *            Trace model to base calculation on
+	 * @param selectedRelationshipTypes
+	 *            List of selected relationship types from the context menu of
+	 *            plantuml
+	 * @param transitivityDepth
+	 *            The maximum depth the user wants to go down transitively. 0
+	 *            indicates no limit.
+	 * @return A Map with the following structure: [Trace object t -> {list of
+	 *         all objects connected to element via t}]
+	 */
+	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
+			List<String> selectedRelationshipTypes, int transitivityDepth);
 
 	/**
 	 * Given a trace model, this method returns a list of all trace links in the
@@ -123,4 +165,64 @@ public interface TraceMetaModelAdapter {
 	 *            the trace model to delete the links from
 	 */
 	void deleteTrace(List<Connection> toDelete, EObject traceModel);
+
+	/**
+	 * Determine a list of all objects internally connected to element (e.g.
+	 * UML)
+	 * 
+	 * @param element
+	 *            The element used to determine the list of connected objects.
+	 *            Note that this element could be a trace in the trace model
+	 * @param traceModel
+	 *            Trace model to base calculation on
+	 * @param selectedRelationshipTypes
+	 *            List of selected relationship types from the context menu of
+	 *            plantuml
+	 * @param traceLinksTransitive
+	 *            Used to determine if tracelink elements should be received
+	 *            transitively
+	 * @param transitivityDepth
+	 *            Used to in case tracelinks are received transivitely in order
+	 *            to set the depth
+	 * @return A Map with the following structure: [Trace object t -> {list of
+	 *         all objects connected to element via t}]
+	 */
+	List<Connection> getInternalElements(EObject element, EObject traceModel, List<String> selectedRelationshipTypes,
+			boolean traceLinksTransitive, int transitivityDepth, List<Connection> existingTraces);
+
+	/**
+	 * Determine a list of elements internally connected to the selected one
+	 * transitively
+	 * 
+	 * @param element
+	 *            The element used to determine the list of connected objects.
+	 *            Note that this element could be a trace in the trace model
+	 * @param traceModel
+	 *            Trace model to base calculation on
+	 * @param transitivityDepth
+	 *            The maximum depth the user wants to go down transitively. 0
+	 *            indicates no limit.
+	 * @return A Map with the following structure: [Trace object t -> {list of
+	 *         all objects connected to element via t}]
+	 */
+	List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
+			List<String> selectedRelationshipTypes, int transitivityDepth, List<Connection> existingTraces);
+
+	/**
+	 * Decide if two objects are connected internally by passing the selected
+	 * objects down to the artifact handlers and returns a String with the Type
+	 * of connection for the trace matrix (empty String if no connection exists)
+	 * This is implemented in the {@link AbstractMetaModelAdapter} and does not
+	 * need to be overwritten but can be used like it is.
+	 * 
+	 * @param first
+	 *            First object
+	 * @param second
+	 *            Second object
+	 * @param traceModel
+	 *            Trace model to base decision on
+	 * @return <code>true</code> if object are connected, <code>false</code>
+	 *         otherwise
+	 */
+	boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel);
 }

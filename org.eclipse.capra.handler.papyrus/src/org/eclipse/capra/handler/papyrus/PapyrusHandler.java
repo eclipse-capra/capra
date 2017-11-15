@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.papyrus;
 
+import java.util.List;
+
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
@@ -21,7 +24,6 @@ import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
  * Papyrus.
  */
 public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> {
-
 
 	@Override
 	public EObject createWrapper(EObjectTreeElement artifact, EObject artifactModel) {
@@ -40,10 +42,23 @@ public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> 
 		EObject sel = EMFHelper.getEObject(artifact);
 		return org.eclipse.capra.core.helpers.EMFHelper.getIdentifier(sel); // TODO
 	}
-	
+
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

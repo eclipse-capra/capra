@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.gef;
 
+import java.util.List;
+
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
@@ -41,5 +44,18 @@ public class GEFHandler extends AbstractArtifactHandler<EditPart> {
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -75,7 +75,9 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 					if (selectedModels.size() == 1) {
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
-							traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel);
+							int transitivityDepth = 0;
+							//more to follow in the next commit
+							traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel, transitivityDepth);
 						} else {
 							traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel);
 						}

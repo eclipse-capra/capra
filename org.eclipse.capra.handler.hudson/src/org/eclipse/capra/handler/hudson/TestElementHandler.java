@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.hudson;
 
+import java.util.List;
+
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -18,8 +21,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.TestElement;
 
 /**
- * A handler to allow tracing to and from test elements handled by the continuous
- * integration server Hudson via the integrated Mylyn facilities.
+ * A handler to allow tracing to and from test elements handled by the
+ * continuous integration server Hudson via the integrated Mylyn facilities.
  */
 public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 
@@ -47,6 +50,19 @@ public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
+import java.util.List;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -29,7 +32,8 @@ import org.eclipse.emf.ecore.EObject;
  * Handler to allow tracing to and from elements of C such as files and
  * functions. Uses CDT as the foundation.
  * </p>
- * This handler encodes a locator to the C element in artifact URI:s in the following way:
+ * This handler encodes a locator to the C element in artifact URI:s in the
+ * following way:
  * {@code platform:/Project_name/path/to/file.c#classOrStructName/memberName}
  * <p/>
  * {@code platform:/Project_name/path/to/file.c#functionClassOrStructName}.
@@ -39,25 +43,25 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	@Override
 	public EObject createWrapper(ICElement element, EObject artifactModel) {
 		ICompositeType type = (ICompositeType) element.getParent().getAncestor(ICElement.C_CLASS);
-		if (type == null) type = (ICompositeType) element.getParent().getAncestor(ICElement.C_STRUCT);
-		if (type == null) type = (ICompositeType) element.getParent().getAncestor(ICElement.C_UNION);
-		
+		if (type == null)
+			type = (ICompositeType) element.getParent().getAncestor(ICElement.C_STRUCT);
+		if (type == null)
+			type = (ICompositeType) element.getParent().getAncestor(ICElement.C_UNION);
+
 		// TODO: Will this be unique? I don't know.
 		String typePrefix = type == null ? "" : type.getName() + "/";
 
-		// TODO: This does not take C++ function overloading on argument types into account when
+		// TODO: This does not take C++ function overloading on argument types
+		// into account when
 		// constructing the URI
-		String uri = new URIBuilder()
-			.setScheme("platform")
-			.setPath("/resource" + element.getPath())
-			.setFragment(typePrefix + element.getElementName())
-			.toString();
+		String uri = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
+				.setFragment(typePrefix + element.getElementName()).toString();
 
-			ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-			EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-					uri, element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
+				element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
 
-			return wrapper;
+		return wrapper;
 	}
 
 	@Override
@@ -74,11 +78,12 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	@Override
 	public void annotateArtifact(EObject wrapper, String annotation) throws AnnotationException {
 		IEclipsePreferences preferences = CDTPreferences.getPreferences();
-		
-		if (!preferences.getBoolean(CDTPreferences.ANNOTATE_CDT, CDTPreferences.ANNOTATE_CDT_DEFAULT)) return;
-		
+
+		if (!preferences.getBoolean(CDTPreferences.ANNOTATE_CDT, CDTPreferences.ANNOTATE_CDT_DEFAULT))
+			return;
+
 		ICElement handle = resolveWrapper(wrapper);
-		
+
 		try {
 			CDTAnnotate.annotateArtifact(handle, annotation);
 		} catch (CoreException e) {
@@ -89,5 +94,18 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

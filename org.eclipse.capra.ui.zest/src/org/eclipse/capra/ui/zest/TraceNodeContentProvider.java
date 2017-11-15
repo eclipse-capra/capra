@@ -76,7 +76,8 @@ public class TraceNodeContentProvider implements IGraphContentProvider {
 		List<EObject> nodes = new ArrayList<>();
 		if (currentSelection.get(0) instanceof EObject) {
 			EObject object = (EObject) currentSelection.get(0);
-			connections = metaModelAdapter.getTransitivelyConnectedElements(object, traceModel);
+			int transitivityDepth = 0;
+			connections = metaModelAdapter.getTransitivelyConnectedElements(object, traceModel, transitivityDepth);
 			for (Connection c : connections) {
 				nodes.add(c.getOrigin());
 				nodes.addAll(c.getTargets());

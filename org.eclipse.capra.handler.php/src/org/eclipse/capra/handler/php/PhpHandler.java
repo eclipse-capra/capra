@@ -1,6 +1,9 @@
 package org.eclipse.capra.handler.php;
 
+import java.util.List;
+
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -34,6 +37,19 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			List<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

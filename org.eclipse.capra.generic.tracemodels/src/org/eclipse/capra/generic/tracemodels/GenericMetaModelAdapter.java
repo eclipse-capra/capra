@@ -20,6 +20,7 @@ import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -35,7 +36,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 /**
  * Provides generic functionality to deal with traceability meta models.
  */
-public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
+public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
 
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
@@ -63,27 +64,23 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
 
-
 		// String builder to build the name of the trace link so by adding the
 		// elements it connects so as to make it easy for a user to visually
 		// differentiate trace links
-	
+
 		String name = "";
-		
+
 		for (Object obj : selection) {
-				name = name + " " + ExtensionPointHelper.getArtifactHandlers().stream()
-						.map(handler -> handler.withCastedHandler(obj, (h, e) -> h.getDisplayName(e)))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.findFirst()
-						.orElseGet(obj::toString);
+			name = name + " "
+					+ ExtensionPointHelper.getArtifactHandlers().stream()
+							.map(handler -> handler.withCastedHandler(obj, (h, e) -> h.getDisplayName(e)))
+							.filter(Optional::isPresent).map(Optional::get).findFirst().orElseGet(obj::toString);
 		}
-		
+
 		RelatedToTrace.setName(name.toString());
 		TM.getTraces().add(RelatedToTrace);
 		return TM;
 	}
-
 
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
@@ -100,8 +97,9 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		}
 		if (relevantLinks.size() > 0) {
 			return true;
-		} else
-			return false;
+		}
+
+		return this.isThereAnInternalTraceBetween(firstElement, secondElement, traceModel);
 	}
 
 	@Override
@@ -124,28 +122,56 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 		return connections;
 	}
 
+	@Override
+	public List<Connection> getConnectedElements(EObject element, EObject tracemodel,
+			List<String> selectedRelationshipTypes) {
+		GenericTraceModel root = (GenericTraceModel) tracemodel;
+		List<Connection> connections = new ArrayList<>();
+		List<RelatedTo> traces = root.getTraces();
+
+		if (selectedRelationshipTypes.size() == 0 || selectedRelationshipTypes
+				.contains(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo().getName())) {
+			if (element instanceof RelatedTo) {
+				RelatedTo trace = (RelatedTo) element;
+				connections.add(new Connection(element, trace.getItem(), trace));
+			} else {
+
+				for (RelatedTo trace : traces) {
+					if (trace.getItem().contains(element)) {
+						connections.add(new Connection(element, trace.getItem(), trace));
+					}
+				}
+			}
+		}
+		return connections;
+	}
+
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<Object> accumulator) {
+			ArrayList<Object> accumulator, int currentDepth, int maximumDepth) {
 		List<Connection> directElements = getConnectedElements(element, traceModel);
 		List<Connection> allElements = new ArrayList<>();
 
-		directElements.forEach(connection -> {
+		int currDepth = currentDepth + 1;
+		for (Connection connection : directElements) {
 			if (!accumulator.contains(connection.getTlink())) {
 				allElements.add(connection);
 				accumulator.add(connection.getTlink());
-				connection.getTargets().forEach(e -> {
-					allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator));
-				});
+				for (EObject e : connection.getTargets()) {
+					if (maximumDepth == 0 || currDepth <= maximumDepth) {
+						allElements.addAll(
+								getTransitivelyConnectedElements(e, traceModel, accumulator, currDepth, maximumDepth));
+					}
+				}
 			}
-		});
+		}
 
 		return allElements;
 	}
 
 	@Override
-	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel) {
-		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator);
+	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int maximumDepth) {
+		ArrayList<Object> accumulator = new ArrayList<>();
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, -2, maximumDepth);
 	}
 
 	@Override
@@ -163,7 +189,7 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 
 	@Override
 	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
-		if(traceModel instanceof GenericTraceModel) {
+		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel TModel = (GenericTraceModel) traceModel;
 			EList<RelatedTo> links = TModel.getTraces();
 			ResourceSet resourceSet = new ResourceSetImpl();
@@ -175,13 +201,43 @@ public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
 			URI traceModelURI = EcoreUtil.getURI(traceModel);
 			Resource resourceForTraces = resourceSet.createResource(traceModelURI);
 			resourceForTraces.getContents().add(newTraceModel);
-	
+
 			try {
 				resourceForTraces.save(null);
-                          	// TODO: Think of a way to let the developer handle such sitations (e.g., via an Exception)
+				// TODO: Think of a way to let the developer handle such
+				// sitations (e.g., via an Exception)
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 	}
+
+	@Override
+	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
+			List<String> selectedRelationshipTypes, int maximumDepth) {
+		List<Object> accumulator = new ArrayList<>();
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, selectedRelationshipTypes, -2,
+				maximumDepth);
+	}
+
+	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
+			List<Object> accumulator, List<String> selectedRelationshipTypes, int currentDepth, int maximumDepth) {
+		List<Connection> directElements = getConnectedElements(element, traceModel, selectedRelationshipTypes);
+		List<Connection> allElements = new ArrayList<>();
+		int currDepth = currentDepth++;
+		for (Connection connection : directElements) {
+			if (!accumulator.contains(connection.getTlink())) {
+				allElements.add(connection);
+				accumulator.add(connection.getTlink());
+				for (EObject e : connection.getTargets()) {
+					if (maximumDepth == 0 || currDepth <= maximumDepth) {
+						allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator,
+								selectedRelationshipTypes, currDepth, maximumDepth));
+					}
+				}
+			}
+		}
+
+		return allElements;
 	}
 }

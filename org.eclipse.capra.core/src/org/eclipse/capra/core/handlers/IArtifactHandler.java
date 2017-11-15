@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
@@ -101,7 +103,6 @@ public interface IArtifactHandler<T> {
 	 */
 	Class<T> getHandledClass();
 
-
 	/**
 	 * When a change in the resource occurs, it generates the message that is to
 	 * be displayed by the Capra marker.
@@ -110,10 +111,39 @@ public interface IArtifactHandler<T> {
 	 *            represents changes in the state of a resource
 	 * @param wrapperUri
 	 *            uri of the artifact that is associated with the change
-	 * @return the Capra marker message. Every marker must return a unique message.
-         *         If the message already exists it will be ignoored and a marker will 
-         *         not be created.
+	 * @return the Capra marker message. Every marker must return a unique
+	 *         message. If the message already exists it will be ignoored and a
+	 *         marker will not be created.
 	 */
 	String generateMarkerMessage(IResourceDelta delta, String wrapperUri);
+
+	/**
+	 * Returns the type that is handled by this <code>IArtifactHandler</code>.
+	 * 
+	 * @param investigatedElement
+	 *            Element currently under investigation for links
+	 * @param allElements
+	 *            List of all elements for Plant-uml view
+	 * @param duplicationCheck
+	 *            List of String for checking for duplication
+	 */
+	void addInternalLinks(EObject investigatedElement, List<Connection> allElements, List<Integer> duplicationCheck,
+			List<String> selectedRelationshipTypes);
+
+	/**
+	 * Decide if two objects are connected according to the given trace model
+	 * and returns a String with the Type of connection for the trace matrix
+	 * (empty String if no connection exists)
+	 *
+	 * @param first
+	 *            First object
+	 * @param second
+	 *            Second object
+	 * @param traceModel
+	 *            Trace model to base decision on
+	 * @return <code>true</code> if object are connected, <code>false</code>
+	 *         otherwise
+	 */
+	boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel);
 
 }
