@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.hudson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -46,6 +50,17 @@ public class BuildElementHandler extends AbstractArtifactHandler<BuildElement> {
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant internal links for Build Elements
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
+		return false;
 	}
 
 }

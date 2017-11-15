@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.papyrus;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
@@ -44,6 +48,18 @@ public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> 
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant internal links specific for Papyrus models. 
+		//Currently, UML links such as association and those from the SYSML Profile are handled by the UML Handler	
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
+		return false;
 	}
 
 }

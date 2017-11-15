@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.emf;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -38,5 +42,16 @@ public class EMFHandler extends AbstractArtifactHandler<EObject> {
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant internal links for EMF models
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
+		return false;
 	}
 }

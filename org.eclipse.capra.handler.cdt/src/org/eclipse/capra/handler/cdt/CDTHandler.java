@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -89,5 +93,16 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant internal links for C code
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
+		return false;
 	}
 }

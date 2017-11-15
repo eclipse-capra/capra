@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
@@ -50,6 +54,17 @@ public class IFileHandler extends AbstractArtifactHandler<IFile> {
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return delta.getResource().getName()
 				+ " has been changed. Please check if associated trace links are still valid.";
+	}
+
+	@Override
+	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant internal links for Files
+	}
+
+	@Override
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
+		return false;
 	}
 
 }

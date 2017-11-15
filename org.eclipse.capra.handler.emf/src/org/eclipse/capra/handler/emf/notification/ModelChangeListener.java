@@ -70,7 +70,8 @@ public class ModelChangeListener extends EContentAdapter {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSetImpl newResourceSet = new ResourceSetImpl();
 		EObject traceModel = persistenceAdapter.getTraceModel(newResourceSet);
-		if (traceModel != null) {
+		//check that atleast one trace link exists
+		if (traceModel!=null && traceModel.eContents().size() > 0) {
 
 			IPath path = new Path(EcoreUtil.getURI(traceModel).toPlatformString(false));
 			IFile traceContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);

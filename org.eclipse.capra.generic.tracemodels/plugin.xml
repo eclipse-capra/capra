@@ -24,14 +24,6 @@
             class="org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage"
             genModel="model/generictrace.xcore"/>
    </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated artifact -->
-      <package
-            uri="org.eclipse.capra.GenericArtifactMetaModel"
-            class="org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage"
-            genModel="model/artifact.xcore"/>
-   </extension>
    <extension
          point="org.eclipse.capra.configuration.traceabilityMetaModel">
       <TraceabilityMetaModelAdapter

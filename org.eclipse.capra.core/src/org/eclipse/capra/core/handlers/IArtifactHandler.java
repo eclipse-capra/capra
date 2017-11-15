@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
@@ -115,5 +118,34 @@ public interface IArtifactHandler<T> {
          *         not be created.
 	 */
 	String generateMarkerMessage(IResourceDelta delta, String wrapperUri);
+	
+	/**
+	 * Adds internal links related to a given element
+	 * 
+	 * @param investigatedElement
+	 *            Element currently under investigation for links
+	 * @param allElements
+	 *            List of all elements for Plant-uml view
+	 * @param duplicationCheck
+	 *            List of String for checking for duplication
+	 * @param selectedRelationshipTypes 
+	 * 			  relationship types selected by the user to be displayed in the plantUML view
+	 */
+	void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
+			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes);
+
+	/**
+	 * Decide if two objects have an internal link between them.
+	 *
+	 * @param first
+	 *            First object
+	 * @param second
+	 *            Second object
+	 * @param traceModel
+	 *            Trace model to base decision on
+	 * @return <code>true</code> if object are connected, <code>false</code>
+	 *         otherwise
+	 */
+	boolean isThereAnInternalTraceBetween(EObject first, EObject second);
 
 }

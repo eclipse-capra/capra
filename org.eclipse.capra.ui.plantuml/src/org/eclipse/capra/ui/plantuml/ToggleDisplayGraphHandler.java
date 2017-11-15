@@ -44,7 +44,7 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 	public static boolean isDisplayGraph() {
 		Preferences graphDisplay = getPreference();
 
-		return graphDisplay.get("option", "matrix").equals("matrix");
+		return graphDisplay.get("option", "graph").equals("matrix");
 	}
 
 	private static Preferences getPreference() {
