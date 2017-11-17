@@ -14,12 +14,16 @@
 
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.capra.ui.views"
+			name="%category.name">
+      </category>
       <view
             category="org.eclipse.capra.generic.views"
             class="org.eclipse.capra.ui.zest.ZestView"
             icon="icons/capra.png"
             id="org.eclipse.capra.ui.zest.zestView"
-            name="Traceability View"
+            name="%view.name"
             restorable="true">
       </view>
    </extension>
@@ -29,7 +33,7 @@
       <command
             defaultHandler="org.eclipse.capra.ui.zest.ToggleTransitivityHandler"
             id="org.eclipse.capra.ui.zest.toggleTransitivity"
-            name="Toggle Transitivity">
+            name="%command.name">
          <state
                class="org.eclipse.jface.commands.ToggleState"
                id="org.eclipse.ui.commands.toggleState">
@@ -51,7 +55,7 @@
           locationURI="menu:org.eclipse.capra.ui.zest.zestView?after=additions">
        <command
              commandId="org.eclipse.capra.ui.zest.toggleTransitivity"
-             label="Show transitive links"
+             label="%command.label"
              style="toggle">
        </command>
     </menuContribution>

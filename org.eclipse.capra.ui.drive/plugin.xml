@@ -3,25 +3,25 @@
          point="org.eclipse.ui.views">
       <category
             id="org.eclipse.capra.ui.views"
-			name="Capra Views">
+			name="%category.name">
       </category>
 	  <view
 			category="org.eclipse.capra.ui.views"
 			class="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
 			icon="icons/selectionView.png"
 			id="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
-			name="Drive Selection View">
+			name="%view.name">
       </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
 			id="org.eclipse.capra.ui.drive.openInBrowser"
-            name="Open in browser">
+            name="%command.name">
       </command>
       <command
             id="org.eclipse.capra.ui.drive.openInOfficeView"
-            name="Open in Capra Office view">
+            name="%command.name.0">
       </command>
    </extension>
    <extension
@@ -31,12 +31,12 @@
             locationURI="popup:org.eclipse.capra.ui.drive.CapraGoogleDriveView?after=additions">
          <command
                commandId="org.eclipse.capra.ui.drive.openInBrowser"
-               label="Open in browser"
+               label="%command.label"
                style="push">
          </command>
          <command
                commandId="org.eclipse.capra.ui.drive.openInOfficeView"
-               label="Open in Capra Office view"
+               label="%command.label.0"
                style="push">
          </command>
       </menuContribution>

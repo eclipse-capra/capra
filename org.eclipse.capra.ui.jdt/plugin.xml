@@ -24,7 +24,7 @@
             category="org.eclipse.capra.ui.preferences.CapraPreferences"
             class="org.eclipse.capra.ui.jdt.preferences.JDTPreferencePage"
             id="org.eclipse.capra.ui.jdt.preferencePage"
-            name="Java trace">
+            name="%page.name">
       </page>
    </extension>
 

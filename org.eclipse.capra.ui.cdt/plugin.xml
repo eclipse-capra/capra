@@ -24,7 +24,7 @@
             category="org.eclipse.capra.ui.preferences.CapraPreferences"
             class="org.eclipse.capra.ui.cdt.preferences.CDTPreferencePage"
             id="org.eclipse.capra.ui.cdt.preferencePage"
-            name="C trace">
+            name="%page.name">
       </page>
    </extension>
 

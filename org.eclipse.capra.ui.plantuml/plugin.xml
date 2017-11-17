@@ -23,7 +23,7 @@
      
       <command
             id="org.eclipse.capra.ui.plantuml.toggleTransitivity"
-            name="Toggle Transitivity">
+            name="%command.name">
          <state
                class="org.eclipse.jface.commands.ToggleState"
                id="org.eclipse.ui.commands.toggleState">
@@ -31,7 +31,7 @@
       </command>
       <command
             id="org.eclipse.capra.ui.plantuml.displayGraph"
-            name="Display Graph">
+            name="%command.name.0">
          <state
                class="org.eclipse.jface.commands.ToggleState"
                id="org.eclipse.ui.commands.toggleState">
@@ -55,12 +55,12 @@
             locationURI="menu:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
          <command
                commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
-               label="Show transitive links"
+               label="%command.label"
                style="toggle">
          </command>
          <command
                commandId="org.eclipse.capra.ui.plantuml.displayGraph"
-               label="Display Graph"
+               label="%command.label.0"
                style="toggle">
          </command>
          

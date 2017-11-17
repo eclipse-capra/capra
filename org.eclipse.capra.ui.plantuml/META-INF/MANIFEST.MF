@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Trace Visualisation Support (PlantUML)
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.capra.ui.plantuml;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.ui.workbench,
@@ -17,5 +17,5 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.capra.generic.artifactmodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.ui.plantuml
-Bundle-Vendor: Capra Development Team
+Bundle-Vendor: %Bundle-Vendor
 

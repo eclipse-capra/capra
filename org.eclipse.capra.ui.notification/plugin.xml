@@ -21,7 +21,7 @@
    </extension>
    <extension
          id="org.eclipse.capra.ui.notification.capraProblemMarker"
-         name="Capra Issues"
+         name="%extension.name"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">

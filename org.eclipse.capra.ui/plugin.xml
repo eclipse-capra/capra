@@ -12,25 +12,25 @@
  -->
 
 <plugin>
-   <extension-point id="org.eclipse.capra.ui.transfers" name="Transfers" schema="schema/org.eclipse.capra.ui.transfers.exsd"/>
+   <extension-point id="org.eclipse.capra.ui.transfers" name="%extension-point.name" schema="schema/org.eclipse.capra.ui.transfers.exsd"/>
    <extension
          point="org.eclipse.ui.commands">
       <command
             id="org.eclipse.capra.generic.tracecreation.commands.createTrace"
-            name="Create Trace">
+            name="%command.name">
       </command>
       <command
             helpContextId="Remove currently selected item from the  list of selection"
             id="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
-            name="Remove from Selection">
+            name="%command.name.0">
       </command>
       <command
             id="org.eclipse.capra.generic.tracecreation.clearselection"
-            name="Clear Selection">
+            name="%command.name.1">
       </command>
       <command
             id="org.eclipse.capra.generic.addtoselection"
-            name="Add to Selection">
+            name="%command.name.2">
       </command>
    </extension>
    <extension
@@ -63,21 +63,21 @@
          <command
                commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace"
                id="org.eclipse.capra.tracecreation.menus.createTrace"
-               label="Create Trace"
-               mnemonic="S"
-               tooltip="Gives you a list of available trace types">
+               label="%command.label"
+               mnemonic="%command.mnemonic"
+               tooltip="%command.tooltip">
          </command>
          <command
                commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
-               label="Remove from Selection"
+               label="%command.label.0"
                style="push"
-               tooltip="Remove the selected item from the current selection">
+               tooltip="%command.tooltip.0">
          </command>
          <command
                commandId="org.eclipse.capra.generic.tracecreation.clearselection"
-               label="Clear Selection"
+               label="%command.label.1"
                style="push"
-               tooltip="Clears the current selection of elements">
+               tooltip="%command.tooltip.1">
          </command>
          <separator
                name="org.eclipse.capra.generic.tracecreation.separator1"
@@ -91,13 +91,13 @@
                name="org.eclipse.capra.generic.separator2">
          </separator>
          <menu
-               label="Capra"
+               label="%menu.label"
                id="org.eclipse.capra.ui.contextsubmenu">
             <command
                   commandId="org.eclipse.capra.generic.addtoselection"
-                  label="Add to Selection"
+                  label="%command.label.2"
                   style="push"
-                  tooltip="Add selected item(s) to selection view">
+                  tooltip="%command.tooltip.2">
             </command>
          </menu>
          <separator
@@ -109,14 +109,14 @@
          point="org.eclipse.ui.views">
       <category
             id="org.eclipse.capra.generic.views"
-            name="Capra Views">
+            name="%category.name">
       </category>
       <view
             category="org.eclipse.capra.generic.views"
             class="org.eclipse.capra.ui.views.SelectionView"
             icon="icons/selectionView.png"
             id="org.eclipse.capra.generic.views.SelectionView"
-            name="Selection View">
+            name="%view.name">
       </view>
    </extension>
    <extension
@@ -125,7 +125,7 @@
             class="org.eclipse.capra.ui.perspective.CapraPerspective"
             icon="icons/capra.png"
             id="org.eclipse.capra.generic.perspective.CapraPerspective"
-            name="Capra">
+            name="%perspective.name">
       </perspective>
    </extension>
    <extension
@@ -133,7 +133,7 @@
       <page
             class="org.eclipse.capra.ui.preferences.CapraPreferences"
             id="org.eclipse.capra.ui.preferences.CapraPreferences"
-            name="Capra">
+            name="%page.name">
       </page>
    </extension>
 </plugin>
