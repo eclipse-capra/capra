@@ -16,8 +16,26 @@ import java.util.function.BiFunction;
 
 public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> {
 
+	private Object unpack(Object artifact) {
+		Object result = artifact;
+		if (IArtifactUnpacker.class.isAssignableFrom(this.getClass())) {
+			try {
+				result = IArtifactUnpacker.class.cast(this).unpack(artifact);
+			} catch (ClassCastException ex) {
+				/*
+				 * Deliberately do nothing. This is not uncommon when trying to
+				 * find the right handler. In such cases, canHandleArtifact() is
+				 * called on all handlers, but for most the artifact can not be
+				 * casted.
+				 */
+			}
+		}
+		return result;
+	}
+
 	@Override
 	public <R> Optional<R> withCastedHandler(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction) {
+		artifact = unpack(artifact);
 		if (canHandleArtifact(artifact)) {
 			@SuppressWarnings("unchecked")
 			T a = (T) artifact;
@@ -30,12 +48,13 @@ public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> 
 	@Override
 	public <R> R withCastedHandlerUnchecked(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction) {
 		return withCastedHandler(artifact, handleFunction).orElseThrow(
-			() -> new IllegalArgumentException("withCastedHanderUnchecked called with unhandleble artifact."
-				+ " Artifact: " + artifact + ", handler: " + this));
+				() -> new IllegalArgumentException("withCastedHanderUnchecked called with unhandleble artifact."
+						+ " Artifact: " + artifact + ", handler: " + this));
 	}
 
 	@Override
 	public boolean canHandleArtifact(Object artifact) {
+		artifact = unpack(artifact);
 		try {
 			Class<?> genericType = ((Class<?>) ((ParameterizedType) this.getClass().getGenericSuperclass())
 					.getActualTypeArguments()[0]);
