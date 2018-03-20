@@ -46,6 +46,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		return getDiagramText(selectedModels);
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getDiagramText(List<Object> selectedModels) {
 		List<EObject> firstModelElements = null;
 		List<EObject> secondModelElements = null;
@@ -62,55 +63,93 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		if (selectedModels.size() > 0) {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			// check if there is a hander for the selected and get its Wrapper
-			@SuppressWarnings("unchecked")
-			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper
-					.getHandler(selectedModels.get(0)).orElse(null);
-
+			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(selectedModels.get(0)).orElse(null);
+			
 			if (handler != null) {
 				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
-
 				if (selectedObject != null) {
 					resourceSet = selectedObject.eResource().getResourceSet();
 					traceModel = persistenceAdapter.getTraceModel(resourceSet);
-
+					List<String> selectedRelationshipTypes = SelectRelationshipsHandler.getSelectedRelationshipTypes();
 					if (selectedModels.size() == 1) {
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
-							int transitivityDepth = 0;
-							//more to follow in the next commit
-							traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel, transitivityDepth);
+							int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());
+							traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel,
+									selectedRelationshipTypes, transitivityDepth);
 						} else {
-							traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel);
+							traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel,
+									selectedRelationshipTypes);
 						}
-
-						return VisualizationHelper.createNeighboursView(traces,
-								EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
+						if (DisplayInternalLinksHandler.areInternalLinksShown()
+								&& ToggleTransitivityHandler.isTraceViewTransitive()) {
+							EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
+							int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());
+							if (previousElement != null) {
+								String previousElementName = EMFHelper.getNameAttribute(previousElement);
+								String currentElementName = EMFHelper.getNameAttribute(selectedObject);
+								if (!previousElementName.equals(currentElementName)) {
+									SelectRelationshipsHandler.clearPossibleRelationsForSelection();
+									SelectRelationshipsHandler.emptySelectedRelationshipTypes();
+									SelectRelationshipsHandler.setPreviousElement(selectedObject);
+								}
+							} else {
+								SelectRelationshipsHandler.setPreviousElement(selectedObject);
+							}
+							traces.addAll(metamodelAdapter.getInternalElementsTransitive(selectedObject, traceModel,
+									selectedRelationshipTypes, transitivityDepth, traces));
+						} else if (DisplayInternalLinksHandler.areInternalLinksShown()) {
+							EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
+							if (previousElement != null) {
+								String previousElementName = EMFHelper.getNameAttribute(previousElement);
+								String currentElementName = EMFHelper.getNameAttribute(selectedObject);
+								if (!previousElementName.equals(currentElementName)) {
+									SelectRelationshipsHandler.clearPossibleRelationsForSelection();
+									SelectRelationshipsHandler.emptySelectedRelationshipTypes();
+									SelectRelationshipsHandler.setPreviousElement(selectedObject);
+								}
+							} else {
+								SelectRelationshipsHandler.setPreviousElement(selectedObject);
+							}
+							traces.addAll(metamodelAdapter.getInternalElements(selectedObject, traceModel,
+									selectedRelationshipTypes, false, 0, traces));
+						}
+						List<EObject> links = extractLinksFromTraces(traces);
+						SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
+						return VisualizationHelper.createNeighboursView(traces, EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
 					} else if (selectedModels.size() == 2) {
+						IArtifactHandler<Object> handlerSecondElement = (IArtifactHandler<Object>) artifactHelper.getHandler(selectedModels.get(1)).orElse(null);
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = EMFHelper
 									.linearize(handler.createWrapper(selectedModels.get(0), artifactModel));
-							secondModelElements = EMFHelper
-									.linearize(handler.createWrapper(selectedModels.get(1), artifactModel));
+							secondModelElements = EMFHelper.linearize(
+									handlerSecondElement.createWrapper(selectedModels.get(1), artifactModel));
 						} else {
 							List<EObject> firstObject = new ArrayList<>();
 							firstObject.add(handler.createWrapper(selectedModels.get(0), artifactModel));
 							List<EObject> secondObject = new ArrayList<>();
-							secondObject.add(handler.createWrapper(selectedModels.get(1), artifactModel));
+							secondObject.add(handlerSecondElement.createWrapper(selectedModels.get(1), artifactModel));
 							firstModelElements = firstObject;
 							secondModelElements = secondObject;
 						}
+							
 					} else if (selectedModels.size() > 2) {
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
-							firstModelElements = selectedModels.stream()
-									.flatMap(r -> EMFHelper.linearize(handler.createWrapper(r, artifactModel)).stream())
-									.collect(Collectors.toList());
+							firstModelElements = selectedModels.stream().flatMap(r -> {
+								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper.getHandler(r).orElse(null);
+								return EMFHelper.linearize(individualhandler.createWrapper(r, artifactModel)).stream();
+							}).collect(Collectors.toList());
 							secondModelElements = firstModelElements;
 						} else {
 							List<EObject> wrappers = new ArrayList<>();
 							selectedModels.stream().forEach(o -> {
-								wrappers.add(handler.createWrapper(o, artifactModel));
-
+								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper.getHandler(o)
+											.orElse(null);
+								wrappers.add(individualhandler.createWrapper(o, artifactModel));
 							});
-
+							
+							firstModelElements = wrappers;
+							secondModelElements = firstModelElements;
+							
 							// User selected to display a graph with only the
 							// selected elements
 							if (ToggleDisplayGraphHandler.isDisplayGraph()) {
@@ -127,22 +166,20 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 														.filter(selectedModels::contains).collect(Collectors.toList()),
 												connection.getTlink());
 										relevantTraces.add(newConnection);
-
 									}
 								}
-								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);
-							} else {
-								firstModelElements = wrappers;
-								secondModelElements = firstModelElements;
-							}
+								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);}
 						}
+						
+						
 					}
 				}
 			}
 		}
-		String umlString = VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements);
-
-		return umlString;
+		if (DisplayInternalLinksHandler.areInternalLinksShown()) {
+		return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, true);}
+		else {return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, false);}
+	
 	}
 
 	@Override
@@ -153,5 +190,15 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	@Override
 	public boolean supportsSelection(ISelection selection) {
 		return true;
+	}
+	
+	private static List<EObject> extractLinksFromTraces(List<Connection> traces) {
+		List<EObject> links = new ArrayList<>();
+		for (Connection trace : traces) {
+			if (!links.contains(trace.getTlink())) {
+				links.add(trace.getTlink());
+			}
+		}
+		return links;
 	}
 }

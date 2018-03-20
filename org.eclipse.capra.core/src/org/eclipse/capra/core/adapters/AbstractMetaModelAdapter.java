@@ -112,24 +112,8 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		return allElements;
 	}
 
-	/** Decide if two objects are connected according to the given trace model
-	* 
-	* @param first
-	*            First object
-	* @param second
-	*            Second object
-	* @param traceModel
-	*            Trace model to base decision on
-	* @return <code>true</code> if object are connected, <code>false</code>
-	*         otherwise
-	*/
-	public boolean isThereATraceBetween(EObject first, EObject second, EObject traceModel) {
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
 	@Override
-	public boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel) {
+	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
 		
 			ResourceSet resourceSet = new ResourceSetImpl();
 			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();

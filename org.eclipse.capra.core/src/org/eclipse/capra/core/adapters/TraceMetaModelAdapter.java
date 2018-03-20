@@ -218,10 +218,8 @@ public interface TraceMetaModelAdapter {
 	 *            First object
 	 * @param second
 	 *            Second object
-	 * @param traceModel
-	 *            Trace model to base decision on
 	 * @return <code>true</code> if object are connected, <code>false</code>
 	 *         otherwise
 	 */
-	boolean isThereAnInternalTraceBetween(EObject first, EObject second, EObject traceModel);
+	boolean isThereAnInternalTraceBetween(EObject first, EObject second);
 }

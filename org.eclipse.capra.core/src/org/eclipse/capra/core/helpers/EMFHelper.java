@@ -165,4 +165,25 @@ public class EMFHelper {
 		return elementList;
 	}
 
+	
+
+	/**
+	 * Public API access for other classes to get the name attribute of an
+	 * EObject
+	 * 
+	 * @param eObject
+	 * @return String
+	 */
+	public static String getNameAttribute(final EObject eObject) {
+		String name = "";
+		for (EAttribute feature : eObject.eClass().getEAllAttributes()) {
+			if (feature.getName().equals("name")) {
+				Object obj = eObject.eGet(feature);
+				if (obj != null) {
+					name = obj.toString();
+				}
+			}
+		}
+		return name;
+	}
 }

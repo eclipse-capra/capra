@@ -38,15 +38,15 @@ import org.junit.Test;
 public class TestTraceabiltyMatrix {
 
 	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|modelB : EPackage\n" + "modelA : EPackage |\nX\n" + "}\n" + "\n" + "@enduml\n";
+			+ ".|modelB : EPackage\n" + "modelA : EPackage |X\n" + "}\n" + "\n" + "@enduml\n";
 
 	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |\nX|\n.|\n.\n" + "AA : EClass |\n.|\nX|\n.\n"
-			+ "modelA : EPackage |\n.|\n.|\nX\n" + "}\n" + "\n" + "@enduml\n";
+			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |X |. |.\n" + "AA : EClass |. |X |.\n"
+			+ "modelA : EPackage |. |. |X\n" + "}\n" + "\n" + "@enduml\n";
 
 	private final static String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |\n.|\nX|\n.|\n.\n" + "B : EClass |\nX|\n.|\n.|\n.\n"
-			+ "AA : EClass |\n.|\n.|\n.|\nX\n" + "BB : EClass |\n.|\n.|\nX|\n.\n" + "}\n" + "\n" + "@enduml\n";
+			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |. |X |. |.\n" + "B : EClass |X |. |. |.\n"
+			+ "AA : EClass |. |. |. |X\n" + "BB : EClass |. |. |X |.\n" + "}\n" + "\n" + "@enduml\n";
 
 	@Before
 	public void init() throws CoreException {
@@ -143,8 +143,6 @@ public class TestTraceabiltyMatrix {
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages);
-		System.out.println("What I see: " + plantUMLTextForSelectedPackages_Direct);
-		System.out.println("What is expected" + EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT);
 		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
 
 		// Test transitively connected Elements

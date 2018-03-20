@@ -13,7 +13,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {
-  public static String createMatrix(final EObject traceModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements) {
+  public static String createMatrix(final EObject traceModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements, final Boolean internalLinks) {
     String _xblockexpression = null;
     {
       Optional<TraceMetaModelAdapter> _traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter();
@@ -41,17 +41,27 @@ public class VisualizationHelper {
             for(final EObject first : firstElements) {
               String _artifactLabel_1 = Connections.getArtifactLabel(first);
               _builder.append(_artifactLabel_1, "");
-              _builder.append(" ");
               {
                 for(final EObject second : secondElements) {
-                  _builder.append("|");
-                  _builder.newLineIfNotEmpty();
+                  _builder.append(" |");
                   {
-                    boolean _isThereATraceBetween = traceAdapter.isThereATraceBetween(first, second, traceModel);
-                    if (_isThereATraceBetween) {
-                      _builder.append("X");
+                    if ((internalLinks).booleanValue()) {
+                      {
+                        if ((traceAdapter.isThereATraceBetween(first, second, traceModel) || traceAdapter.isThereAnInternalTraceBetween(first, second))) {
+                          _builder.append("X");
+                        } else {
+                          _builder.append(".");
+                        }
+                      }
                     } else {
-                      _builder.append(".");
+                      {
+                        boolean _isThereATraceBetween = traceAdapter.isThereATraceBetween(first, second, traceModel);
+                        if (_isThereATraceBetween) {
+                          _builder.append("X");
+                        } else {
+                          _builder.append(".");
+                        }
+                      }
                     }
                   }
                 }

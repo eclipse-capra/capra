@@ -8,7 +8,7 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper
 import org.eclipse.emf.ecore.EObject
 
 class VisualizationHelper {
-	def static String createMatrix(EObject traceModel, Collection<EObject> firstElements, Collection<EObject> secondElements){
+	def static String createMatrix(EObject traceModel, Collection<EObject> firstElements, Collection<EObject> secondElements, Boolean internalLinks){
 	val traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get()
 	'''
 	@startuml
@@ -16,9 +16,7 @@ class VisualizationHelper {
 	{#
 	«IF firstElements != null»
 	.«FOR e : secondElements»|«Connections.getArtifactLabel(e)»«ENDFOR»
-	«FOR first : firstElements»
-	«Connections.getArtifactLabel(first)» «FOR second : secondElements»|
-	«IF traceAdapter.isThereATraceBetween(first, second, traceModel)»X«ELSE».«ENDIF»«ENDFOR»
+	«FOR first : firstElements»«Connections.getArtifactLabel(first)»«FOR second : secondElements» |«IF internalLinks»«IF traceAdapter.isThereATraceBetween(first, second, traceModel) || traceAdapter.isThereAnInternalTraceBetween(first, second)»X«ELSE ».«ENDIF»«ELSE»«IF traceAdapter.isThereATraceBetween(first, second, traceModel)»X«ELSE ».«ENDIF»«ENDIF»«ENDFOR»
 	«ENDFOR»
 	«ELSE»
 	Choose two containers to show a traceability matrix of their contents.

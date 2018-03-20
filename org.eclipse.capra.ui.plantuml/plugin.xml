@@ -23,7 +23,7 @@
      
       <command
             id="org.eclipse.capra.ui.plantuml.toggleTransitivity"
-            name="%command.name">
+            name="%command.name.transitivity">
          <state
                class="org.eclipse.jface.commands.ToggleState"
                id="org.eclipse.ui.commands.toggleState">
@@ -31,11 +31,27 @@
       </command>
       <command
             id="org.eclipse.capra.ui.plantuml.displayGraph"
-            name="%command.name.0">
+            name="%command.name.graph">
          <state
                class="org.eclipse.jface.commands.ToggleState"
                id="org.eclipse.ui.commands.toggleState">
          </state>
+      </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.toggleInternalLinks"
+            name="%command.name.internalLinks">
+            <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.selectRelationships"
+            name="%command.name.relationshipTypes">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.transitivtyDepth"
+            name="%command.name.depth">
       </command>
    </extension>
    <extension
@@ -48,6 +64,18 @@
             class="org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler"
             commandId="org.eclipse.capra.ui.plantuml.displayGraph">
       </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.DisplayInternalLinksHandler"
+            commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.SelectRelationshipsHandler"
+            commandId="org.eclipse.capra.ui.plantuml.selectRelationships">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.TransitivityDepthHandler"
+            commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth">
+      </handler>
    </extension>
 	<extension
          point="org.eclipse.ui.menus">
@@ -55,15 +83,29 @@
             locationURI="menu:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
          <command
                commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
-               label="%command.label"
+               label="%command.label.transitivity"
                style="toggle">
          </command>
          <command
                commandId="org.eclipse.capra.ui.plantuml.displayGraph"
-               label="%command.label.0"
+               label="%command.label.graph"
                style="toggle">
          </command>
-         
+     	<command
+               commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks"
+               label="%command.label.internalLinks"
+               style="toggle">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.selectRelationships"
+               label="%command.label.relationshipTypes"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth"
+               label="%command.label.depth"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    

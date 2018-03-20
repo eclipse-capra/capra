@@ -104,8 +104,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		if (relevantLinks.size() > 0) {
 			return true;
 		}
-
-		return this.isThereAnInternalTraceBetween(firstElement, secondElement, traceModel);
+		else return false;
 	}
 
 	@Override
