@@ -50,6 +50,7 @@
 		<module>org.eclipse.capra.handler.papyrus.feature</module>
 		<module>org.eclipse.capra.handler.php</module>
 		<module>org.eclipse.capra.handler.php.feature</module>
+		<module>org.eclipse.capra.handler.uml</module>
 		<module>org.eclipse.capra.ui</module>
 		<module>org.eclipse.capra.ui.feature</module>
 		<module>org.eclipse.capra.ui.notification</module>

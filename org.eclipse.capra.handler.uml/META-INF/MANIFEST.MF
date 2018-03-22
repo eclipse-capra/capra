@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Capra Handler for UML Models
+Bundle-SymbolicName: org.eclipse.capra.handler.uml;singleton:=true
+Bundle-Version: 0.7.0.qualifier
+Require-Bundle: org.eclipse.emf.ecore,
+ org.eclipse.capra.core,
+ org.eclipse.uml2.uml,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team
+Export-Package: org.eclipse.capra.handler.uml
