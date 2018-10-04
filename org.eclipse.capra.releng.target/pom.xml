@@ -8,7 +8,9 @@
     <artifactId>parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
   </parent>
+  <groupId>org.eclipse.capra</groupId>
   <artifactId>org.eclipse.capra.releng.target</artifactId>
   <packaging>eclipse-target-definition</packaging>
-  <name>Capra</name>
+  <name>Eclipse Capra Neon Target Definition</name>
+  <version>0.7.0-SNAPSHOT</version>
 </project>
