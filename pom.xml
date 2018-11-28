@@ -44,6 +44,7 @@
 		<module>org.eclipse.capra.handler.jdt.tests</module>
 		<module>org.eclipse.capra.handler.jdt.feature</module>
 		<module>org.eclipse.capra.handler.reqIf</module>
+		<module>org.eclipse.capra.handler.marker</module>
 		<module>org.eclipse.capra.handler.mylyn</module>
 		<module>org.eclipse.capra.handler.reqIf.feature</module>
 		<module>org.eclipse.capra.handler.papyrus</module>
