@@ -132,6 +132,14 @@ public class Connections {
 			artifactLabel = EMFHelper.getIdentifier(object);
 		}
 		// remove unwanted characters like ", '
-		return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
+		if (artifactLabel != null) {
+			return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
+		} else {
+			// This can happen if the trace model contains elements for which
+			// the artifact handler is not available.
+			// While this should not happen in a user installation, it is not
+			// uncommon during testing.
+			return "Unknown (no fitting artifact handler found)";
+		}
 	}
 }
