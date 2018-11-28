@@ -62,12 +62,6 @@
               <symbols>
                 <update.site.name>${project.parent.name}</update.site.name>
               </symbols>
-
-              <associateSites>
-                <site>http://download.eclipse.org/releases/neon</site>
-                <site>http://files.idi.ntnu.no/publish/plantuml/repository/</site>
-                <site>http://download.eclipse.org/rmf/updates/releases</site>
-              </associateSites>
             </configuration>
           </execution>
         </executions>
