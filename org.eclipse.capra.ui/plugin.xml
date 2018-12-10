@@ -136,4 +136,36 @@
             name="%page.name">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+1">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+  	  <sequenceModifier
+  			find="DEL"
+  			replace="BS"
+  			platforms="cocoa"/>
+      <key
+            commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DEL">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+  	  <sequenceModifier
+  			find="M2+DEL"
+  			replace="M2+BS"
+  			platforms="cocoa"/>
+         <key
+            commandId="org.eclipse.capra.generic.tracecreation.clearselection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+DEL">
+      </key> 
+	</extension>
 </plugin>
