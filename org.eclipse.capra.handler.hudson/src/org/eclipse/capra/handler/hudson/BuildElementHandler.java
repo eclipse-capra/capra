@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.hudson;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.BuildElement;
 
 /**
- * A handler to allow tracing to and from build elements handled by the continuous
- * integration server Hudson via the integrated Mylyn facilities.
+ * A handler to allow tracing to and from build elements handled by the
+ * continuous integration server Hudson via the integrated Mylyn facilities.
  */
 public class BuildElementHandler extends AbstractArtifactHandler<BuildElement> {
 
@@ -53,9 +53,10 @@ public class BuildElementHandler extends AbstractArtifactHandler<BuildElement> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links for Build Elements
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for Build elements
+		return Collections.emptyList();
 	}
 
 	@Override

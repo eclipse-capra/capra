@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.marker;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -70,10 +70,10 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Intentionally do nothing
-
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for Markers
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.papyrus;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -25,7 +25,6 @@ import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
  * Papyrus.
  */
 public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> {
-
 
 	@Override
 	public EObject createWrapper(EObjectTreeElement artifact, EObject artifactModel) {
@@ -44,17 +43,19 @@ public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> 
 		EObject sel = EMFHelper.getEObject(artifact);
 		return org.eclipse.capra.core.helpers.EMFHelper.getIdentifier(sel); // TODO
 	}
-	
+
 	@Override
 	public String generateMarkerMessage(IResourceDelta delta, String wrapperUri) {
 		return null;
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links specific for Papyrus models. 
-		//Currently, UML links such as association and those from the SYSML Profile are handled by the UML Handler	
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links specific for Papyrus models.
+		// Currently, UML links such as association and those from the SYSML
+		// Profile are handled by the UML Handler.
+		return Collections.emptyList();
 	}
 
 	@Override

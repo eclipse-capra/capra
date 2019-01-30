@@ -41,16 +41,20 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 
 	/**
 	 * Used to get internal links connected to a selected element.
-	 * @param element 
-	 * 			the selected element
+	 * 
+	 * @param element
+	 *            the selected element
 	 * @param traceModel
-	 * 			the current trace model
+	 *            the current trace model
 	 * @param selectedRelationshipTypes
-	 * 			the selected relationship types from the filter, if the user has selected any
+	 *            the selected relationship types from the filter, if the user
+	 *            has selected any
 	 * @param maximumDepth
-	 * 			The maximum depth the transitivity should go. 0 means show all the links
+	 *            The maximum depth the transitivity should go. 0 means show all
+	 *            the links
 	 * @param existingTraces
-	 * 			The trace links that have been created manually by the user, these are obtained from the trace model
+	 *            The trace links that have been created manually by the user,
+	 *            these are obtained from the trace model
 	 */
 	public List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, int maximumDepth, List<Connection> existingTraces) {
@@ -64,7 +68,6 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			List<String> selectedRelationshipTypes, boolean traceLinksTransitive, int transitivityDepth,
 			List<Connection> existingTraces) {
 		List<Connection> allElements = new ArrayList<>();
-		ArrayList<Integer> duplicationCheck = new ArrayList<>();
 		List<Connection> directElements;
 		if (traceLinksTransitive) {
 			directElements = getTransitivelyConnectedElements(element, traceModel, selectedRelationshipTypes,
@@ -98,8 +101,8 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			for (EObject o : conn.getTargets()) {
 				@SuppressWarnings("unchecked")
 				IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(o).orElse(null);
-				handler.addInternalLinks(o, allElements, duplicationCheck, selectedRelationshipTypes);
-				
+				allElements.addAll(handler.addInternalLinks(o, selectedRelationshipTypes));
+
 			}
 		}
 
@@ -107,22 +110,22 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			@SuppressWarnings("unchecked")
 			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(element)
 					.orElse(null);
-			handler.addInternalLinks(element, allElements, duplicationCheck, selectedRelationshipTypes);
+			allElements.addAll(handler.addInternalLinks(element, selectedRelationshipTypes));
 		}
 		return allElements;
 	}
 
 	@Override
 	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
-		
-			ResourceSet resourceSet = new ResourceSetImpl();
-			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-			EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
-			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-			IArtifactHandler<?> handlerFirstElement = artifactHelper.getHandler(first).orElse(null);
-			IArtifactHandler<?> handlerSecondElement = artifactHelper.getHandler(second).orElse(null);
 
-			return handlerFirstElement.isThereAnInternalTraceBetween(first, second)
-					|| handlerSecondElement.isThereAnInternalTraceBetween(first, second);
+		ResourceSet resourceSet = new ResourceSetImpl();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		IArtifactHandler<?> handlerFirstElement = artifactHelper.getHandler(first).orElse(null);
+		IArtifactHandler<?> handlerSecondElement = artifactHelper.getHandler(second).orElse(null);
+
+		return handlerFirstElement.isThereAnInternalTraceBetween(first, second)
+				|| handlerSecondElement.isThereAnInternalTraceBetween(first, second);
 	}
 }

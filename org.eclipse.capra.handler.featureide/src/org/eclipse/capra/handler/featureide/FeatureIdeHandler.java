@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.featureide;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -49,10 +49,10 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<Feature> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		// Method currently left empty to wait for user requirements of relevant
-		// internal links for feature models
+		// internal links for FeatureIDE models
+		return Collections.emptyList();
 	}
 
 	@Override

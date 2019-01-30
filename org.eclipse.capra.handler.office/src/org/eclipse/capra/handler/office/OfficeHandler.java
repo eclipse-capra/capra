@@ -11,7 +11,7 @@
 
 package org.eclipse.capra.handler.office;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -62,9 +62,10 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links for Office files
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for Office documents.
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -72,5 +73,4 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		return false;
 	}
 
-	
 }

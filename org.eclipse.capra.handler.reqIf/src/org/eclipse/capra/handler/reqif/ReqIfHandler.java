@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.reqif;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -46,9 +46,10 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links for REQIF requirements
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for REQIF requirements.
+		return Collections.emptyList();
 	}
 
 	@Override

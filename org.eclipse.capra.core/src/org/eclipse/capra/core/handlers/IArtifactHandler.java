@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -104,7 +103,6 @@ public interface IArtifactHandler<T> {
 	 */
 	Class<T> getHandledClass();
 
-
 	/**
 	 * When a change in the resource occurs, it generates the message that is to
 	 * be displayed by the Capra marker.
@@ -113,26 +111,34 @@ public interface IArtifactHandler<T> {
 	 *            represents changes in the state of a resource
 	 * @param wrapperUri
 	 *            uri of the artifact that is associated with the change
-	 * @return the Capra marker message. Every marker must return a unique message.
-         *         If the message already exists it will be ignoored and a marker will 
-         *         not be created.
+	 * @return the Capra marker message. Every marker must return a unique
+	 *         message. If the message already exists it will be ignoored and a
+	 *         marker will not be created.
 	 */
 	String generateMarkerMessage(IResourceDelta delta, String wrapperUri);
-	
+
 	/**
-	 * Adds internal links related to a given element
+	 * Adds internal links related to a given element.
+	 * <p>
+	 * This is helpful if Eclipse Capra should include links within a DSL, e.g.,
+	 * associations between classes, in its visualisations and analysis. A
+	 * handler that implements this method should return a list of
+	 * {@code Connection}. This list will be used in visualisations and
+	 * analysis, but not persisted in Capra's own trace model.
 	 * 
 	 * @param investigatedElement
-	 *            Element currently under investigation for links
-	 * @param allElements
-	 *            List of all elements for Plant-uml view
-	 * @param duplicationCheck
-	 *            List of String for checking for duplication
-	 * @param selectedRelationshipTypes 
-	 * 			  relationship types selected by the user to be displayed in the plantUML view
+	 *            element currently under investigation for links
+	 * @param selectedRelationshipTypes
+	 *            relationship types selected by the user; this ensures that
+	 *            Capra only includes specific link types in the visualisation
+	 *            and analysis and implementation of the method should filter on
+	 *            this list
+	 * 
+	 * @return a list of {@link Connection} between the
+	 *         {@code investigatedElement} and other elements the handler takes
+	 *         care of
 	 */
-	void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes);
+	List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes);
 
 	/**
 	 * Decide if two objects have an internal link between them.
