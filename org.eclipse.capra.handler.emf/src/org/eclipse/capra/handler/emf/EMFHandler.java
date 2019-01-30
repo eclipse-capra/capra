@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.emf;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -45,9 +45,10 @@ public class EMFHandler extends AbstractArtifactHandler<EObject> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links for EMF models
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for EMF models
+		return Collections.emptyList();
 	}
 
 	@Override

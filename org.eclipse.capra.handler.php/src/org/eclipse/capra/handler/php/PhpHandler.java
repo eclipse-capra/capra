@@ -1,6 +1,6 @@
 package org.eclipse.capra.handler.php;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -41,9 +41,10 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 	}
 
 	@Override
-	public void addInternalLinks(EObject investigatedElement, List<Connection> allElements,
-			ArrayList<Integer> duplicationCheck, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant internal links for PHP Code
+	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+		// Method currently left empty to wait for user requirements of relevant
+		// internal links for PHP code.
+		return Collections.emptyList();
 	}
 
 	@Override
