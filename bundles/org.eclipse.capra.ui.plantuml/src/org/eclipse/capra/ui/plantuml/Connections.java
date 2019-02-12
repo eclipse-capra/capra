@@ -26,6 +26,9 @@ import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import com.google.common.base.Strings;
 
 /**
  * Helper class for generating PlantUML diagrams from a collection of
@@ -42,6 +45,7 @@ public class Connections {
 	private Set<EObject> allObjects;
 	private Map<EObject, String> object2Id;
 	private Map<String, String> id2Label;
+	private Map<String, String> id2Location;
 
 	Connections(List<Connection> connections, List<EObject> selectedObjects) {
 		this.connections = connections;
@@ -62,10 +66,24 @@ public class Connections {
 			String id = object2Id.get(o);
 			id2Label.put(id, getArtifactLabel(o));
 		});
+
+		id2Location = new LinkedHashMap<>();
+		allObjects.forEach(o -> {
+			String id = object2Id.get(o);
+			id2Location.put(id, getArtifactLocation(o));
+		});
 	}
 
 	public String originLabel() {
 		return id2Label.get(object2Id.get(origin));
+	}
+
+	public String originLocation() {
+		return id2Location.get(object2Id.get(origin));
+	}
+
+	public boolean originHasLocation() {
+		return !Strings.isNullOrEmpty(id2Location.get(object2Id.get(origin)));
 	}
 
 	public String originId() {
@@ -81,6 +99,14 @@ public class Connections {
 
 	public String label(String id) {
 		return id2Label.get(id);
+	}
+
+	public String location(String id) {
+		return id2Location.get(id);
+	}
+
+	public boolean hasLocation(String id) {
+		return !Strings.isNullOrEmpty(id2Location.get(id));
 	}
 
 	public List<String> arrows() {
@@ -141,5 +167,37 @@ public class Connections {
 			// uncommon during testing.
 			return "Unknown (no fitting artifact handler found)";
 		}
+	}
+
+	/**
+	 * Retrieves the location of the given object in the workspace, resolving
+	 * artifact wrappers as necessary.
+	 * <p>
+	 * This method relies on the correct setting of the {@code URI} attribute of
+	 * the corresponding {@link ArtifactWrapper}. The URI should be recognisable
+	 * by the platform to ensure that the correct editor is opened.
+	 * 
+	 * @param object
+	 *            the {@code EObject} (or {@code ArtifactWrapper}) to get the
+	 *            link for
+	 * @return a platform URI that can be used to resolve the object or
+	 *         {@code null} if none can be found
+	 */
+	public static String getArtifactLocation(EObject object) {
+		String artifactLink;
+		if (object instanceof ArtifactWrapper) {
+			ArtifactWrapper wrapper = (ArtifactWrapper) object;
+			artifactLink = wrapper.getUri();
+		} else {
+			try {
+				artifactLink = EcoreUtil.getURI(object).toPlatformString(false);
+				if (!Strings.isNullOrEmpty(artifactLink) && artifactLink.startsWith("/")) {
+					artifactLink = "platform:/resource" + artifactLink;
+				}
+			} catch (IllegalArgumentException ex) {
+				artifactLink = null;
+			}
+		}
+		return artifactLink;
 	}
 }

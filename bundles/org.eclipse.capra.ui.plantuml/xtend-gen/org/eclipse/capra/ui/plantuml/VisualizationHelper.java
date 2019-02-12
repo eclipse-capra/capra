@@ -94,6 +94,15 @@ public class VisualizationHelper {
       _builder.append("object \"");
       String _originLabel = helper.originLabel();
       _builder.append(_originLabel, "");
+      {
+        boolean _originHasLocation = helper.originHasLocation();
+        if (_originHasLocation) {
+          _builder.append(" [[");
+          String _originLocation = helper.originLocation();
+          _builder.append(_originLocation, "");
+          _builder.append(" (Go to)]]");
+        }
+      }
       _builder.append("\" as ");
       String _originId = helper.originId();
       _builder.append(_originId, "");
@@ -105,6 +114,15 @@ public class VisualizationHelper {
           _builder.append("object \"");
           String _label = helper.label(id);
           _builder.append(_label, "");
+          {
+            boolean _hasLocation = helper.hasLocation(id);
+            if (_hasLocation) {
+              _builder.append(" [[");
+              String _location = helper.location(id);
+              _builder.append(_location, "");
+              _builder.append(" (Go to)]]");
+            }
+          }
           _builder.append("\" as ");
           _builder.append(id, "");
           _builder.newLineIfNotEmpty();
