@@ -16,7 +16,7 @@
          id="org.eclipse.capra.handler.file.IFileHandler"
          point="org.eclipse.capra.configuration.artifactHandlers">
       <artifactHandler
-            class="org.eclipse.capra.handler.file.IFileHandler">
+            class="org.eclipse.capra.handler.file.FileHandler">
       </artifactHandler>
    </extension>
    <extension

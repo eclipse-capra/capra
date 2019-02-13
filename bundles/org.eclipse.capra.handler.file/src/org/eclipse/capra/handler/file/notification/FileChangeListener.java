@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.handler.file.IFileHandler;
+import org.eclipse.capra.handler.file.FileHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
 import org.eclipse.core.resources.IFile;
@@ -55,7 +55,7 @@ public class FileChangeListener implements IResourceChangeListener {
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
 		List<EObject> fileArtifacts = allArtifacts.stream()
-				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(IFileHandler.class.getName()))
+				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(FileHandler.class.getName()))
 				.collect(Collectors.toList());
 
 		if (fileArtifacts.size() == 0)

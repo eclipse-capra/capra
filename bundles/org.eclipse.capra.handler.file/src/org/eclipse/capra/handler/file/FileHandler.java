@@ -21,18 +21,20 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * Handler to allow tracing to and from arbitrary files in the file system.
  */
-public class IFileHandler extends AbstractArtifactHandler<IFile> {
+public class FileHandler extends AbstractArtifactHandler<IFile> {
 
 	@Override
 	public EObject createWrapper(IFile file, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				file.getFullPath().toString(), file.getName(), file.getFullPath().toString());
+		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
+		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri, file.getName(),
+				file.getFullPath().toString());
 		return wrapper;
 	}
 

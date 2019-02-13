@@ -184,19 +184,19 @@ public class Connections {
 	 *         {@code null} if none can be found
 	 */
 	public static String getArtifactLocation(EObject object) {
-		String artifactLink;
+		String artifactLink = null;
 		if (object instanceof ArtifactWrapper) {
 			ArtifactWrapper wrapper = (ArtifactWrapper) object;
 			artifactLink = wrapper.getUri();
 		} else {
 			try {
 				artifactLink = EcoreUtil.getURI(object).toPlatformString(false);
-				if (!Strings.isNullOrEmpty(artifactLink) && artifactLink.startsWith("/")) {
-					artifactLink = "platform:/resource" + artifactLink;
-				}
 			} catch (IllegalArgumentException ex) {
-				artifactLink = null;
+				// Deliberately do nothing
 			}
+		}
+		if (!Strings.isNullOrEmpty(artifactLink) && artifactLink.startsWith("/")) {
+			artifactLink = "platform:/resource" + artifactLink;
 		}
 		return artifactLink;
 	}
