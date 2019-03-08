@@ -31,7 +31,7 @@ public interface TracePersistenceAdapter {
 	 *         that loading failed or was not possible (there is no trace model
 	 *         to load at the moment)
 	 */
-	public EObject getTraceModel(ResourceSet resourceSet);
+	EObject getTraceModel(ResourceSet resourceSet);
 
 	/**
 	 * Return the trace model for the given object
@@ -41,7 +41,7 @@ public interface TracePersistenceAdapter {
 	 * @return Root of trace model, Optional can be empty to indicate that there
 	 *         is no trace model for the object
 	 */
-	public EObject getTraceModel(EObject object);
+	EObject getTraceModel(EObject object);
 
 	/**
 	 * Load and return the container for all artifact wrappers in the given
@@ -53,7 +53,7 @@ public interface TracePersistenceAdapter {
 	 *         indicate that loading failed or was not possible (no container
 	 *         exists at the moment)
 	 */
-	public EObject getArtifactWrappers(ResourceSet resourceSet);
+	EObject getArtifactWrappers(ResourceSet resourceSet);
 
 	/**
 	 * Return the trace model for the given object
@@ -63,7 +63,7 @@ public interface TracePersistenceAdapter {
 	 * @return Root of trace model, Optional can be empty to indicate that there
 	 *         is no trace model for the object
 	 */
-	public EObject getArtifactWrappers(EObject object);
+	EObject getArtifactWrappers(EObject object);
 
 	/**
 	 * Save the trace and artifact models. Implementations are expected to: (i)

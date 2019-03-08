@@ -35,10 +35,10 @@ public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> 
 
 	@Override
 	public <R> Optional<R> withCastedHandler(Object artifact, BiFunction<IArtifactHandler<T>, T, R> handleFunction) {
-		artifact = unpack(artifact);
-		if (canHandleArtifact(artifact)) {
+		Object unpackedArtifact = unpack(artifact);
+		if (canHandleArtifact(unpackedArtifact)) {
 			@SuppressWarnings("unchecked")
-			T a = (T) artifact;
+			T a = (T) unpackedArtifact;
 			return Optional.of(handleFunction.apply(this, a));
 		} else {
 			return Optional.empty();
@@ -54,12 +54,12 @@ public abstract class AbstractArtifactHandler<T> implements IArtifactHandler<T> 
 
 	@Override
 	public boolean canHandleArtifact(Object artifact) {
-		artifact = unpack(artifact);
+		Object unpackedArtifact = unpack(artifact);
 		try {
 			Class<?> genericType = ((Class<?>) ((ParameterizedType) this.getClass().getGenericSuperclass())
 					.getActualTypeArguments()[0]);
 
-			return genericType.isAssignableFrom(artifact.getClass());
+			return genericType.isAssignableFrom(unpackedArtifact.getClass());
 		} catch (NoClassDefFoundError e) {
 			return false;
 		}

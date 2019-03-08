@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.ss.usermodel.Row;
@@ -75,6 +75,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
 
@@ -87,6 +89,8 @@ import com.google.common.io.Files;
  *
  */
 public class OfficeView extends ViewPart {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OfficeView.class);
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -118,7 +122,7 @@ public class OfficeView extends ViewPart {
 	 * The names (String) of all the sheets, contained in the selected workbook
 	 * and information about whether they are empty or not (Boolean).
 	 */
-	private HashMap<String, Boolean> isSheetEmptyMap;
+	private Map<String, Boolean> isSheetEmptyMap;
 
 	/**
 	 * The name of the sheet that is currently displayed in the Office view.
@@ -163,7 +167,7 @@ public class OfficeView extends ViewPart {
 	/**
 	 * The label provider class used by the view.
 	 */
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+	static class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 		@Override
 		public String getText(Object obj) {
@@ -209,7 +213,7 @@ public class OfficeView extends ViewPart {
 						parseGenericFile(file);
 				}
 			} catch (CapraOfficeFileNotSupportedException e) {
-				e.printStackTrace();
+				LOG.debug("Capra does not support this file.", e);
 				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 				return false;
 			}
@@ -329,7 +333,7 @@ public class OfficeView extends ViewPart {
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn("Could not open the Excel workbook", e);
 			return;
 		}
 
@@ -352,7 +356,7 @@ public class OfficeView extends ViewPart {
 		}
 
 		// Check if the whole workbook (all of the sheets) is empty.
-		HashMap<String, Boolean> isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(workBook);
+		Map<String, Boolean> isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(workBook);
 		if (!isSheetEmptyMap.values().contains(false)) {
 			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
 			clearSelection();
@@ -407,11 +411,11 @@ public class OfficeView extends ViewPart {
 		try {
 			paragraphs = CapraOfficeUtils.getWordParagraphs(officeFile);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.debug("Could not read Word file.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		} catch (SchemaTypeLoaderException e) {
-			e.printStackTrace();
+			LOG.debug("Could not read Word file.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		}
@@ -471,7 +475,7 @@ public class OfficeView extends ViewPart {
 				selection = (IStructuredSelection) HandlerUtil.getCurrentSelectionChecked((ExecutionEvent) event);
 				officeObject = (CapraOfficeObject) selection.getFirstElement();
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				LOG.warn("Could not get office object.", e);
 				return;
 			}
 		} else {
@@ -481,7 +485,7 @@ public class OfficeView extends ViewPart {
 		try {
 			officeObject.showOfficeObjectInNativeEnvironment();
 		} catch (CapraOfficeObjectNotFound e) {
-			e.printStackTrace();
+			LOG.debug("Could not find office object.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 		}
 
@@ -516,7 +520,7 @@ public class OfficeView extends ViewPart {
 				try {
 					parseGenericFile(file);
 				} catch (CapraOfficeFileNotSupportedException e) {
-					e.printStackTrace();
+					LOG.debug("Capra does not support the file.", e);
 					showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 				}
 			}
@@ -544,7 +548,7 @@ public class OfficeView extends ViewPart {
 	 *         contained in the current workbook or null if a workbook isn't
 	 *         opened.
 	 */
-	public HashMap<String, Boolean> getIsSheetEmptyMap() {
+	public Map<String, Boolean> getIsSheetEmptyMap() {
 
 		// isSheetEmptyMap is used by the SelectSheetDynamicMenu class.
 		if (isSheetEmptyMap == null) {
@@ -552,7 +556,7 @@ public class OfficeView extends ViewPart {
 				isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(
 						CapraOfficeUtils.getExcelWorkbook(((CapraExcelRow) (selection.get(0))).getFile()));
 			} catch (OldExcelFormatException | IOException e) {
-				e.printStackTrace();
+				LOG.debug("Could not open Excel file.", e);;
 			}
 		}
 
@@ -577,7 +581,7 @@ public class OfficeView extends ViewPart {
 		try {
 			return (OfficeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			LOG.debug("Could not open office view.", e);
 		}
 
 		return null;
@@ -613,7 +617,7 @@ public class OfficeView extends ViewPart {
 	}
 
 	private void showErrorMessage(String caption, String message, String url) {
-		new HyperlinkDialog(viewer.getControl().getShell(), ERROR_TITLE, null, MessageDialog.ERROR,
+		new HyperlinkDialog(viewer.getControl().getShell(), caption, null, MessageDialog.ERROR,
 				new String[] { "OK" }, 0, message, url).open();
 	}
 
@@ -621,7 +625,7 @@ public class OfficeView extends ViewPart {
 	 * A pop-up dialog that can contain a hyperlink that, on click, opens a
 	 * browser window at the provided url.
 	 */
-	class HyperlinkDialog extends MessageDialog {
+	static class HyperlinkDialog extends MessageDialog {
 
 		private String hyperlinkMessage;
 		private String url;

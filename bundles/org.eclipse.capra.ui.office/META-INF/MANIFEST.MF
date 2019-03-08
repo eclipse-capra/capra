@@ -24,4 +24,5 @@ Export-Package: org.eclipse.capra.ui.office.model,
  org.eclipse.capra.ui.office.utils,
  org.eclipse.capra.ui.office.views
 Bundle-Activator: org.eclipse.capra.ui.office.Activator
+Import-Package: org.slf4j
 

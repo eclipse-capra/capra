@@ -11,7 +11,7 @@
 
 package org.eclipse.capra.ui.office.views;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.SWT;
@@ -34,7 +34,7 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 
 		// A HashMap that holds information about the emptiness of sheets. Key -
 		// sheetName, value - true if map is empty, false otherwise
-		HashMap<String, Boolean> isSheetEmptyMap = OfficeView.getOpenedView().getIsSheetEmptyMap();
+		Map<String, Boolean> isSheetEmptyMap = OfficeView.getOpenedView().getIsSheetEmptyMap();
 
 		if (isSheetEmptyMap == null)
 			return;

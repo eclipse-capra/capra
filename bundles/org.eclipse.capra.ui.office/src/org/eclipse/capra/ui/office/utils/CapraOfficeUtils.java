@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -32,6 +34,7 @@ import org.apache.xmlbeans.SchemaTypeLoaderException;
 import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -46,7 +49,14 @@ import com.google.common.io.Files;
 public class CapraOfficeUtils {
 
 	/**
-	 * generates a HashMap that contains sheet names and info about their
+	 * Hide default constructor.
+	 */
+	private CapraOfficeUtils () {
+		super();
+	}
+
+	/**
+	 * Generates a HashMap that contains sheet names and info about their
 	 * emptiness:
 	 * <ul>
 	 * <li>keySet (String) - names of all the sheets, contained in the selected
@@ -57,11 +67,11 @@ public class CapraOfficeUtils {
 	 * 
 	 * @param workBook
 	 *            an Excel Workbook object
-	 * @return a HashMap that contains the names (String) of all the sheets,
+	 * @return a <code>Map</code> that contains the names (<code>String</code>) of all the sheets,
 	 *         contained in the selected workbook and information about whether
-	 *         they are empty or not (Boolean).
+	 *         they are empty or not (<code>Boolean</code>).
 	 */
-	public static HashMap<String, Boolean> getSheetsEmptinessInfo(Workbook workBook) {
+	public static Map<String, Boolean> getSheetsEmptinessInfo(Workbook workBook) {
 		HashMap<String, Boolean> isSheetEmptyMap = new HashMap<String, Boolean>();
 		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
 			Sheet s = workBook.getSheetAt(i);
@@ -82,6 +92,7 @@ public class CapraOfficeUtils {
 	 * @throws NullPointerException
 	 */
 	public static Sheet getSheet(Workbook workBook, String sheetName) throws NullPointerException {
+		String actualSheetName = sheetName;
 		if (Strings.isNullOrEmpty(sheetName)) {
 			// This try block is necessary as there is a bug in the
 			// Workbook.getActiveSheetIndex() and Workbook.getFirstVisibleTab()
@@ -101,13 +112,13 @@ public class CapraOfficeUtils {
 
 			// Should be without the try block, but the library contains a bug.
 			try {
-				sheetName = workBook.getSheetName(activeSheetIndex);
+				actualSheetName = workBook.getSheetName(activeSheetIndex);
 			} catch (NullPointerException e) {
-				throw new NullPointerException();
+				throw e;
 			}
 		}
 
-		return workBook.getSheet(sheetName);
+		return workBook.getSheet(actualSheetName);
 	}
 
 	/**
@@ -123,11 +134,12 @@ public class CapraOfficeUtils {
 		String fileType = Files.getFileExtension(excelFile.getAbsolutePath());
 		Workbook workBook;
 
-		if (fileType.equals(CapraOfficeObject.XLSX))
+		if (fileType.equals(CapraOfficeObject.XLSX)) {
 			workBook = new XSSFWorkbook(new FileInputStream(excelFile));
-		else
+		} else {
 			workBook = new HSSFWorkbook(new FileInputStream(excelFile));
-
+		}
+	
 		return workBook;
 	}
 
@@ -154,9 +166,11 @@ public class CapraOfficeUtils {
 	 * @param xml
 	 *            a valid XML String
 	 * @return DOM document that describes the XML String
-	 * @throws Exception
+	 * @throws ParserConfigurationException if a DocumentBuilder cannot be created which satisfies the configuration requested.
+	 * @throws IOException if any IO errors occur.
+	 * @throws SAXException if any parse error occurs
 	 */
-	public static Document createDOMDocument(String xml) throws Exception {
+	public static Document createDOMDocument(String xml) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		InputSource is = new InputSource(new StringReader(xml));

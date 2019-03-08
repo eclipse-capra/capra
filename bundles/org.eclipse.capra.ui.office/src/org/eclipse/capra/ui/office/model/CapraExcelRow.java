@@ -36,6 +36,8 @@ import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSelection;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetView;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetViews;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
 
@@ -47,6 +49,8 @@ import com.google.common.io.Files;
  *
  */
 public class CapraExcelRow extends CapraOfficeObject {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CapraExcelRow.class);
 
 	/**
 	 * RegEx of characters (tabs, newlines, carriage returns and invisible
@@ -139,7 +143,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		try {
 			officeFile = getFile();
 		} catch (NoSuchFileException e) {
-			e.printStackTrace();
+			LOG.warn("Could not find file {}", getFileId());
 			return;
 		}
 
@@ -154,7 +158,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 			Workbook workBook = CapraOfficeUtils.getExcelWorkbook(officeFile);
 			sheet = CapraOfficeUtils.getSheet(workBook, sheetName);
 		} catch (OldExcelFormatException | IOException e) {
-			e.printStackTrace();
+			LOG.warn("Excel file is in old format or cannot be read.", e);
 			return;
 		}
 
@@ -175,8 +179,9 @@ public class CapraExcelRow extends CapraOfficeObject {
 			}
 		}
 
-		if (rowIndex == NO_ROW_INDEX || lastCellReference == NO_LAST_CELL_REFERENCE)
+		if (rowIndex == NO_ROW_INDEX || lastCellReference.equals(NO_LAST_CELL_REFERENCE)) {
 			throw new CapraOfficeObjectNotFound(getRowIdFromObjectUri());
+		}
 
 		// firstDisplayedRowIndex is used to set the first visible row in the
 		// view that opens to the user - for example if the row in question is
@@ -212,7 +217,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		try (FileOutputStream out = new FileOutputStream(getFile())) {
 			sheet.getWorkbook().write(out);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.debug("Could not write to file.", e);
 		}
 
 		// Opens the Excel file with the Excel application.
@@ -221,7 +226,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		try {
 			Desktop.getDesktop().open(getFile());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.debug("Could not open file.", e);
 			return;
 		}
 	}
@@ -265,10 +270,11 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 */
 	protected String getRowIdFromExcelRow(Row row) {
 		String rowId = "";
-		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT))
+		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT)) {
 			rowId = Integer.toString(row.getRowNum() + 1);
-		else
+		} else {
 			rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
+		}
 		return rowId;
 	}
 }

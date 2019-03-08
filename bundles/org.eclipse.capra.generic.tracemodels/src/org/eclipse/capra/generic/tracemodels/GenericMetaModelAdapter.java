@@ -37,8 +37,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * Provides generic functionality to deal with traceability meta models.
  */
 public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
-	
-	private static int DEFAULT_INITIAL_TRANSITIVITY_DEPTH =-2;
+
+	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH =-2;
 
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
@@ -53,7 +53,6 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	public Collection<EClass> getAvailableTraceTypes(List<EObject> selection) {
 		Collection<EClass> traceTypes = new ArrayList<>();
 		if (selection.size() > 1) {
-
 			traceTypes.add(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
 		}
 		return traceTypes;
@@ -61,32 +60,27 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection) {
-		GenericTraceModel TM = (GenericTraceModel) traceModel;
+		GenericTraceModel tm = (GenericTraceModel) traceModel;
 		EObject trace = GenericTraceMetaModelFactory.eINSTANCE.create(traceType);
 		RelatedTo RelatedToTrace = (RelatedTo) trace;
 		RelatedToTrace.getItem().addAll(selection);
 
-
 		// String builder to build the name of the trace link so by adding the
 		// elements it connects so as to make it easy for a user to visually
 		// differentiate trace links
-	
-		String name = "";
-		
+		StringBuilder name = new StringBuilder();
 		for (Object obj : selection) {
-				name = name + " " + ExtensionPointHelper.getArtifactHandlers().stream()
+				name.append(" ").append(ExtensionPointHelper.getArtifactHandlers().stream()
 						.map(handler -> handler.withCastedHandler(obj, (h, e) -> h.getDisplayName(e)))
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.findFirst()
-						.orElseGet(obj::toString);
+						.orElseGet(obj::toString));
 		}
-		
 		RelatedToTrace.setName(name.toString());
-		TM.getTraces().add(RelatedToTrace);
-		return TM;
+		tm.getTraces().add(RelatedToTrace);
+		return tm;
 	}
-
 
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
@@ -95,7 +89,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<RelatedTo> allTraces = root.getTraces();
 
 		for (RelatedTo trace : allTraces) {
-			if (firstElement != secondElement) {
+			if (!firstElement.equals(secondElement)) {
 				if (trace.getItem().contains(firstElement) && trace.getItem().contains(secondElement)) {
 					relevantLinks.add(trace);
 				}
@@ -104,7 +98,9 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		if (relevantLinks.size() > 0) {
 			return true;
 		}
-		else return false;
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -117,7 +113,6 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 			RelatedTo trace = (RelatedTo) element;
 			connections.add(new Connection(element, trace.getItem(), trace));
 		} else {
-
 			for (RelatedTo trace : traces) {
 				if (trace.getItem().contains(element)) {
 					connections.add(new Connection(element, trace.getItem(), trace));
@@ -140,7 +135,6 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				RelatedTo trace = (RelatedTo) element;
 				connections.add(new Connection(element, trace.getItem(), trace));
 			} else {
-
 				for (RelatedTo trace : traces) {
 					if (trace.getItem().contains(element)) {
 						connections.add(new Connection(element, trace.getItem(), trace));
@@ -150,6 +144,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		}
 		return connections;
 	}
+
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
 			List<Object> accumulator, int currentDepth, int maximumDepth) {
 		List<Connection> directElements = getConnectedElements(element, traceModel);
@@ -168,7 +163,6 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				}
 			}
 		}
-
 		return allElements;
 	}
 
@@ -193,7 +187,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
-		if(traceModel instanceof GenericTraceModel) {
+		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel TModel = (GenericTraceModel) traceModel;
 			EList<RelatedTo> links = TModel.getTraces();
 			ResourceSet resourceSet = new ResourceSetImpl();
@@ -212,9 +206,9 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 	}
-	}
-	
+
 	@Override
 	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, int maximumDepth) {
@@ -222,7 +216,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		return getTransitivelyConnectedElements(element, traceModel, accumulator, selectedRelationshipTypes, DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
 				maximumDepth);
 	}
-	
+
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
 			List<Object> accumulator, List<String> selectedRelationshipTypes, int currentDepth, int maximumDepth) {
 		List<Connection> directElements = getConnectedElements(element, traceModel, selectedRelationshipTypes);

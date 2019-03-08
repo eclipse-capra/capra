@@ -30,8 +30,7 @@ location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-g
 	org.eclipse.gef4.dot.sdk.feature.group
 	org.eclipse.gef4.cloudio.sdk.feature.group
 }
-	
-	
+
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20180330011457/repository" eclipse-orbit-oxygen3a {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
@@ -40,6 +39,8 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R201803300114
 	org.apache.poi.ooxml.schemas
 	org.apache.poi
 	com.fasterxml.jackson.core.jackson-core
+	org.slf4j.api
+	ch.qos.logback.slf4j
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {

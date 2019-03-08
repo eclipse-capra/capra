@@ -109,10 +109,10 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				Message msg = Message.class.cast(investigatedElement);
 				MessageOccurrenceSpecification receiver = (MessageOccurrenceSpecification) msg.getReceiveEvent();
 				MessageOccurrenceSpecification sender = (MessageOccurrenceSpecification) msg.getSendEvent();
-				List<EObject> relatedElements = new ArrayList<>();
-				relatedElements.add(sender.getCovered());
-				relatedElements.add(receiver.getCovered());
 				if (receiver != null) {
+					List<EObject> relatedElements = new ArrayList<>();
+					relatedElements.add(sender.getCovered());
+					relatedElements.add(receiver.getCovered());
 					int connectionHash = investigatedElement.hashCode() + msg.hashCode()
 							+ msg.getMessageSort().hashCode() + sender.getCovered().hashCode()
 							+ receiver.getCovered().hashCode();
@@ -367,7 +367,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 			int targetHash = activityEdge.getTarget().hashCode();
 
 			boolean relationContainsFirstElement = sourceHash == first.hashCode() || targetHash == first.hashCode();
-			boolean relationContainsSecondElement = sourceHash == second.hashCode() || sourceHash == second.hashCode();
+			boolean relationContainsSecondElement = sourceHash == second.hashCode() || targetHash == second.hashCode();
 			if (relationContainsFirstElement && relationContainsSecondElement) {
 				return true;
 			}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Neon" sequenceNumber="55">
+<?pde version="3.8"?><target name="Neon" sequenceNumber="56">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="net.sourceforge.plantuml.feature.feature.group" version="0.0.0"/>
@@ -34,17 +34,6 @@
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>
-<unit id="org.apache.xmlbeans" version="2.3.0.v201605172150"/>
-<unit id="com.google.guava" version="15.0.0.v201403281430"/>
-<unit id="com.google.guava.source" version="15.0.0.v201403281430"/>
-<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
-<unit id="org.apache.poi.ooxml.schemas" version="3.9.0.v201405241750"/>
-<unit id="org.apache.poi" version="3.9.0.v201405241750"/>
-<unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.4.0.v20160526-0606"/>
 <unit id="org.eclipse.mylyn.ide_feature.feature.group" version="3.21.0.v20160912-1820"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
@@ -65,6 +54,19 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.0.201804061108"/>
 <repository location="http://featureide.cs.ovgu.de/update/v3/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="org.apache.xmlbeans" version="2.3.0.v201605172150"/>
+<unit id="com.google.guava" version="15.0.0.v201403281430"/>
+<unit id="com.google.guava.source" version="15.0.0.v201403281430"/>
+<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="org.apache.poi.ooxml.schemas" version="3.9.0.v201405241750"/>
+<unit id="ch.qos.logback.slf4j" version="1.0.7.v201505121915"/>
+<unit id="org.apache.poi" version="3.9.0.v201405241750"/>
+<unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
 </location>
 </locations>
 </target>

@@ -32,6 +32,13 @@ import org.eclipse.core.runtime.Platform;
  * Provides functionality to work with relevant Capra extension points.
  */
 public class ExtensionPointHelper {
+	
+	/**
+	 * Hide the default constructor.
+	 */
+	private ExtensionPointHelper() {
+		super();
+	}
 
 	private static final String TRACE_ID = "org.eclipse.capra.configuration.traceabilityMetaModel";
 	private static final String TRACE_CONFIG = "class";
@@ -47,21 +54,21 @@ public class ExtensionPointHelper {
 	/**
 	 * Gets all extensions from the extension point ID and attribute passed.
 	 *
-	 * @param ID
+	 * @param id
 	 *            the ID of the extension point
 	 *
-	 * @param CONFIG
+	 * @param attributeName
 	 *            the name of the attribute
 	 *
 	 * @return List of extensions
 	 */
-	public static List<Object> getExtensions(final String ID, final String CONFIG) {
+	public static List<Object> getExtensions(final String id, final String attributeName) {
 		try {
-			IConfigurationElement[] configs = Platform.getExtensionRegistry().getConfigurationElementsFor(ID);
+			IConfigurationElement[] configs = Platform.getExtensionRegistry().getConfigurationElementsFor(id);
 
 			List<Object> extensions = new ArrayList<>();
 			for (IConfigurationElement config : configs)
-				extensions.add(config.createExecutableExtension(CONFIG));
+				extensions.add(config.createExecutableExtension(attributeName));
 
 			return extensions;
 		} catch (Exception ex) {
@@ -70,18 +77,22 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Get the executable extension for the extension ID.
+	 * Get the executable extension for the extension ID, extension point ID and property name.
 	 *
-	 * @param extensionID
-	 *            The ID of the extension
+	 * @param extensionId
+	 *            the ID of the extension
+	 * @param extensionPointId
+	 *            the ID of the extension point
+	 * @param propertyName
+	 *            the name of the property
 	 * @return extension
 	 */
-	public static Optional<IArtifactHandler<?>> getExtension(String extensionID, String ID, String CONFIG) {
+	public static Optional<IArtifactHandler<?>> getExtension(String extensionId, String extensionPointId, String propertyName) {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
-			IExtension extension = registry.getExtension(ID, extensionID);
+			IExtension extension = registry.getExtension(extensionPointId, extensionId);
 			IConfigurationElement[] elements = extension.getConfigurationElements();
-			return Optional.of((IArtifactHandler<?>) elements[0].createExecutableExtension(CONFIG));
+			return Optional.of((IArtifactHandler<?>) elements[0].createExecutableExtension(propertyName));
 		} catch (Exception e) {
 			// Don't catch Exception! It can easily hide bugs!
 			return Optional.empty();
@@ -161,11 +172,11 @@ public class ExtensionPointHelper {
 	/**
 	 * Return the artifact handler with the given ID.
 	 *
-	 * @param ID
+	 * @param id the id of the artifact handler
 	 * @return ArtifactHandler
 	 */
-	public static Optional<IArtifactHandler<?>> getArtifactHandler(String ID) {
-		return getExtension(ID, ARTIFACT_HANDLER_ID, ARTIFACT_CONFIG);
+	public static Optional<IArtifactHandler<?>> getArtifactHandler(String id) {
+		return getExtension(id, ARTIFACT_HANDLER_ID, ARTIFACT_CONFIG);
 	}
 
 	/**

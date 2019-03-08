@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.emf.ecore.EClass;
@@ -86,7 +87,7 @@ public class TraceHelper {
 					});
 
 					h.annotateArtifact(wrapper, annotation.toString());
-				} catch (Exception e) {
+				} catch (AnnotationException e) {
 					// Ignore
 				}
 			}

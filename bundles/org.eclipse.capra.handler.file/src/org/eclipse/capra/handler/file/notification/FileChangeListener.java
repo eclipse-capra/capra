@@ -12,6 +12,7 @@ package org.eclipse.capra.handler.file.notification;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
@@ -44,11 +45,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @author Michael Warne
  */
 public class FileChangeListener implements IResourceChangeListener {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
+	private final ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 
@@ -58,8 +59,9 @@ public class FileChangeListener implements IResourceChangeListener {
 				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(FileHandler.class.getName()))
 				.collect(Collectors.toList());
 
-		if (fileArtifacts.size() == 0)
+		if (fileArtifacts.size() == 0) {
 			return;
+		}
 
 		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
 		IFile wrapperContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
@@ -109,24 +111,25 @@ public class FileChangeListener implements IResourceChangeListener {
 				if (changeType == IResourceDelta.REMOVED) {
 					IPath toPath = delta.getMovedToPath();
 
-					if (toPath == null)
+					if (toPath == null) {
 						issueType = IssueType.DELETED;
-					else if (delta.getFullPath().toFile().getName().equals(toPath.toFile().getName()))
+					} else if (delta.getFullPath().toFile().getName().equals(toPath.toFile().getName())) {
 						issueType = IssueType.MOVED;
-					else
+					} else {
 						issueType = IssueType.RENAMED;
+					}
 
-				} else if (changeType == IResourceDelta.CHANGED)
+				} else if (changeType == IResourceDelta.CHANGED) {
 					issueType = IssueType.CHANGED;
-				else if (changeType == IResourceDelta.ADDED)
+				} else if (changeType == IResourceDelta.ADDED) {
 					issueType = IssueType.ADDED;
-
-				if (issueType == IssueType.ADDED)
+				}
+				if (issueType == IssueType.ADDED) {
 					CapraNotificationHelper.deleteCapraMarker(artifactAdapter.getArtifactUri(aw),
 							new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED },
 							wrapperContainer);
-				else {
-					HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
+				} else {
+					Map<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 					CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 				}
 			}
@@ -146,8 +149,8 @@ public class FileChangeListener implements IResourceChangeListener {
 	 * @return a key value HashMap, containing the attributes to be assigned to
 	 *         a Capra change marker and their keys (IDs).
 	 */
-	private HashMap<String, String> generateMarkerInfo(EObject aw, IResourceDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<String, String>();
+	private Map<String, String> generateMarkerInfo(EObject aw, IResourceDelta delta, IssueType issueType) {
+		Map<String, String> markerInfo = new HashMap<String, String>();
 
 		String oldArtifactUri = delta.getFullPath().toString();
 		IPath newArtifactUri = delta.getMovedToPath();

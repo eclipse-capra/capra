@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -60,6 +63,8 @@ import com.google.api.services.drive.model.File;
  *
  */
 public class CapraGoogleDriveView extends ViewPart {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CapraGoogleDriveView.class);
 
 	/**
 	 * The actual view that contains the contents of the documents.
@@ -91,8 +96,8 @@ public class CapraGoogleDriveView extends ViewPart {
 		try {
 			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 			DATA_STORE_FACTORY_DRIVE = new FileDataStoreFactory(DATA_STORE_DIR_DRIVE);
-		} catch (Throwable t) {
-			t.printStackTrace();
+		} catch (IOException | GeneralSecurityException ex) {
+			LOG.warn("Could not establish connection to Google services: {}", ex.getLocalizedMessage());
 		}
 	}
 
@@ -101,8 +106,8 @@ public class CapraGoogleDriveView extends ViewPart {
 		InputStream in = CapraGoogleDriveView.class.getResourceAsStream("/client_secret.json");
 		try {
 			googleClientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ex) {
+			LOG.warn("Could not load Google client secrets: {}", ex.getLocalizedMessage());
 		}
 		return googleClientSecrets;
 	}
@@ -153,8 +158,8 @@ public class CapraGoogleDriveView extends ViewPart {
 				for (File file : files)
 					selection.add(file);
 			viewer.refresh();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ex) {
+			LOG.warn("Could not read file list from Google Drive: {}", ex.getLocalizedMessage());
 		}
 	}
 
@@ -180,11 +185,10 @@ public class CapraGoogleDriveView extends ViewPart {
 	/**
 	 * The label provider class used by the view.
 	 */
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+	static class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-		ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.capra.ui.drive",
-				"icons/excel.png");
-		Image image = imgDesc.createImage();
+		private ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.capra.ui.drive", "icons/excel.png");
+		private Image image = imgDesc.createImage();
 
 		@Override
 		public String getText(Object obj) {
@@ -224,12 +228,12 @@ public class CapraGoogleDriveView extends ViewPart {
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
+				IStructuredSelection eventSelection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
 
-				if (selection.getFirstElement() instanceof String)
+				if (eventSelection.getFirstElement() instanceof String)
 					fillSelection();
 				else {
-					File file = (File) selection.getFirstElement();
+					File file = (File) eventSelection.getFirstElement();
 					String spreadSheetId = file.getId();
 					if (!spreadSheetId.isEmpty())
 						displaySheetInOfficeView(spreadSheetId);
@@ -264,8 +268,8 @@ public class CapraGoogleDriveView extends ViewPart {
 					.executeAsInputStream();
 			IOUtils.copy(in, new FileOutputStream(tempFile));
 			OfficeView.getOpenedView().parseExcelDocument(tempFile, spreadSheetId, null);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ex) {
+			LOG.warn("Could not get data for selected sheet from Google services: {}", ex.getLocalizedMessage());
 		}
 	}
 

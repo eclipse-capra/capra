@@ -22,6 +22,8 @@ import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The OfficeTransferType object provides the logic necessary to drag and drop a
@@ -36,6 +38,8 @@ import org.eclipse.swt.dnd.TransferData;
  *
  */
 public class OfficeTransferType extends ByteArrayTransfer {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OfficeTransferType.class);
 
 	private static final String MIME_TYPE = "capra_office";
 	private static final int MIME_TYPE_ID = registerType(MIME_TYPE);
@@ -64,16 +68,15 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 	@SuppressWarnings("unchecked")
 	private boolean checkMyType(Object object) {
-		if (object == null || !(object instanceof ArrayList)) {
+		if (!(object instanceof ArrayList)) {
 			return false;
 		}
 
-		if (object instanceof ArrayList<?>) {
-			ArrayList<Object> objectList = (ArrayList<Object>) object;
-			if (!(objectList.get(0) instanceof CapraOfficeObject)) {
-				return false;
-			}
+		ArrayList<Object> objectList = (ArrayList<Object>) object;
+		if (!(objectList.get(0) instanceof CapraOfficeObject)) {
+			return false;
 		}
+		
 
 		ArrayList<CapraOfficeObject> officeObjects = (ArrayList<CapraOfficeObject>) object;
 		if (officeObjects.isEmpty()) {
@@ -112,7 +115,7 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 			super.javaToNative(bufferOut, transferData);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.warn("IOException occured when trying to convert office object to platform-specific representation: {}", e.getLocalizedMessage());
 		}
 	}
 
@@ -153,7 +156,7 @@ public class OfficeTransferType extends ByteArrayTransfer {
 				}
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.warn("IOException occured when trying to convert from platform-specific representation to office object: {}", e.getLocalizedMessage());
 				return null;
 			}
 

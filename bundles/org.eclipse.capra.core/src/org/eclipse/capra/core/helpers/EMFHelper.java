@@ -21,6 +21,10 @@ import org.eclipse.emf.ecore.EObject;
  * handling EMF models.
  */
 public class EMFHelper {
+	
+	private EMFHelper () {
+		super();
+	}
 
 	/**
 	 * Builds an identifier String for the given EObject. This identifier starts
@@ -39,10 +43,12 @@ public class EMFHelper {
 	 * value null, this function will only return the type of the EObject.
 	 */
 	public static String getIdentifier(final EObject eObject) {
-		if (eObject == null)
+		if (eObject == null) {
 			return "<null>";
-		if (eObject.eClass() == null)
+		}
+		if (eObject.eClass() == null) {
 			return eObject.toString();
+		}
 
 		boolean success = false;
 
@@ -51,14 +57,17 @@ public class EMFHelper {
 
 		success = tryGetSingleAttribute(eObject, attributes, identifier);
 
-		if (!success)
+		if (!success) {
 			success = tryGetNameAttribute(eObject, attributes, identifier);
+		}
 
-		if (!success)
+		if (!success) {
 			success = tryGetAnyAttribute(eObject, attributes, identifier);
+		}
 
-		if (success)
+		if (success) {
 			identifier.append(" : ");
+		}
 
 		identifier.append(eObject.eClass().getName());
 

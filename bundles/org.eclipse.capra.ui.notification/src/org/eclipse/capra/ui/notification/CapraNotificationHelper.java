@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
@@ -95,7 +95,7 @@ public class CapraNotificationHelper {
 	 * @param container
 	 *            file that the created marker will be attached to
 	 */
-	public static void createCapraMarker(HashMap<String, String> markerInfo, IFile container) {
+	public static void createCapraMarker(Map<String, String> markerInfo, IFile container) {
 
 		try {
 			String newMarkerIssue = markerInfo.get(ISSUE_TYPE);
