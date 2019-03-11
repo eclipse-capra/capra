@@ -37,11 +37,23 @@ import org.junit.Test;
 
 public class TestGraphicalVisualization {
 
-	private final static String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml\n"
+	private static final String CLASS_A_NAME = "A";
+	private static final String CLASS_B_NAME = "B";
+	private static final String CLASS_C_NAME = "C";
+
+	private static final String MODEL_A_FILENAME = "modelA.ecore";
+	private static final String MODEL_B_FILENAME = "modelB.ecore";
+
+	private static final String MODEL_A_NAME = "modelA";
+	private static final String MODEL_B_NAME = "modelB";
+
+	private static final String TEST_PROJECT_NAME = "TestProject";
+
+	private static final String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml\n"
 			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "o0--o1: A : EClass B : EClass : RelatedTo\n"
 			+ "@enduml\n";
 
-	private final static String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml\n"
+	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml\n"
 			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "object \"C : EClass\" as o2\n"
 			+ "o0--o1: A : EClass B : EClass : RelatedTo\n" + "o1--o2: B : EClass C : EClass : RelatedTo\n" + "@enduml\n";
 
@@ -55,31 +67,31 @@ public class TestGraphicalVisualization {
 	public void testPlantUMLGraphView() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		createSimpleProject("TestProject");
-		assertTrue(projectExists("TestProject"));
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create two models each with two classes and persist them
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
 
-		EPackage b = createEcoreModel("modelB");
-		createEClassInEPackage(b, "B");
-		createEClassInEPackage(b, "C");
+		EPackage b = createEcoreModel(MODEL_B_NAME);
+		createEClassInEPackage(b, CLASS_B_NAME);
+		createEClassInEPackage(b, CLASS_C_NAME);
 		save(testProject, b);
 
 		// Load them and choose the four classes
 		ResourceSet rs = new ResourceSetImpl();
 
-		EPackage _a = load(testProject, "modelA.ecore", rs);
-		assertEquals(_a.getName(), "modelA");
-		EClass _A = (EClass) _a.getEClassifier("A");
+		EPackage _a = load(testProject, MODEL_A_FILENAME, rs);
+		assertEquals(_a.getName(), MODEL_A_NAME);
+		EClass _A = (EClass) _a.getEClassifier(CLASS_A_NAME);
 
-		EPackage _b = load(testProject, "modelB.ecore", rs);
-		assertEquals(_b.getName(), "modelB");
-		EClass _B = (EClass) _b.getEClassifier("B");
-		EClass _C = (EClass) _b.getEClassifier("C");
+		EPackage _b = load(testProject, MODEL_B_FILENAME, rs);
+		assertEquals(_b.getName(), MODEL_B_NAME);
+		EClass _B = (EClass) _b.getEClassifier(CLASS_B_NAME);
+		EClass _C = (EClass) _b.getEClassifier(CLASS_C_NAME);
 
 		// Add A and B to the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());

@@ -62,11 +62,24 @@ import org.junit.Test;
  * Contains tests to check the functioning of the Capra notification system when
  * deleting, renaming or moving a model element that is referenced in the trace
  * model.
- * 
+ *
  * @author Dusan Kalanj
  *
  */
 public class TestNotificationEObject {
+
+	private static final String MARKER_ATTRIBUTE_ISSUE_TYPE = "issueType";
+
+	private static final String PACKAGE_A_NAME = "packageA";
+	private static final String PACKAGE_B_NAME = "packageB";
+
+	private static final String CLASS_A_NAME = "classA";
+	private static final String MODEL_A_NAME = "modelA";
+
+	private static final String TEST_PROJECT_NAME = "TestProject";
+
+	private static final int NUMBER_OF_RETRIES = 5;
+	private static final int UI_REACTION_WAITING_TIME = 500;
 
 	@Before
 	public void init() throws CoreException {
@@ -75,7 +88,7 @@ public class TestNotificationEObject {
 	}
 
 	@Rule
-	public TestRetry retry = new TestRetry(5);
+	public TestRetry retry = new TestRetry(NUMBER_OF_RETRIES);
 
 	/**
 	 * Tests if a marker appears after deleting a model element that is
@@ -89,15 +102,15 @@ public class TestNotificationEObject {
 	public void testDeleteModelElement() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
-		assertTrue(projectExists("TestProject"));
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage modelA = createEcoreModel("modelA");
-		createEClassInEPackage(modelA, "classA");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage modelA = createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(modelA, CLASS_A_NAME);
 		save(testProject, modelA);
-		EClass classA = (EClass) modelA.getEClassifier("classA");
+		EClass classA = (EClass) modelA.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -130,7 +143,7 @@ public class TestNotificationEObject {
 
 		// Delete the item and wait a bit for the ModelChangeListener to trigger
 		EcoreUtil.delete(tracedItem);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -138,13 +151,13 @@ public class TestNotificationEObject {
 
 		// Check if the marker signals the correct change
 		IMarker marker = markers[markers.length - 1];
-		String issue = (String) marker.getAttribute("issueType");
+		String issue = (String) marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE);
 		assertEquals(issue, "deleted");
 
 		// Undo the operation
 		EPackage tracedItemParent = (EPackage) editorResource.getEObject(traceModelResource.getURIFragment(modelA));
 		tracedItemParent.getEClassifiers().add(tracedItem);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -166,15 +179,15 @@ public class TestNotificationEObject {
 	public void testRenameModelElement() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
-		assertTrue(projectExists("TestProject"));
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage modelA = createEcoreModel("modelA");
-		createEClassInEPackage(modelA, "classA");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage modelA = createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(modelA, CLASS_A_NAME);
 		save(testProject, modelA);
-		EClass classA = (EClass) modelA.getEClassifier("classA");
+		EClass classA = (EClass) modelA.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -207,7 +220,7 @@ public class TestNotificationEObject {
 
 		// Rename the item and wait a bit for the ModelChangeListener to trigger
 		((EClass) tracedItem).setName("classB");
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -215,12 +228,12 @@ public class TestNotificationEObject {
 
 		// Check if the marker signals the correct change
 		IMarker marker = markers[markers.length - 1];
-		String issue = (String) marker.getAttribute("issueType");
+		String issue = (String) marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE);
 		assertEquals(issue, "renamed");
 
 		// Undo the operation
-		((EClass) tracedItem).setName("classA");
-		TimeUnit.MILLISECONDS.sleep(300);
+		((EClass) tracedItem).setName(CLASS_A_NAME);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -239,16 +252,16 @@ public class TestNotificationEObject {
 	public void testMoveModelElement() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
-		assertTrue(projectExists("TestProject"));
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage modelA = createEcoreModel("modelA");
-		createEClassInEPackage(modelA, "classA");
-		createEPackageInEPackage(modelA, "packageA");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage modelA = createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(modelA, CLASS_A_NAME);
+		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
 		save(testProject, modelA);
-		EClass classA = (EClass) modelA.getEClassifier("classA");
+		EClass classA = (EClass) modelA.getEClassifier(CLASS_A_NAME);
 		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
 
 		// Create a trace via the selection view
@@ -285,7 +298,7 @@ public class TestNotificationEObject {
 		// Move the item and wait a bit for the ModelChangeListener to trigger
 		newPackage.getEClassifiers().add(tracedItem);
 		oldPackage.getEClassifiers().remove(tracedItem);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -293,13 +306,13 @@ public class TestNotificationEObject {
 
 		// Check if the marker signals the correct change
 		IMarker marker = markers[markers.length - 1];
-		String issue = (String) marker.getAttribute("issueType");
+		String issue = (String) marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE);
 		assertEquals(issue, "moved");
 
 		// Undo the operation
 		oldPackage.getEClassifiers().add(tracedItem);
 		newPackage.getEClassifiers().remove(tracedItem);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -318,16 +331,16 @@ public class TestNotificationEObject {
 	public void testDeleteParentModelElement() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
-		assertTrue(projectExists("TestProject"));
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage modelA = createEcoreModel("modelA");
-		createEPackageInEPackage(modelA, "packageA");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage modelA = createEcoreModel(MODEL_A_NAME);
+		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
 		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
-		createEClassInEPackage(packageA, "classA");
-		EClass classA = (EClass) packageA.getEClassifier("classA");
+		createEClassInEPackage(packageA, CLASS_A_NAME);
+		EClass classA = (EClass) packageA.getEClassifier(CLASS_A_NAME);
 		save(testProject, modelA);
 
 		// Create a trace via the selection view
@@ -362,7 +375,7 @@ public class TestNotificationEObject {
 
 		// Delete parent and wait a bit for the ModelChangeListener to trigger
 		EcoreUtil.delete(tracedItemParent);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -370,14 +383,14 @@ public class TestNotificationEObject {
 
 		// Check if the marker signals the correct change
 		IMarker marker = markers[markers.length - 1];
-		String issue = (String) marker.getAttribute("issueType");
+		String issue = (String) marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE);
 		assertEquals(issue, "deleted");
 
 		// Undo the operation
 		EPackage parentOfTracedItemParent = (EPackage) editorResource
 				.getEObject(traceModelResource.getURIFragment(modelA));
 		parentOfTracedItemParent.getESubpackages().add(tracedItemParent);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -396,14 +409,14 @@ public class TestNotificationEObject {
 	public void testMoveParentModelElement() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
-		assertTrue(projectExists("TestProject"));
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage modelA = createEcoreModel("modelA");
-		createEPackageInEPackage(modelA, "packageA");
-		createEPackageInEPackage(modelA, "packageB");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage modelA = createEcoreModel(MODEL_A_NAME);
+		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
+		createEPackageInEPackage(modelA, PACKAGE_B_NAME);
 		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
 		EPackage packageB = (EPackage) modelA.getESubpackages().get(1);
 		createEClassInEPackage(packageA, "A");
@@ -444,7 +457,7 @@ public class TestNotificationEObject {
 		// Move the parent and wait a bit for the ModelChangeListener to trigger
 		newParentOfParent.getESubpackages().add(tracedItemParent);
 		oldParentOfParent.getESubpackages().remove(tracedItemParent);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -452,13 +465,13 @@ public class TestNotificationEObject {
 
 		// Check if the marker signals the correct change
 		IMarker marker = markers[markers.length - 1];
-		String issue = (String) marker.getAttribute("issueType");
+		String issue = (String) marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE);
 		assertEquals(issue, "moved");
 
 		// Undo the operation
 		oldParentOfParent.getESubpackages().add(tracedItemParent);
 		newParentOfParent.getESubpackages().remove(tracedItemParent);
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);

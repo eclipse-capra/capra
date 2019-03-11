@@ -56,6 +56,18 @@ import org.junit.Test;
  */
 public class TestNotificationCMethod {
 
+	private static final String MARKER_ATTRIBUTE_ISSUE_TYPE = "issueType";
+	private static final int IFUNCTION_TYPE_ID = 74;
+
+	private static final String CLASS_A_NAME = "A";
+	private static final String MODEL_A_NAME = "modelA";
+	private static final String FILE_NAME = "CSource.c";
+	private static final String TEST_PROJECT_NAME = "TestProject";
+
+	private static final int NUMBER_OF_RETRIES = 5;
+	private static final int UI_REACTION_WAITING_TIME = 500;
+
+
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
@@ -63,7 +75,7 @@ public class TestNotificationCMethod {
 	}
 
 	@Rule
-	public TestRetry retry = new TestRetry(5);
+	public TestRetry retry = new TestRetry(NUMBER_OF_RETRIES);
 
 	/**
 	 * Tests if a marker appears after deleting a C method that is referenced in
@@ -78,16 +90,16 @@ public class TestNotificationCMethod {
 	public void testDeleteMethod() throws CoreException, IOException, InterruptedException, BuildException {
 
 		// Create a C project with a single source file
-		ICProject cProject = createCDTProject("TestProject");
-		ITranslationUnit cSourceFile = createCSourceFileInProject("CSource.c", cProject);
-		IFunction method = (IFunction) cSourceFile.getChildrenOfType(74).get(0);
+		ICProject cProject = createCDTProject(TEST_PROJECT_NAME);
+		ITranslationUnit cSourceFile = createCSourceFileInProject(FILE_NAME, cProject);
+		IFunction method = (IFunction) cSourceFile.getChildrenOfType(IFUNCTION_TYPE_ID).get(0);
 
 		// Create a model
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -105,18 +117,18 @@ public class TestNotificationCMethod {
 		// Delete method and wait a bit for the ResourceChangedListener to
 		// trigger
 		method.delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
 
 		// Undo operation
 		cSourceFile.delete(true, new NullProgressMonitor());
-		createCSourceFileInProject("CSource.c", cProject);
-		TimeUnit.MILLISECONDS.sleep(300);
+		createCSourceFileInProject(FILE_NAME, cProject);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}
@@ -134,16 +146,16 @@ public class TestNotificationCMethod {
 	public void testRenameMethod() throws CoreException, IOException, InterruptedException, BuildException {
 
 		// Create a C project with a single source file
-		ICProject cProject = createCDTProject("TestProject");
-		ITranslationUnit cSourceFile = createCSourceFileInProject("CSource.c", cProject);
+		ICProject cProject = createCDTProject(TEST_PROJECT_NAME);
+		ITranslationUnit cSourceFile = createCSourceFileInProject(FILE_NAME, cProject);
 		IFunction method = (IFunction) cSourceFile.getChildrenOfType(74).get(0);
 
 		// Create a model
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -161,18 +173,18 @@ public class TestNotificationCMethod {
 		// Rename method and wait a bit for the ResourceChangedListener to
 		// trigger
 		method.rename("noLongerMain", true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "changed");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "changed");
 		currMarkerLength = markers.length;
 
 		// Undo operation
 		cSourceFile.delete(true, new NullProgressMonitor());
-		createCSourceFileInProject("CSource.c", cProject);
-		TimeUnit.MILLISECONDS.sleep(300);
+		createCSourceFileInProject(FILE_NAME, cProject);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}
@@ -192,15 +204,15 @@ public class TestNotificationCMethod {
 
 		// Create a C project with a single source file that contains a method
 		// declaration
-		ICProject cProject = createCDTProject("TestProject");
-		ITranslationUnit cSourceFile = createCSourceFileInProject("CSource.c", cProject);
+		ICProject cProject = createCDTProject(TEST_PROJECT_NAME);
+		ITranslationUnit cSourceFile = createCSourceFileInProject(FILE_NAME, cProject);
 		IFunction method = (IFunction) cSourceFile.getChildrenOfType(74).get(0);
 
 		// Create a model
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(cProject.getProject(), a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -214,19 +226,19 @@ public class TestNotificationCMethod {
 		int currMarkerLength = markers.length;
 
 		// Delete project and wait a bit for the changeListener to trigger
-		getProject("TestProject").delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		getProject(TEST_PROJECT_NAME).delete(true, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are two new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
 
 		// Undo operation
-		cProject = createCDTProject("TestProject");
-		createCSourceFileInProject("CSource.c", cProject);
-		TimeUnit.MILLISECONDS.sleep(300);
+		cProject = createCDTProject(TEST_PROJECT_NAME);
+		createCSourceFileInProject(FILE_NAME, cProject);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}

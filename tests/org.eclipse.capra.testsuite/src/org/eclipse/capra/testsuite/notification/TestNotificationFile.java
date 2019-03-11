@@ -52,6 +52,15 @@ import org.junit.Test;
  */
 public class TestNotificationFile {
 
+	private static final String MARKER_ATTRIBUTE_ISSUE_TYPE = "issueType";
+
+	private static final String TEST_PROJECT_NAME = "TestProject";
+	private static final String TEST_PROJECT1_NAME = "TestProject1";
+	private static final String TEST_PROJECT2_NAME = "TestProject2";
+
+	private static final String TEST_FILE2_NAME = "TestFile2";
+	private static final String TEST_FILE1_NAME = "TestFile1";
+
 	private static final int UI_REACTION_WAITING_TIME = 500;
 
 	@Before
@@ -72,10 +81,10 @@ public class TestNotificationFile {
 	public void testDeleteFile() throws CoreException, IOException, InterruptedException {
 
 		// Create a project and put files in
-		createSimpleProject("TestProject");
-		assertTrue(projectExists("TestProject"));
-		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
-		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
+		IFile testFile1 = createEmptyFileInProject(TEST_FILE1_NAME, TEST_PROJECT_NAME);
+		IFile testFile2 = createEmptyFileInProject(TEST_FILE2_NAME, TEST_PROJECT_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -107,18 +116,18 @@ public class TestNotificationFile {
 		currMarkersSize = markers.length;
 
 		// Assert issue types
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
-		assertEquals(markers[1].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
+		assertEquals(markers[1].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 
 		// Undo for first file
-		createEmptyFileInProject("TestFile1", "TestProject");
+		createEmptyFileInProject(TEST_FILE1_NAME, TEST_PROJECT_NAME);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize - 1, markers.length);
 		currMarkersSize = markers.length;
 
 		// Undo for second file
-		createEmptyFileInProject("TestFile2", "TestProject");
+		createEmptyFileInProject(TEST_FILE2_NAME, TEST_PROJECT_NAME);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkersSize - 1, markers.length);
@@ -136,10 +145,10 @@ public class TestNotificationFile {
 	public void testMoveFile() throws CoreException, IOException, InterruptedException {
 
 		// Create a project and put files in
-		createSimpleProject("TestProject1");
-		assertTrue(projectExists("TestProject1"));
-		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject1");
-		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject1");
+		createSimpleProject(TEST_PROJECT1_NAME);
+		assertTrue(projectExists(TEST_PROJECT1_NAME));
+		IFile testFile1 = createEmptyFileInProject(TEST_FILE1_NAME, TEST_PROJECT1_NAME);
+		IFile testFile2 = createEmptyFileInProject(TEST_FILE2_NAME, TEST_PROJECT1_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -156,10 +165,10 @@ public class TestNotificationFile {
 
 		// Move first file to another project and wait a bit for the
 		// ResourceChangedListener to trigger
-		IProject project2 = createSimpleProject("TestProject2");
-		assertTrue(projectExists("TestProject2"));
+		IProject project2 = createSimpleProject(TEST_PROJECT2_NAME);
+		assertTrue(projectExists(TEST_PROJECT2_NAME));
 		IPath oldPath_file1 = testFile1.getFullPath();
-		Path movePath_file1 = new Path(oldPath_file1.toString().replaceFirst("TestProject1", "TestProject2"));
+		Path movePath_file1 = new Path(oldPath_file1.toString().replaceFirst(TEST_PROJECT1_NAME, TEST_PROJECT2_NAME));
 		testFile1.move(movePath_file1, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
@@ -170,7 +179,7 @@ public class TestNotificationFile {
 
 		// Repeat the process for the second file
 		IPath oldPath_file2 = testFile2.getFullPath();
-		Path movePath_file2 = new Path(oldPath_file2.toString().replaceFirst("TestProject1", "TestProject2"));
+		Path movePath_file2 = new Path(oldPath_file2.toString().replaceFirst(TEST_PROJECT1_NAME, TEST_PROJECT2_NAME));
 		testFile2.move(movePath_file2, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -178,11 +187,11 @@ public class TestNotificationFile {
 		currMarkersSize = markers.length;
 
 		// Assert issue types
-		assertEquals(markers[0].getAttribute("issueType"), "moved");
-		assertEquals(markers[1].getAttribute("issueType"), "moved");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "moved");
+		assertEquals(markers[1].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "moved");
 
 		// Undo for first file
-		testFile1 = project2.getFile("TestFile1");
+		testFile1 = project2.getFile(TEST_FILE1_NAME);
 		testFile1.move(oldPath_file1, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -190,7 +199,7 @@ public class TestNotificationFile {
 		currMarkersSize = markers.length;
 
 		// Undo for second file
-		testFile2 = project2.getFile("TestFile2");
+		testFile2 = project2.getFile(TEST_FILE2_NAME);
 		testFile2.move(oldPath_file2, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -209,10 +218,10 @@ public class TestNotificationFile {
 	public void testRenameFile() throws CoreException, IOException, InterruptedException {
 
 		// Create a project and put files in
-		IProject project = createSimpleProject("TestProject");
-		assertTrue(projectExists("TestProject"));
-		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
-		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
+		IProject project = createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
+		IFile testFile1 = createEmptyFileInProject(TEST_FILE1_NAME, TEST_PROJECT_NAME);
+		IFile testFile2 = createEmptyFileInProject(TEST_FILE2_NAME, TEST_PROJECT_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -229,7 +238,7 @@ public class TestNotificationFile {
 
 		// Rename file and wait a bit for the ResourceChangedListener to trigger
 		IPath oldPath_file1 = testFile1.getFullPath();
-		Path renamePath_file1 = new Path(oldPath_file1.toString().replaceFirst("TestFile1", "TestFile3"));
+		Path renamePath_file1 = new Path(oldPath_file1.toString().replaceFirst(TEST_FILE1_NAME, "TestFile3"));
 		testFile1.move(renamePath_file1, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
@@ -240,7 +249,7 @@ public class TestNotificationFile {
 
 		// Repeat the process for the second file
 		IPath oldPath_file2 = testFile2.getFullPath();
-		Path renamePath_file2 = new Path(oldPath_file2.toString().replaceFirst("TestFile2", "TestFile4"));
+		Path renamePath_file2 = new Path(oldPath_file2.toString().replaceFirst(TEST_FILE2_NAME, "TestFile4"));
 		testFile2.move(renamePath_file2, true, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -248,8 +257,8 @@ public class TestNotificationFile {
 		currMarkersSize = markers.length;
 
 		// Assert issue types
-		assertEquals(markers[0].getAttribute("issueType"), "renamed");
-		assertEquals(markers[1].getAttribute("issueType"), "renamed");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "renamed");
+		assertEquals(markers[1].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "renamed");
 
 		// Undo for first file
 		testFile2 = project.getFile("TestFile3");
@@ -279,10 +288,10 @@ public class TestNotificationFile {
 	public void testEditFile() throws CoreException, IOException, InterruptedException {
 
 		// Create a project and put files in
-		createSimpleProject("TestProject");
-		assertTrue(projectExists("TestProject"));
-		IFile testFile1 = createEmptyFileInProject("TestFile1", "TestProject");
-		IFile testFile2 = createEmptyFileInProject("TestFile2", "TestProject");
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
+		IFile testFile1 = createEmptyFileInProject(TEST_FILE1_NAME, TEST_PROJECT_NAME);
+		IFile testFile2 = createEmptyFileInProject(TEST_FILE2_NAME, TEST_PROJECT_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -315,7 +324,7 @@ public class TestNotificationFile {
 		assertEquals(currMarkersSize + 1, markers.length);
 
 		// Assert issue types
-		assertEquals(markers[0].getAttribute("issueType"), "changed");
-		assertEquals(markers[1].getAttribute("issueType"), "changed");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "changed");
+		assertEquals(markers[1].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "changed");
 	}
 }

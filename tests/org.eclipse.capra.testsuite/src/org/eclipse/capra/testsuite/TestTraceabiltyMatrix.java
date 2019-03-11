@@ -37,14 +37,27 @@ import org.junit.Test;
 
 public class TestTraceabiltyMatrix {
 
-	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
+	private static final String CLASS_A_NAME = "A";
+	private static final String CLASS_AA_NAME = "AA";
+	private static final String CLASS_B_NAME = "B";
+	private static final String CLASS_BB_NAME = "BB";
+
+	private static final String MODEL_A_FILENAME = "modelA.ecore";
+	private static final String MODEL_B_FILENAME = "modelB.ecore";
+
+	private static final String MODEL_A_NAME = "modelA";
+	private static final String MODEL_B_NAME = "modelB";
+
+	private static final String TEST_PROJECT_NAME = "TestProject";
+
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
 			+ ".|modelB : EPackage\n" + "modelA : EPackage |X\n" + "}\n" + "\n" + "@enduml\n";
 
-	private final static String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
 			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |X |. |.\n" + "AA : EClass |. |X |.\n"
 			+ "modelA : EPackage |. |. |X\n" + "}\n" + "\n" + "@enduml\n";
 
-	private final static String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
+	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
 			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |. |X |. |.\n" + "B : EClass |X |. |. |.\n"
 			+ "AA : EClass |. |. |. |X\n" + "BB : EClass |. |. |X |.\n" + "}\n" + "\n" + "@enduml\n";
 
@@ -58,33 +71,33 @@ public class TestTraceabiltyMatrix {
 	public void testMatrix() throws CoreException, IOException, InterruptedException {
 
 		// Create a project
-		createSimpleProject("TestProject");
-		assertTrue(projectExists("TestProject"));
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create two models each with two classes and persist them
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
-		createEClassInEPackage(a, "AA");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
+		createEClassInEPackage(a, CLASS_AA_NAME);
 		save(testProject, a);
 
-		EPackage b = createEcoreModel("modelB");
-		createEClassInEPackage(b, "B");
-		createEClassInEPackage(b, "BB");
+		EPackage b = createEcoreModel(MODEL_B_NAME);
+		createEClassInEPackage(b, CLASS_B_NAME);
+		createEClassInEPackage(b, CLASS_BB_NAME);
 		save(testProject, b);
 
 		// Load them and choose the four classes
 		ResourceSet rs = new ResourceSetImpl();
 
-		EPackage _a = load(testProject, "modelA.ecore", rs);
-		assertEquals(_a.getName(), "modelA");
-		EClass _A = (EClass) _a.getEClassifier("A");
-		EClass _AA = (EClass) _a.getEClassifier("AA");
+		EPackage _a = load(testProject, MODEL_A_FILENAME, rs);
+		assertEquals(_a.getName(), MODEL_A_NAME);
+		EClass _A = (EClass) _a.getEClassifier(CLASS_A_NAME);
+		EClass _AA = (EClass) _a.getEClassifier(CLASS_AA_NAME);
 
-		EPackage _b = load(testProject, "modelB.ecore", rs);
-		assertEquals(_b.getName(), "modelB");
-		EClass _B = (EClass) _b.getEClassifier("B");
-		EClass _BB = (EClass) _b.getEClassifier("BB");
+		EPackage _b = load(testProject, MODEL_B_FILENAME, rs);
+		assertEquals(_b.getName(), MODEL_B_NAME);
+		EClass _B = (EClass) _b.getEClassifier(CLASS_B_NAME);
+		EClass _BB = (EClass) _b.getEClassifier(CLASS_BB_NAME);
 
 		// Add A and B to the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());

@@ -12,9 +12,9 @@ import org.junit.Test;
 
 public class TestDefaultPriorityHandler {
 
-	IArtifactHandler<?> emfHandler;
-	IArtifactHandler<?> buildElementHandler;
-	IArtifactHandler<?> testElementHandler;
+	private IArtifactHandler<?> emfHandler;
+	private IArtifactHandler<?> buildElementHandler;
+	private IArtifactHandler<?> testElementHandler;
 
 	private PriorityHandler priorityHandler;
 

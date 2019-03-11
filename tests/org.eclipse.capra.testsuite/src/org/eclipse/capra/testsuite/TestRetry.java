@@ -14,21 +14,27 @@ package org.eclipse.capra.testsuite;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JUnit rule that allows the JUnit tests to re-run for a specified amount of
  * times in case of failure.
- * 
+ *
  * @author Dusan Kalanj
  *
  */
 public class TestRetry implements TestRule {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TestRetry.class);
+
+	
 	private int retryCount;
 
 	/**
 	 * A constructor that specifies the amount of times that a JUnit test is
 	 * re-run in case of failure.
-	 * 
+	 *
 	 * @param retryCount
 	 *            the amount of retries
 	 */
@@ -48,16 +54,16 @@ public class TestRetry implements TestRule {
 			public void evaluate() throws Throwable {
 				Throwable caughtThrowable = null;
 
-				for (int i = 0; i < retryCount; i++)
+				for (int i = 0; i < retryCount; i++) {
 					try {
 						base.evaluate();
 						return;
 					} catch (Throwable t) {
 						caughtThrowable = t;
-						System.err.println(description.getDisplayName() + ": run " + (i + 1) + " failed");
+						LOG.error("{}: run {} failed", description.getDisplayName(), (i + 1));
 					}
-
-				System.err.println(description.getDisplayName() + ": giving up after " + retryCount + " failures");
+				}
+				LOG.error("{}: giving up after {} failures", description.getDisplayName(), retryCount);
 				throw caughtThrowable;
 			}
 		};

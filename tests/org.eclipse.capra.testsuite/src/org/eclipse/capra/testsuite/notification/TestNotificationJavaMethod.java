@@ -58,6 +58,15 @@ import org.junit.Test;
  */
 public class TestNotificationJavaMethod {
 
+	private static final String MARKER_ATTRIBUTE_ISSUE_TYPE = "issueType";
+
+	private static final String TEST_PROJECT_NAME = "TestProject";
+	private static final String CLASS_A_NAME = "A";
+	private static final String MODEL_A_NAME = "modelA";
+
+	private static final int UI_REACTION_WAITING_TIME = 500;
+	private static final int NUMBER_OF_RETRIES = 5;
+
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
@@ -65,7 +74,7 @@ public class TestNotificationJavaMethod {
 	}
 
 	@Rule
-	public TestRetry retry = new TestRetry(5);
+	public TestRetry retry = new TestRetry(NUMBER_OF_RETRIES);
 
 	/**
 	 * Tests if a marker appears after deleting a Java method that is referenced
@@ -79,17 +88,17 @@ public class TestNotificationJavaMethod {
 	public void testDeleteMethod() throws CoreException, IOException, InterruptedException {
 
 		// Create a project with a Java source file
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
 		String classSource = javaClass.getSource();
 		IMethod method = (IMethod) javaClass.getChildren()[0];
-		assertTrue(projectExists("TestProject"));
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -107,12 +116,12 @@ public class TestNotificationJavaMethod {
 		// Delete method and wait a bit for the
 		// ResourceChangedListener to trigger
 		method.delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
 
 		// Undo operation
@@ -138,16 +147,16 @@ public class TestNotificationJavaMethod {
 	public void testRenameMethod() throws CoreException, IOException, InterruptedException {
 
 		// Create a project with a Java source file
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
 		IMethod method = (IMethod) javaClass.getChildren()[0];
-		assertTrue(projectExists("TestProject"));
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -171,13 +180,13 @@ public class TestNotificationJavaMethod {
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
 		
 		// Undo operation
 		method = (IMethod) javaClass.getChildren()[0];
 		method.rename(oldName, true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}
@@ -194,16 +203,16 @@ public class TestNotificationJavaMethod {
 	public void testDeleteProjectOfMethod() throws CoreException, IOException, InterruptedException {
 
 		// Create a project with a Java source file
-		IType javaClass = createJavaProjectWithASingleJavaClass("TestProject");
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
 		IMethod method = (IMethod) javaClass.getChildren()[0];
-		assertTrue(projectExists("TestProject"));
+		assertTrue(projectExists(TEST_PROJECT_NAME));
 
 		// Create a model and persist
-		IProject testProject = getProject("TestProject");
-		EPackage a = TestHelper.createEcoreModel("modelA");
-		createEClassInEPackage(a, "A");
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		EClass A = (EClass) a.getEClassifier("A");
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -221,17 +230,17 @@ public class TestNotificationJavaMethod {
 		// Delete method and wait a bit for the
 		// ResourceChangedListener to trigger
 		testProject.delete(true, new NullProgressMonitor());
-		TimeUnit.MILLISECONDS.sleep(300);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 
 		// Check if there are new markers
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength + 1, markers.length);
-		assertEquals(markers[0].getAttribute("issueType"), "deleted");
+		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
 		
 		// Undo operation
-		createJavaProjectWithASingleJavaClass("TestProject");
-		TimeUnit.MILLISECONDS.sleep(300);
+		createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}

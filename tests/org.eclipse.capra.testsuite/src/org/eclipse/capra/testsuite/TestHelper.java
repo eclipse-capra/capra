@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
+import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
+import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.handlers.TraceCreationHandler;
@@ -81,6 +81,10 @@ import org.eclipse.ui.PlatformUI;
  */
 @SuppressWarnings("restriction")
 public class TestHelper {
+
+	private TestHelper() {
+		// Deliberately do nothing
+	}
 
 	/**
 	 * ID of Capra custom marker for reporting a generic problem.
@@ -162,8 +166,9 @@ public class TestHelper {
 	 */
 	public static void clearWorkspace() throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		for (IProject p : root.getProjects())
+		for (IProject p : root.getProjects()) {
 			p.delete(true, new NullProgressMonitor());
+		}
 	}
 
 	/**
@@ -275,10 +280,11 @@ public class TestHelper {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		TraceCreationHandler handler = new TraceCreationHandler();
 		handler.createTrace(window, (traceTypes, selection) -> {
-			if (traceTypes.contains(traceType))
+			if (traceTypes.contains(traceType)) {
 				return Optional.of(traceType);
-			else
+			} else {
 				return Optional.empty();
+			}
 		});
 	}
 
@@ -379,9 +385,9 @@ public class TestHelper {
 		GenericTraceModel gtm = (GenericTraceModel) tracemodel;
 
 		EList<RelatedTo> traces = gtm.getTraces();
-		if (traces.isEmpty())
+		if (traces.isEmpty()) {
 			return false;
-
+		}
 		IPath pathR1 = r1.getFullPath();
 		IPath pathR2 = r2.getFullPath();
 
@@ -397,8 +403,9 @@ public class TestHelper {
 				}
 			});
 
-			if (uris.contains(pathR1) && uris.contains(pathR2))
+			if (uris.contains(pathR1) && uris.contains(pathR2)) {
 				return true;
+			}
 		}
 		return false;
 	}
