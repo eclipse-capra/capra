@@ -12,13 +12,19 @@
 package org.eclipse.capra.ui.office.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * This class extends the CapraOfficeObject and provides an object to describe a
@@ -28,6 +34,8 @@ import org.w3c.dom.NodeList;
  *
  */
 public class CapraWordRequirement extends CapraOfficeObject {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CapraWordRequirement.class);
 
 	/**
 	 * RegEx of characters (tabs, newlines, carriage returns and invisible
@@ -72,10 +80,16 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		Document doc;
 		try {
 			doc = CapraOfficeUtils.createDOMDocument(pCtp.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			LOG.info("Could not create DOM document: error reading file.", e);
 			return;
-		}
+		} catch (ParserConfigurationException e) {
+			LOG.info("Could not create DOM document: parser not configured properly.", e);
+			return;
+		} catch (SAXException e) {
+			LOG.info("Could not create DOM document: malformed XML.", e);
+			return;
+		} 
 
 		// Get all nodes from the paragraph (there should be just one node if
 		// the TODO bellow isn't implemented)

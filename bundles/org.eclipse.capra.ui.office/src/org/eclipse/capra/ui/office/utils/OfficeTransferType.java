@@ -44,11 +44,11 @@ public class OfficeTransferType extends ByteArrayTransfer {
 	private static final String MIME_TYPE = "capra_office";
 	private static final int MIME_TYPE_ID = registerType(MIME_TYPE);
 
-	private static OfficeTransferType _instance = new OfficeTransferType();
+	private static OfficeTransferType theInstance = new OfficeTransferType();
 
 	/** Provides an instance of the class. */
 	public static OfficeTransferType getInstance() {
-		return _instance;
+		return theInstance;
 	}
 
 	@Override

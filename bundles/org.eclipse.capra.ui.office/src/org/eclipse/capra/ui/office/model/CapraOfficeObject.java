@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a custom object for describing the contents of MS Excel
@@ -26,6 +28,8 @@ import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
  *
  */
 public class CapraOfficeObject {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CapraOfficeObject.class);
 
 	/**
 	 * The MS Office file-types that are supported by the plugin.
@@ -109,10 +113,11 @@ public class CapraOfficeObject {
 	public File getFile() throws NoSuchFileException {
 		String fileId = getFileId();
 		File officeFile = new File(fileId);
-		if (officeFile.exists())
+		if (officeFile.exists()) {
 			return officeFile;
-		else
+		} else {
 			throw new NoSuchFileException(fileId);
+		}
 	}
 
 	/**
@@ -160,8 +165,8 @@ public class CapraOfficeObject {
 		try {
 			Desktop.getDesktop().open(getFile());
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new CapraOfficeObjectNotFound(getId());
+			LOG.error("Could not oben office file.", e);
+			throw new CapraOfficeObjectNotFound(getId(), e);
 		}
 	}
 
@@ -203,23 +208,29 @@ public class CapraOfficeObject {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CapraOfficeObject other = (CapraOfficeObject) obj;
 		if (data == null) {
-			if (other.data != null)
+			if (other.data != null) {
 				return false;
+			}
 		} else if (!data.equals(other.data))
 			return false;
 		if (uri == null) {
-			if (other.uri != null)
+			if (other.uri != null) {
 				return false;
-		} else if (!uri.equals(other.uri))
+			}
+		} else if (!uri.equals(other.uri)) {
 			return false;
+		}
 		return true;
 	}
 }

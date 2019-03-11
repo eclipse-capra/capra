@@ -57,12 +57,12 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 				}
 			});
 
-			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheetName))
+			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheetName)) {
 				menuItem.setSelection(true);
-
-			if (!isSheetEmptyMap.get(sheetName))
+			}
+			if (!isSheetEmptyMap.get(sheetName)) {
 				menuItem.setText(sheetName);
-			else {
+			} else {
 				menuItem.setText(sheetName + " (Empty)");
 				menuItem.setEnabled(false);
 			}

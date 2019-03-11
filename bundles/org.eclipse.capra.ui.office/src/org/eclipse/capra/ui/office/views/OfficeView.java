@@ -174,8 +174,9 @@ public class OfficeView extends ViewPart {
 			int minAllowed = Activator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
 			String text = obj.toString();
 			int textLength = Math.min(text.length(), minAllowed);
-			if (textLength == minAllowed)
+			if (textLength == minAllowed) {
 				text = text.substring(0, textLength) + "...";
+			}
 			return text;
 		};
 
@@ -209,8 +210,9 @@ public class OfficeView extends ViewPart {
 			try {
 				if (data instanceof String[]) {
 					File file = new File(((String[]) data)[0]);
-					if (file != null && file.exists())
+					if (file != null && file.exists()) {
 						parseGenericFile(file);
+					}
 				}
 			} catch (CapraOfficeFileNotSupportedException e) {
 				LOG.debug("Capra does not support this file.", e);
@@ -229,9 +231,9 @@ public class OfficeView extends ViewPart {
 	/**
 	 * Adapter used by the view to handle drag events.
 	 */
-	class SelectionDragAdapter extends ViewerDragAdapter {
+	private static class SelectionDragAdapter extends ViewerDragAdapter {
 
-		TableViewer viewer;
+		private TableViewer viewer;
 
 		public SelectionDragAdapter(TableViewer viewer) {
 			super(viewer);
@@ -245,9 +247,9 @@ public class OfficeView extends ViewPart {
 				TableItem[] items = viewer.getTable().getSelection();
 				ArrayList<CapraOfficeObject> officeObjects = new ArrayList<CapraOfficeObject>();
 
-				for (int i = 0; i < items.length; i++)
+				for (int i = 0; i < items.length; i++) {
 					officeObjects.add((CapraOfficeObject) items[i].getData());
-
+				}
 				event.data = officeObjects;
 			}
 		}
@@ -297,12 +299,13 @@ public class OfficeView extends ViewPart {
 	private void parseGenericFile(File file) throws CapraOfficeFileNotSupportedException {
 		String fileExtension = Files.getFileExtension(file.getName());
 
-		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS))
+		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS)) {
 			parseExcelDocument(file, null, null);
-		else if (fileExtension.equals(CapraOfficeObject.DOCX))
+		} else if (fileExtension.equals(CapraOfficeObject.DOCX)) {
 			parseWordDocument(file);
-		else
+		} else {
 			throw new CapraOfficeFileNotSupportedException(fileExtension);
+		}
 	}
 
 	/**
@@ -333,6 +336,7 @@ public class OfficeView extends ViewPart {
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
 		} catch (IOException e) {
+			showErrorMessage(ERROR_TITLE, "Could not open the Excel workbook.", null);
 			LOG.warn("Could not open the Excel workbook", e);
 			return;
 		}
@@ -356,8 +360,8 @@ public class OfficeView extends ViewPart {
 		}
 
 		// Check if the whole workbook (all of the sheets) is empty.
-		Map<String, Boolean> isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(workBook);
-		if (!isSheetEmptyMap.values().contains(false)) {
+		Map<String, Boolean> isNewSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(workBook);
+		if (!isNewSheetEmptyMap.values().contains(false)) {
 			showErrorMessage(ERROR_TITLE, "There are no rows to display in any of the sheets.", null);
 			clearSelection();
 			return;
@@ -370,7 +374,7 @@ public class OfficeView extends ViewPart {
 		this.selectedSheetName = sheet.getSheetName();
 		this.selectedFile = officeFile;
 		this.selectedFileId = googleDriveFileId;
-		this.isSheetEmptyMap = isSheetEmptyMap;
+		this.isSheetEmptyMap = isNewSheetEmptyMap;
 
 		// Populate the view with Excel rows
 		String idColumn = Activator.getDefault().getPreferenceStore().getString(OfficePreferences.EXCEL_COLUMN_VALUE);
@@ -381,20 +385,21 @@ public class OfficeView extends ViewPart {
 				CapraOfficeObject cRow;
 				// If the file is in the java's "temporary-file" folder, it was
 				// obtained from Google drive
-				if (isGoogleSheet)
+				if (isGoogleSheet) {
 					cRow = new CapraGoogleSheetsRow(officeFile, row, idColumn, googleDriveFileId);
-				else
+				} else {
 					cRow = new CapraExcelRow(officeFile, row, idColumn);
-
-				if (!cRow.getData().isEmpty())
+				}
+				if (!cRow.getData().isEmpty()) {
 					selection.add(cRow);
+				}
 			}
 		}
 
 		// Save info about the type of the data displayed in the Office view.
-		if (!selection.isEmpty())
+		if (!selection.isEmpty()) {
 			provider.setResource(selection.get(0));
-
+		}
 		viewer.refresh();
 	}
 
@@ -420,9 +425,9 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		if (paragraphs.isEmpty())
+		if (paragraphs.isEmpty()) {
 			return;
-
+		}
 		// Clear the Office view and all static variables
 		clearSelection();
 
@@ -435,14 +440,15 @@ public class OfficeView extends ViewPart {
 			XWPFParagraph paragraph = paragraphs.get(i);
 			if (paragraph != null) {
 				CapraWordRequirement cRequirement = new CapraWordRequirement(officeFile, paragraph, fieldName);
-				if (!cRequirement.getData().isEmpty())
+				if (!cRequirement.getData().isEmpty()) {
 					selection.add(cRequirement);
+				}
 			}
 		}
 
-		if (!selection.isEmpty())
+		if (!selection.isEmpty()) {
 			provider.setResource(selection.get(0));
-		else {
+		} else {
 			showErrorMessage(ERROR_TITLE, "There are no fields with the specified field name in this document.", null);
 			clearSelection();
 			return;
@@ -463,17 +469,16 @@ public class OfficeView extends ViewPart {
 	 */
 	public void showObjectDetails(Object event, Shell parentShell) {
 		CapraOfficeObject officeObject;
-
+		IStructuredSelection eventSelection;
+		
 		if (event instanceof DoubleClickEvent) { // If called with double click
-			IStructuredSelection selection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
-			officeObject = (CapraOfficeObject) selection.getFirstElement();
+			eventSelection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
+			officeObject = (CapraOfficeObject) eventSelection.getFirstElement();
 
 		} else if (event instanceof ExecutionEvent) { // If called from menu
-			IStructuredSelection selection;
-
 			try {
-				selection = (IStructuredSelection) HandlerUtil.getCurrentSelectionChecked((ExecutionEvent) event);
-				officeObject = (CapraOfficeObject) selection.getFirstElement();
+				eventSelection = (IStructuredSelection) HandlerUtil.getCurrentSelectionChecked((ExecutionEvent) event);
+				officeObject = (CapraOfficeObject) eventSelection.getFirstElement();
 			} catch (ExecutionException e) {
 				LOG.warn("Could not get office object.", e);
 				return;
@@ -534,10 +539,11 @@ public class OfficeView extends ViewPart {
 	 *            the name of the sheet to be displayed in the Office view.
 	 */
 	public void displaySheet(String sheetName) {
-		if (selection.isEmpty())
+		if (selection.isEmpty()) {
 			return;
-		else if (selection.get(0) instanceof CapraExcelRow)
+		} else if (selection.get(0) instanceof CapraExcelRow) {
 			parseExcelDocument(selectedFile, selectedFileId, sheetName);
+		}
 	}
 
 	/**
@@ -556,7 +562,7 @@ public class OfficeView extends ViewPart {
 				isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(
 						CapraOfficeUtils.getExcelWorkbook(((CapraExcelRow) (selection.get(0))).getFile()));
 			} catch (OldExcelFormatException | IOException e) {
-				LOG.debug("Could not open Excel file.", e);;
+				LOG.debug("Could not open Excel file.", e);
 			}
 		}
 
@@ -592,13 +598,14 @@ public class OfficeView extends ViewPart {
 	 */
 	public void refreshView() {
 
-		if (selection.isEmpty())
+		if (selection.isEmpty()) {
 			return;
-
-		if (selection.get(0) instanceof CapraExcelRow)
+		}
+		if (selection.get(0) instanceof CapraExcelRow) {
 			parseExcelDocument(selectedFile, selectedFileId, selectedSheetName);
-		else if (selection.get(0) instanceof CapraWordRequirement)
+		} else if (selection.get(0) instanceof CapraWordRequirement) {
 			parseWordDocument(selectedFile);
+		}
 	}
 
 	/**
@@ -617,8 +624,7 @@ public class OfficeView extends ViewPart {
 	}
 
 	private void showErrorMessage(String caption, String message, String url) {
-		new HyperlinkDialog(viewer.getControl().getShell(), caption, null, MessageDialog.ERROR,
-				new String[] { "OK" }, 0, message, url).open();
+		new HyperlinkDialog(new HyperlinkDialog.HyperlinkDialogParameter(viewer.getControl().getShell(), caption, null, MessageDialog.ERROR, new String[] { "OK" }, 0), message, url).open();
 	}
 
 	/**
@@ -627,26 +633,33 @@ public class OfficeView extends ViewPart {
 	 */
 	static class HyperlinkDialog extends MessageDialog {
 
+		private static final int PREFERRED_DIALOG_WIDTH = 300;
 		private String hyperlinkMessage;
 		private String url;
+
+		public static class HyperlinkDialogParameter {
+			public Shell parentShell;
+			public String dialogTitle;
+			public Image dialogTitleImage;
+			public int dialogImageType;
+			public String[] dialogButtonLabels;
+			public int defaultIndex;
+
+			public HyperlinkDialogParameter(Shell parentShell, String dialogTitle, Image dialogTitleImage,
+					int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+				this.parentShell = parentShell;
+				this.dialogTitle = dialogTitle;
+				this.dialogTitleImage = dialogTitleImage;
+				this.dialogImageType = dialogImageType;
+				this.dialogButtonLabels = dialogButtonLabels;
+				this.defaultIndex = defaultIndex;
+			}
+		}
 
 		/**
 		 * A constructor that creates the dialog with the provided parameters.
 		 * Call open() in order to display the dialog.
-		 * 
-		 * @param parentShell
-		 *            the parent shell
-		 * @param dialogTitle
-		 *            the title of the dialog
-		 * @param dialogTitleImage
-		 *            the dialog title image, or null if none
-		 * @param dialogImageType
-		 *            one of the static values from MessageDialog class (NONE,
-		 *            ERROR, INFORMATION, QUESTION, WARNING)
-		 * @param dialogButtonLabels
-		 *            varargs of Strings for the button labels in the button bar
-		 * @param defaultIndex
-		 *            the index in the button label array of the default button
+		 * @param parameterObject TODO
 		 * @param hyperlinkMessage
 		 *            a String that will be shown to the user and can contain a
 		 *            hyperlink, that will, on click, open a browser window at
@@ -654,9 +667,8 @@ public class OfficeView extends ViewPart {
 		 * @param url
 		 *            the hyperlink to the web page, or null, if not required
 		 */
-		public HyperlinkDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, int dialogImageType,
-				String[] dialogButtonLabels, int defaultIndex, String hyperlinkMessage, String url) {
-			super(parentShell, dialogTitle, dialogTitleImage, null, dialogImageType, dialogButtonLabels, defaultIndex);
+		public HyperlinkDialog(HyperlinkDialogParameter parameterObject, String hyperlinkMessage, String url) {
+			super(parameterObject.parentShell, parameterObject.dialogTitle, parameterObject.dialogTitleImage, null, parameterObject.dialogImageType, parameterObject.dialogButtonLabels, parameterObject.defaultIndex);
 			this.hyperlinkMessage = hyperlinkMessage;
 			this.url = url;
 		}
@@ -665,7 +677,7 @@ public class OfficeView extends ViewPart {
 			Link link = new Link(parent, SWT.None);
 			link.setText(hyperlinkMessage);
 			GridData gd = new GridData();
-			gd.widthHint = 300;
+			gd.widthHint = PREFERRED_DIALOG_WIDTH;
 			link.setLayoutData(gd);
 			if (url != null && !url.contentEquals("")) {
 				link.setToolTipText(url);
@@ -675,9 +687,9 @@ public class OfficeView extends ViewPart {
 							Desktop.getDesktop().browse(new URI(url));
 							HyperlinkDialog.this.okPressed();
 						} catch (IOException e1) {
-							e1.printStackTrace();
+							LOG.info("No default browser found.", e);
 						} catch (URISyntaxException e1) {
-							e1.printStackTrace();
+							LOG.info("Provided malformed URI.", e);
 						}
 					}
 				});

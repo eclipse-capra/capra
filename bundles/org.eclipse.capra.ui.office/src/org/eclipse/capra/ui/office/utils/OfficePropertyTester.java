@@ -30,12 +30,12 @@ public class OfficePropertyTester extends PropertyTester {
 	@Override
 	public boolean test(final Object receiver, final String property, final Object[] args, final Object expectedValue) {
 
-		if (property.equals(IS_VIEW_POPULATED))
+		if (property.equals(IS_VIEW_POPULATED)) {
 			return receiver != null;
-
-		if (property.equals(IS_EXCEL_OBJECT))
+		}
+		if (property.equals(IS_EXCEL_OBJECT)) {
 			return receiver instanceof CapraExcelRow;
-
+		}
 		return false;
 	}
 }

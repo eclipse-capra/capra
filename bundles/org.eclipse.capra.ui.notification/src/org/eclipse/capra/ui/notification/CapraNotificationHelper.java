@@ -22,13 +22,17 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains methods that support the Capra notification (marker) solution.
- * 
+ *
  * @author Dusan Kalanj
  */
 public class CapraNotificationHelper {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CapraNotificationHelper.class);
 
 	/**
 	 * ID of Capra custom marker for reporting a generic problem.
@@ -82,6 +86,10 @@ public class CapraNotificationHelper {
 	 */
 	public static final String MESSAGE = "message";
 
+	private CapraNotificationHelper() {
+		// Deliberately do nothing
+	}
+
 	// TODO necessary to specify all the fields that have to be filled out in
 	// order for the method to work! Maybe make a custom exception for when
 	// something is not filled out?
@@ -106,9 +114,9 @@ public class CapraNotificationHelper {
 				String existingMarkerIssue = existingMarker.getAttribute(ISSUE_TYPE, null);
 				String existingMarkerUri = existingMarker.getAttribute(OLD_URI, null);
 
-				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(newMarkerIssue))
+				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(newMarkerIssue)) {
 					existingMarker.delete();
-
+				}
 				// The code bellow deletes the marker that signifies a delete
 				// operation in case the new marker signifies a rename/move
 				// operation. The only thing that doesn't work with this
@@ -119,28 +127,30 @@ public class CapraNotificationHelper {
 				// rename and delete). This problem disappears if automatic
 				// marker removal is implemented (already done for EMF).
 				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(IssueType.DELETED.getValue())
-						&& newMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue()))
+						&& newMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue())) {
 					existingMarker.delete();
-				
-				if (existingMarkerUri.equals(newMarkerUri) && newMarkerIssue.equals(IssueType.ADDED))
+				}
+				if (existingMarkerUri.equals(newMarkerUri) && newMarkerIssue.equalsIgnoreCase(IssueType.ADDED.getValue())) {
 					existingMarker.delete();
+				}
 			}
 			
 			String message = markerInfo.get(MESSAGE);
-			if (message == null || message.isEmpty())
+			if (message == null || message.isEmpty()) {
 				return;
-
+			}
 			IMarker marker = container.createMarker(CAPRA_PROBLEM_MARKER_ID);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			markerInfo.remove(MESSAGE);
 
-			for (Entry<String, String> entry : markerInfo.entrySet())
+			for (Entry<String, String> entry : markerInfo.entrySet()) {
 				marker.setAttribute(entry.getKey(), entry.getValue());
-
+			}
 		} catch (CoreException e) {
-			if (container.exists())
-				e.printStackTrace();
+			if (container.exists()) {
+				LOG.warn("CoreException occured when creating a marker even though container exists.", e);
+			}
 		}
 	}
 
@@ -164,16 +174,20 @@ public class CapraNotificationHelper {
 				String existingMarkerUri = marker.getAttribute(OLD_URI, null);
 				String existingMarkerIssue = marker.getAttribute(ISSUE_TYPE, null);
 
-				if (existingMarkerUri.equals(uri))
-					if (issues == null)
+				if (existingMarkerUri.equals(uri)) {
+					if (issues == null) {
 						marker.delete();
-					else
-						for (IssueType issue : issues)
-							if (existingMarkerIssue.equals(issue.getValue()))
+					} else {
+						for (IssueType issue : issues) {
+							if (existingMarkerIssue.equals(issue.getValue())) {
 								marker.delete();
+							}
+						}
+					}
+				}
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			LOG.warn("CoreException occured when deleting a marker.", e);
 		}
 	}
 
@@ -187,17 +201,17 @@ public class CapraNotificationHelper {
 	 */
 	public static URI convertToFileUri(URI uri) {
 
-		if (!uri.isPlatformResource())
+		if (!uri.isPlatformResource()) {
 			return uri;
-		else {
+		} else {
 			String platformUri = uri.toPlatformString(true);
 			IPath filePath = ResourcesPlugin.getWorkspace().getRoot().findMember(platformUri).getRawLocation();
 			URI fileUri = URI.createFileURI(filePath.toString());
 
 			String fragment = uri.fragment();
-			if (fragment != null)
+			if (fragment != null) {
 				fileUri = fileUri.appendFragment(fragment);
-
+			}
 			return fileUri;
 		}
 	}

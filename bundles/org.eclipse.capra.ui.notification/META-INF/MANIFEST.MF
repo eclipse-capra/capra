@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.capra.core,
 Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.resource.impl,
- org.eclipse.emf.edit.ui.util
+ org.eclipse.emf.edit.ui.util,
+ org.slf4j
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.capra.ui.notification

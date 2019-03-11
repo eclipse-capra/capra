@@ -268,7 +268,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 *            the row to identify
 	 * @return the ID of the row
 	 */
-	protected String getRowIdFromExcelRow(Row row) {
+	final protected String getRowIdFromExcelRow(Row row) {
 		String rowId = "";
 		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT)) {
 			rowId = Integer.toString(row.getRowNum() + 1);
@@ -277,4 +277,30 @@ public class CapraExcelRow extends CapraOfficeObject {
 		}
 		return rowId;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((idColumn == null) ? 0 : idColumn.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CapraExcelRow other = (CapraExcelRow) obj;
+		if (idColumn == null) {
+			if (other.idColumn != null)
+				return false;
+		} else if (!idColumn.equals(other.idColumn))
+			return false;
+		return true;
+	}
+	
 }

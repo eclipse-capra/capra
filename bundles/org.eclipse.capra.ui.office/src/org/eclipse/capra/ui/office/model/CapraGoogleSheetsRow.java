@@ -18,6 +18,8 @@ import java.net.URISyntaxException;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends the CapraExcelRow and provides an object to describe a
@@ -29,6 +31,8 @@ import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
  */
 public class CapraGoogleSheetsRow extends CapraExcelRow {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CapraGoogleSheetsRow.class);
+	
 	/**
 	 * Extracts the data from the Excel row the same way as its parent
 	 * (CapraExcelRow), but sets a different URI. Because the excel file is only
@@ -59,7 +63,7 @@ public class CapraGoogleSheetsRow extends CapraExcelRow {
 		try {
 			Desktop.getDesktop().browse(new URI("https://docs.google.com/spreadsheets/d/" + this.getFileId()));
 		} catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
+			LOG.info("Could not open Google spreadsheet.", e);
 		}
 	}
 }

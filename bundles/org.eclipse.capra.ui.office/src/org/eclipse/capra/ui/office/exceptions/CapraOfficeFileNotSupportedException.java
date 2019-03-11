@@ -21,7 +21,7 @@ package org.eclipse.capra.ui.office.exceptions;
 public class CapraOfficeFileNotSupportedException extends Exception {
 
 	private static final long serialVersionUID = -7730053652692861930L;
-	private static String EXCEPTION_MESSAGE = "%s file type is not supported.";
+	private static final String EXCEPTION_MESSAGE = "%s file type is not supported.";
 
 	/**
 	 * A default constructor.

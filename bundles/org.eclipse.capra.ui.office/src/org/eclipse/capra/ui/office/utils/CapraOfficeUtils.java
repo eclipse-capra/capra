@@ -46,7 +46,7 @@ import com.google.common.io.Files;
  * @author Dusan Kalanj
  *
  */
-public class CapraOfficeUtils {
+public final class CapraOfficeUtils {
 
 	/**
 	 * Hide default constructor.
@@ -110,12 +110,7 @@ public class CapraOfficeUtils {
 				}
 			}
 
-			// Should be without the try block, but the library contains a bug.
-			try {
-				actualSheetName = workBook.getSheetName(activeSheetIndex);
-			} catch (NullPointerException e) {
-				throw e;
-			}
+			actualSheetName = workBook.getSheetName(activeSheetIndex);
 		}
 
 		return workBook.getSheet(actualSheetName);

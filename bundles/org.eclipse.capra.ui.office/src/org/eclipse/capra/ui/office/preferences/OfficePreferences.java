@@ -74,10 +74,10 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	 * Controls
 	 */
 	private Text charCount;
-	private Button excel_rowIdIsRowNumber;
-	private Button excel_rowIdIsCustomColumn;
-	private Text excel_customIdColumnName;
-	private Text word_fieldName;
+	private Button excelRowIdIsRowNumber;
+	private Button excelRowIdIsCustomColumn;
+	private Text excelCustomIdColumnName;
+	private Text wordFieldName;
 
 	/**
 	 * Creates a swt widget that takes the numColumns of grid space inside the
@@ -118,22 +118,23 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 		boolean idIsRowNumber;
 		String idColumn;
-		if (excel_rowIdIsRowNumber.getSelection()) {
+		if (excelRowIdIsRowNumber.getSelection()) {
 			idColumn = EXCEL_COLUMN_VALUE_DEFAULT;
-			excel_customIdColumnName.setText("");
+			excelCustomIdColumnName.setText("");
 			idIsRowNumber = true;
 		} else {
-			if (excel_customIdColumnName.getText().isEmpty())
-				excel_customIdColumnName.setText(EXCEL_CUSTOM_COLUMN_DEFAULT);
-			idColumn = excel_customIdColumnName.getText();
+			if (excelCustomIdColumnName.getText().isEmpty()) {
+				excelCustomIdColumnName.setText(EXCEL_CUSTOM_COLUMN_DEFAULT);
+			}
+			idColumn = excelCustomIdColumnName.getText();
 			idIsRowNumber = false;
 		}
 
 		store.setValue(CHAR_COUNT, charCount.getText());
 		store.setValue(EXCEL_COLUMN_RADIO_CHOICE, idIsRowNumber);
-		store.setValue(EXCEL_CUSTOM_COLUMN, excel_customIdColumnName.getText());
+		store.setValue(EXCEL_CUSTOM_COLUMN, excelCustomIdColumnName.getText());
 		store.setValue(EXCEL_COLUMN_VALUE, idColumn);
-		store.setValue(WORD_FIELD_NAME, word_fieldName.getText());
+		store.setValue(WORD_FIELD_NAME, wordFieldName.getText());
 	}
 
 	/**
@@ -145,32 +146,32 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 		boolean idIsRowNumber = store.getBoolean(EXCEL_COLUMN_RADIO_CHOICE);
 		if (idIsRowNumber) {
-			excel_rowIdIsRowNumber.setSelection(true);
-			excel_customIdColumnName.setText("");
-			excel_customIdColumnName.setEnabled(false);
+			excelRowIdIsRowNumber.setSelection(true);
+			excelCustomIdColumnName.setText("");
+			excelCustomIdColumnName.setEnabled(false);
 		} else {
-			excel_rowIdIsCustomColumn.setSelection(true);
-			excel_customIdColumnName.setText(store.getString(EXCEL_CUSTOM_COLUMN));
+			excelRowIdIsCustomColumn.setSelection(true);
+			excelCustomIdColumnName.setText(store.getString(EXCEL_CUSTOM_COLUMN));
 		}
 
 		charCount.setText(store.getString(CHAR_COUNT));
-		word_fieldName.setText(store.getString(WORD_FIELD_NAME));
+		wordFieldName.setText(store.getString(WORD_FIELD_NAME));
 	}
 
 	/**
 	 * Sets the default values if the user clicks on restore defaults option.
 	 */
 	private void initializeDefaults() {
-		excel_rowIdIsRowNumber.setSelection(EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
-		excel_rowIdIsCustomColumn.setSelection(!EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
+		excelRowIdIsRowNumber.setSelection(EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
+		excelRowIdIsCustomColumn.setSelection(!EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER);
 
-		if (excel_rowIdIsRowNumber.getSelection()) {
-			excel_customIdColumnName.setText("");
-			excel_customIdColumnName.setEnabled(false);
+		if (excelRowIdIsRowNumber.getSelection()) {
+			excelCustomIdColumnName.setText("");
+			excelCustomIdColumnName.setEnabled(false);
 		}
 		charCount.setText(CHAR_COUNT_DEFAULT);
 
-		word_fieldName.setText(WORD_FIELD_NAME_DEFAULT);
+		wordFieldName.setText(WORD_FIELD_NAME_DEFAULT);
 	}
 
 	@Override
@@ -184,17 +185,17 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 		createLabel(compositeExcelIdColumn, EXCEL_COLUMN_RADIO_CHOICE_DESC, 2);
 
 		Composite compositeRadioButtons = createComposite(compositeExcelIdColumn, 3);
-		excel_rowIdIsRowNumber = createRadioButton(compositeRadioButtons, EXCEL_COLUMN_IS_LINE_NUMBER_OPTION_DESC, 3);
-		excel_rowIdIsCustomColumn = createRadioButton(compositeRadioButtons, EXCEL_COLUMN_IS_CUSTOM_OPTION_DESC, 1);
-		excel_customIdColumnName = createTextField(compositeRadioButtons, 1, FIXED_TEXT_FIELD_WIDTH);
+		excelRowIdIsRowNumber = createRadioButton(compositeRadioButtons, EXCEL_COLUMN_IS_LINE_NUMBER_OPTION_DESC, 3);
+		excelRowIdIsCustomColumn = createRadioButton(compositeRadioButtons, EXCEL_COLUMN_IS_CUSTOM_OPTION_DESC, 1);
+		excelCustomIdColumnName = createTextField(compositeRadioButtons, 1, FIXED_TEXT_FIELD_WIDTH);
 		createLabel(compositeRadioButtons, EXCEL_COLUMN_IS_CUSTOM_OPTION_HINT, 1);
 
-		excel_rowIdIsRowNumber.addSelectionListener(new SelectionListener() {
+		excelRowIdIsRowNumber.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				excel_customIdColumnName.setText("");
-				excel_customIdColumnName.setEnabled(false);
+				excelCustomIdColumnName.setText("");
+				excelCustomIdColumnName.setEnabled(false);
 			}
 
 			@Override
@@ -202,12 +203,12 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 			}
 		});
 
-		excel_rowIdIsCustomColumn.addSelectionListener(new SelectionListener() {
+		excelRowIdIsCustomColumn.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				excel_customIdColumnName.setEnabled(true);
-				excel_customIdColumnName.setText(EXCEL_CUSTOM_COLUMN_DEFAULT);
+				excelCustomIdColumnName.setEnabled(true);
+				excelCustomIdColumnName.setText(EXCEL_CUSTOM_COLUMN_DEFAULT);
 			}
 
 			@Override
@@ -217,7 +218,7 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 		Composite compositeWordRequirementFieldName = createComposite(parent, 2);
 		createLabel(compositeWordRequirementFieldName, WORD_FIELD_NAME_DESC, 1);
-		word_fieldName = createTextField(compositeWordRequirementFieldName, 1, FIXED_TEXT_FIELD_WIDTH);
+		wordFieldName = createTextField(compositeWordRequirementFieldName, 1, FIXED_TEXT_FIELD_WIDTH);
 
 		initializeValues();
 
