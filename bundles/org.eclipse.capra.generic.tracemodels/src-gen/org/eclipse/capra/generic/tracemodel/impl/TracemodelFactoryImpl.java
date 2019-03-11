@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.impl;
+package org.eclipse.capra.generic.tracemodel.impl;
 
-import org.eclipse.capra.GenericTraceMetaModel.*;
+import org.eclipse.capra.generic.tracemodel.*;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -18,24 +18,24 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class GenericTraceMetaModelFactoryImpl extends EFactoryImpl implements GenericTraceMetaModelFactory {
+public class TracemodelFactoryImpl extends EFactoryImpl implements TracemodelFactory {
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static GenericTraceMetaModelFactory init() {
+	public static TracemodelFactory init() {
 		try {
-			GenericTraceMetaModelFactory theGenericTraceMetaModelFactory = (GenericTraceMetaModelFactory)EPackage.Registry.INSTANCE.getEFactory(GenericTraceMetaModelPackage.eNS_URI);
-			if (theGenericTraceMetaModelFactory != null) {
-				return theGenericTraceMetaModelFactory;
+			TracemodelFactory theTracemodelFactory = (TracemodelFactory)EPackage.Registry.INSTANCE.getEFactory(TracemodelPackage.eNS_URI);
+			if (theTracemodelFactory != null) {
+				return theTracemodelFactory;
 			}
 		}
 		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new GenericTraceMetaModelFactoryImpl();
+		return new TracemodelFactoryImpl();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class GenericTraceMetaModelFactoryImpl extends EFactoryImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericTraceMetaModelFactoryImpl() {
+	public TracemodelFactoryImpl() {
 		super();
 	}
 
@@ -56,8 +56,8 @@ public class GenericTraceMetaModelFactoryImpl extends EFactoryImpl implements Ge
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL: return createGenericTraceModel();
-			case GenericTraceMetaModelPackage.RELATED_TO: return createRelatedTo();
+			case TracemodelPackage.GENERIC_TRACE_MODEL: return createGenericTraceModel();
+			case TracemodelPackage.RELATED_TO: return createRelatedTo();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -88,8 +88,8 @@ public class GenericTraceMetaModelFactoryImpl extends EFactoryImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericTraceMetaModelPackage getGenericTraceMetaModelPackage() {
-		return (GenericTraceMetaModelPackage)getEPackage();
+	public TracemodelPackage getTracemodelPackage() {
+		return (TracemodelPackage)getEPackage();
 	}
 
 	/**
@@ -99,8 +99,8 @@ public class GenericTraceMetaModelFactoryImpl extends EFactoryImpl implements Ge
 	 * @generated
 	 */
 	@Deprecated
-	public static GenericTraceMetaModelPackage getPackage() {
-		return GenericTraceMetaModelPackage.eINSTANCE;
+	public static TracemodelPackage getPackage() {
+		return TracemodelPackage.eINSTANCE;
 	}
 
-} //GenericTraceMetaModelFactoryImpl
+} //TracemodelFactoryImpl

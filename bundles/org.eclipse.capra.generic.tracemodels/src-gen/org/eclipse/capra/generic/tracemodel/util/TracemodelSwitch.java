@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.util;
+package org.eclipse.capra.generic.tracemodel.util;
 
-import org.eclipse.capra.GenericTraceMetaModel.*;
+import org.eclipse.capra.generic.tracemodel.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -19,17 +19,17 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage
+ * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage
  * @generated
  */
-public class GenericTraceMetaModelSwitch<T> extends Switch<T> {
+public class TracemodelSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static GenericTraceMetaModelPackage modelPackage;
+	protected static TracemodelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -37,9 +37,9 @@ public class GenericTraceMetaModelSwitch<T> extends Switch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericTraceMetaModelSwitch() {
+	public TracemodelSwitch() {
 		if (modelPackage == null) {
-			modelPackage = GenericTraceMetaModelPackage.eINSTANCE;
+			modelPackage = TracemodelPackage.eINSTANCE;
 		}
 	}
 
@@ -66,13 +66,13 @@ public class GenericTraceMetaModelSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL: {
+			case TracemodelPackage.GENERIC_TRACE_MODEL: {
 				GenericTraceModel genericTraceModel = (GenericTraceModel)theEObject;
 				T result = caseGenericTraceModel(genericTraceModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case GenericTraceMetaModelPackage.RELATED_TO: {
+			case TracemodelPackage.RELATED_TO: {
 				RelatedTo relatedTo = (RelatedTo)theEObject;
 				T result = caseRelatedTo(relatedTo);
 				if (result == null) result = defaultCase(theEObject);
@@ -128,4 +128,4 @@ public class GenericTraceMetaModelSwitch<T> extends Switch<T> {
 		return null;
 	}
 
-} //GenericTraceMetaModelSwitch
+} //TracemodelSwitch

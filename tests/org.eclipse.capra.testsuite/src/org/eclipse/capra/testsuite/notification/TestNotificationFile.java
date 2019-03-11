@@ -26,7 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsuite.TestHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IFile;
@@ -91,7 +91,7 @@ public class TestNotificationFile {
 		SelectionView.getOpenedView().dropToSelection(testFile1);
 		SelectionView.getOpenedView().dropToSelection(testFile2);
 		assertFalse(thereIsATraceBetween(testFile1, testFile2));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(testFile1, testFile2));
 
 		// Get current number of markers
@@ -155,7 +155,7 @@ public class TestNotificationFile {
 		SelectionView.getOpenedView().dropToSelection(testFile1);
 		SelectionView.getOpenedView().dropToSelection(testFile2);
 		assertFalse(thereIsATraceBetween(testFile1, testFile2));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(testFile1, testFile2));
 
 		// Get current number of markers
@@ -228,7 +228,7 @@ public class TestNotificationFile {
 		SelectionView.getOpenedView().dropToSelection(testFile1);
 		SelectionView.getOpenedView().dropToSelection(testFile2);
 		assertFalse(thereIsATraceBetween(testFile1, testFile2));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(testFile1, testFile2));
 
 		// Get current number of markers
@@ -298,7 +298,7 @@ public class TestNotificationFile {
 		SelectionView.getOpenedView().dropToSelection(testFile1);
 		SelectionView.getOpenedView().dropToSelection(testFile2);
 		assertFalse(thereIsATraceBetween(testFile1, testFile2));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(testFile1, testFile2));
 
 		// Get current number of markers

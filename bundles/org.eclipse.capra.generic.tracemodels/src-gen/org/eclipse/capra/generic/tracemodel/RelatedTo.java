@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel;
+package org.eclipse.capra.generic.tracemodel;
 
 import org.eclipse.emf.common.util.EList;
 
@@ -15,12 +15,12 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getID <em>ID</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getItem <em>Item</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getID <em>ID</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getItem <em>Item</em>}</li>
  * </ul>
  *
- * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage#getRelatedTo()
+ * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getRelatedTo()
  * @model
  * @generated
  */
@@ -34,7 +34,7 @@ public interface RelatedTo extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>ID</em>' attribute.
-	 * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage#getRelatedTo_ID()
+	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getRelatedTo_ID()
 	 * @model unique="false" transient="true" changeable="false" volatile="true" derived="true"
 	 *        annotation="http://www.eclipse.org/emf/2002/GenModel get='return <%org.eclipse.emf.ecore.util.EcoreUtil%>.generateUUID();'"
 	 * @generated
@@ -51,14 +51,14 @@ public interface RelatedTo extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage#getRelatedTo_Name()
+	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getRelatedTo_Name()
 	 * @model unique="false"
 	 * @generated
 	 */
 	String getName();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
@@ -77,7 +77,7 @@ public interface RelatedTo extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Item</em>' reference list.
-	 * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage#getRelatedTo_Item()
+	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getRelatedTo_Item()
 	 * @model
 	 * @generated
 	 */

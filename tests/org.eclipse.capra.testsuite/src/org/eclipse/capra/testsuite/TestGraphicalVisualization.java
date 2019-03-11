@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
@@ -101,7 +101,7 @@ public class TestGraphicalVisualization {
 
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, _B));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(_A, _B));
 
 		// Clear selection view
@@ -113,7 +113,7 @@ public class TestGraphicalVisualization {
 
 		// Create a traceLink between B and C
 		assertFalse(thereIsATraceBetween(_B, _C));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		// Remove trace model from resource set to make sure the trace model is
 		// re-loaded to capture the second trace link
 		removeTraceModel(rs);

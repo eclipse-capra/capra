@@ -1,4 +1,4 @@
-package org.eclipse.capra.GenericTraceMetaModel
+package org.eclipse.capra.generic.tracemodel
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
 

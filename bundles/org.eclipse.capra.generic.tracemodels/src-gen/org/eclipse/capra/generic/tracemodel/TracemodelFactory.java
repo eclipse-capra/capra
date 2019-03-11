@@ -1,6 +1,6 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel;
+package org.eclipse.capra.generic.tracemodel;
 
 import org.eclipse.emf.ecore.EFactory;
 
@@ -9,17 +9,17 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage
+ * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage
  * @generated
  */
-public interface GenericTraceMetaModelFactory extends EFactory {
+public interface TracemodelFactory extends EFactory {
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	GenericTraceMetaModelFactory eINSTANCE = org.eclipse.capra.GenericTraceMetaModel.impl.GenericTraceMetaModelFactoryImpl.init();
+	TracemodelFactory eINSTANCE = org.eclipse.capra.generic.tracemodel.impl.TracemodelFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Generic Trace Model</em>'.
@@ -46,6 +46,6 @@ public interface GenericTraceMetaModelFactory extends EFactory {
 	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	GenericTraceMetaModelPackage getGenericTraceMetaModelPackage();
+	TracemodelPackage getTracemodelPackage();
 
-} //GenericTraceMetaModelFactory
+} //TracemodelFactory

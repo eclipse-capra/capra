@@ -1,11 +1,11 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.impl;
+package org.eclipse.capra.generic.tracemodel.impl;
 
 import java.util.Collection;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -28,9 +28,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.impl.RelatedToImpl#getID <em>ID</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.impl.RelatedToImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.impl.RelatedToImpl#getItem <em>Item</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getID <em>ID</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getItem <em>Item</em>}</li>
  * </ul>
  *
  * @generated
@@ -92,7 +92,7 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return GenericTraceMetaModelPackage.Literals.RELATED_TO;
+		return TracemodelPackage.Literals.RELATED_TO;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, GenericTraceMetaModelPackage.RELATED_TO__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, TracemodelPackage.RELATED_TO__NAME, oldName, name));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 */
 	public EList<EObject> getItem() {
 		if (item == null) {
-			item = new EObjectResolvingEList<EObject>(EObject.class, this, GenericTraceMetaModelPackage.RELATED_TO__ITEM);
+			item = new EObjectResolvingEList<EObject>(EObject.class, this, TracemodelPackage.RELATED_TO__ITEM);
 		}
 		return item;
 	}
@@ -145,11 +145,11 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.RELATED_TO__ID:
+			case TracemodelPackage.RELATED_TO__ID:
 				return getID();
-			case GenericTraceMetaModelPackage.RELATED_TO__NAME:
+			case TracemodelPackage.RELATED_TO__NAME:
 				return getName();
-			case GenericTraceMetaModelPackage.RELATED_TO__ITEM:
+			case TracemodelPackage.RELATED_TO__ITEM:
 				return getItem();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -164,10 +164,10 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.RELATED_TO__NAME:
+			case TracemodelPackage.RELATED_TO__NAME:
 				setName((String)newValue);
 				return;
-			case GenericTraceMetaModelPackage.RELATED_TO__ITEM:
+			case TracemodelPackage.RELATED_TO__ITEM:
 				getItem().clear();
 				getItem().addAll((Collection<? extends EObject>)newValue);
 				return;
@@ -183,10 +183,10 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.RELATED_TO__NAME:
+			case TracemodelPackage.RELATED_TO__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case GenericTraceMetaModelPackage.RELATED_TO__ITEM:
+			case TracemodelPackage.RELATED_TO__ITEM:
 				getItem().clear();
 				return;
 		}
@@ -201,11 +201,11 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.RELATED_TO__ID:
+			case TracemodelPackage.RELATED_TO__ID:
 				return ID_EDEFAULT == null ? getID() != null : !ID_EDEFAULT.equals(getID());
-			case GenericTraceMetaModelPackage.RELATED_TO__NAME:
+			case TracemodelPackage.RELATED_TO__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case GenericTraceMetaModelPackage.RELATED_TO__ITEM:
+			case TracemodelPackage.RELATED_TO__ITEM:
 				return item != null && !item.isEmpty();
 		}
 		return super.eIsSet(featureID);

@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
@@ -98,7 +98,7 @@ public class TestCreateTrace {
 
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, _B));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, _B));
@@ -132,7 +132,7 @@ public class TestCreateTrace {
 
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, javaClass));
@@ -166,7 +166,7 @@ public class TestCreateTrace {
 
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, cFile));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, cFile));

@@ -17,18 +17,19 @@
 
 <plugin>
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated generictrace -->
-      <package
-            uri="org.eclipse.capra.GenericTraceMetaModel"
-            class="org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage"
-            genModel="model/generictrace.xcore"/>
-   </extension>
    <extension
          point="org.eclipse.capra.configuration.traceabilityMetaModel">
       <TraceabilityMetaModelAdapter
             class="org.eclipse.capra.generic.tracemodels.GenericMetaModelAdapter">
       </TraceabilityMetaModelAdapter>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated generictrace -->
+      <package
+            uri="org.eclipse.capra.generic.tracemodel"
+            class="org.eclipse.capra.generic.tracemodel.TracemodelPackage"
+            genModel="model/generictrace.xcore"/>
    </extension>
 
 </plugin>

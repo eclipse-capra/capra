@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsuite.TestHelper;
 import org.eclipse.capra.testsuite.TestRetry;
 import org.eclipse.capra.ui.views.SelectionView;
@@ -117,7 +117,7 @@ public class TestNotificationEObject {
 		SelectionView.getOpenedView().dropToSelection(classA);
 		SelectionView.getOpenedView().dropToSelection(javaClass);
 		assertFalse(thereIsATraceBetween(classA, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(classA, javaClass));
 
 		// Get current number of markers
@@ -194,7 +194,7 @@ public class TestNotificationEObject {
 		SelectionView.getOpenedView().dropToSelection(classA);
 		SelectionView.getOpenedView().dropToSelection(javaClass);
 		assertFalse(thereIsATraceBetween(classA, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(classA, javaClass));
 
 		// Get current number of markers
@@ -269,7 +269,7 @@ public class TestNotificationEObject {
 		SelectionView.getOpenedView().dropToSelection(classA);
 		SelectionView.getOpenedView().dropToSelection(javaClass);
 		assertFalse(thereIsATraceBetween(classA, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(classA, javaClass));
 
 		// Get current number of markers
@@ -348,7 +348,7 @@ public class TestNotificationEObject {
 		SelectionView.getOpenedView().dropToSelection(classA);
 		SelectionView.getOpenedView().dropToSelection(javaClass);
 		assertFalse(thereIsATraceBetween(classA, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(classA, javaClass));
 
 		// Get current number of markers
@@ -428,7 +428,7 @@ public class TestNotificationEObject {
 		SelectionView.getOpenedView().dropToSelection(classA);
 		SelectionView.getOpenedView().dropToSelection(javaClass);
 		assertFalse(thereIsATraceBetween(classA, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		assertTrue(thereIsATraceBetween(classA, javaClass));
 
 		// Get current number of markers

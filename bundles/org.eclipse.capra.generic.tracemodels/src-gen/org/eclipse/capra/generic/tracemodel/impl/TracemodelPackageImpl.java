@@ -1,11 +1,11 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.impl;
+package org.eclipse.capra.generic.tracemodel.impl;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
+import org.eclipse.capra.generic.tracemodel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.TracemodelFactory;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
  * <!-- end-user-doc -->
  * @generated
  */
-public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements GenericTraceMetaModelPackage {
+public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPackage {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,12 +47,12 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage#eNS_URI
+	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private GenericTraceMetaModelPackageImpl() {
-		super(eNS_URI, GenericTraceMetaModelFactory.eINSTANCE);
+	private TracemodelPackageImpl() {
+		super(eNS_URI, TracemodelFactory.eINSTANCE);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>This method is used to initialize {@link GenericTraceMetaModelPackage#eINSTANCE} when that field is accessed.
+	 * <p>This method is used to initialize {@link TracemodelPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,11 +74,11 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static GenericTraceMetaModelPackage init() {
-		if (isInited) return (GenericTraceMetaModelPackage)EPackage.Registry.INSTANCE.getEPackage(GenericTraceMetaModelPackage.eNS_URI);
+	public static TracemodelPackage init() {
+		if (isInited) return (TracemodelPackage)EPackage.Registry.INSTANCE.getEPackage(TracemodelPackage.eNS_URI);
 
 		// Obtain or create and register package
-		GenericTraceMetaModelPackageImpl theGenericTraceMetaModelPackage = (GenericTraceMetaModelPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof GenericTraceMetaModelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new GenericTraceMetaModelPackageImpl());
+		TracemodelPackageImpl theTracemodelPackage = (TracemodelPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof TracemodelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new TracemodelPackageImpl());
 
 		isInited = true;
 
@@ -86,18 +86,18 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 		EcorePackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
-		theGenericTraceMetaModelPackage.createPackageContents();
+		theTracemodelPackage.createPackageContents();
 
 		// Initialize created meta-data
-		theGenericTraceMetaModelPackage.initializePackageContents();
+		theTracemodelPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
-		theGenericTraceMetaModelPackage.freeze();
+		theTracemodelPackage.freeze();
 
   
 		// Update the registry and return the package
-		EPackage.Registry.INSTANCE.put(GenericTraceMetaModelPackage.eNS_URI, theGenericTraceMetaModelPackage);
-		return theGenericTraceMetaModelPackage;
+		EPackage.Registry.INSTANCE.put(TracemodelPackage.eNS_URI, theTracemodelPackage);
+		return theTracemodelPackage;
 	}
 
 	/**
@@ -159,8 +159,8 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericTraceMetaModelFactory getGenericTraceMetaModelFactory() {
-		return (GenericTraceMetaModelFactory)getEFactoryInstance();
+	public TracemodelFactory getTracemodelFactory() {
+		return (TracemodelFactory)getEFactoryInstance();
 	}
 
 	/**
@@ -236,4 +236,4 @@ public class GenericTraceMetaModelPackageImpl extends EPackageImpl implements Ge
 		createResource(eNS_URI);
 	}
 
-} //GenericTraceMetaModelPackageImpl
+} //TracemodelPackageImpl

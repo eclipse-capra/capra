@@ -7,12 +7,13 @@ Bundle-ClassPath: .
 Bundle-Vendor: Capra Development Team
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.capra.GenericTraceMetaModel,
- org.eclipse.capra.GenericTraceMetaModel.impl,
- org.eclipse.capra.GenericTraceMetaModel.util
+Export-Package: org.eclipse.capra.generic.tracemodel,
+ org.eclipse.capra.generic.tracemodel.impl,
+ org.eclipse.capra.generic.tracemodel.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.emf.ecore.xcore.lib,
  org.eclipse.capra.core
 Bundle-ActivationPolicy: lazy
+Import-Package: org.slf4j

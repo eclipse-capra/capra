@@ -1,12 +1,12 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.impl;
+package org.eclipse.capra.generic.tracemodel.impl;
 
 import java.util.Collection;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
+import org.eclipse.capra.generic.tracemodel.RelatedTo;
+import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericTraceMetaModel.impl.GenericTraceModelImpl#getTraces <em>Traces</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.GenericTraceModelImpl#getTraces <em>Traces</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,7 +60,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return GenericTraceMetaModelPackage.Literals.GENERIC_TRACE_MODEL;
+		return TracemodelPackage.Literals.GENERIC_TRACE_MODEL;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	 */
 	public EList<RelatedTo> getTraces() {
 		if (traces == null) {
-			traces = new EObjectContainmentEList<RelatedTo>(RelatedTo.class, this, GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES);
+			traces = new EObjectContainmentEList<RelatedTo>(RelatedTo.class, this, TracemodelPackage.GENERIC_TRACE_MODEL__TRACES);
 		}
 		return traces;
 	}
@@ -83,7 +83,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES:
+			case TracemodelPackage.GENERIC_TRACE_MODEL__TRACES:
 				return ((InternalEList<?>)getTraces()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -97,7 +97,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES:
+			case TracemodelPackage.GENERIC_TRACE_MODEL__TRACES:
 				return getTraces();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -112,7 +112,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES:
+			case TracemodelPackage.GENERIC_TRACE_MODEL__TRACES:
 				getTraces().clear();
 				getTraces().addAll((Collection<? extends RelatedTo>)newValue);
 				return;
@@ -128,7 +128,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES:
+			case TracemodelPackage.GENERIC_TRACE_MODEL__TRACES:
 				getTraces().clear();
 				return;
 		}
@@ -143,7 +143,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case GenericTraceMetaModelPackage.GENERIC_TRACE_MODEL__TRACES:
+			case TracemodelPackage.GENERIC_TRACE_MODEL__TRACES:
 				return traces != null && !traces.isEmpty();
 		}
 		return super.eIsSet(featureID);

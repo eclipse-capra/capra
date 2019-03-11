@@ -1,8 +1,8 @@
 /**
  */
-package org.eclipse.capra.GenericTraceMetaModel.util;
+package org.eclipse.capra.generic.tracemodel.util;
 
-import org.eclipse.capra.GenericTraceMetaModel.*;
+import org.eclipse.capra.generic.tracemodel.*;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -16,17 +16,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage
+ * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage
  * @generated
  */
-public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
+public class TracemodelAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static GenericTraceMetaModelPackage modelPackage;
+	protected static TracemodelPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -34,9 +34,9 @@ public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public GenericTraceMetaModelAdapterFactory() {
+	public TracemodelAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = GenericTraceMetaModelPackage.eINSTANCE;
+			modelPackage = TracemodelPackage.eINSTANCE;
 		}
 	}
 
@@ -65,8 +65,8 @@ public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected GenericTraceMetaModelSwitch<Adapter> modelSwitch =
-		new GenericTraceMetaModelSwitch<Adapter>() {
+	protected TracemodelSwitch<Adapter> modelSwitch =
+		new TracemodelSwitch<Adapter>() {
 			@Override
 			public Adapter caseGenericTraceModel(GenericTraceModel object) {
 				return createGenericTraceModelAdapter();
@@ -96,13 +96,13 @@ public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel <em>Generic Trace Model</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.generic.tracemodel.GenericTraceModel <em>Generic Trace Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel
+	 * @see org.eclipse.capra.generic.tracemodel.GenericTraceModel
 	 * @generated
 	 */
 	public Adapter createGenericTraceModelAdapter() {
@@ -110,13 +110,13 @@ public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericTraceMetaModel.RelatedTo <em>Related To</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.generic.tracemodel.RelatedTo <em>Related To</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.capra.GenericTraceMetaModel.RelatedTo
+	 * @see org.eclipse.capra.generic.tracemodel.RelatedTo
 	 * @generated
 	 */
 	public Adapter createRelatedToAdapter() {
@@ -135,4 +135,4 @@ public class GenericTraceMetaModelAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //GenericTraceMetaModelAdapterFactory
+} //TracemodelAdapterFactory
