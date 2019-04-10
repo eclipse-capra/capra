@@ -56,6 +56,8 @@ public class TestCreateTrace {
 	private static final String MODEL_B_NAME = "modelB";
 
 	private static final String TEST_PROJECT_NAME = "TestProject";
+	private static final String TEST_PROJECT_NAME_JAVA = "TestProject_java";
+	private static final String TEST_PROJECT_NAME_C = "TestProject_C";
 
 	@Before
 	public void init() throws CoreException {
@@ -102,6 +104,7 @@ public class TestCreateTrace {
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, _B));
+
 	}
 
 	@Test
@@ -171,5 +174,31 @@ public class TestCreateTrace {
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, cFile));
 	}
+
+	@Test
+	public void testLinkCreationJavaClassToJavaClass() throws CoreException, BuildException
+	{
+		// Create a java project
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME_JAVA);
+		assertTrue(projectExists(TEST_PROJECT_NAME_JAVA));
+
+		// Create a C project
+		ICProject cFile = createCDTProject(TEST_PROJECT_NAME_C);
+		assertTrue(projectExists(TEST_PROJECT_NAME_C));
+
+		// Drop the JavaClass in the selection view
+		SelectionView.getOpenedView().dropToSelection(javaClass);
+		// Drop the c File in the selection view
+		SelectionView.getOpenedView().dropToSelection(cFile);
+
+		// Create a trace via the selection view
+		assertFalse(thereIsATraceBetween(javaClass, cFile));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+
+		// Check if trace has been created
+		assertTrue(thereIsATraceBetween(javaClass, cFile));
+
+	}
+
 
 }

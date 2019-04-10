@@ -18,22 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
-import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
-import org.eclipse.capra.generic.tracemodel.RelatedTo;
-import org.eclipse.capra.handler.cdt.CDTHandler;
-import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.handlers.TraceCreationHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.CProjectNature;
 import org.eclipse.cdt.core.model.CoreModel;
-import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.ISourceRoot;
 import org.eclipse.cdt.core.model.ITranslationUnit;
@@ -46,28 +40,22 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -289,7 +277,7 @@ public class TestHelper {
 	}
 
 	/**
-	 * Checks if there is a trace between the provided EObjects.
+	 * Checks if there is a trace between the provided Objects.
 	 *
 	 * @param a
 	 *            first EObject
@@ -297,114 +285,41 @@ public class TestHelper {
 	 *            second EObject
 	 * @return true if a trace exists between the two objects, false otherwise
 	 */
-	public static boolean thereIsATraceBetween(EObject a, EObject b) {
+	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		return traceAdapter.isThereATraceBetween(a, b,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-	}
-
-	/**
-	 * Checks if there is a trace between the provided EObject and Java element.
-	 *
-	 * @param a
-	 *            EObject element
-	 * @param b
-	 *            Java element
-	 * @return true if a trace exists between the two objects, false otherwise
-	 */
-	public static boolean thereIsATraceBetween(EObject a, IJavaElement b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-
-		List<Connection> connected = traceAdapter.getConnectedElements(a,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-
-		return connected.stream().filter(o -> {
-			List<EObject> objects = o.getTargets();
-			for (EObject obj : objects) {
-				if (obj instanceof ArtifactWrapper) {
-					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
-					if ((wrapper.getArtifactHandler().equals(JavaElementHandler.class.getName()))) {
-						return (wrapper.getIdentifier().equals(b.getHandleIdentifier()));
-					}
-				}
+		if (firstObject instanceof EObject && secondObject instanceof EObject) {
+			EObject traceModel = persistenceAdapter.getTraceModel(((EObject) firstObject).eResource().getResourceSet());
+			if (traceModel != null) {
+				return traceAdapter.isThereATraceBetween((EObject) firstObject, (EObject) secondObject, traceModel);
 			}
-
-			return false;
-		}).findAny().isPresent();
-
-	}
-
-	/**
-	 * Checks if there is a trace between the provided EObject and C or C++
-	 * element.
-	 *
-	 * @param a
-	 *            EObject element
-	 * @param b
-	 *            C or C++ element
-	 * @return true if a trace exists between the two objects, false otherwise
-	 */
-	public static boolean thereIsATraceBetween(EObject a, ICElement b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-
-		List<Connection> connected = traceAdapter.getConnectedElements(a,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-
-		return connected.stream().filter(o -> {
-			List<EObject> objects = o.getTargets();
-			for (EObject obj : objects) {
-				if (obj instanceof ArtifactWrapper) {
-					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
-					if ((wrapper.getArtifactHandler().equals(CDTHandler.class.getName()))) {
-						return (wrapper.getIdentifier().equals(b.getHandleIdentifier()));
-					}
-				}
-			}
-			return false;
-		}).findAny().isPresent();
-
-	}
-
-	/**
-	 * Checks if there is a trace between the provided resources.
-	 *
-	 * @param r1
-	 *            first resource
-	 * @param r2
-	 *            second resource
-	 * @return true, if there is a trace link between the resources, false
-	 *         otherwise
-	 */
-	public static boolean thereIsATraceBetween(IResource r1, IResource r2) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-
-		EObject tracemodel = persistenceAdapter.getTraceModel(new ResourceSetImpl());
-		GenericTraceModel gtm = (GenericTraceModel) tracemodel;
-
-		EList<RelatedTo> traces = gtm.getTraces();
-		if (traces.isEmpty()) {
-			return false;
 		}
-		IPath pathR1 = r1.getFullPath();
-		IPath pathR2 = r2.getFullPath();
-
-		for (RelatedTo trace : traces) {
-			EList<EObject> items = trace.getItem();
-			List<IPath> uris = new ArrayList<IPath>();
-			items.forEach(item -> {
-				EList<EStructuralFeature> structFeatures = item.eClass().getEAllStructuralFeatures();
-				for (EStructuralFeature esf : structFeatures) {
-					if (esf.getName().equals("uri")) {
-						uris.add(new Path((String) item.eGet(esf)));
-					}
-				}
-			});
-
-			if (uris.contains(pathR1) && uris.contains(pathR2)) {
-				return true;
+		if (firstObject instanceof EObject && !(secondObject instanceof EObject)) {
+			ResourceSet resource = ((EObject) firstObject).eResource().getResourceSet();
+			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
+			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
+			EObject traceModel = persistenceAdapter.getTraceModel(resource);
+			if (traceModel != null) {
+				return traceAdapter.isThereATraceBetween((EObject) firstObject, wrapper_b, traceModel);
+			}
+		}
+		if (!(firstObject instanceof EObject) && secondObject instanceof EObject) {
+			ResourceSet resource = ((EObject) secondObject).eResource().getResourceSet();
+			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
+			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
+			EObject traceModel = persistenceAdapter.getTraceModel(resource);
+			if (traceModel != null) {
+				return traceAdapter.isThereATraceBetween(wrapper_a, (EObject) secondObject, traceModel);
+			}
+		}
+		if (!(firstObject instanceof EObject) && !(secondObject instanceof EObject)) {
+			ResourceSet resource = new ResourceSetImpl();
+			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
+			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
+			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
+			EObject traceModel = persistenceAdapter.getTraceModel(resource);
+			if (traceModel != null) {
+				return traceAdapter.isThereATraceBetween(wrapper_a, wrapper_b, traceModel);
 			}
 		}
 		return false;
