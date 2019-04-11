@@ -1,8 +1,10 @@
 package org.eclipse.capra.testsuite;
 
 import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsuite.TestHelper.createCDTProject;
 import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
 import static org.eclipse.capra.testsuite.TestHelper.createEcoreModel;
+import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingleJavaClass;
 import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
@@ -25,6 +27,9 @@ import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
+import org.eclipse.cdt.core.model.ICProject;
+import org.eclipse.cdt.core.model.ITranslationUnit;
+import org.eclipse.cdt.managedbuilder.core.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EClass;
@@ -32,6 +37,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jdt.core.IType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,14 +54,22 @@ public class TestGraphicalVisualization {
 	private static final String MODEL_B_NAME = "modelB";
 
 	private static final String TEST_PROJECT_NAME = "TestProject";
+	private static final String TEST_PROJECT_NAME_JAVA = "TestProject_java";
+	private static final String TEST_PROJECT_NAME_C = "TestProject_C";
+	private static final String TEST_C_CLASS = "CClass.c";
 
 	private static final String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml\n"
-			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "o0--o1: A : EClass B : EClass : RelatedTo\n"
-			+ "@enduml\n";
+			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n"
+			+ "o0--o1: A : EClass B : EClass : RelatedTo\n" + "@enduml\n";
 
 	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml\n"
 			+ "object \"A : EClass\" as o0 #pink\n" + "object \"B : EClass\" as o1\n" + "object \"C : EClass\" as o2\n"
-			+ "o0--o1: A : EClass B : EClass : RelatedTo\n" + "o1--o2: B : EClass C : EClass : RelatedTo\n" + "@enduml\n";
+			+ "o0--o1: A : EClass B : EClass : RelatedTo\n" + "o1--o2: B : EClass C : EClass : RelatedTo\n"
+			+ "@enduml\n";
+	private static final String EXPECTED_TEXT_FOR_GOTO_LINKS = "@startuml\n"
+			+ "object \"TestClass [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/TestClass.java#org.eclipse.capra.test.TestClass (Go to)]]\" as o0 #pink\n"
+			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1\n"
+			+ "o0--o1: TestClass : ArtifactWrapper CClass.c : ArtifactWrapper : RelatedTo\n" + "@enduml\n";
 
 	@Before
 	public void init() throws CoreException {
@@ -133,6 +147,43 @@ public class TestGraphicalVisualization {
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		String transitivelysConnectedElements = provider.getDiagramText(selection);
 		assertTrue(transitivelysConnectedElements.equals(EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS));
+
+	}
+
+	@Test
+	public void testGoToLink() throws CoreException, BuildException {
+		// Create a java project
+		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME_JAVA);
+		assertTrue(projectExists(TEST_PROJECT_NAME_JAVA));
+
+		// Create a C project
+		ICProject cProject = createCDTProject(TEST_PROJECT_NAME_C);
+		assertTrue(projectExists(TEST_PROJECT_NAME_C));
+
+		// create a C class in the CProject
+		ITranslationUnit cFile = TestHelper.createCSourceFileInProject(TEST_C_CLASS, cProject);
+
+		// Drop the JavaClass in the selection view
+		SelectionView.getOpenedView().dropToSelection(javaClass);
+		// Drop the c File in the selection view
+		SelectionView.getOpenedView().dropToSelection(cFile);
+
+		// Create a trace via the selection view
+		assertFalse(thereIsATraceBetween(javaClass, cFile));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+
+		// Check if trace has been created
+		assertTrue(thereIsATraceBetween(javaClass, cFile));
+
+		// create a selection with the java class
+		List<Object> selection = new ArrayList<>();
+		selection.add(javaClass);
+
+		// Test directly connected Elements
+		ToggleTransitivityHandler.setTraceViewTransitive(false);
+		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		String directlyConnectedElements = provider.getDiagramText(selection);
+		assertTrue(directlyConnectedElements.equals(EXPECTED_TEXT_FOR_GOTO_LINKS));
 
 	}
 
