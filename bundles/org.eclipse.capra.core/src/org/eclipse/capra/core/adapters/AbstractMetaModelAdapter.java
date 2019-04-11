@@ -63,6 +63,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 				maximumDepth, existingTraces);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Connection> getInternalElements(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, boolean traceLinksTransitive, int transitivityDepth,
@@ -90,6 +91,8 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
+		ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
+				.get();
 		for (Connection conn : directElements) {
 			int connectionHash = conn.getOrigin().hashCode() + conn.getTlink().hashCode();
 			for (EObject targ : conn.getTargets()) {
@@ -99,15 +102,22 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 				allElements.add(conn);
 			}
 			for (EObject o : conn.getTargets()) {
-				@SuppressWarnings("unchecked")
-				IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(o).orElse(null);
-				allElements.addAll(handler.addInternalLinks(o, selectedRelationshipTypes));
+				// assume that the object is an artifact wrapper and get its
+				// handler
+				IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactMetaModelAdapter
+						.getArtifactHandlerInstance(o);
+				if (handler == null) {
+					// object is not an artifact handler
+					handler = (IArtifactHandler<Object>) artifactHelper.getHandler(o).orElse(null);
+				}
+				if (handler != null) {
+					allElements.addAll(handler.addInternalLinks(o, selectedRelationshipTypes));
+				}
 
 			}
 		}
 
 		if (element.getClass().getPackage().toString().contains("org.eclipse.eatop")) {
-			@SuppressWarnings("unchecked")
 			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(element)
 					.orElse(null);
 			allElements.addAll(handler.addInternalLinks(element, selectedRelationshipTypes));
