@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.capra.core.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -43,4 +46,37 @@ public class Connection {
 	public EObject getTlink() {
 		return tlink;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == null) {
+			return false;
+		}
+		if (!(object instanceof Connection)) {
+			return false;
+		}
+		if (object == this) {
+			return true;
+		}
+		Connection connection = (Connection) object;
+
+		List<EObject> allFirstElements = new ArrayList<>(this.getTargets());
+		allFirstElements.add(this.getOrigin());
+
+		List<EObject> allSecondElements = new ArrayList<>(connection.getTargets());
+		allSecondElements.add(connection.getOrigin());
+
+		String firstTraceType = EMFHelper.getIdentifier(this.getTlink().eClass());
+		String secondTracetype = EMFHelper.getIdentifier(connection.getTlink().eClass());
+		if (!(firstTraceType.equals(secondTracetype))) {
+			return false;
+		}
+
+		List<String> firstElementsIds = allFirstElements.stream().map(e -> EMFHelper.getIdentifier(e))
+				.collect(Collectors.toList());
+		List<String> secondElementsIds = allSecondElements.stream().map(e -> EMFHelper.getIdentifier(e))
+				.collect(Collectors.toList());
+		return firstElementsIds.containsAll(secondElementsIds);
+	}
+
 }

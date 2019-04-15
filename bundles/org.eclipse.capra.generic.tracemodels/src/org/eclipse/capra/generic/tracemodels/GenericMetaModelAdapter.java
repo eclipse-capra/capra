@@ -83,7 +83,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		}
 		relatedToTrace.setName(name.toString());
 		tm.getTraces().add(relatedToTrace);
-		return tm;
+		return relatedToTrace;
 	}
 
 	@Override
@@ -177,9 +177,11 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<Connection> allLinks = new ArrayList<>();
 
 		for (RelatedTo trace : model.getTraces()) {
-			EObject origin = trace.getItem().get(0);
-			trace.getItem().remove(0);
-			allLinks.add(new Connection(origin, trace.getItem(), trace));
+			List<EObject> allItems = new ArrayList<>();
+			allItems.addAll(trace.getItem());
+			EObject origin = allItems.get(0);
+			allItems.remove(0);
+			allLinks.add(new Connection(origin, allItems, trace));
 		}
 		return allLinks;
 	}

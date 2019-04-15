@@ -57,7 +57,7 @@ public interface TraceMetaModelAdapter {
 	 *            returned.
 	 * @param selection
 	 *            Objects to create the trace for
-	 * @return root of trace model that now contains the newly created trace
+	 * @return the trace link that has just been created
 	 */
 	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection);
 

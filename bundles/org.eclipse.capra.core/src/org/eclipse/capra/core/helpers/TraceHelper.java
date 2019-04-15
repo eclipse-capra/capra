@@ -23,6 +23,7 @@ import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 /**
  * Helper class for creating traces
@@ -45,9 +46,10 @@ public class TraceHelper {
 	 *
 	 * @param wrappers
 	 * @param traceType
+	 * @return the trace link that has been created
 	 */
-	public void createTrace(List<EObject> wrappers, EClass traceType) {
-		traceAdapter.createTrace(traceType, traceModel, wrappers);
+	public EObject createTrace(List<EObject> wrappers, EClass traceType) {
+		return traceAdapter.createTrace(traceType, traceModel, wrappers);
 	}
 
 	/**
@@ -100,6 +102,37 @@ public class TraceHelper {
 		tracedElements.addAll(connection.getTargets());
 		return tracedElements;
 		
+	}
+
+	/**
+	 * Checks if a trace link of a certain type containing a certain selection
+	 * already exists in the trace model.
+	 * 
+	 * @param selection
+	 *            the selected elements
+	 * @param traceType
+	 *            the type of trace link
+	 * @param traceModel
+	 *            the trace model to be checked
+	 * @return true if the link exists
+	 */
+
+	public boolean traceExists(List<EObject> selection, EClass traceType, EObject traceModel) {
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		// create a connection
+		List<EObject> allElements = new ArrayList<>(selection);
+		EObject source = allElements.get(0);
+		allElements.remove(0);
+		List<EObject> targets = allElements;
+
+		// create temporary trace model with a temporary trace link
+		EObject tempTraceModel = ExtensionPointHelper.getTracePersistenceAdapter().get()
+				.getTraceModel(new ResourceSetImpl());
+		EObject tempTlink = traceAdapter.createTrace(traceType, tempTraceModel, selection);
+
+		Connection connection = new Connection(source, targets, tempTlink);
+
+		return traceAdapter.getAllTraceLinks(traceModel).stream().anyMatch(c -> c.equals(connection));
 	}
 
 }

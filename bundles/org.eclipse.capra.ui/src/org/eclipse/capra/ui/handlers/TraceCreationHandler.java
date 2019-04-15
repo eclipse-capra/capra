@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -70,9 +71,15 @@ public class TraceCreationHandler extends AbstractHandler {
 
 		// Create trace
 		if (chosenType.isPresent()) {
+			// check if the connection already exists
+			if (traceHelper.traceExists(wrappers, chosenType.get(), traceModel)) {
+				MessageDialog.openInformation(window.getShell(), "Capra Information",
+						"The trace link you want to create already exists and will therefore not be created");
+			} else {
 			traceHelper.createTrace(wrappers, chosenType.get());
 			persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
-			traceHelper.annotateTrace(wrappers);
+				traceHelper.annotateTrace(wrappers);
+			}
 		}
 	}
 
@@ -95,4 +102,5 @@ public class TraceCreationHandler extends AbstractHandler {
 
 		return Optional.empty();
 	}
+
 }
