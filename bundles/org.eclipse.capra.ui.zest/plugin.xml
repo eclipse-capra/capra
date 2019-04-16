@@ -21,7 +21,7 @@
       <view
             category="org.eclipse.capra.generic.views"
             class="org.eclipse.capra.ui.zest.ZestView"
-            icon="icons/capra.png"
+            icon="platform:/plugin/org.eclipse.capra.ui/icons/capra.png"
             id="org.eclipse.capra.ui.zest.zestView"
             name="%view.name"
             restorable="true">
