@@ -49,7 +49,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 }
 
 location "http://hallvard.github.io/plantuml/" plantuml {
-	net.sourceforge.plantuml.feature.feature.group
+	net.sourceforge.plantuml.feature.feature.group 1.1.23
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {

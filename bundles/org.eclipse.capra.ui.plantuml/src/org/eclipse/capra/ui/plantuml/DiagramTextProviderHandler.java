@@ -27,22 +27,36 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
 
 import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
+import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
 
 /**
  * Provides PlantUML with a string representation of elements connected by trace
  * links.
  *
- * @author Anthony Anjorin, Salome Maro
+ * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  */
 public class DiagramTextProviderHandler implements DiagramTextProvider {
 	private EObject artifactModel = null;
 
 	@Override
 	public String getDiagramText(IEditorPart editor, ISelection input) {
-		List<Object> selectedModels = TraceCreationHelper
-				.extractSelectedElements(editor.getSite().getSelectionProvider().getSelection());
+		return (getDiagramText((IWorkbenchPart) editor, input));
+	}
+
+	@Override
+	public String getDiagramText(IViewPart view, ISelection input) {
+		return (getDiagramText((IWorkbenchPart) view, input));
+	}
+
+	public String getDiagramText(IWorkbenchPart part, ISelection input) {
+		List<Object> selectedModels = new ArrayList<>();
+		if (part.getSite().getSelectionProvider() != null) {
+			selectedModels.addAll(TraceCreationHelper.extractSelectedElements(part.getSite().getSelectionProvider().getSelection()));
+		}
 		return getDiagramText(selectedModels);
 	}
 
@@ -63,11 +77,12 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		if (selectedModels.size() > 0) {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			// check if there is a hander for the selected and get its Wrapper
-			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(selectedModels.get(0)).orElse(null);
-			
+			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper
+					.getHandler(selectedModels.get(0)).orElse(null);
+
 			if (handler != null) {
 				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
-				if (selectedObject != null) {
+				if (selectedObject != null && selectedObject.eResource() != null) {
 					resourceSet = selectedObject.eResource().getResourceSet();
 					traceModel = persistenceAdapter.getTraceModel(resourceSet);
 					List<String> selectedRelationshipTypes = SelectRelationshipsHandler.getSelectedRelationshipTypes();
@@ -115,9 +130,11 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 						}
 						List<EObject> links = extractLinksFromTraces(traces);
 						SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
-						return VisualizationHelper.createNeighboursView(traces, EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
+						return VisualizationHelper.createNeighboursView(traces,
+								EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
 					} else if (selectedModels.size() == 2) {
-						IArtifactHandler<Object> handlerSecondElement = (IArtifactHandler<Object>) artifactHelper.getHandler(selectedModels.get(1)).orElse(null);
+						IArtifactHandler<Object> handlerSecondElement = (IArtifactHandler<Object>) artifactHelper
+								.getHandler(selectedModels.get(1)).orElse(null);
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = EMFHelper
 									.linearize(handler.createWrapper(selectedModels.get(0), artifactModel));
@@ -131,25 +148,26 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 							firstModelElements = firstObject;
 							secondModelElements = secondObject;
 						}
-							
+
 					} else if (selectedModels.size() > 2) {
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = selectedModels.stream().flatMap(r -> {
-								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper.getHandler(r).orElse(null);
+								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper
+										.getHandler(r).orElse(null);
 								return EMFHelper.linearize(individualhandler.createWrapper(r, artifactModel)).stream();
 							}).collect(Collectors.toList());
 							secondModelElements = firstModelElements;
 						} else {
 							List<EObject> wrappers = new ArrayList<>();
 							selectedModels.stream().forEach(o -> {
-								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper.getHandler(o)
-											.orElse(null);
+								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper
+										.getHandler(o).orElse(null);
 								wrappers.add(individualhandler.createWrapper(o, artifactModel));
 							});
-							
+
 							firstModelElements = wrappers;
 							secondModelElements = firstModelElements;
-							
+
 							// User selected to display a graph with only the
 							// selected elements
 							if (ToggleDisplayGraphHandler.isDisplayGraph()) {
@@ -168,18 +186,20 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 										relevantTraces.add(newConnection);
 									}
 								}
-								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);}
+								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);
+							}
 						}
-						
-						
+
 					}
 				}
 			}
 		}
 		if (DisplayInternalLinksHandler.areInternalLinksShown()) {
-		return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, true);}
-		else {return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, false);}
-	
+			return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, true);
+		} else {
+			return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, false);
+		}
+
 	}
 
 	@Override
@@ -188,10 +208,18 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	}
 
 	@Override
+	public boolean supportsView(IViewPart part) {
+		if (part instanceof PlantUmlView) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public boolean supportsSelection(ISelection selection) {
 		return true;
 	}
-	
+
 	private static List<EObject> extractLinksFromTraces(List<Connection> traces) {
 		List<EObject> links = new ArrayList<>();
 		for (Connection trace : traces) {

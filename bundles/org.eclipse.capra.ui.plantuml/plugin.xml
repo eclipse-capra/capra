@@ -19,6 +19,15 @@
       </diagramTextProvider>
    </extension>
    <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.eclipse.capra.generic.views"
+            class="org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView"
+            id="org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView"
+            name="Capra PlantUML Viewer">
+      </view>
+   </extension>
+   <extension
          point="org.eclipse.ui.commands">
      
       <command
@@ -80,7 +89,7 @@
 	<extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="menu:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
+            locationURI="menu:org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView?after=additions">
          <command
                commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
                label="%command.label.transitivity"
@@ -114,7 +123,7 @@
       <perspectiveExtension
             targetID="org.eclipse.capra.generic.perspective.CapraPerspective">
          <view
-               id="net.sourceforge.plantuml.eclipse.views.PlantUmlView"
+               id="org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView"
                minimized="false"
                ratio="0.25"
                relationship="right"
