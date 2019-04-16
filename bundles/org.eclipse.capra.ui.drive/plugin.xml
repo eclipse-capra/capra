@@ -8,7 +8,7 @@
 	  <view
 			category="org.eclipse.capra.ui.views"
 			class="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
-			icon="icons/selectionView.png"
+			icon="platform:/plugin/org.eclipse.capra.ui/icons/selectionView.png"
 			id="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
 			name="%view.name">
       </view>
