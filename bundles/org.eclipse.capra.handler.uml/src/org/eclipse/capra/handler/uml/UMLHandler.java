@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -51,7 +52,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 
 	@Override
 	public String getDisplayName(EModelElement artifact) {
-		return artifact.eClass().getName();
+		return EMFHelper.getIdentifier(artifact);
 	}
 
 	@Override
