@@ -20,12 +20,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.base.Strings;
@@ -136,23 +141,29 @@ public class Connections {
 	 */
 	public static String getArtifactLabel(EObject object) {
 		String artifactLabel = null;
-		if (object instanceof ArtifactWrapper) {
-			ArtifactWrapper wrapper = (ArtifactWrapper) object;
-			Collection<IArtifactHandler<?>> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 
-			for (IArtifactHandler<?> handler : artifactHandlers) {
-				String handlerName = handler.toString().substring(0, handler.toString().indexOf('@'));
-				if (handlerName.equals(wrapper.getArtifactHandler())) {
-					Object originalObject = handler.resolveWrapper(object);
-					if (originalObject != null) {
-						artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
-								.orElseThrow(IllegalArgumentException::new);
-					} else { // original object cannot be resolved
-								// therefore use the wrapper name
-						String label = EMFHelper.getIdentifier(object);
-						artifactLabel = label.substring(0, label.indexOf(':'));
-					}
-				}
+		ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
+				.get();
+		ResourceSet resourceSet = new ResourceSetImpl();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		// assume object is and artifact wrapper and get its handler
+		IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactMetaModelAdapter
+				.getArtifactHandlerInstance(object);
+		if (handler == null) {
+			// object is not an artifact handler
+			handler = (IArtifactHandler<Object>) artifactHelper.getHandler(object).orElse(null);
+		}
+		if ((handler != null)) {
+			Object originalObject = handler.resolveWrapper(object);
+			if (originalObject != null) {
+				artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
+						.orElseThrow(IllegalArgumentException::new);
+			} else { // original object cannot be resolved
+				// therefore use the wrapper name
+				String label = EMFHelper.getIdentifier(object);
+				artifactLabel = label.substring(0, label.indexOf(':'));
 			}
 		} else {
 			artifactLabel = EMFHelper.getIdentifier(object);
