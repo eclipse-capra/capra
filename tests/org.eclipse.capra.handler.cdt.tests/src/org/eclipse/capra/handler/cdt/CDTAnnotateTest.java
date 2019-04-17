@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.capra.handler.cdt.preferences.CDTPreferences;
+import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.After;
@@ -29,7 +29,7 @@ public class CDTAnnotateTest {
 
 	private static final String NL = "\n";
 
-	private static IProject project;
+	private static ICProject project;
 	private CDTHandler handler = new CDTHandler();
 	private EObject artifactModel = TestUtil.setupModel();
 
@@ -57,7 +57,7 @@ public class CDTAnnotateTest {
 				"int foo() { return 0; }" + NL +
 				"";
 
-		ITranslationUnit tu = TestUtil.createTranslationUnit(project, "bar.c", source);
+		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar.c", source);
 
 		// Annotate method foo()
 		EObject wrapper = TestUtil.createWrapper(artifactModel, "=cdt/{bar.c[foo#74", "foo");
@@ -83,7 +83,7 @@ public class CDTAnnotateTest {
 			"int foo() { return 0; }" + NL +
 			"";
 
-		ITranslationUnit tu = TestUtil.createTranslationUnit(project, "bar2.c", source);
+		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar2.c", source);
 
 		// Annotate method foo()
 		EObject wrapper = TestUtil.createWrapper(artifactModel, "=cdt/{bar2.c[foo#74", "foo");
@@ -110,7 +110,7 @@ public class CDTAnnotateTest {
 				"int foo() { return 0; }" + NL +
 				"";
 
-		ITranslationUnit tu = TestUtil.createTranslationUnit(project, "bar3.c", source);
+		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar3.c", source);
 
 		// Annotate method foo()
 		EObject wrapper = TestUtil.createWrapper(artifactModel, "=cdt/{bar3.c[foo#74", "foo");

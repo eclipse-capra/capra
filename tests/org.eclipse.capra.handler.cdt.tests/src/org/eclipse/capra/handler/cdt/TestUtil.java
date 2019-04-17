@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -19,15 +17,15 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.cdt.core.CCorePlugin;
+import org.eclipse.cdt.core.CProjectNature;
 import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
-import org.eclipse.cdt.managedbuilder.core.IConfiguration;
-import org.eclipse.cdt.managedbuilder.core.IManagedBuildInfo;
-import org.eclipse.cdt.managedbuilder.core.IManagedProject;
-import org.eclipse.cdt.managedbuilder.core.IProjectType;
 import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
+import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
+import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -35,53 +33,40 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 public class TestUtil {
 
-	public static IProject setupTestProject(String name) throws CoreException, BuildException {
+	@SuppressWarnings("restriction")
+	public static ICProject setupTestProject(String name) throws CoreException, BuildException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
 		IProject project = root.getProject(name);
 
 		IProjectDescription prjDescription = workspace.newProjectDescription(project.getName());
-		IProject cdtProject = CCorePlugin.getDefault().createCDTProject(prjDescription, project, null);
+		project = CCorePlugin.getDefault().createCDTProject(prjDescription, project,
+				new NullProgressMonitor());
 
-		ICProjectDescription cdtDescription = CoreModel.getDefault().createProjectDescription(project, false);
+		// Create build info and managed project
+		ICProjectDescription cProjectDescription = CoreModel.getDefault().createProjectDescription(project, false);
+		ManagedBuildManager.createBuildInfo(project);
 
-		IManagedBuildInfo info = ManagedBuildManager.createBuildInfo(cdtProject);
-		IProjectType projectType = ManagedBuildManager
-				.getExtensionProjectType("cdt.managedbuild.target.gnu.cygwin.exe");
+		Configuration config = new Configuration(new ManagedProject(cProjectDescription), null, "myId", "myName");
+		config.getEditableBuilder().setManagedBuildOn(false);
+		cProjectDescription.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID,
+				config.getConfigurationData());
 
-		assertNotNull(projectType); // Fail early if required bundles not
-									// present
+		CProjectNature.addCNature(project, new NullProgressMonitor());
 
-		System.out.println("Owner: " + cdtProject.getName());
-		System.out.println("ID: " + projectType.getId());
-
-		IManagedProject managedProject = ManagedBuildManager.createManagedProject(cdtProject, projectType);
-		info.setManagedProject(managedProject);
-
-		for (IConfiguration cfg : projectType.getConfigurations()) {
-			String id = ManagedBuildManager.calculateChildId(cfg.getId(), null);
-
-			// clone the configuration and set the artifact name
-			IConfiguration config = managedProject.createConfiguration(cfg, id);
-			config.setArtifactName(project.getName());
-
-			
-			System.out.println("Create config: " + cfg.getId());
-			// creates/add the configuration to the project description
-			cdtDescription.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, config.getConfigurationData());
-		}
-		CoreModel.getDefault().setProjectDescription(project, cdtDescription);
-		return project;
+		CoreModel.getDefault().setProjectDescription(project, cProjectDescription);
+		return CoreModel.getDefault().create(project);
 	}
 
-	public static void deleteTestProject(IProject project) throws CoreException {
-		project.delete(true, null);
+	public static void deleteTestProject(ICProject project) throws CoreException {
+		project.getProject().delete(true, null);
 	}
 
 	public static EObject setupModel() {
