@@ -49,6 +49,7 @@
 		<module>bundles/org.eclipse.capra.ui.office</module>
 		<module>bundles/org.eclipse.capra.ui.drive</module>
 		<module>bundles/org.eclipse.capra.ui.zest</module>
+		<module>bundles/org.eclipse.capra.ui.reqif</module>
 		
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsuite</module>

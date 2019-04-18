@@ -13,13 +13,21 @@
          Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
          Chalmers | University of Gothenburg - additional features, updated API
  -->
-
 <plugin>
-   <extension
-         id="org.eclipse.capra.handler.reqif.ReqIfHandler"
-         point="org.eclipse.capra.configuration.artifactHandlers">
-      <artifactHandler
-            class="org.eclipse.capra.handler.reqif.ReqIfHandler">
-      </artifactHandler>
+<extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.capra.ui.reqif.preferences.ReqifPreferenceInitializer">
+      </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.capra.ui.preferences.CapraPreferences"
+            class="org.eclipse.capra.ui.reqif.preferences.ReqifPreferencePage"
+            id="org.eclipse.capra.handler.reqif.preferences.ReqifPreferencePage"
+            name="Reqif Preferences">
+      </page>
+   </extension>
+
 </plugin>
