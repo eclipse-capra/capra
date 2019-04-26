@@ -13,18 +13,23 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.reqif;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.handler.reqif.preferences.ReqifPreferences;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.rmf.reqif10.AttributeValue;
 import org.eclipse.rmf.reqif10.SpecHierarchy;
 import org.eclipse.rmf.reqif10.SpecObject;
+import org.eclipse.rmf.reqif10.SpecRelation;
+import org.eclipse.rmf.reqif10.Specification;
 import org.eclipse.rmf.reqif10.common.util.ReqIF10Util;
 
 public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
@@ -68,8 +73,36 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 
 	@Override
 	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
-		// Method currently left empty to wait for user requirements of relevant
-		// internal links for REQIF requirements.
+		if (investigatedElement instanceof SpecHierarchy) {
+			SpecHierarchy spec = (SpecHierarchy) investigatedElement;
+
+			// get all relationships in the model
+			EList<SpecRelation> specRelations = ReqIF10Util.getReqIF(spec).getCoreContent()
+					.getSpecRelations();
+			List<Specification> specifications = ReqIF10Util.getReqIF(spec).getCoreContent().getSpecifications();
+
+			// get relationships containing the investigated element
+			List<SpecRelation> relevantRelations = specRelations.stream()
+					.filter(r -> (r.getSource().equals(spec.getObject())) || r.getTarget().equals(spec.getObject()))
+					.collect(Collectors.toList());
+			List<Connection> connections = new ArrayList<>();
+
+			// get all specHierachy objects contained in the relevant links as
+			// targets
+			for(SpecRelation r: relevantRelations) {
+				List<EObject> targets = new ArrayList<>();
+				for (Specification specification : specifications) {
+					for (SpecHierarchy s : specification.getChildren()) {
+						if ((s.getObject().getIdentifier().equals(r.getTarget().getIdentifier()))
+								|| s.getObject().getIdentifier().equals(r.getSource().getIdentifier())) {
+						targets.add(s);
+					}
+				}
+				connections.add(new Connection(investigatedElement, targets, r));
+				}
+			}
+			return connections;
+		} else
 		return Collections.emptyList();
 	}
 
