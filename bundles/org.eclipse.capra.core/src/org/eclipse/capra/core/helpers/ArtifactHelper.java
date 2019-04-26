@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.emf.ecore.EObject;
@@ -74,12 +75,32 @@ public class ArtifactHelper {
 		return wrapped.orElse(null);
 	}
 
+	/**
+	 * Unwraps an artifact wrapper to get its original object. If the original
+	 * object is null, the wrapper is returned as it is
+	 * 
+	 * @param wrapper
+	 *            to be unwrapped
+	 * @return the original artifact
+	 */
+	public Object unwrapWrapper(Object wrapper) {
+		if (wrapper instanceof EObject) {
+			ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
+					.getArtifactWrapperMetaModelAdapter().get();
+			IArtifactHandler<?> handler = (IArtifactHandler<?>) artifactMetaModelAdapter
+					.getArtifactHandlerInstance((EObject) wrapper);
+			if (handler != null) {
+				return handler.resolveWrapper((EObject) wrapper);
+			} else
+				return wrapper;
+		} else
+			return wrapper;
+	}
+
 	// Returns handler for same type as the argument
 	public <T> Optional<IArtifactHandler<?>> getHandler(Object artifact) {
-
 		List<IArtifactHandler<?>> availableHandlers = handlers.stream().filter(h -> h.canHandleArtifact(artifact))
 				.collect(toList());
-
 		if (availableHandlers.isEmpty()) {
 			return Optional.empty();
 		} else if (availableHandlers.size() == 1) {
