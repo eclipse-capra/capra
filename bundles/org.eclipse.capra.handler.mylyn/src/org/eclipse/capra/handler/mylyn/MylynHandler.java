@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.mylyn;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
@@ -22,16 +24,21 @@ import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.TaskList;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
 
 /**
  * A handler to allow tracing from and to tasks handled by Mylyn.
  */
+@SuppressWarnings("restriction")
 public class MylynHandler extends AbstractArtifactHandler<ITask> {
 
 	@Override
 	public EObject createWrapper(ITask task, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(),
 				task.getSummary(), task.getUrl());
 		return wrapper;
@@ -39,7 +46,15 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 
 	@Override
 	public ITask resolveWrapper(EObject wrapper) {
-		// TODO Auto-generated method stub
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		TaskList taskList = (TaskList) TasksUiInternal.getTaskList();
+		Collection<AbstractTask> allTasks = taskList.getAllTasks();
+		Optional<AbstractTask> task = allTasks.stream()
+				.filter(t -> t.getUrl().equals(adapter.getArtifactUri(wrapper)))
+				.findFirst();
+		if (task.isPresent()) {
+			return task.get();
+		} else
 		return null;
 	}
 
