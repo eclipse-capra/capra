@@ -67,7 +67,7 @@ public class TestNotificationJavaMethod {
 	private static final String CLASS_A_NAME = "A";
 	private static final String MODEL_A_NAME = "modelA";
 
-	private static final int UI_REACTION_WAITING_TIME = 500;
+	private static final int UI_REACTION_WAITING_TIME = 1000;
 	private static final int NUMBER_OF_RETRIES = 5;
 
 	@Before

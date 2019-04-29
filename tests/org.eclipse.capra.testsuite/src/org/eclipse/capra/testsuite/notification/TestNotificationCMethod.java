@@ -68,7 +68,7 @@ public class TestNotificationCMethod {
 	private static final String TEST_PROJECT_NAME = "TestProject";
 
 	private static final int NUMBER_OF_RETRIES = 5;
-	private static final int UI_REACTION_WAITING_TIME = 500;
+	private static final int UI_REACTION_WAITING_TIME = 1000;
 
 
 	@Before

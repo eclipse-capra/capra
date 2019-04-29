@@ -64,7 +64,7 @@ public class TestNotificationFile {
 	private static final String TEST_FILE2_NAME = "TestFile2";
 	private static final String TEST_FILE1_NAME = "TestFile1";
 
-	private static final int UI_REACTION_WAITING_TIME = 500;
+	private static final int UI_REACTION_WAITING_TIME = 1000;
 
 	@Before
 	public void init() throws CoreException {
