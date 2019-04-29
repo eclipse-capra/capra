@@ -83,13 +83,13 @@ public class ArtifactHelper {
 	 *            to be unwrapped
 	 * @return the original artifact
 	 */
-	public Object unwrapWrapper(Object wrapper) {
+	public <T> Object unwrapWrapper(Object wrapper) {
 		if (wrapper instanceof EObject) {
 			ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
 					.getArtifactWrapperMetaModelAdapter().get();
 			IArtifactHandler<?> handler = (IArtifactHandler<?>) artifactMetaModelAdapter
 					.getArtifactHandlerInstance((EObject) wrapper);
-			if (handler != null) {
+			if (handler != null && handler.resolveWrapper((EObject) wrapper) != null) {
 				return handler.resolveWrapper((EObject) wrapper);
 			} else
 				return wrapper;
