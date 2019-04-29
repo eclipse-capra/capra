@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
@@ -144,32 +143,20 @@ public class Connections {
 	 */
 	public static String getArtifactLabel(EObject object) {
 		String artifactLabel = null;
-
-		ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
-				.get();
 		ResourceSet resourceSet = new ResourceSetImpl();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		// assume object is and artifact wrapper and get its handler
-		IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactMetaModelAdapter
-				.getArtifactHandlerInstance(object);
-		if (handler == null) {
-			// object is not an artifact handler
-			handler = (IArtifactHandler<Object>) artifactHelper.getHandler(object).orElse(null);
-		}
-		if ((handler != null)) {
-			Object originalObject = handler.resolveWrapper(object);
-			if (originalObject != null) {
-				artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
-						.orElseThrow(IllegalArgumentException::new);
-			} else { // original object cannot be resolved
-				// therefore use the wrapper name
-				String label = EMFHelper.getIdentifier(object);
-				artifactLabel = label.substring(0, label.indexOf(':'));
-			}
-		} else {
-			artifactLabel = EMFHelper.getIdentifier(object);
+		Object originalObject = artifactHelper.unwrapWrapper(object);
+
+		if (originalObject != null) {
+			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
+			artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
+					.orElseThrow(IllegalArgumentException::new);
+		} else { // original object cannot be resolved
+			// therefore use the wrapper name
+			String label = EMFHelper.getIdentifier(object);
+			artifactLabel = label.substring(0, label.indexOf(':'));
 		}
 		// remove unwanted characters like ", '
 		if (artifactLabel != null) {
