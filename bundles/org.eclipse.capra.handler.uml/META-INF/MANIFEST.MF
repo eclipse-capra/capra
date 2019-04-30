@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Capra Handler for UML Models
 Bundle-SymbolicName: org.eclipse.capra.handler.uml;singleton:=true
-Bundle-Version: 0.7.0.qualifier
+Bundle-Version: 0.7.0.RC_201904301041
 Export-Package: org.eclipse.capra.handler.uml
 Require-Bundle: org.eclipse.uml2.uml,
  org.eclipse.emf.ecore,
