@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde?><!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl --><target name="eclipse-capra-e4.9" sequenceNumber="1556804546">
+  <locations>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.cdt.sdk.feature.group" version="9.5.3.201809121146"/>
+      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="9.5.3.201809121146"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.4.201806221350"/>
+      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.7.0.v20180711-0440"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.15.0.v20180905-1732"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="4.1.0.201809120950"/>
+      <unit id="org.eclipse.php.feature.group" version="6.1.0.201808281524"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.15.0.v20180916-1232"/>
+      <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="2.15.0.v20180322-1946"/>
+      <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.16.0.v20180403-2055"/>
+      <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.15.0.v20180916-1232"/>
+      <repository id="eclipse-2018-09" location="http://download.eclipse.org/releases/2018-09/"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.gef4.common.sdk.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.geometry.sdk.feature.group" version="1.0.1.201609060946"/>
+      <unit id="org.eclipse.gef4.fx.sdk.feature.group" version="1.0.1.201609060946"/>
+      <unit id="org.eclipse.gef4.mvc.sdk.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.mvc.examples.source.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.layout.sdk.feature.group" version="1.0.1.201609060946"/>
+      <unit id="org.eclipse.gef4.graph.sdk.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.zest.sdk.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.zest.examples.source.feature.group" version="1.1.0.201609060946"/>
+      <unit id="org.eclipse.gef4.dot.sdk.feature.group" version="1.0.1.201609060946"/>
+      <unit id="org.eclipse.gef4.cloudio.sdk.feature.group" version="1.0.1.201609060946"/>
+      <repository id="eclipse-gef4" location="http://download.eclipse.org/tools/gef/gef4/updates/releases"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>
+      <unit id="org.apache.xmlbeans" version="2.3.0.v201605172150"/>
+      <unit id="com.google.guava" version="21.0.0.v20170206-1425"/>
+      <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+      <unit id="org.apache.poi.ooxml.schemas" version="3.9.0.v201405241750"/>
+      <unit id="org.apache.poi" version="3.9.0.v201405241750"/>
+      <unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.2.v20180207-1730"/>
+      <unit id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
+      <unit id="ch.qos.logback.slf4j" version="1.1.2.v20160301-0943"/>
+      <repository id="eclipse-orbit-2018-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
+      <unit id="org.mortbay.jetty.server" version="6.1.23.v201012071420"/>
+      <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.23"/>
+      <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
+    </location>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.4.201902190522"/>
+      <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
+    </location>
+	  <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		  <unit id="org.eclipse.rmf.reqif10.pror.sdk.feature.feature.group" version="0.13.0.201509161042"/>
+		  <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>
+		  <repository location="http://download.eclipse.org/rmf/updates/releases"/>
+	  </location>
+	  <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		  <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.8.1.201409171422"/>
+		  <repository location="http://download.eclipse.org/sphinx/releases/0.8.x"/>
+	  </location>
+  </locations>
+</target>
