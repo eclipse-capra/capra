@@ -1,20 +1,18 @@
-target "2018-09" with source requirements
+target "eclipse-capra-e4.8" with source requirements
 
-location "http://download.eclipse.org/releases/2018-09/" eclipse-2018-09 {
+location "http://download.eclipse.org/releases/photon/" eclipse-photon {
 	org.eclipse.cdt.sdk.feature.group
 	org.eclipse.cdt.testsrunner.feature.feature.group
 	org.eclipse.emf.compare.ide.ui.feature.group
 	org.eclipse.emf.ecore.xcore.sdk.feature.group
-	org.eclipse.emf.ecp.emfforms.sdk.feature.feature.group
-	org.eclipse.emf.emfstore.sdk.feature.feature.group
 	org.eclipse.emf.sdk.feature.group
-	org.eclipse.gef.mvc.sdk.feature.group
-	org.eclipse.gef.zest.sdk.feature.group
 	org.eclipse.papyrus.sdk.feature.feature.group
 	org.eclipse.php.feature.group
 	org.eclipse.xtext.sdk.feature.group
 	org.eclipse.mylyn.gerrit.feature.feature.group
 	org.eclipse.mylyn.hudson.feature.group
+	org.eclipse.gef.sdk.feature.group
+	org.eclipse.xtend.sdk.feature.group
 }
 
 location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-gef4 {
@@ -31,7 +29,7 @@ location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-g
 	org.eclipse.gef4.cloudio.sdk.feature.group
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20180905201904/repository" eclipse-orbit-2018-09 {
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20180606145124/repository" eclipse-orbit-oxygen3a {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
@@ -48,10 +46,19 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 	org.mortbay.jetty.server
 }
 
+location "http://download.eclipse.org/sphinx/releases/0.8.x" {
+	org.eclipse.sphinx.sdk.feature.group
+}
+
+location "http://download.eclipse.org/rmf/updates/releases" {
+	org.eclipse.rmf.reqif10.sdk.feature.feature.group
+	org.eclipse.rmf.reqif10.pror.sdk.feature.feature.group
+}
+
 location "http://hallvard.github.io/plantuml/" plantuml {
-	net.sourceforge.plantuml.feature.feature.group
+	net.sourceforge.plantuml.feature.feature.group 1.1.23
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
-	de.ovgu.featureide.featuremodeling.feature.group 1.1.23
+	de.ovgu.featureide.featuremodeling.feature.group
 }
