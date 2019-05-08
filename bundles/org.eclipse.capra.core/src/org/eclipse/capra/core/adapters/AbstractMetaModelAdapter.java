@@ -103,9 +103,6 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-
-		ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
-				.get();
 		for (Connection conn : directElements) {
 			int connectionHash = conn.getOrigin().hashCode() + conn.getTlink().hashCode();
 			for (EObject targ : conn.getTargets()) {
@@ -114,20 +111,29 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			if (!hashCodes.contains(connectionHash)) {
 				allElements.add(conn);
 			}
+			// get internal links from source
+			Object origin = artifactHelper.unwrapWrapper(conn.getOrigin());
+			IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).get();
+			if (originHandler != null) {
+				allElements.addAll(originHandler.addInternalLinks(conn.getOrigin(), selectedRelationshipTypes));
+			}
+			// get internal links from targets
 			for (EObject o : conn.getTargets()) {
-				// assume that the object is an artifact wrapper and get its
-				// handler
-				IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactMetaModelAdapter
-						.getArtifactHandlerInstance(o);
-				if (handler == null) {
-					// object is not an artifact handler
-					handler = (IArtifactHandler<Object>) artifactHelper.getHandler(o).orElse(null);
-				}
+				Object originalObject = artifactHelper.unwrapWrapper(o);
+				IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
 				if (handler != null) {
 					allElements.addAll(handler.addInternalLinks(o, selectedRelationshipTypes));
 				}
-
 			}
+		}
+		// show internal links even when no Capra links are present
+		if (directElements.size() == 0) {
+			Object originalObject = artifactHelper.unwrapWrapper(element);
+			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
+			if (handler != null) {
+				allElements.addAll(handler.addInternalLinks(element, selectedRelationshipTypes));
+			}
+
 		}
 
 		if (element.getClass().getPackage().toString().contains("org.eclipse.eatop")) {
