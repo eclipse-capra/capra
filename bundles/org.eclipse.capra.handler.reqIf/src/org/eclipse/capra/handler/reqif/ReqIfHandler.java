@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.handler.reqif.preferences.ReqifPreferences;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -92,10 +93,13 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 			for(SpecRelation r: relevantRelations) {
 				List<EObject> targets = new ArrayList<>();
 				for (Specification specification : specifications) {
-					for (SpecHierarchy s : specification.getChildren()) {
-						if ((s.getObject().getIdentifier().equals(r.getTarget().getIdentifier()))
-								|| s.getObject().getIdentifier().equals(r.getSource().getIdentifier())) {
-						targets.add(s);
+					for (EObject object : EMFHelper.linearize(specification)) {
+						if (object instanceof SpecHierarchy) {
+							SpecHierarchy spechierachy = (SpecHierarchy) object;
+							if ((spechierachy.getObject().getIdentifier().equals(r.getTarget().getIdentifier()))
+									|| spechierachy.getObject().getIdentifier().equals(r.getSource().getIdentifier())) {
+								targets.add(spechierachy);
+							}
 					}
 				}
 				connections.add(new Connection(investigatedElement, targets, r));
