@@ -21,6 +21,7 @@ import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -58,7 +59,8 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	public String getDiagramText(IWorkbenchPart part, ISelection input) {
 		List<Object> selectedModels = new ArrayList<>();
 		if (part.getSite().getSelectionProvider() != null) {
-			selectedModels.addAll(TraceCreationHelper.extractSelectedElements(part.getSite().getSelectionProvider().getSelection()));
+			selectedModels.addAll(
+					TraceCreationHelper.extractSelectedElements(part.getSite().getSelectionProvider().getSelection()));
 		}
 		return getDiagramText(selectedModels);
 	}
@@ -84,7 +86,13 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 					.getHandler(selectedModels.get(0)).orElse(null);
 
 			if (handler != null) {
-				selectedObject = handler.createWrapper(selectedModels.get(0), artifactModel);
+				// unpack element in case it is in a container
+				Object firstElement_unpacked = null;
+				if (handler instanceof IArtifactUnpacker) {
+					firstElement_unpacked = IArtifactUnpacker.class.cast(handler).unpack(selectedModels.get(0));
+				} else
+					firstElement_unpacked = selectedModels.get(0);
+				selectedObject = handler.createWrapper(firstElement_unpacked, artifactModel);
 				if (selectedObject != null && selectedObject.eResource() != null) {
 					resourceSet = selectedObject.eResource().getResourceSet();
 					traceModel = persistenceAdapter.getTraceModel(resourceSet);
@@ -134,20 +142,28 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 						List<EObject> links = extractLinksFromTraces(traces);
 						SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
 						return VisualizationHelper.createNeighboursView(traces,
-								EMFHelper.linearize(handler.createWrapper(selectedModels.get(0), artifactModel)));
+								EMFHelper.linearize(handler.createWrapper(firstElement_unpacked, artifactModel)));
 					} else if (selectedModels.size() == 2) {
+						// unpack second element in case it is in a container
+						Object secondElement_unpacked = null;
+						if (handler instanceof IArtifactUnpacker) {
+							secondElement_unpacked = IArtifactUnpacker.class.cast(handler)
+									.unpack(selectedModels.get(1));
+						} else
+							secondElement_unpacked = selectedModels.get(1);
+
 						IArtifactHandler<Object> handlerSecondElement = (IArtifactHandler<Object>) artifactHelper
 								.getHandler(selectedModels.get(1)).orElse(null);
 						if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 							firstModelElements = EMFHelper
-									.linearize(handler.createWrapper(selectedModels.get(0), artifactModel));
+									.linearize(handler.createWrapper(firstElement_unpacked, artifactModel));
 							secondModelElements = EMFHelper.linearize(
-									handlerSecondElement.createWrapper(selectedModels.get(1), artifactModel));
+									handlerSecondElement.createWrapper(secondElement_unpacked, artifactModel));
 						} else {
 							List<EObject> firstObject = new ArrayList<>();
-							firstObject.add(handler.createWrapper(selectedModels.get(0), artifactModel));
+							firstObject.add(handler.createWrapper(firstElement_unpacked, artifactModel));
 							List<EObject> secondObject = new ArrayList<>();
-							secondObject.add(handlerSecondElement.createWrapper(selectedModels.get(1), artifactModel));
+							secondObject.add(handlerSecondElement.createWrapper(secondElement_unpacked, artifactModel));
 							firstModelElements = firstObject;
 							secondModelElements = secondObject;
 						}
@@ -157,7 +173,14 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 							firstModelElements = selectedModels.stream().flatMap(r -> {
 								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper
 										.getHandler(r).orElse(null);
-								return EMFHelper.linearize(individualhandler.createWrapper(r, artifactModel)).stream();
+								Object object = null;
+								if (individualhandler instanceof IArtifactUnpacker) {
+									object = IArtifactUnpacker.class.cast(individualhandler).unpack(r);
+								} else {
+									object = r;
+								}
+								return EMFHelper.linearize(individualhandler.createWrapper(object, artifactModel))
+										.stream();
 							}).collect(Collectors.toList());
 							secondModelElements = firstModelElements;
 						} else {
@@ -165,7 +188,13 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 							selectedModels.stream().forEach(o -> {
 								IArtifactHandler<Object> individualhandler = (IArtifactHandler<Object>) artifactHelper
 										.getHandler(o).orElse(null);
-								wrappers.add(individualhandler.createWrapper(o, artifactModel));
+								Object object = null;
+								if (individualhandler instanceof IArtifactUnpacker) {
+									object = IArtifactUnpacker.class.cast(individualhandler).unpack(o);
+								} else {
+									object = o;
+								}
+								wrappers.add(individualhandler.createWrapper(object, artifactModel));
 							});
 
 							firstModelElements = wrappers;
