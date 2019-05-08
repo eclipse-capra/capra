@@ -24,9 +24,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -97,9 +101,11 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			return ExtensionPointHelper.getArtifactHandlers().stream()
-					.map(handler -> handler.withCastedHandler(element, (h, e) -> h.getDisplayName(e)))
-					.filter(Optional::isPresent).map(Optional::get).findFirst().orElseGet(element::toString);
+			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+			EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+			IArtifactHandler<?> handler = artifactHelper.getHandler(element).get();
+			return handler.withCastedHandler(element, (h, o) -> h.getDisplayName(o)).orElseGet(element::toString);
 		}
 
 		@Override
@@ -228,9 +234,8 @@ public class SelectionView extends ViewPart {
 		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
 			MessageDialog.openWarning(getSite().getShell(), "Multiple handlers for selected item",
 					"There are multiple handlers for " + target + " so it will be ignored.");
-		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
-			// TODO check if the priority handler can give exactly one artifact
-			// handler, if not flag for multiple selections
+		} else if (availableHandlers.size() > 1 && priorityHandler.isPresent()) {
+			return true;
 		} else {
 			return true;
 		}

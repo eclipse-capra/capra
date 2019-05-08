@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -97,13 +98,26 @@ public class TraceCreationHandler extends AbstractHandler {
 		});
 		dialog.setTitle("Select the trace type you want to create");
 		dialog.setElements(traceTypes.toArray());
-		dialog.setMessage("Selection: " + wrappers.stream().map(EMFHelper::getIdentifier).collect(Collectors.toList()));
+
+		dialog.setMessage(
+				"Selection: " + wrappers.stream().map(this::getSelectionDisplayName).collect(Collectors.toList()));
 
 		if (dialog.open() == Window.OK) {
 			return Optional.of((EClass) dialog.getFirstResult());
 		}
 
 		return Optional.empty();
+	}
+
+	private String getSelectionDisplayName(EObject element) {
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		IArtifactHandler<?> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(element)).get();
+
+		return handler.withCastedHandler(artifactHelper.unwrapWrapper(element), (h, o) -> h.getDisplayName(o))
+				.orElse(EMFHelper.getIdentifier(element));
+
 	}
 
 }

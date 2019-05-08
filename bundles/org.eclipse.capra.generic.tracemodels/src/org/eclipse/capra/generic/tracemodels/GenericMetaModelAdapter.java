@@ -17,11 +17,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
 import org.eclipse.capra.generic.tracemodel.RelatedTo;
@@ -71,18 +72,19 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		EObject trace = TracemodelFactory.eINSTANCE.create(traceType);
 		RelatedTo relatedToTrace = (RelatedTo) trace;
 		relatedToTrace.getItem().addAll(selection);
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
 		// String builder to build the name of the trace link so by adding the
 		// elements it connects so as to make it easy for a user to visually
 		// differentiate trace links
 		StringBuilder name = new StringBuilder();
 		for (Object obj : selection) {
-				name.append(" ").append(ExtensionPointHelper.getArtifactHandlers().stream()
-						.map(handler -> handler.withCastedHandler(obj, (h, e) -> h.getDisplayName(e)))
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.findFirst()
-						.orElseGet(obj::toString));
+			name.append(" ")
+					.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj)).get()
+							.withCastedHandler(artifactHelper.unwrapWrapper(obj), (h, e) -> h.getDisplayName(e))
+							.orElseGet(obj::toString));
 		}
 		relatedToTrace.setName(name.toString());
 		tm.getTraces().add(relatedToTrace);

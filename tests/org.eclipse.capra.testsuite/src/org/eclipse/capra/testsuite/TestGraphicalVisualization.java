@@ -82,7 +82,7 @@ public class TestGraphicalVisualization {
 	private static final String EXPECTED_TEXT_FOR_GOTO_LINKS = "@startuml\n"
 			+ "object \"TestClass [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/TestClass.java#org.eclipse.capra.test.TestClass (Go to)]]\" as o0 #pink\n"
 			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1\n"
-			+ "o0--o1: TestClass : ArtifactWrapper CClass.c : ArtifactWrapper : RelatedTo\n" + "@enduml\n";
+			+ "o0--o1: TestClass CClass.c : RelatedTo\n" + "@enduml\n";
 
 	@Before
 	public void init() throws CoreException {
