@@ -13,14 +13,39 @@ Capra also offers a visualisation of the trace links that allows developers to t
 
 The tool is highly extensible. The meta-model used for the traceability links can easily be adapted to a specific end-user's needs. Capra's modular architecture allows exchanging the persistence, the visualisation, and the management modules easily. New adapters for additional artefacts can easily be added without re-compilation. This allows end-users to customise almost every aspect of the tool if needed. At the same time, we provide sensible defaults that will allow the majority of users to use Capra out of the box without extensive configuration.
 
+## Building the Eclipse Capra source distribution
+
+Please note that the `master` branch of Eclipse Capra always contains the latest stable release. All development takes place in the `develop` branch, following a [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) model.
+
+To build Eclipse Capra, follow these steps:
+
+* Open your Eclipse Environment
+* Go to File --> Import and select Git --> Projects from Git
+* Clone the [Eclipse Capra Git repository](https://git.eclipse.org/c/capra/org.eclipse.capra) and import all available projects to your workspace. Information about the developer resources and the source code repositories is available at [the project website](https://projects.eclipse.org/projects/modeling.capra/developer).
+* Make sure to switch to the *develop* branch if you want to use the current version of Eclipse Capra
+* To make sure Eclipse can resolve all dependencies, set the correct target platform file for your version of Eclipse. All target platform files can be found in `releng/org.eclipse.capra.releng.target`. Open the correct file and set it as the active target platform by opening it and clicking on "Set as Target Platform" in the upper right corner. Eclipse will now download all dependencies. Note that this will take a while. Check the progress in the lower right corner.
+* Build your workspace
+* Make sure that all the projects have no errors.
+
+If compilation errors occur during the first build, check if any of the dependencies above are missing. Cleaning all binaries also often helps resolve issues.
+
+To start Eclipse Capra, follow these steps:
+
+* Make sure that all the projects have no errors.
+* Click on Run --> Run Configurations and create a new Eclipse Application Configuration
+* Select your running workspace
+* Click "Apply", then "Run"
+* Once the new workspace opens, create or import projects that you want to  use to create traceability links
+* Go to perspectives and switch to the Capra perspective
+* Follow [this video](https://youtu.be/XRtLs5OT_yM) to create and visualize traceability links.
 
 ## More information about Eclipse Capra
 
-The Eclipse Capra team maintains a number of wiki page that describe how to install and run Eclipse Capra from source code, how to contribute to Eclipse Capra, how to extend Eclipse Capra, and how to prepare a release. You can find these pages here:
+The Eclipse Capra team maintains a number of wiki page that describe how to install and run Eclipse Capra from source code, how to extend Eclipse Capra with a custom traceability model, how to contribute to Eclipse Capra, and how to prepare a release. You can find these pages here:
 
  * https://wiki.eclipse.org/Capra
- * https://wiki.eclipse.org/Capra/Contributing
  * https://wiki.eclipse.org/Capra/CustomTraceabilityMetaModel
+ * https://wiki.eclipse.org/Capra/Contributing
  * https://wiki.eclipse.org/Capra/PreparingForRelease
 
 ## License
