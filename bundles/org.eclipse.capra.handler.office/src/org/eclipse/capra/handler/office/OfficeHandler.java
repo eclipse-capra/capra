@@ -21,7 +21,9 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.ui.office.Activator;
 import org.eclipse.capra.ui.office.model.CapraOfficeObject;
+import org.eclipse.capra.ui.office.preferences.OfficePreferences;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -37,10 +39,8 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		// TODO here artifactName is the same as the row/paragraph
-		// description. Should it be different?
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-				officeObject.getId(), officeObject.getUri());
+				officeObject.getData(), officeObject.getUri());
 		return wrapper;
 	}
 
@@ -50,12 +50,20 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		String uri = adapter.getArtifactUri(wrapper);
 		CapraOfficeObject object = new CapraOfficeObject();
 		object.setUri(uri);
+		object.setData(adapter.getArtifactName(wrapper));
 		return object;
 	}
 
 	@Override
 	public String getDisplayName(CapraOfficeObject officeObject) {
-		return officeObject.getId();
+		int minAllowed = Activator.getDefault().getPreferenceStore()
+				.getInt(OfficePreferences.CHAR_COUNT);
+		String text = officeObject.toString();
+		int textLength = Math.min(text.length(), minAllowed);
+		if (textLength == minAllowed) {
+			text = text.substring(0, textLength) + "...";
+		}
+		return text;
 	}
 
 	@Override

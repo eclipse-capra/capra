@@ -20,7 +20,9 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.capra.ui.office.model,
+Export-Package: org.eclipse.capra.ui.office,
+ org.eclipse.capra.ui.office.model,
+ org.eclipse.capra.ui.office.preferences,
  org.eclipse.capra.ui.office.utils,
  org.eclipse.capra.ui.office.views
 Bundle-Activator: org.eclipse.capra.ui.office.Activator
