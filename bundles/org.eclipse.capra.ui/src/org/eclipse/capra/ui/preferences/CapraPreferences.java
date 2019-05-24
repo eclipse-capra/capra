@@ -13,20 +13,37 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.preferences;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class CapraPreferences extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	public static final String CAPRA_PREFERENCE_PAGE_ID = "org.eclipse.capra.ui";
+	public static final String SHOW_TRACE_CREATED_CONFIRMATION_DIALOG = "Show confirmation after a trace link has been created";
+	public static final String SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL = "Show confirmation after a trace link has been created";
+	private static final String PREFERENCE_PAGE_DESCRIPTION = "Eclipse Capra UI Preferences";
+
+	private BooleanFieldEditor booleanEditor;
+
 	@Override
 	public void init(IWorkbench workbench) {
-		// TODO Configure this preference page.
-		setDescription("Empty preference page.");
+		setDescription(PREFERENCE_PAGE_DESCRIPTION);
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, CAPRA_PREFERENCE_PAGE_ID));
 	}
 
 	@Override
 	protected void createFieldEditors() {
+		booleanEditor = new BooleanFieldEditor(SHOW_TRACE_CREATED_CONFIRMATION_DIALOG,
+				SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL, getFieldEditorParent());
+		addField(booleanEditor);
 	}
 
+	public static IPreferenceStore getPreferences() {
+		return new ScopedPreferenceStore(InstanceScope.INSTANCE, CAPRA_PREFERENCE_PAGE_ID);
+	}
 }
