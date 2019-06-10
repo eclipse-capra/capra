@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Capra Core Functionality
 Bundle-SymbolicName: org.eclipse.capra.core;singleton:=true
-Bundle-Version: 0.7.0.qualifier
+Bundle-Version: 0.7.0
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.core.resources
