@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: C%Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.ui.drive;singleton:=true
-Bundle-Version: 0.7.0
+Bundle-Version: 0.7.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.equinox.registry,
  org.eclipse.capra.ui.office,

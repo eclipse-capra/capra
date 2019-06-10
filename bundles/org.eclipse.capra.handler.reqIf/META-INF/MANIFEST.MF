@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Capra Handler for ReqIF Models
 Bundle-SymbolicName: org.eclipse.capra.handler.reqIf;singleton:=true
-Bundle-Version: 0.7.0
+Bundle-Version: 0.7.1.qualifier
 Export-Package: org.eclipse.capra.handler.reqif,
  org.eclipse.capra.handler.reqif.preferences
 Require-Bundle: org.eclipse.capra.core,
