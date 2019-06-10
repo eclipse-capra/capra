@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Capra Handler for PHP Elements
+Bundle-SymbolicName: org.eclipse.capra.handler.php;singleton:=true
+Bundle-Version: 0.7.1.qualifier
+Require-Bundle: org.eclipse.capra.core,
+ org.eclipse.capra.core,
+ org.eclipse.php.core,
+ org.eclipse.dltk.core,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.capra.ui.notification,
+ org.eclipse.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Capra Development Team

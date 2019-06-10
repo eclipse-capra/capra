@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v20.html
+     
+    SPDX-License-Identifier: EPL-2.0
+     
+    Contributors:
+         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+         Chalmers | University of Gothenburg - additional features, updated API
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.capra.ui.views"
+			name="%category.name">
+      </category>
+	  <view
+			category="org.eclipse.capra.ui.views"
+			class="org.eclipse.capra.ui.office.views.OfficeView"
+			icon="icons/selectionView.png"
+			id="org.eclipse.capra.ui.views.OfficeView"
+			name="%view.name">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+			id="org.eclipse.capra.ui.office.clearselection"
+            name="%command.name">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.office.showdetails"
+            name="%command.name.0">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.office.openfile"
+            name="%command.name.1">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.office.handlers.ClearSelectionHandler"
+            commandId="org.eclipse.capra.ui.office.clearselection">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.office.handlers.ShowObjectDetailsHandler"
+            commandId="org.eclipse.capra.ui.office.showdetails">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.office.handlers.OpenFileHandler"
+            commandId="org.eclipse.capra.ui.office.openfile">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.capra.ui.views.OfficeView?after=additions"> 
+         <command
+               commandId="org.eclipse.capra.ui.office.openfile"
+               label="%command.label"
+               style="push"
+               tooltip="%command.tooltip">
+         </command>
+         <menu
+               label="%menu.label"
+               tooltip="%menu.tooltip">
+            <dynamic
+                  class="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu"
+                  id="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu">
+            </dynamic>
+            <visibleWhen>
+               <reference
+                     definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
+               </reference>
+            </visibleWhen>
+         </menu>
+         <command
+               commandId="org.eclipse.capra.ui.office.clearselection"
+               label="%command.label.0"
+               style="push"
+               tooltip="%command.tooltip.0">
+            <visibleWhen>
+    		   <reference
+    		   	   definitionId="org.eclipse.capra.ui.office.utils.isViewPopulatedExpression"/>
+			</visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
+         <menu
+		       label="%menu.label.0"
+		       id="org.eclipse.capra.ui.contextsubmenu">
+            <command
+                  commandId="org.eclipse.capra.ui.office.showdetails"
+                  label="%command.label.1"
+                  style="push"
+                  tooltip="%command.tooltip.1">
+               <visibleWhen>
+     	          <iterate ifEmpty="false">
+                     <instanceof value="org.eclipse.capra.ui.office.model.CapraOfficeObject"/>
+                  </iterate>
+               </visibleWhen>
+            </command>
+         </menu>     
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.capra.ui.transfers">
+      <transfer
+            class="org.eclipse.capra.ui.office.utils.OfficeTransferType">
+      </transfer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.capra.ui.preferences.CapraPreferences"
+            class="org.eclipse.capra.ui.office.preferences.OfficePreferences"
+            id="org.eclipse.capra.ui.office.preferences.OfficePreferences"
+            name="%page.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.capra.ui.office.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            id="org.eclipse.capra.ui.office.utils.OfficePropertyTester"
+            namespace="org.eclipse.capra.ui.office.utils"
+            properties="isViewPopulated, isExcelObject"
+            type="org.eclipse.capra.ui.office.model.CapraOfficeObject">
+      </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="org.eclipse.capra.ui.office.utils.OfficeSourceProvider">
+         <variable
+               name="org.eclipse.capra.ui.office.utils.capraOfficeObject"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.capra.ui.office.utils.isViewPopulatedExpression">
+         <with
+               variable="org.eclipse.capra.ui.office.utils.capraOfficeObject">
+            <test
+                  forcePluginActivation="true"
+                  property="org.eclipse.capra.ui.office.utils.isViewPopulated">
+            </test>
+         </with>
+      </definition>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
+         <with
+               variable="org.eclipse.capra.ui.office.utils.capraOfficeObject">
+            <test
+                  forcePluginActivation="true"
+                  property="org.eclipse.capra.ui.office.utils.isExcelObject">
+            </test>
+         </with>
+      </definition>
+   </extension>
+</plugin>

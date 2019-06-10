@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Capra Handler for Java Elements
+Bundle-SymbolicName: org.eclipse.capra.handler.jdt;singleton:=true
+Bundle-Version: 0.7.1.qualifier
+Require-Bundle: org.eclipse.jdt.core,
+ org.eclipse.capra.core,
+ org.eclipse.emf.ecore,
+ org.eclipse.jface.text,
+ org.eclipse.emf.ecore,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.capra.core,
+ org.eclipse.capra.ui.notification,
+ org.eclipse.core.runtime,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.handler.jdt,
+ org.eclipse.capra.handler.jdt.preferences
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Capra Development Team

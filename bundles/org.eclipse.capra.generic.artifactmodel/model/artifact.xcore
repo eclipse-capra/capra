@@ -1,0 +1,13 @@
+package  org.eclipse.capra.generic.artifactmodel
+
+class ArtifactWrapperContainer {
+	contains ArtifactWrapper [0..*] artifacts 
+}
+
+class ArtifactWrapper {
+	String path
+	String uri
+	String name
+	String identifier
+	String ArtifactHandler
+}

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v20.html
+     
+    SPDX-License-Identifier: EPL-2.0
+     
+    Contributors:
+         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+         Chalmers | University of Gothenburg - additional features, updated API
+ -->
+
+<plugin>
+   <extension-point id="org.eclipse.capra.ui.transfers" name="%extension-point.name" schema="schema/org.eclipse.capra.ui.transfers.exsd"/>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.capra.generic.tracecreation.commands.createTrace"
+            name="%command.name">
+      </command>
+      <command
+            helpContextId="Remove currently selected item from the  list of selection"
+            id="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
+            name="%command.name.0">
+      </command>
+      <command
+            id="org.eclipse.capra.generic.tracecreation.clearselection"
+            name="%command.name.1">
+      </command>
+      <command
+            id="org.eclipse.capra.generic.addtoselection"
+            name="%command.name.2">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.handlers.TraceCreationHandler"
+            commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.handlers.selection.RemoveSelectionHandler"
+            commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.handlers.selection.ClearSelectionHandler"
+            commandId="org.eclipse.capra.generic.tracecreation.clearselection">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.handlers.selection.AddtoSelection"
+            commandId="org.eclipse.capra.generic.addtoselection">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.capra.generic.views.SelectionView?after=additions">
+         <separator
+               name="org.eclipse.capra.tracecreation.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace"
+               id="org.eclipse.capra.tracecreation.menus.createTrace"
+               label="%command.label"
+               mnemonic="%command.mnemonic"
+               tooltip="%command.tooltip">
+         </command>
+         <command
+               commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
+               label="%command.label.0"
+               style="push"
+               tooltip="%command.tooltip.0">
+         </command>
+         <command
+               commandId="org.eclipse.capra.generic.tracecreation.clearselection"
+               label="%command.label.1"
+               style="push"
+               tooltip="%command.tooltip.1">
+         </command>
+         <separator
+               name="org.eclipse.capra.generic.tracecreation.separator1"
+               visible="true">
+         </separator>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <separator
+               name="org.eclipse.capra.generic.separator2">
+         </separator>
+         <menu
+               label="%menu.label"
+               id="org.eclipse.capra.ui.contextsubmenu">
+            <command
+                  commandId="org.eclipse.capra.generic.addtoselection"
+                  label="%command.label.2"
+                  style="push"
+                  tooltip="%command.tooltip.2">
+            </command>
+         </menu>
+         <separator
+               name="org.eclipse.capra.generic.separator1">
+         </separator>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.capra.generic.views"
+            name="%category.name">
+      </category>
+      <view
+            category="org.eclipse.capra.generic.views"
+            class="org.eclipse.capra.ui.views.SelectionView"
+            icon="icons/selectionView.png"
+            id="org.eclipse.capra.generic.views.SelectionView"
+            name="%view.name">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.capra.ui.perspective.CapraPerspective"
+            icon="icons/capra.png"
+            id="org.eclipse.capra.generic.perspective.CapraPerspective"
+            name="%perspective.name">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.capra.ui.preferences.CapraPreferences"
+            id="org.eclipse.capra.ui.preferences.CapraPreferences"
+            name="%page.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+1">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+  	  <sequenceModifier
+  			find="DEL"
+  			replace="BS"
+  			platforms="cocoa"/>
+      <key
+            commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DEL">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+  	  <sequenceModifier
+  			find="M2+DEL"
+  			replace="M2+BS"
+  			platforms="cocoa"/>
+         <key
+            commandId="org.eclipse.capra.generic.tracecreation.clearselection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+DEL">
+      </key> 
+	</extension>
+</plugin>

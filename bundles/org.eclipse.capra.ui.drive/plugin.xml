@@ -1,0 +1,68 @@
+<!--
+    Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v20.html
+     
+    SPDX-License-Identifier: EPL-2.0
+     
+    Contributors:
+         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+         Chalmers | University of Gothenburg - additional features, updated API
+ -->
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.capra.ui.views"
+			name="%category.name">
+      </category>
+	  <view
+			category="org.eclipse.capra.ui.views"
+			class="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
+			icon="platform:/plugin/org.eclipse.capra.ui/icons/selectionView.png"
+			id="org.eclipse.capra.ui.drive.CapraGoogleDriveView"
+			name="%view.name">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+			id="org.eclipse.capra.ui.drive.openInBrowser"
+            name="%command.name">
+      </command>
+      <command
+            id="org.eclipse.capra.ui.drive.openInOfficeView"
+            name="%command.name.0">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.capra.ui.drive.CapraGoogleDriveView?after=additions">
+         <command
+               commandId="org.eclipse.capra.ui.drive.openInBrowser"
+               label="%command.label"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.drive.openInOfficeView"
+               label="%command.label.0"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.drive.OpenInBrowserHandler"
+            commandId="org.eclipse.capra.ui.drive.openInBrowser">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.drive.OpenInOfficeViewHandler"
+            commandId="org.eclipse.capra.ui.drive.openInOfficeView">
+      </handler>
+   </extension>
+</plugin>
