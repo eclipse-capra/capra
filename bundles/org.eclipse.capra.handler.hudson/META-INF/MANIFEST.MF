@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Capra Handler for Builds and Testcase Executions in Hudson
 Bundle-SymbolicName: org.eclipse.capra.handler.hudson;singleton:=true
-Bundle-Version: 0.7.0.qualifier
+Bundle-Version: 0.7.1.qualifier
 Require-Bundle: org.eclipse.mylyn.hudson.core,
  org.eclipse.mylyn.builds.core,
  org.eclipse.capra.core,

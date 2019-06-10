@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.capra.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.cdt.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.cdt.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.cdt.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.cdt.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.hudson.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.hudson.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.hudson.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.hudson.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.jdt.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.jdt.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.jdt.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.jdt.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.papyrus.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.papyrus.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.papyrus.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.papyrus.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.reqif.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.reqif.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.reqif.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.reqif.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.office.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.office.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.office.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.office.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
-   <feature url="features/org.eclipse.capra.ui.plantuml.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.ui.plantuml.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.ui.plantuml.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.ui.plantuml.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.ui"/>
    </feature>
-   <feature url="features/org.eclipse.capra.ui.zest.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.ui.zest.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.ui.zest.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.ui.zest.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.ui"/>
    </feature>
-   <feature url="features/org.eclipse.capra.handler.php.feature_0.7.0.qualifier.jar" id="org.eclipse.capra.handler.php.feature" version="0.7.0.qualifier">
+   <feature url="features/org.eclipse.capra.handler.php.feature_0.7.1.qualifier.jar" id="org.eclipse.capra.handler.php.feature" version="0.7.1.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
    <category-def name="org.eclipse.capra" label="Eclipse Capra Traceability">

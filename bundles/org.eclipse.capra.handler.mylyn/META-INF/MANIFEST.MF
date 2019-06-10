@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Capra Handler for Tasks in MyLyn
 Bundle-SymbolicName: org.eclipse.capra.handler.mylyn;singleton:=true
-Bundle-Version: 0.7.0.qualifier
+Bundle-Version: 0.7.1.qualifier
 Require-Bundle: org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.capra.core,
