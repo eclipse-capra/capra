@@ -25,7 +25,7 @@ import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.handlers.TraceCreationHandler;
+import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
@@ -64,7 +64,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -85,8 +85,7 @@ public class TestHelper {
 	/**
 	 * Creates an empty project
 	 *
-	 * @param projectName
-	 *            the name of the project
+	 * @param projectName the name of the project
 	 * @throws CoreException
 	 */
 	public static IProject createSimpleProject(String projectName) throws CoreException {
@@ -101,8 +100,7 @@ public class TestHelper {
 	/**
 	 * Creates a Java project and a Java class declaration inside it.
 	 *
-	 * @param projectName
-	 *            the name of the project
+	 * @param projectName the name of the project
 	 * @return the created Java class
 	 * @throws CoreException
 	 */
@@ -165,10 +163,8 @@ public class TestHelper {
 	/**
 	 * Checks if the project with the provided name exists.
 	 *
-	 * @param projectName
-	 *            the name of the project
-	 * @return true if the project exists in the active workspace, false
-	 *         otherwise
+	 * @param projectName the name of the project
+	 * @return true if the project exists in the active workspace, false otherwise
 	 */
 	public static boolean projectExists(String projectName) {
 		return getProject(projectName).exists();
@@ -177,8 +173,7 @@ public class TestHelper {
 	/**
 	 * Returns a handle to the project resource with the given name.
 	 *
-	 * @param projectName
-	 *            the name of the project
+	 * @param projectName the name of the project
 	 * @return a handle to the project resource
 	 */
 	public static IProject getProject(String projectName) {
@@ -189,8 +184,7 @@ public class TestHelper {
 	/**
 	 * Creates an empty Ecore model.
 	 *
-	 * @param name
-	 *            the name of the model
+	 * @param name the name of the model
 	 * @return
 	 */
 	public static EPackage createEcoreModel(String name) {
@@ -202,10 +196,8 @@ public class TestHelper {
 	/**
 	 * Creates an EClass entity in the provided model.
 	 *
-	 * @param p
-	 *            an Ecore model
-	 * @param name
-	 *            the name of the created EClass entity
+	 * @param p    an Ecore model
+	 * @param name the name of the created EClass entity
 	 */
 	public static void createEClassInEPackage(EPackage p, String name) {
 		EClass c = EcoreFactory.eINSTANCE.createEClass();
@@ -216,10 +208,8 @@ public class TestHelper {
 	/**
 	 * Nests a new EPackage inside the provided EPackage.
 	 *
-	 * @param p
-	 *            a new EPackage
-	 * @param name
-	 *            the name of the created EPackage
+	 * @param p    a new EPackage
+	 * @param name the name of the created EPackage
 	 */
 	public static void createEPackageInEPackage(EPackage p, String name) {
 		EPackage pkg = EcoreFactory.eINSTANCE.createEPackage();
@@ -230,10 +220,8 @@ public class TestHelper {
 	/**
 	 * Persists (saves) the provided Ecore model in the specified project.
 	 *
-	 * @param project
-	 *            a handle to the project in which the model is to be persisted
-	 * @param pack
-	 *            the Ecore model to be persisted
+	 * @param project a handle to the project in which the model is to be persisted
+	 * @param pack    the Ecore model to be persisted
 	 * @throws IOException
 	 */
 	public static void save(IProject project, EPackage pack) throws IOException {
@@ -247,12 +235,9 @@ public class TestHelper {
 	/**
 	 * Returns an Ecore model entity from the specified project.
 	 *
-	 * @param project
-	 *            the project containing the model
-	 * @param p
-	 *            the name of the model
-	 * @param rs
-	 *            the provided ResourceSet instance
+	 * @param project the project containing the model
+	 * @param p       the name of the model
+	 * @param rs      the provided ResourceSet instance
 	 * @return an Ecore model entity
 	 * @throws IOException
 	 */
@@ -264,13 +249,13 @@ public class TestHelper {
 	/**
 	 * Creates a trace between the objects that are in the Selection view.
 	 *
-	 * @param traceType
-	 *            the type of the trace that is to connect the objects
+	 * @param traceType the type of the trace that is to connect the objects
 	 */
 	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		TraceCreationHandler handler = new TraceCreationHandler();
-		handler.createTrace(window, (traceTypes, selection) -> {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		CreateTraceOperation operation = new CreateTraceOperation("Create trace link",
+				SelectionView.getOpenedView().getSelection());
+		operation.createTrace(shell, (traceTypes, selection) -> {
 			if (traceTypes.contains(traceType)) {
 				return Optional.of(traceType);
 			} else {
@@ -282,10 +267,8 @@ public class TestHelper {
 	/**
 	 * Checks if there is a trace between the provided Objects.
 	 *
-	 * @param a
-	 *            first EObject
-	 * @param b
-	 *            second EObject
+	 * @param a first EObject
+	 * @param b second EObject
 	 * @return true if a trace exists between the two objects, false otherwise
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
@@ -331,8 +314,7 @@ public class TestHelper {
 	/**
 	 * Creates an empty C or C++ project.
 	 *
-	 * @param projectName
-	 *            the name of the project to be created
+	 * @param projectName the name of the project to be created
 	 * @return a handle to the created project
 	 * @throws CoreException
 	 * @throws BuildException
@@ -360,10 +342,8 @@ public class TestHelper {
 	/**
 	 * Creates a C source file in the provided C project.
 	 *
-	 * @param fileName
-	 *            the name of the C source file to be created in the project
-	 * @param cProject
-	 *            the project in which the file is to be created
+	 * @param fileName the name of the C source file to be created in the project
+	 * @param cProject the project in which the file is to be created
 	 * @return the created TranslationUnit
 	 * @throws CoreException
 	 */
@@ -386,10 +366,8 @@ public class TestHelper {
 	/**
 	 * Creates an empty file in the project with the provided name.
 	 *
-	 * @param fileName
-	 *            the name of the created file
-	 * @param projectName
-	 *            the name of the project in which the file is to be created
+	 * @param fileName    the name of the created file
+	 * @param projectName the name of the project in which the file is to be created
 	 * @return a handle to the created file
 	 * @throws CoreException
 	 */
