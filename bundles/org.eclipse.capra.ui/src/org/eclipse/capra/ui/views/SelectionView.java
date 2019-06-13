@@ -29,6 +29,8 @@ import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.IMenuListener;
@@ -51,9 +53,13 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.ViewPart;
 
 public class SelectionView extends ViewPart {
@@ -81,6 +87,22 @@ public class SelectionView extends ViewPart {
 
 	/** The maintained selection of EObjects */
 	private Set<Object> selection = new LinkedHashSet<>();
+
+	/**
+	 * The appropriate undo context. We are using the global context to ensure that
+	 * trace creation can be undone in all viewers and editors.
+	 */
+	private IUndoContext undoContext = IOperationHistory.GLOBAL_UNDO_CONTEXT;
+
+	/**
+	 * Action handler to undo the creation of a trace.
+	 */
+	private UndoActionHandler undoAction;
+
+	/**
+	 * Action handler to redo the creation of a trace.
+	 */
+	private RedoActionHandler redoAction;
 
 	class ViewContentProvider implements IStructuredContentProvider {
 		@Override
@@ -125,8 +147,8 @@ public class SelectionView extends ViewPart {
 	}
 
 	/**
-	 * Leaves the order of objects unchanged by returning 0 for all combinations
-	 * of objects.
+	 * Leaves the order of objects unchanged by returning 0 for all combinations of
+	 * objects.
 	 *
 	 * @see ViewerComparator#compare(Viewer, Object, Object)
 	 */
@@ -181,6 +203,8 @@ public class SelectionView extends ViewPart {
 				.map(Transfer.class::cast).collect(Collectors.toList()));
 
 		viewer.addDropSupport(ops, transfers.toArray(DEFAULT_TRANSFERS), new SelectionDropAdapter(viewer));
+
+		createGlobalActionHandlers();
 	}
 
 	private void hookContextMenu() {
@@ -264,5 +288,15 @@ public class SelectionView extends ViewPart {
 	public void removeFromSelection(List<Object> currentselection) {
 		selection.removeAll(currentselection);
 		viewer.refresh();
+	}
+
+	private void createGlobalActionHandlers() {
+		// set up action handlers that operate on the current context
+		undoAction = new UndoActionHandler(this.getSite(), undoContext);
+		redoAction = new RedoActionHandler(this.getSite(), undoContext);
+		IActionBars actionBars = getViewSite().getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), undoAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
+		actionBars.updateActionBars();
 	}
 }

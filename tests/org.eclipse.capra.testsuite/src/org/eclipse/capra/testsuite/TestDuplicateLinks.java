@@ -186,20 +186,18 @@ public class TestDuplicateLinks {
 
 		// Test the trace exists method
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject traceModel = persistenceAdapter.getTraceModel(_A.eResource().getResourceSet());
-		TraceHelper traceHelper = new TraceHelper(traceModel);
+		TraceHelper traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(_A.eResource().getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		EClass traceType = TracemodelPackage.eINSTANCE.getRelatedTo();
 		List<EObject> selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 
-		assertFalse(traceHelper.traceExists(selection, traceType,
-				persistenceAdapter.getTraceModel(_A.eResource().getResourceSet())));
+		assertFalse(traceHelper.traceExists(selection, traceType));
 
 		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 
-		assertTrue(traceHelper.traceExists(selection, traceType,
-				persistenceAdapter.getTraceModel(_A.eResource().getResourceSet())));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		assertTrue(traceHelper.traceExists(selection, traceType));
 
 		// Change the order of the selection in the selection view
 		SelectionView.getOpenedView().clearSelection();
@@ -210,18 +208,16 @@ public class TestDuplicateLinks {
 
 		// Check that the trace exists
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
-		assertTrue(traceHelper.traceExists(selection, traceType,
-				persistenceAdapter.getTraceModel(_A.eResource().getResourceSet())));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		assertTrue(traceHelper.traceExists(selection, traceType));
 
 		// Add another class to the selection view
 		SelectionView.getOpenedView().dropToSelection(_C);
 
 		// Check that the trace does not exist
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
-		assertFalse(traceHelper.traceExists(selection, traceType,
-				persistenceAdapter.getTraceModel(_A.eResource().getResourceSet())));
-
-
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		assertFalse(traceHelper.traceExists(selection, traceType));
 	}
 
 }

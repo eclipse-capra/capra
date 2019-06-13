@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
@@ -53,6 +54,15 @@ public class TraceHelper {
 	 */
 	public EObject createTrace(List<EObject> wrappers, EClass traceType) {
 		return traceAdapter.createTrace(traceType, traceModel, wrappers);
+	}
+
+	/**
+	 * Deletes the given traces from the trace model
+	 * 
+	 * @param toDelete the traces to delete from the trace model
+	 */
+	public void deleteTraces(List<Connection> toDelete) {
+		traceAdapter.deleteTrace(toDelete, traceModel);
 	}
 
 	/**
@@ -98,29 +108,36 @@ public class TraceHelper {
 			}
 		}
 	}
-	
+
 	public List<EObject> getTracedElements(Connection connection) {
 		List<EObject> tracedElements = new ArrayList<>();
 		tracedElements.add(connection.getOrigin());
 		tracedElements.addAll(connection.getTargets());
 		return tracedElements;
-		
+
 	}
 
 	/**
 	 * Checks if a trace link of a certain type containing a certain selection
-	 * already exists in the trace model.
+	 * already exists in the trace model for the instance of this class.
 	 * 
-	 * @param selection
-	 *            the selected elements
-	 * @param traceType
-	 *            the type of trace link
-	 * @param traceModel
-	 *            the trace model to be checked
+	 * @param selection the selected elements
+	 * @param traceType the type of trace link
 	 * @return true if the link exists
 	 */
+	public boolean traceExists(List<EObject> selection, EClass traceType) {
+		return !getTraces(selection, traceType).isEmpty();
+	}
 
-	public boolean traceExists(List<EObject> selection, EClass traceType, EObject traceModel) {
+	/**
+	 * Returns all trace links of the given type containing the given selection that
+	 * exist in the trace model set in the instance of this class.
+	 * 
+	 * @param selection the selected elements
+	 * @param traceType the type of trace link
+	 * @return a list of trace links that fit the criteria
+	 */
+	public List<Connection> getTraces(List<EObject> selection, EClass traceType) {
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		// create a connection
 		List<EObject> allElements = new ArrayList<>(selection);
@@ -135,7 +152,8 @@ public class TraceHelper {
 
 		Connection connection = new Connection(source, targets, tempTlink);
 
-		return traceAdapter.getAllTraceLinks(traceModel).stream().anyMatch(c -> c.equals(connection));
+		return traceAdapter.getAllTraceLinks(this.traceModel).stream().filter(c -> c.equals(connection))
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 }
