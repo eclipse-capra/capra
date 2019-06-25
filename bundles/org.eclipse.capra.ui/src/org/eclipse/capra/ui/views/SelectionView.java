@@ -72,7 +72,7 @@ import org.eclipse.ui.part.ViewPart;
 public class SelectionView extends ViewPart {
 
 	/** The ID of the view as specified by the extension. */
-	public static final String ID = "org.eclipse.capra.generic.views.SelectionView";
+	public static final String ID = "org.eclipse.capra.ui.views.SelectionView";
 
 	/**
 	 * Identifier of the extension point that contains the transfer definitions.
