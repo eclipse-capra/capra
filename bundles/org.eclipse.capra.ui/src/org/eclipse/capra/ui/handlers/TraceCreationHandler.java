@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.handlers;
 
+import java.util.Optional;
+
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.commands.AbstractHandler;
@@ -36,6 +38,11 @@ public class TraceCreationHandler extends AbstractHandler {
 		CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create trace link",
 				SelectionView.getOpenedView().getSelection());
 		createTraceOperation.addContext(undoContext);
+		if (SelectionView.getOpenedView().getSelectedTraceType() != null) {
+			createTraceOperation.setChooseTraceType((a, b) -> {
+				return Optional.of(SelectionView.getOpenedView().getSelectedTraceType());
+			});
+		}
 		operationHistory.execute(createTraceOperation, null, adapter);
 		return null;
 	}

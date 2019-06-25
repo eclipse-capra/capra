@@ -31,7 +31,9 @@ public class RemoveSelectionHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		List<Object> selection = TraceCreationHelper.extractSelectedElements(event);
-		SelectionView.getOpenedView().removeFromSelection(selection);
+		if (selection != null) {
+			SelectionView.getOpenedView().removeFromSelection(selection);
+		}
 		return null;
 	}
 }
