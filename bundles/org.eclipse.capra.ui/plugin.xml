@@ -36,7 +36,7 @@
       </command>
       <command
             categoryId="org.eclipse.capra.ui.commands.category"
-            id="org.eclipse.capra.ui.addtoselection"
+            id="org.eclipse.capra.ui.commands.addtoselection"
             name="%command.addtoselection.name">
       </command>
       <category
@@ -49,7 +49,6 @@
       <handler
             class="org.eclipse.capra.ui.handlers.TraceCreationHandler"
             commandId="org.eclipse.capra.ui.commands.createTrace">
-         <enabledWhen></enabledWhen>
       </handler>
       <handler
             class="org.eclipse.capra.ui.handlers.selection.RemoveSelectionHandler"
@@ -61,7 +60,7 @@
       </handler>
       <handler
             class="org.eclipse.capra.ui.handlers.selection.AddtoSelection"
-            commandId="org.eclipse.capra.ui.addtoselection">
+            commandId="org.eclipse.capra.ui.commands.addtoselection">
       </handler>
    </extension>
    <extension
@@ -73,20 +72,20 @@
                visible="true">
          </separator>
          <command
-               commandId="org.eclipse.capra.generic.tracecreation.commands.createTrace"
+               commandId="org.eclipse.capra.ui.commands.createTrace"
                id="org.eclipse.capra.tracecreation.menus.createTrace"
                label="%command.createtrace.label"
                mnemonic="%command.createtrace.mnemonic"
                tooltip="%command.createtrace.tooltip">
          </command>
          <command
-               commandId="org.eclipse.capra.generic.tracecreation.commands.removefromselection"
+               commandId="org.eclipse.capra.ui.commands.removefromselection"
                label="%command.removefromselection.label"
                style="push"
                tooltip="%command.removefromselection.tooltip">
          </command>
          <command
-               commandId="org.eclipse.capra.generic.tracecreation.clearselection"
+               commandId="org.eclipse.capra.ui.commands.clearselection"
                label="%command.clearselection.label"
                style="push"
                tooltip="%command.clearselection.tooltip">
@@ -106,7 +105,7 @@
                label="%menu.label"
                id="org.eclipse.capra.ui.contextsubmenu">
             <command
-                  commandId="org.eclipse.capra.generic.addtoselection"
+                  commandId="org.eclipse.capra.ui.commands.addtoselection"
                   label="%command.addtoselection.label"
                   style="push"
                   tooltip="%command.addtoselection.tooltip">
