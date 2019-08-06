@@ -52,7 +52,9 @@
 		<module>tests/org.eclipse.capra.handler.jdt.tests</module>
 		<module>tests/org.eclipse.capra.handler.uml.tests</module>
         
-		
+		<!-- Branding -->
+		<module>releng/org.eclipse.capra.branding</module>
+
 		<!-- Features -->
 		<module>features/org.eclipse.capra.feature</module>
 		<module>features/org.eclipse.capra.core.feature</module>
