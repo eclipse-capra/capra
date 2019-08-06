@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.featureide;singleton:=true
-Bundle-Version: 0.7.0.qualifier
+Bundle-Version: 0.7.1.qualifier
 Export-Package: org.eclipse.capra.handler.featureide
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.jface,
@@ -14,4 +14,3 @@ Require-Bundle: org.eclipse.emf.ecore,
  de.ovgu.featureide.fm.core
 Import-Package: org.eclipse.papyrus.infra.emf.utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Capra Development Team

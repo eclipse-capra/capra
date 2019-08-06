@@ -22,7 +22,7 @@
   <artifactId>org.eclipse.capra.p2</artifactId>
   <version>0.7.1-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
-  <name>Capra update site</name>
+  <name>Eclipse Capra Update Site</name>
 
   <pluginRepositories>
     <pluginRepository>
