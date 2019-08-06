@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Handler for GEF Models
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.gef;singleton:=true
 Bundle-Version: 0.7.1.qualifier
 Require-Bundle: org.eclipse.capra.core,
@@ -9,4 +11,3 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.gmf.runtime.diagram.ui
 Import-Package: org.eclipse.capra.ui.helpers
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Capra Development Team

@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests for the Capra Handler for Java Elements
-Bundle-Vendor: Capra Development Team
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.jdt.tests
 Bundle-Version: 0.7.1.qualifier
 Fragment-Host: org.eclipse.capra.handler.jdt

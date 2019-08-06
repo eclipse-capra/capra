@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Handler for FeatureIDE Models
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.featureide;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Export-Package: org.eclipse.capra.handler.featureide

@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Generic Trace Persistence Functionality
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.generic.persistence;singleton:=true
 Bundle-Version: 0.7.1.qualifier
 Require-Bundle: org.eclipse.emf,
@@ -8,4 +10,3 @@ Require-Bundle: org.eclipse.emf,
  org.eclipse.core.runtime,
  org.eclipse.capra.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Capra Development Team

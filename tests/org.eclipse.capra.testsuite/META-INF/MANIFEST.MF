@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Testsuite
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsuite;singleton:=true
 Bundle-Version: 0.7.1.qualifier
 Export-Package: org.eclipse.capra.testsuite
@@ -40,4 +42,3 @@ Require-Bundle: org.junit,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.swt.dnd,
  org.slf4j
-Bundle-Vendor: Capra Development Team

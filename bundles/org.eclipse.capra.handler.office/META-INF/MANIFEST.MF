@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Handler for Microsoft Office Files
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.office;singleton:=true
 Bundle-Version: 0.7.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -8,4 +10,3 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.capra.ui.office,
  org.eclipse.core.resources,
  org.eclipse.ui
-Bundle-Vendor: Capra Development Team
