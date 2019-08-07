@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.11" sequenceNumber="1556805884">
+<target name="eclipse-capra-e4.12" sequenceNumber="1565170693">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.cdt.sdk.feature.group" version="9.7.0.201903092251"/>
-      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="9.7.0.201902260903"/>
-      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.6.201903050300"/>
-      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.9.0.v20190312-0929"/>
-      <unit id="org.eclipse.emf.sdk.feature.group" version="2.17.0.v20190301-1325"/>
-      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="4.3.0.201903131008"/>
+      <unit id="org.eclipse.cdt.sdk.feature.group" version="9.8.0.201906071757"/>
+      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="9.8.0.201903011325"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.7.201905300200"/>
+      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.10.0.v20190401-0856"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.18.0.v20190528-0845"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="4.4.0.201906122339"/>
       <unit id="org.eclipse.php.feature.group" version="6.2.0.201812112302"/>
-      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.17.0.v20190304-1445"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.18.0.v20190528-0716"/>
       <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="2.15.0.v20180322-1946"/>
       <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.16.0.v20180403-2055"/>
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
-      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.17.0.v20190304-1445"/>
-      <repository id="eclipse-2019-03" location="http://download.eclipse.org/releases/2019-03/"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.18.0.v20190528-0716"/>
+      <repository id="eclipse-2019-06" location="http://download.eclipse.org/releases/2019-06/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.gef4.common.sdk.feature.group" version="1.1.0.201609060946"/>
@@ -35,14 +35,14 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>
       <unit id="org.apache.xmlbeans" version="2.3.0.v201605172150"/>
-      <unit id="com.google.guava" version="21.0.0.v20170206-1425"/>
+      <unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
       <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
       <unit id="org.apache.poi.ooxml.schemas" version="3.9.0.v201405241750"/>
       <unit id="org.apache.poi" version="3.9.0.v201405241750"/>
       <unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.2.v20180207-1730"/>
       <unit id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
       <unit id="ch.qos.logback.slf4j" version="1.1.2.v20160301-0943"/>
-      <repository id="eclipse-orbit-2019-03" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository"/>
+      <repository id="eclipse-orbit-2019-06" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20190602212107/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
@@ -63,7 +63,7 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.4.201902190522"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.5.201906282321"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
   </locations>
