@@ -60,5 +60,5 @@ location "http://hallvard.github.io/plantuml/" plantuml {
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
-	de.ovgu.featureide.featuremodeling.feature.group
+	de.ovgu.featureide.featuremodeling.feature.group 3.5.4
 }
