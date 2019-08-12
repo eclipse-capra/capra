@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.featureide;
 
+import java.nio.file.FileSystems;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,32 +30,44 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 
-import de.ovgu.featureide.fm.core.base.impl.Feature;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
+import de.ovgu.featureide.fm.core.io.manager.FileHandler;
 
-public class FeatureIdeHandler extends AbstractArtifactHandler<Feature> {
+/**
+ * A handler for feature models from FeatureIDE.
+ * 
+ * @author Jan-Philipp Steghöfer
+ *
+ */
+public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 
 	@Override
-	public EObject createWrapper(Feature spec, EObject artifactModel) {
+	public EObject createWrapper(IFeature feature, EObject artifactModel) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 
-		final IPath path = Path.fromOSString(spec.getFeatureModel().getSourceFile().toString());
+		final IPath path = Path.fromOSString(feature.getFeatureModel().getSourceFile().toString());
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IFile file = root.getFileForLocation(path);
 		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
 
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
-				Long.toString(spec.getInternalId()), spec.getName(), spec.getFeatureModel().getSourceFile().toString());
+				Long.toString(feature.getInternalId()), feature.getName(), feature.getFeatureModel().getSourceFile().toString());
 		return wrapper;
 	}
 
 	@Override
-	public Feature resolveWrapper(EObject wrapper) {
-		return null;
+	public IFeature resolveWrapper(EObject wrapper) {
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		FileHandler<IFeatureModel> fileHandler = FeatureModelManager
+				.load(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
+		return fileHandler.getObject().getFeature(adapter.getArtifactName(wrapper));
 	}
 
 	@Override
-	public String getDisplayName(Feature spec) {
-		return spec.getName();
+	public String getDisplayName(IFeature feature) {
+		return feature.getName();
 	}
 
 	@Override
