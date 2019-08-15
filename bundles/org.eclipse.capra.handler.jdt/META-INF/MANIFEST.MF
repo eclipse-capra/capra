@@ -19,5 +19,6 @@ Require-Bundle: org.eclipse.jdt.core,
  org.apache.httpcomponents.httpcore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.handler.jdt,
+ org.eclipse.capra.handler.jdt.notification;x-internal:=true,
  org.eclipse.capra.handler.jdt.preferences
 Bundle-ActivationPolicy: lazy

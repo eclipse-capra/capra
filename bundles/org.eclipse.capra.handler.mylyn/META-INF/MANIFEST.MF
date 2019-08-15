@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.mylyn.tasks.core,
  org.eclipse.capra.core,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.handler.mylyn

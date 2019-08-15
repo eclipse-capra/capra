@@ -21,6 +21,8 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.core.expressions
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office,
+ org.eclipse.capra.ui.office.exceptions;x-internal:=true,
+ org.eclipse.capra.ui.office.handlers;x-internal:=true,
  org.eclipse.capra.ui.office.model,
  org.eclipse.capra.ui.office.preferences,
  org.eclipse.capra.ui.office.utils,
