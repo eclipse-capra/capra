@@ -21,7 +21,7 @@
 		<version>0.7.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.capra.generic.tracemodels</artifactId>
+	<artifactId>org.eclipse.capra.generic.tracemodel</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

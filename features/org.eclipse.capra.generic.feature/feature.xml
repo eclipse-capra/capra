@@ -32,7 +32,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.capra.generic.tracemodels"
+         id="org.eclipse.capra.generic.tracemodel"
          download-size="0"
          install-size="0"
          version="0.0.0"

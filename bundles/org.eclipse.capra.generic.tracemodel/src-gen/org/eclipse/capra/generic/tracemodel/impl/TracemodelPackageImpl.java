@@ -64,7 +64,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-	 * 
+	 *
 	 * <p>This method is used to initialize {@link TracemodelPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
@@ -78,7 +78,8 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 		if (isInited) return (TracemodelPackage)EPackage.Registry.INSTANCE.getEPackage(TracemodelPackage.eNS_URI);
 
 		// Obtain or create and register package
-		TracemodelPackageImpl theTracemodelPackage = (TracemodelPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof TracemodelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new TracemodelPackageImpl());
+		Object registeredTracemodelPackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+		TracemodelPackageImpl theTracemodelPackage = registeredTracemodelPackage instanceof TracemodelPackageImpl ? (TracemodelPackageImpl)registeredTracemodelPackage : new TracemodelPackageImpl();
 
 		isInited = true;
 
@@ -94,7 +95,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 		// Mark meta-data to indicate it can't be changed
 		theTracemodelPackage.freeze();
 
-  
 		// Update the registry and return the package
 		EPackage.Registry.INSTANCE.put(TracemodelPackage.eNS_URI, theTracemodelPackage);
 		return theTracemodelPackage;
@@ -105,6 +105,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getGenericTraceModel() {
 		return genericTraceModelEClass;
 	}
@@ -114,6 +115,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getGenericTraceModel_Traces() {
 		return (EReference)genericTraceModelEClass.getEStructuralFeatures().get(0);
 	}
@@ -123,6 +125,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getRelatedTo() {
 		return relatedToEClass;
 	}
@@ -132,6 +135,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRelatedTo_ID() {
 		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(0);
 	}
@@ -141,6 +145,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRelatedTo_Name() {
 		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(1);
 	}
@@ -150,6 +155,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getRelatedTo_Item() {
 		return (EReference)relatedToEClass.getEStructuralFeatures().get(2);
 	}
@@ -159,6 +165,7 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public TracemodelFactory getTracemodelFactory() {
 		return (TracemodelFactory)getEFactoryInstance();
 	}

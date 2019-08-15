@@ -68,6 +68,7 @@ public class TracemodelFactoryImpl extends EFactoryImpl implements TracemodelFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public GenericTraceModel createGenericTraceModel() {
 		GenericTraceModelImpl genericTraceModel = new GenericTraceModelImpl();
 		return genericTraceModel;
@@ -78,6 +79,7 @@ public class TracemodelFactoryImpl extends EFactoryImpl implements TracemodelFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public RelatedTo createRelatedTo() {
 		RelatedToImpl relatedTo = new RelatedToImpl();
 		return relatedTo;
@@ -88,6 +90,7 @@ public class TracemodelFactoryImpl extends EFactoryImpl implements TracemodelFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public TracemodelPackage getTracemodelPackage() {
 		return (TracemodelPackage)getEPackage();
 	}

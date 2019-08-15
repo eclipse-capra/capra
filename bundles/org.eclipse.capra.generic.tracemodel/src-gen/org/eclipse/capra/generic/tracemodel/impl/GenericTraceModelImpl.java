@@ -68,6 +68,7 @@ public class GenericTraceModelImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<RelatedTo> getTraces() {
 		if (traces == null) {
 			traces = new EObjectContainmentEList<RelatedTo>(RelatedTo.class, this, TracemodelPackage.GENERIC_TRACE_MODEL__TRACES);

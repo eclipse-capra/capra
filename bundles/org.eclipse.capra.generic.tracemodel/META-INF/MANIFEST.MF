@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
-Bundle-SymbolicName: org.eclipse.capra.generic.tracemodels;singleton:=true
+Bundle-SymbolicName: org.eclipse.capra.generic.tracemodel;singleton:=true
+Automatic-Module-Name: org.eclipse.capra.generic.tracemodel
 Bundle-Version: 0.7.1.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor

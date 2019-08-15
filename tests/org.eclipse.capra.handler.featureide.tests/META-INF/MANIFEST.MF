@@ -7,7 +7,7 @@ Bundle-SymbolicName: org.eclipse.capra.handler.featureide.tests
 Bundle-Version: 0.7.1.qualifier
 Require-Bundle: 
  org.eclipse.capra.core,
- org.eclipse.capra.generic.tracemodels,
+ org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.handler.featureide,
  org.eclipse.capra.ui,
  org.eclipse.capra.testsuite,
@@ -15,5 +15,7 @@ Require-Bundle:
  org.eclipse.core.runtime,
  org.eclipse.ui,
  de.ovgu.featureide.fm.core,
- org.junit
+ org.junit,
+ ch.qos.logback.slf4j;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.handler.featureide.tests;x-internal:=true

@@ -11,7 +11,7 @@
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
-package org.eclipse.capra.generic.tracemodels;
+package org.eclipse.capra.generic.tracemodel;
 
 import java.io.IOException;
 import java.util.ArrayList;

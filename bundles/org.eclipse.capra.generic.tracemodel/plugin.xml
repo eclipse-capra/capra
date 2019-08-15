@@ -15,15 +15,12 @@
          Chalmers | University of Gothenburg - additional features, updated API
  -->
 
-<!--
--->
-
 <plugin>
 
    <extension
          point="org.eclipse.capra.configuration.traceabilityMetaModel">
       <TraceabilityMetaModelAdapter
-            class="org.eclipse.capra.generic.tracemodels.GenericMetaModelAdapter">
+            class="org.eclipse.capra.generic.tracemodel.GenericMetaModelAdapter">
       </TraceabilityMetaModelAdapter>
    </extension>
 

@@ -27,10 +27,6 @@ public interface GenericTraceModel extends EObject {
 	 * Returns the value of the '<em><b>Traces</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.capra.generic.tracemodel.RelatedTo}.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Traces</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Traces</em>' containment reference list.
 	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getGenericTraceModel_Traces()
