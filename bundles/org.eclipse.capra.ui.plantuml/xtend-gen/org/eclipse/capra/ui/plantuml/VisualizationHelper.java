@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.plantuml.Connections;
 import org.eclipse.emf.ecore.EObject;
@@ -13,11 +14,12 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {
-  public static String createMatrix(final EObject traceModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements, final Boolean internalLinks) {
+  public static String createMatrix(final EObject traceModel, final EObject artifactModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements, final Boolean internalLinks) {
     String _xblockexpression = null;
     {
       Optional<TraceMetaModelAdapter> _traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter();
       final TraceMetaModelAdapter traceAdapter = _traceMetamodelAdapter.get();
+      final ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");
       _builder.newLine();
@@ -32,14 +34,14 @@ public class VisualizationHelper {
           {
             for(final EObject e : secondElements) {
               _builder.append("|");
-              String _artifactLabel = Connections.getArtifactLabel(e);
+              String _artifactLabel = artifactHelper.getArtifactLabel(e);
               _builder.append(_artifactLabel, "");
             }
           }
           _builder.newLineIfNotEmpty();
           {
             for(final EObject first : firstElements) {
-              String _artifactLabel_1 = Connections.getArtifactLabel(first);
+              String _artifactLabel_1 = artifactHelper.getArtifactLabel(first);
               _builder.append(_artifactLabel_1, "");
               {
                 for(final EObject second : secondElements) {
@@ -84,10 +86,10 @@ public class VisualizationHelper {
     return _xblockexpression;
   }
   
-  public static String createNeighboursView(final List<Connection> connections, final List<EObject> selectedObjects) {
+  public static String createNeighboursView(final List<Connection> connections, final List<EObject> selectedObjects, final EObject artifactModel) {
     String _xblockexpression = null;
     {
-      Connections helper = new Connections(connections, selectedObjects);
+      Connections helper = new Connections(connections, selectedObjects, artifactModel);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");
       _builder.newLine();
