@@ -46,6 +46,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 /**
@@ -70,6 +73,8 @@ public class CreateTraceOperation extends AbstractOperation {
 	private List<?> artifacts = null;
 
 	private BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType = null;
+	
+	private EObject createdTrace = null;
 
 	private CreateTraceOperation(String label) {
 		super(label);
@@ -94,12 +99,25 @@ public class CreateTraceOperation extends AbstractOperation {
 		if (artifacts == null || artifacts.isEmpty()) {
 			return Status.CANCEL_STATUS;
 		}
-		Shell shell = info.getAdapter(Shell.class);
+		Shell shell;
+		if (info != null) {
+			// Usually, we should be able to get the shell from the IAdaptable
+			shell = info.getAdapter(Shell.class);
+		} else {
+			// But if not, use the PlatformUI to get to it
+			IWorkbench wb = PlatformUI.getWorkbench();
+			IWorkbenchWindow win = wb.getActiveWorkbenchWindow(); 
+			shell = win.getShell();
+		}
 		if (chooseTraceType == null) {
 			chooseTraceType = (traceTypes, selection) -> getTraceTypeToCreate(shell, traceTypes, selection);
 		}
 		createTrace(shell, chooseTraceType);
-		return Status.OK_STATUS;
+		if (createdTrace != null) {
+			return Status.OK_STATUS;
+		} else {
+			return Status.CANCEL_STATUS;
+		}
 	}
 
 	@Override
@@ -155,7 +173,7 @@ public class CreateTraceOperation extends AbstractOperation {
 			if (traceHelper.traceExists(this.wrappers, this.chosenType.get())) {
 				MessageDialog.openInformation(shell, CAPRA_INFORMATION, TRACE_LINK_EXISTS);
 			} else {
-				traceHelper.createTrace(this.wrappers, this.chosenType.get());
+				createdTrace = traceHelper.createTrace(this.wrappers, this.chosenType.get());
 				persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
 				traceHelper.annotateTrace(this.wrappers);
 
@@ -179,6 +197,18 @@ public class CreateTraceOperation extends AbstractOperation {
 	 */
 	public void setChooseTraceType(BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
 		this.chooseTraceType = chooseTraceType;
+	}
+	
+	/**
+	 * Retrieves the trace link created by this operation. If this method
+	 * returns <code>null</code>, the trace creation was either aborted
+	 * (e.g., because the trace already existed) or the operation was not
+	 * yet executed.
+	 * 
+	 * @return the created trace or <code>null</code> if none was created (yet)
+	 */
+	public EObject getCreatedTrace() {
+		return createdTrace;
 	}
 
 	private Optional<EClass> getTraceTypeToCreate(Shell shell, Collection<EClass> traceTypes, List<EObject> wrappers) {
