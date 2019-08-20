@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.capra.generic.tracemodel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,12 +23,8 @@ import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
@@ -39,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * Provides generic functionality to deal with traceability meta models.
  */
 public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(GenericMetaModelAdapter.class);
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
@@ -129,8 +124,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<Connection> connections = new ArrayList<>();
 		List<RelatedTo> traces = root.getTraces();
 
-		if (selectedRelationshipTypes.size() == 0 || selectedRelationshipTypes
-				.contains(TracemodelPackage.eINSTANCE.getRelatedTo().getName())) {
+		if (selectedRelationshipTypes.size() == 0
+				|| selectedRelationshipTypes.contains(TracemodelPackage.eINSTANCE.getRelatedTo().getName())) {
 			if (element instanceof RelatedTo) {
 				RelatedTo trace = (RelatedTo) element;
 				connections.add(new Connection(element, trace.getItem(), trace));
@@ -169,7 +164,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	@Override
 	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int maximumDepth) {
 		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator, DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
+				maximumDepth);
 	}
 
 	@Override
@@ -189,25 +185,22 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
+		List<Object> toRemove = new ArrayList<>();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel tModel = (GenericTraceModel) traceModel;
-			EList<RelatedTo> links = tModel.getTraces();
-			ResourceSet resourceSet = new ResourceSetImpl();
 			for (Connection c : toDelete) {
-				links.remove(c.getTlink());
+				for (RelatedTo trace : tModel.getTraces()) {
+					if (EcoreUtil.equals(trace, c.getTlink())) {
+						toRemove.add(trace);
+					}
+				}
 			}
-			GenericTraceModel newTraceModel = TracemodelFactory.eINSTANCE.createGenericTraceModel();
-			newTraceModel.getTraces().addAll(links);
-			URI traceModelURI = EcoreUtil.getURI(traceModel);
-			Resource resourceForTraces = resourceSet.createResource(traceModelURI);
-			resourceForTraces.getContents().add(newTraceModel);
-	
-			try {
-				resourceForTraces.save(null);
-                          	// TODO: Think of a way to let the developer handle such sitations (e.g., via an Exception)
-			} catch (IOException e) {
-				LOG.error("Trace model could not be saved.", e);
+			for (Object trace : toRemove) {
+				tModel.getTraces().remove(trace);
 			}
+			
+			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+			persistenceAdapter.saveTracesAndArtifacts(tModel, persistenceAdapter.getArtifactWrappers(new ResourceSetImpl()));
 		}
 	}
 
@@ -215,8 +208,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, int maximumDepth) {
 		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator, selectedRelationshipTypes, DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
-				maximumDepth);
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, selectedRelationshipTypes,
+				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
 	}
 
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
