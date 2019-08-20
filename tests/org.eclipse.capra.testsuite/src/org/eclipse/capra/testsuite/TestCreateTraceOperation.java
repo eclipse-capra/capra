@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,7 @@ public class TestCreateTraceOperation {
 
 	private static final String CLASS_A_NAME = "A";
 	private static final String CLASS_B_NAME = "B";
+	private static final String CLASS_C_NAME = "C";
 
 	private static final String MODEL_A_FILENAME = "modelA.ecore";
 	private static final String MODEL_B_FILENAME = "modelB.ecore";
@@ -86,6 +88,7 @@ public class TestCreateTraceOperation {
 
 		EPackage b = createEcoreModel(MODEL_B_NAME);
 		createEClassInEPackage(b, CLASS_B_NAME);
+		createEClassInEPackage(b, CLASS_C_NAME);
 		save(testProject, b);
 
 		// Load them, choose two elements
@@ -98,6 +101,7 @@ public class TestCreateTraceOperation {
 		EPackage _b = load(testProject, MODEL_B_FILENAME, rs);
 		assertEquals(_b.getName(), MODEL_B_NAME);
 		EClass _B = (EClass) _b.getEClassifier(CLASS_B_NAME);
+		EClass _C = (EClass) _b.getEClassifier(CLASS_C_NAME);
 
 		// Add them to the selection view
 		SelectionView.getOpenedView().dropToSelection(_A);
@@ -131,19 +135,52 @@ public class TestCreateTraceOperation {
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		List<EObject> selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 
-		// Check that the trace exists
+		// Check that the trace between A and B exists
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 		assertTrue(traceHelper.traceExists(selection, traceType));
 
+		// Remove both elements from SelectionView
+		SelectionView.getOpenedView().clearSelection();
+
+		// Create link between A and C
+		// Add them to the selection view
+		SelectionView.getOpenedView().dropToSelection(_A);
+		SelectionView.getOpenedView().dropToSelection(_C);
+
+		CreateTraceOperation createTraceOperation2 = new CreateTraceOperation("Create trace link",
+				SelectionView.getOpenedView().getSelection());
+		createTraceOperation2.setChooseTraceType((traceTypes, sel) -> {
+			if (traceTypes.contains(traceType)) {
+				return Optional.of(traceType);
+			} else {
+				return Optional.empty();
+			}
+		});
 		try {
-			assertEquals(operationHistory.undoOperation(createTraceOperation, null, adapter), Status.OK_STATUS);
+			assertEquals(operationHistory.execute(createTraceOperation2, null, adapter), Status.OK_STATUS);
+		} catch (ExecutionException e) {
+			fail("Could not create trace: ExecutionException in operation");
+		}
+
+		// Check that the trace between A and C exists
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
+		assertTrue(traceHelper.traceExists(selection, traceType));
+
+		// Undo the second trace creation
+		try {
+			assertEquals(operationHistory.undoOperation(createTraceOperation2, null, adapter), Status.OK_STATUS);
 		} catch (ExecutionException e) {
 			fail("Could not undo trace creation: ExecutionException in operation");
 		}
 
-		// Check that the trace does not exist
+		// Check that the trace between A and C does not exist
 		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
-		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 		assertFalse(traceHelper.traceExists(selection, traceType));
+
+		// Check that the trace between A and B is still around
+		selection = artifactHelper.createWrappers(Arrays.asList(_A, _B));
+		assertTrue(traceHelper.traceExists(selection, traceType));
 	}
 }
