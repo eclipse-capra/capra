@@ -24,10 +24,6 @@ import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
-import org.eclipse.capra.generic.tracemodel.RelatedTo;
-import org.eclipse.capra.generic.tracemodel.TracemodelFactory;
-import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -46,7 +42,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	
 	private static final Logger LOG = LoggerFactory.getLogger(GenericMetaModelAdapter.class);
 
-	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH =-2;
+	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
 
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
