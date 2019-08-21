@@ -39,6 +39,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
 
+
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
 	}
@@ -109,8 +110,10 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 			connections.add(new Connection(element, trace.getItem(), trace));
 		} else {
 			for (RelatedTo trace : traces) {
-				if (trace.getItem().contains(element)) {
-					connections.add(new Connection(element, trace.getItem(), trace));
+				for (EObject item : trace.getItem()) {
+					if (EcoreUtil.equals(item, element)) {
+						connections.add(new Connection(element, trace.getItem(), trace));
+					}
 				}
 			}
 		}
@@ -131,8 +134,10 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				connections.add(new Connection(element, trace.getItem(), trace));
 			} else {
 				for (RelatedTo trace : traces) {
-					if (trace.getItem().contains(element)) {
-						connections.add(new Connection(element, trace.getItem(), trace));
+					for (EObject item : trace.getItem()) {
+						if (EcoreUtil.equals(item, element)) {
+							connections.add(new Connection(element, trace.getItem(), trace));
+						}
 					}
 				}
 			}
