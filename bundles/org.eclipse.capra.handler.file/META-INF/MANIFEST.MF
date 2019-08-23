@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.file;singleton:=true
-Bundle-Version: 0.7.1.qualifier
+Bundle-Version: 0.7.1
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.emf.ecore,
  org.eclipse.core.runtime,
