@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.capra.ui.plantuml;singleton:=true
-Bundle-Version: 0.7.1.qualifier
+Bundle-Version: 0.7.2.qualifier
 Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.jface,
  org.eclipse.capra.core,

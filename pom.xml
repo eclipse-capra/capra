@@ -12,7 +12,7 @@
 
 	<groupId>org.eclipse.capra</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.7.1-SNAPSHOT</version>
+	<version>0.7.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
     <name>Capra</name>
 
@@ -155,7 +155,7 @@
 						<artifact>
 							<groupId>org.eclipse.capra</groupId>
 							<artifactId>org.eclipse.capra.releng.target</artifactId>
-							<version>0.7.1-SNAPSHOT</version>
+							<version>0.7.2-SNAPSHOT</version>
 						</artifact>
 					</target>
 					<environments>

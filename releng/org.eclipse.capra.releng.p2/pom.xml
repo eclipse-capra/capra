@@ -5,20 +5,17 @@
 	distribution, and is available at http://www.eclipse.org/legal/epl-v20.html 
 	SPDX-License-Identifier: EPL-2.0 Contributors: Chalmers | University of Gothenburg 
 	and rt-labs - initial API and implementation and/or initial documentation 
-	Chalmers | University of Gothenburg - additional features, updated API -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	Chalmers | University of Gothenburg - additional features, updated API --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<relativePath>../../pom.xml</relativePath>
 		<groupId>org.eclipse.capra</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.7.1-SNAPSHOT</version>
+		<version>0.7.2-SNAPSHOT</version>
 	</parent>
 	<groupId>org.eclipse.capra</groupId>
 	<artifactId>org.eclipse.capra.p2</artifactId>
-	<version>0.7.1-SNAPSHOT</version>
+	<version>0.7.2-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 	<name>Eclipse Capra Update Site</name>
 
