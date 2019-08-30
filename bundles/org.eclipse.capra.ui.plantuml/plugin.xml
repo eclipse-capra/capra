@@ -24,7 +24,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            category="org.eclipse.capra.generic.views"
+            category="org.eclipse.capra.ui.views"
             class="org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView"
             icon="platform:/plugin/org.eclipse.capra.ui/icons/capra.png"
             id="org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView"
@@ -131,7 +131,7 @@
                minimized="false"
                ratio="0.25"
                relationship="right"
-               relative="org.eclipse.capra.generic.views.SelectionView">
+               relative="org.eclipse.capra.ui.views.SelectionView">
          </view>
       </perspectiveExtension>
    </extension>

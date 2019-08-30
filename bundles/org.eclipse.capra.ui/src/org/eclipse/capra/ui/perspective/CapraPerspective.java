@@ -24,21 +24,23 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class CapraPerspective implements IPerspectiveFactory {
 
-	private IPageLayout factory;
+	private IPageLayout layout;
 
-	public void createInitialLayout(IPageLayout factory) {
-		this.factory = factory;
+	@Override
+	public void createInitialLayout(IPageLayout layout) {
+		this.layout = layout;
 		addViews();
 	}
 
 	private void addViews() {
-		IFolderLayout bottom = factory.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, factory.getEditorArea());
+		IFolderLayout bottom = layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, layout.getEditorArea());
 		bottom.addView(SelectionView.ID);
 
-		IFolderLayout topLeft = factory.createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.getEditorArea());
+		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, layout.getEditorArea());
 		topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
 
-		IFolderLayout topRight = factory.createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.getEditorArea());
+		IFolderLayout topRight = layout.createFolder("topRight", IPageLayout.RIGHT, 0.75f, layout.getEditorArea());
 		topRight.addView(IPageLayout.ID_OUTLINE);
 	}
+
 }

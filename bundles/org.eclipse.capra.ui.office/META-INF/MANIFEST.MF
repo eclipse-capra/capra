@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
-Bundle-Version: 0.7.1.qualifier
+Bundle-Version: 0.7.2.qualifier
 Bundle-ClassPath: .,
  lib/poi-3.10.1-20140818.jar,
  lib/poi-ooxml-schemas-3.10.1-20140818.jar,
@@ -21,6 +21,8 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.core.expressions
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office,
+ org.eclipse.capra.ui.office.exceptions;x-internal:=true,
+ org.eclipse.capra.ui.office.handlers;x-internal:=true,
  org.eclipse.capra.ui.office.model,
  org.eclipse.capra.ui.office.preferences,
  org.eclipse.capra.ui.office.utils,

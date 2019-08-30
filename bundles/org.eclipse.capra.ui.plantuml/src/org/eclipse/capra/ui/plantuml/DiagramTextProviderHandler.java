@@ -142,7 +142,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 						List<EObject> links = extractLinksFromTraces(traces);
 						SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
 						return VisualizationHelper.createNeighboursView(traces,
-								EMFHelper.linearize(handler.createWrapper(firstElement_unpacked, artifactModel)));
+								EMFHelper.linearize(handler.createWrapper(firstElement_unpacked, artifactModel)), artifactModel);
 					} else if (selectedModels.size() == 2) {
 						// unpack second element in case it is in a container
 						Object secondElement_unpacked = null;
@@ -218,7 +218,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 										relevantTraces.add(newConnection);
 									}
 								}
-								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers);
+								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers, artifactModel);
 							}
 						}
 
@@ -227,9 +227,9 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 			}
 		}
 		if (DisplayInternalLinksHandler.areInternalLinksShown()) {
-			return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, true);
+			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements, true);
 		} else {
-			return VisualizationHelper.createMatrix(traceModel, firstModelElements, secondModelElements, false);
+			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements, false);
 		}
 
 	}

@@ -1,8 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Handler for Papyrus Models
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.papyrus;singleton:=true
-Bundle-Version: 0.7.1.qualifier
+Bundle-Version: 0.7.2.qualifier
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.capra.ui,
  org.eclipse.emf.ecore,
@@ -10,4 +12,4 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.papyrus.infra.emf,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Capra Development Team
+Export-Package: org.eclipse.capra.handler.papyrus

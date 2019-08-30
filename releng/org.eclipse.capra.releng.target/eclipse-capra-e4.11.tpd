@@ -29,7 +29,7 @@ location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-g
 	org.eclipse.gef4.cloudio.sdk.feature.group
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository" eclipse-orbit-2018-09 {
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository" eclipse-orbit-2019-03 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
@@ -56,9 +56,9 @@ location "http://download.eclipse.org/rmf/updates/releases" {
 }
 
 location "http://hallvard.github.io/plantuml/" plantuml {
-	net.sourceforge.plantuml.feature.feature.group
+	net.sourceforge.plantuml.feature.feature.group 1.1.23
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
-	de.ovgu.featureide.featuremodeling.feature.group 1.1.23
+	de.ovgu.featureide.featuremodeling.feature.group 3.5.4
 }

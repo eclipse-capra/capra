@@ -24,16 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.artifactmodel.ArtifactWrapper;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.base.Strings;
 
@@ -54,7 +47,10 @@ public class Connections {
 	private Map<String, String> id2Label;
 	private Map<String, String> id2Location;
 
-	Connections(List<Connection> connections, List<EObject> selectedObjects) {
+	private ArtifactHelper artifactHelper;
+	
+	Connections(List<Connection> connections, List<EObject> selectedObjects, EObject artifactModel) {
+		this.artifactHelper = new ArtifactHelper(artifactModel);
 		this.connections = connections;
 		origin = selectedObjects.get(0);
 
@@ -71,13 +67,13 @@ public class Connections {
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			id2Label.put(id, getArtifactLabel(o));
+			id2Label.put(id, artifactHelper.getArtifactLabel(o));
 		});
 
 		id2Location = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			id2Location.put(id, getArtifactLocation(o));
+			id2Location.put(id, artifactHelper.getArtifactLocation(o));
 		});
 	}
 
@@ -131,74 +127,4 @@ public class Connections {
 		return arrows.stream().collect(Collectors.toList());
 	}
 
-	/**
-	 * The method gets the label of the element to be used for display in the
-	 * plant UML graph view and matrix view
-	 *
-	 * @param object
-	 *            The object for which the label is needed. This can be an EMF
-	 *            original representation or an artifact wrapper if the original
-	 *            object was not an EMF element
-	 * @return The label to be displayed
-	 */
-	public static String getArtifactLabel(EObject object) {
-		String artifactLabel = null;
-		ResourceSet resourceSet = new ResourceSetImpl();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
-		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		Object originalObject = artifactHelper.unwrapWrapper(object);
-
-		if (originalObject != null) {
-			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
-			artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
-					.orElseThrow(IllegalArgumentException::new);
-		} else { // original object cannot be resolved
-			// therefore use the wrapper name
-			String label = EMFHelper.getIdentifier(object);
-			artifactLabel = label.substring(0, label.indexOf(':'));
-		}
-		// remove unwanted characters like ", '
-		if (artifactLabel != null) {
-			return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
-		} else {
-			// This can happen if the trace model contains elements for which
-			// the artifact handler is not available.
-			// While this should not happen in a user installation, it is not
-			// uncommon during testing.
-			return "Unknown (no fitting artifact handler found)";
-		}
-	}
-
-	/**
-	 * Retrieves the location of the given object in the workspace, resolving
-	 * artifact wrappers as necessary.
-	 * <p>
-	 * This method relies on the correct setting of the {@code URI} attribute of
-	 * the corresponding {@link ArtifactWrapper}. The URI should be recognisable
-	 * by the platform to ensure that the correct editor is opened.
-	 * 
-	 * @param object
-	 *            the {@code EObject} (or {@code ArtifactWrapper}) to get the
-	 *            link for
-	 * @return a platform URI that can be used to resolve the object or
-	 *         {@code null} if none can be found
-	 */
-	public static String getArtifactLocation(EObject object) {
-		String artifactLink = null;
-		if (object instanceof ArtifactWrapper) {
-			ArtifactWrapper wrapper = (ArtifactWrapper) object;
-			artifactLink = wrapper.getUri();
-		} else {
-			try {
-				artifactLink = EcoreUtil.getURI(object).toPlatformString(false);
-			} catch (IllegalArgumentException ex) {
-				// Deliberately do nothing
-			}
-		}
-		if (!Strings.isNullOrEmpty(artifactLink) && artifactLink.startsWith("/")) {
-			artifactLink = "platform:/resource" + artifactLink;
-		}
-		return artifactLink;
-	}
 }

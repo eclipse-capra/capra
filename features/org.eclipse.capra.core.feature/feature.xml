@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.capra.core.feature"
       label="%featureName"
-      version="0.7.1.qualifier"
+      version="0.7.2.qualifier"
       provider-name="%providerName">
 
    <description url="%descriptionURL">
@@ -44,14 +44,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.handler.hudson"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+         
    <plugin
          id="org.eclipse.capra.handler.marker"
          download-size="0"

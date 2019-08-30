@@ -23,9 +23,14 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class ArtifactHelper {
+
+	private static final String CHARACTERS_TO_BE_REMOVED = "[\", \']";
+
 	private EObject artifactModel;
+
 	// Switch to Optional here to express potential absence in the type
 	private static Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
 
@@ -52,9 +57,8 @@ public class ArtifactHelper {
 	 * @param artifacts
 	 * @return List of wrappers
 	 */
-	@SuppressWarnings("unchecked")
 	public List<EObject> createWrappers(List<?> artifacts) {
-		return (List<EObject>) (Object) artifacts.stream()
+		return artifacts.stream()
 				.map(vagueArtifact -> getHandler(vagueArtifact).map(h -> h.withCastedHandlerUnchecked(vagueArtifact,
 						(handler, artifact) -> handler.createWrapper(artifact, artifactModel))))
 				.filter(Optional::isPresent).map(Optional::get).collect(toList());
@@ -62,10 +66,11 @@ public class ArtifactHelper {
 	}
 
 	/**
-	 * Creates wrapper for artifact
+	 * Creates a wrapper for the given artifact using the {@link ArtifactHandler}
+	 * returned by {@link #getHandler(Object)}.
 	 *
-	 * @param vagueArtifact
-	 * @return wrapper of null if no handler exists
+	 * @param vagueArtifact the object that should be wrapped
+	 * @return the wrapped artifact or null if no handler exists
 	 */
 	public EObject createWrapper(Object vagueArtifact) {
 		Optional<EObject> wrapped = getHandler(vagueArtifact)
@@ -77,18 +82,16 @@ public class ArtifactHelper {
 
 	/**
 	 * Unwraps an artifact wrapper to get its original object. If the original
-	 * object is null, the wrapper is returned as it is
+	 * object is <code>null</code>, the wrapper is returned as it is.
 	 * 
-	 * @param wrapper
-	 *            to be unwrapped
+	 * @param wrapper to be unwrapped
 	 * @return the original artifact
 	 */
 	public <T> Object unwrapWrapper(Object wrapper) {
 		if (wrapper instanceof EObject) {
 			ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
 					.getArtifactWrapperMetaModelAdapter().get();
-			IArtifactHandler<?> handler = (IArtifactHandler<?>) artifactMetaModelAdapter
-					.getArtifactHandlerInstance((EObject) wrapper);
+			IArtifactHandler<?> handler = artifactMetaModelAdapter.getArtifactHandlerInstance((EObject) wrapper);
 			if (handler != null && handler.resolveWrapper((EObject) wrapper) != null) {
 				return handler.resolveWrapper((EObject) wrapper);
 			} else
@@ -97,7 +100,15 @@ public class ArtifactHelper {
 			return wrapper;
 	}
 
-	// Returns handler for same type as the argument
+	/**
+	 * Retrieves the {@link IArtifactHandler} able to handle artifacts of the type
+	 * of the provided instance. If several handlers are able to handle artifacts of
+	 * the given type, the {@link PriorityHandler} is used to find a fitting one.
+	 * 
+	 * @param artifact the artifact for which the handler should be found
+	 * @return an {@link Optional} containing either an artifact handler or
+	 *         {@link Optional#empty()}
+	 */
 	public <T> Optional<IArtifactHandler<?>> getHandler(Object artifact) {
 		List<IArtifactHandler<?>> availableHandlers = handlers.stream().filter(h -> h.canHandleArtifact(artifact))
 				.collect(toList());
@@ -108,6 +119,73 @@ public class ArtifactHelper {
 		} else {
 			return priorityHandler.map(h -> h.getSelectedHandler(availableHandlers, artifact));
 		}
+	}
+
+	/**
+	 * Gets the label of the element to be used for display, e.g., in graphical
+	 * views. It either uses the {@link IArtifactHandler#getDisplayName(Object)
+	 * method for wrapped objects or {@link EMFHelper#getIdentifier(EObject)} for
+	 * {@link EObject) instances.
+	 *
+	 * @param object The object for which the label is needed. This can be an EMF
+	 *               original representation or an artifact wrapper if the original
+	 *               object was not an EMF element
+	 * @return the label to be displayed
+	 */
+	public String getArtifactLabel(EObject object) {
+		String artifactLabel = null;
+		Object originalObject = this.unwrapWrapper(object);
+
+		if (originalObject != null) {
+			IArtifactHandler<?> handler = this.getHandler(originalObject).get();
+			artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
+					.orElseThrow(IllegalArgumentException::new);
+		} else { // original object cannot be resolved
+			// therefore use the wrapper name
+			String label = EMFHelper.getIdentifier(object);
+			artifactLabel = label.substring(0, label.indexOf(':'));
+		}
+		// remove unwanted characters like ", '
+		if (artifactLabel != null) {
+			return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
+		} else {
+			// This can happen if the trace model contains elements for which
+			// the artifact handler is not available.
+			// While this should not happen in a user installation, it is not
+			// uncommon during testing.
+			return "Unknown (no fitting artifact handler found)";
+		}
+	}
+
+	/**
+	 * Gets the location of the given object in the workspace as a platform URI,
+	 * resolving artifact wrappers as necessary.
+	 * <p>
+	 * This method relies on the correct setting of the {@code URI} attribute of the
+	 * corresponding {@link ArtifactWrapper}. The URI should be recognisable by the
+	 * platform to ensure that the correct editor is opened.
+	 * 
+	 * @param object the {@code EObject} (or {@code ArtifactWrapper}) to get the
+	 *               link for
+	 * @return a platform URI that can be used to resolve the object or {@code null}
+	 *         if none can be found
+	 */
+	public String getArtifactLocation(EObject object) {
+		String artifactLink = null;
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+
+		artifactLink = adapter.getArtifactUri(object);
+		if (artifactLink == null) {
+			try {
+				artifactLink = EcoreUtil.getURI(object).toPlatformString(false);
+			} catch (IllegalArgumentException ex) {
+				// Deliberately do nothing
+			}
+		}
+		if (artifactLink != null && !artifactLink.isEmpty() && artifactLink.startsWith("/")) {
+			artifactLink = "platform:/resource" + artifactLink;
+		}
+		return artifactLink;
 	}
 
 }

@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ReqIf UI Plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.ui.reqif;singleton:=true
-Bundle-Version: 0.7.1.qualifier
+Bundle-Version: 0.7.2.qualifier
 Require-Bundle: org.eclipse.jface,
  org.eclipse.ui.workbench,
  org.eclipse.equinox.preferences,
  org.eclipse.capra.handler.reqIf
 Export-Package: org.eclipse.capra.ui.reqif.preferences
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Capra Development Team

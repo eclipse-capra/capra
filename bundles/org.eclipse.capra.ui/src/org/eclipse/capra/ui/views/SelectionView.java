@@ -24,17 +24,24 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -49,17 +56,23 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.ViewPart;
 
 public class SelectionView extends ViewPart {
 
 	/** The ID of the view as specified by the extension. */
-	public static final String ID = "org.eclipse.capra.generic.views.SelectionView";
+	public static final String ID = "org.eclipse.capra.ui.views.SelectionView";
 
 	/**
 	 * Identifier of the extension point that contains the transfer definitions.
@@ -76,19 +89,47 @@ public class SelectionView extends ViewPart {
 			org.eclipse.jface.util.LocalSelectionTransfer.getTransfer(),
 			org.eclipse.emf.edit.ui.dnd.LocalTransfer.getInstance() };
 
-	/** The actual table containing selected elements */
-	public TableViewer viewer;
+	/**
+	 * The actual table containing selected elements.
+	 */
+	public TableViewer artifactTable;
 
-	/** The maintained selection of EObjects */
+	/**
+	 * The combo box to select the trace type.
+	 */
+	public ComboViewer traceTypeCombo;
+
+	/**
+	 * The maintained selection of EObjects .
+	 */
 	private Set<Object> selection = new LinkedHashSet<>();
 
-	class ViewContentProvider implements IStructuredContentProvider {
-		@Override
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
+	/**
+	 * The appropriate undo context. We are using the global context to ensure that
+	 * trace creation can be undone in all viewers and editors.
+	 */
+	private IUndoContext undoContext = IOperationHistory.GLOBAL_UNDO_CONTEXT;
+
+	/**
+	 * Action handler to undo the creation of a trace.
+	 */
+	private UndoActionHandler undoAction;
+
+	/**
+	 * Action handler to redo the creation of a trace.
+	 */
+	private RedoActionHandler redoAction;
+
+	private Collection<EClass> traceTypes = new ArrayList<>();
+
+	/**
+	 * Content provider for the viewer that lists the artifacts.
+	 */
+	class ArtifactTableContentProvider implements IStructuredContentProvider {
 
 		@Override
-		public void dispose() {
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+
 		}
 
 		@Override
@@ -97,7 +138,27 @@ public class SelectionView extends ViewPart {
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+	class TraceTypeContentProvider implements IStructuredContentProvider {
+
+		@Override
+		public Object[] getElements(Object parent) {
+			return traceTypes.toArray();
+		}
+	}
+
+	class TraceTypeLabelProvider extends LabelProvider implements IBaseLabelProvider {
+
+		@Override
+		public String getText(Object element) {
+			return (element == null || !(element instanceof EClass)) ? "" : ((EClass) element).getName();//$NON-NLS-1$
+		}
+
+	}
+
+	/**
+	 * Label provider for the viewer that lists the artifacts.
+	 */
+	class ArtifactTableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 		@Override
 		public String getText(Object element) {
@@ -125,8 +186,8 @@ public class SelectionView extends ViewPart {
 	}
 
 	/**
-	 * Leaves the order of objects unchanged by returning 0 for all combinations
-	 * of objects.
+	 * Leaves the order of objects unchanged by returning 0 for all combinations of
+	 * objects.
 	 *
 	 * @see ViewerComparator#compare(Viewer, Object, Object)
 	 */
@@ -144,7 +205,7 @@ public class SelectionView extends ViewPart {
 		TableViewer view;
 
 		public SelectionDropAdapter(TableViewer view) {
-			super(viewer);
+			super(artifactTable);
 			this.view = view;
 		}
 
@@ -163,13 +224,24 @@ public class SelectionView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setComparator(new NoChangeComparator());
-		viewer.setInput(getViewSite());
+		Composite area = new Composite(parent, SWT.NONE);
+		area.setLayout(new GridLayout(1, false));
+		area.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		getSite().setSelectionProvider(viewer);
+		traceTypeCombo = new ComboViewer(area);
+		traceTypeCombo.setContentProvider(new TraceTypeContentProvider());
+		traceTypeCombo.setLabelProvider(new TraceTypeLabelProvider());
+		traceTypeCombo.setInput(getViewSite());
+		traceTypeCombo.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+		artifactTable = new TableViewer(area, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		artifactTable.setContentProvider(new ArtifactTableContentProvider());
+		artifactTable.setLabelProvider(new ArtifactTableLabelProvider());
+		artifactTable.setComparator(new NoChangeComparator());
+		artifactTable.setInput(getViewSite());
+		artifactTable.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		getSite().setSelectionProvider(artifactTable);
 		hookContextMenu();
 
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
@@ -180,7 +252,10 @@ public class SelectionView extends ViewPart {
 		transfers.addAll(ExtensionPointHelper.getExtensions(TRANSFER_EXTENSION_POINT_ID, "class").stream()
 				.map(Transfer.class::cast).collect(Collectors.toList()));
 
-		viewer.addDropSupport(ops, transfers.toArray(DEFAULT_TRANSFERS), new SelectionDropAdapter(viewer));
+		artifactTable.addDropSupport(ops, transfers.toArray(DEFAULT_TRANSFERS),
+				new SelectionDropAdapter(artifactTable));
+
+		createGlobalActionHandlers();
 	}
 
 	private void hookContextMenu() {
@@ -192,14 +267,14 @@ public class SelectionView extends ViewPart {
 
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
+		Menu menu = menuMgr.createContextMenu(artifactTable.getControl());
+		artifactTable.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, artifactTable);
 	}
 
 	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		artifactTable.getControl().setFocus();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -219,7 +294,26 @@ public class SelectionView extends ViewPart {
 		} else if (validateSelection(data))
 			selection.add(data);
 
-		viewer.refresh();
+		artifactTable.refresh();
+		refreshAvailableTraceTypes();
+	}
+
+	private void refreshAvailableTraceTypes() {
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+
+		ResourceSet resourceSet = new ResourceSetImpl();
+		// add artifact model to resource set
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+
+		// Create the artifact wrappers
+		List<EObject> wrappers = artifactHelper.createWrappers(new ArrayList<Object>(selection));
+
+		// Get the type of trace to be created
+		traceTypes = traceAdapter.getAvailableTraceTypes(wrappers);
+		traceTypeCombo.refresh();
 	}
 
 	private boolean validateSelection(Object target) {
@@ -248,7 +342,8 @@ public class SelectionView extends ViewPart {
 
 	public void clearSelection() {
 		selection.clear();
-		viewer.refresh();
+		artifactTable.refresh();
+		refreshAvailableTraceTypes();
 	}
 
 	public static SelectionView getOpenedView() {
@@ -263,6 +358,21 @@ public class SelectionView extends ViewPart {
 
 	public void removeFromSelection(List<Object> currentselection) {
 		selection.removeAll(currentselection);
-		viewer.refresh();
+		artifactTable.refresh();
+		refreshAvailableTraceTypes();
+	}
+
+	public EClass getSelectedTraceType() {
+		return (EClass) traceTypeCombo.getStructuredSelection().getFirstElement();
+	}
+
+	private void createGlobalActionHandlers() {
+		// set up action handlers that operate on the current context
+		undoAction = new UndoActionHandler(this.getSite(), undoContext);
+		redoAction = new RedoActionHandler(this.getSite(), undoContext);
+		IActionBars actionBars = getViewSite().getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), undoAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
+		actionBars.updateActionBars();
 	}
 }

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.capra.handler.office.feature"
       label="%featureName"
-      version="0.7.1.qualifier"
+      version="0.7.2.qualifier"
       provider-name="%providerName">
 
    <description url="%descriptionURL">
@@ -16,10 +16,6 @@
    <license url="%licenseURL">
       %license
    </license>
-
-   <requires>
-      <import feature="org.eclipse.capra.feature"/>
-   </requires>
 
    <plugin
          id="org.eclipse.capra.handler.office"

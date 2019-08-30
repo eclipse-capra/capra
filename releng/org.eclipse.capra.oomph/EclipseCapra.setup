@@ -12,7 +12,7 @@
     xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
     xmlns:setup.p2="http://www.eclipse.org/oomph/setup/p2/1.0"
     xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
-    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/mylyn/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Mylyn.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/projects/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Projects.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 index:/models/SetupWorkingSets.ecore"
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/mylyn/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Mylyn.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/projects/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Projects.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
     name="capra"
     label="Eclipse Capra">
   <setupTask
@@ -528,7 +528,7 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.capra"
-      value="=https://git.eclipse.org/c/capra/org.eclipse.capra.git/plain/releng/org.eclipse.capra.oomph/EclipseCapra.setup?h=develop->${git.clone.capra.location|uri}/.../Users/EclipseCapra.setup"
+      value="=https://git.eclipse.org/c/capra/org.eclipse.capra.git/plain/releng/org.eclipse.capra.oomph/EclipseCapra.setup->${git.clone.capra.location|uri}/releng/org.eclipse.capra.oomph/EclipseCapra.setup"
       vm="true">
     <description>
       Set an Oomph redirection system property to redirect the logical location of this setup to its physical location in the Git clone.
@@ -546,7 +546,7 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
-      defaultValue="eclipse-capra-e4.11"
+      defaultValue="eclipse-capra-e4.12"
       storageURI="scope://Workspace"
       label="Target Platform">
     <choice
@@ -567,6 +567,9 @@
     <choice
         value="eclipse-capra-e4.11"
         label="Capra for Eclipse 2019-03 - 4.11"/>
+    <choice
+        value="eclipse-capra-e4.12"
+        label="Capra for Eclipse 2019-06 - 4.12"/>
     <description>Choose the compatibility level of the target platform</description>
   </setupTask>
   <setupTask
@@ -629,7 +632,7 @@
           source="http://www.eclipse.org/oomph/setup/InducedChoices">
         <detail
             key="inherit">
-          <value>eclipse.git.remoteURIs</value>
+          <value>eclipse.git.gerrit.remoteURIs</value>
         </detail>
         <detail
             key="label">

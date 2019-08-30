@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.11" sequenceNumber="1556805884">
+<target name="eclipse-capra-e4.11" sequenceNumber="1565593884">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="9.7.0.201903092251"/>
@@ -42,7 +42,7 @@
       <unit id="com.fasterxml.jackson.core.jackson-core" version="2.9.2.v20180207-1730"/>
       <unit id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
       <unit id="ch.qos.logback.slf4j" version="1.1.2.v20160301-0943"/>
-      <repository id="eclipse-orbit-2018-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository"/>
+      <repository id="eclipse-orbit-2019-03" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
@@ -63,7 +63,7 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.4.201902190522"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.5.201906282321"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
   </locations>

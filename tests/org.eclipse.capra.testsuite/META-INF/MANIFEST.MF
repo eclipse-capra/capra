@@ -1,9 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Capra Testsuite
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsuite;singleton:=true
-Bundle-Version: 0.7.1.qualifier
-Export-Package: org.eclipse.capra.testsuite
+Bundle-Version: 0.7.2.qualifier
+Export-Package: org.eclipse.capra.testsuite,
+ org.eclipse.capra.testsuite.extension;x-internal:=true,
+ org.eclipse.capra.testsuite.notification;x-internal:=true
 Require-Bundle: org.junit,
  org.eclipse.equinox.registry,
  org.eclipse.core.resources,
@@ -23,7 +27,7 @@ Require-Bundle: org.junit,
  org.eclipse.osgi,
  org.eclipse.swt,
  org.eclipse.capra.generic.artifactmodel,
- org.eclipse.capra.generic.tracemodels,
+ org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.generic.priority,
  org.eclipse.capra.core,
  org.eclipse.capra.ui.plantuml,
@@ -35,9 +39,7 @@ Require-Bundle: org.junit,
  org.eclipse.capra.handler.file,
  org.eclipse.capra.ui,
  org.eclipse.capra.ui.notification,
- ch.qos.logback.classic,
- ch.qos.logback.core
+ ch.qos.logback.slf4j;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.swt.dnd,
  org.slf4j
-Bundle-Vendor: Capra Development Team

@@ -294,7 +294,7 @@ To define your own artifact metamodel, follow the steps below:
 # Click Finish and a class will be created with the methods to be implemented in it. 
 # Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. 
 
-NOTE: To test your new Traceability metamodel and artifact model, first close the project @org.eclipse.capra.generic.tracemodels@. Otherwise that project will be used by Capra.
+NOTE: To test your new Traceability metamodel and artifact model, first close the project @org.eclipse.capra.generic.tracemodel@. Otherwise that project will be used by Capra.
 
 h4(#adding-a-new-artifact-handler). Adding a new artifact handler
 
