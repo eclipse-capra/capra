@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.11" sequenceNumber="1565593884">
+<target name="eclipse-capra-e4.11" sequenceNumber="1567690111">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="9.7.0.201903092251"/>
@@ -50,8 +50,8 @@
       <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.8.1.201409171422"/>
-      <repository location="http://download.eclipse.org/sphinx/releases/0.8.x"/>
+      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.9.2.201601200932"/>
+      <repository location="http://download.eclipse.org/sphinx/releases/0.9.x"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>
@@ -63,8 +63,16 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.5.201906282321"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.6.0.201908302227"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.app4mc.platform.sdk.feature.group" version="0.9.5.201907311248"/>
+      <repository id="APP4MC" location="http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="I201709292011.Core" version="1.0.0.07I-cLTz768IE7AY7gAeAOG9"/>
+      <repository id="EASE" location="http://download.eclipse.org/ease/update/release"/>
     </location>
   </locations>
 </target>
