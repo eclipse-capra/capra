@@ -33,6 +33,9 @@
    <feature url="features/org.eclipse.capra.ui.zest.feature_0.7.2.qualifier.jar" id="org.eclipse.capra.ui.zest.feature" version="0.7.2.qualifier">
       <category name="org.eclipse.capra.ui"/>
    </feature>
+   <feature url="features/org.eclipse.capra.ui.xtext.feature_0.7.2.qualifier.jar" id="org.eclipse.capra.ui.xtext.feature" version="0.7.2.qualifier">
+      <category name="org.eclipse.capra.ui"/>
+   </feature>
    <category-def name="org.eclipse.capra" label="Eclipse Capra Traceability">
       <description>
          Eclipse Capra is an extensible traceability management tool.
