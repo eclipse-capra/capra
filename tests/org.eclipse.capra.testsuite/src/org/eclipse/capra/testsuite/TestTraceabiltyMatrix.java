@@ -63,16 +63,18 @@ public class TestTraceabiltyMatrix {
 
 	private static final String TEST_PROJECT_NAME = "TestProject";
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|modelB : EPackage\n" + "modelA : EPackage |X\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String LINE_SEPARATOR = System.lineSeparator();
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |X |. |.\n" + "AA : EClass |. |X |.\n"
-			+ "modelA : EPackage |. |. |X\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml" + LINE_SEPARATOR + "salt" + LINE_SEPARATOR + "{#" + LINE_SEPARATOR
+			+ ".|modelB : EPackage" + LINE_SEPARATOR + "modelA : EPackage |X" + LINE_SEPARATOR + "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |. |X |. |.\n" + "B : EClass |X |. |. |.\n"
-			+ "AA : EClass |. |. |. |X\n" + "BB : EClass |. |. |X |.\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml" + LINE_SEPARATOR + "salt" + LINE_SEPARATOR + "{#" + LINE_SEPARATOR
+			+ ".|B : EClass|BB : EClass|modelB : EPackage" + LINE_SEPARATOR + "A : EClass |X |. |." + LINE_SEPARATOR + "AA : EClass |. |X |." + LINE_SEPARATOR
+			+ "modelA : EPackage |. |. |X" + LINE_SEPARATOR + "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+
+	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml" + LINE_SEPARATOR + "salt" + LINE_SEPARATOR + "{#" + LINE_SEPARATOR
+			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass" + LINE_SEPARATOR + "A : EClass |. |X |. |." + LINE_SEPARATOR + "B : EClass |X |. |. |." + LINE_SEPARATOR
+			+ "AA : EClass |. |. |. |X" + LINE_SEPARATOR + "BB : EClass |. |. |X |." + LINE_SEPARATOR + "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	@Before
 	public void init() throws CoreException {
