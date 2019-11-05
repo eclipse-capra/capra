@@ -30,4 +30,5 @@ Export-Package: org.eclipse.capra.ui.handlers,
  org.eclipse.capra.ui.operations,
  org.eclipse.capra.ui.perspective,
  org.eclipse.capra.ui.preferences,
+ org.eclipse.capra.ui.selections,
  org.eclipse.capra.ui.views
