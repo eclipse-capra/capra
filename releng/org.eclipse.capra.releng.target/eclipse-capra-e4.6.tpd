@@ -52,7 +52,7 @@ location "http://download.eclipse.org/rmf/updates/releases" {
 }
 
 location "http://hallvard.github.io/plantuml/" plantuml {
-	net.sourceforge.plantuml.feature.feature.group 1.1.23
+	net.sourceforge.plantuml.feature.feature.group 1.1.24
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.6" sequenceNumber="1565593951">
+<target name="eclipse-capra-e4.6" sequenceNumber="1575647402">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="9.2.1.201703062208"/>
@@ -55,7 +55,7 @@
       <repository location="http://download.eclipse.org/rmf/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.23"/>
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.24"/>
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

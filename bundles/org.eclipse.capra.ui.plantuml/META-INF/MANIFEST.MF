@@ -16,8 +16,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.capra.generic.artifactmodel,
  org.eclipse.ui.navigator,
  org.eclipse.ui.navigator.resources,
- net.sourceforge.plantuml.eclipse;bundle-version="1.1.23",
- net.sourceforge.plantuml.eclipse.imagecontrol;bundle-version="1.1.23"
+ net.sourceforge.plantuml.eclipse;bundle-version="1.1.24",
+ net.sourceforge.plantuml.eclipse.imagecontrol;bundle-version="1.1.24"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.ui.plantuml,
  org.eclipse.capra.ui.plantuml.views
