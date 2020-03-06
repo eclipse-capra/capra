@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Model;
 import org.junit.Before;
@@ -119,7 +121,7 @@ public class TestUMLInternalLinks {
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DisplayInternalLinksHandler.showInternalLinks(true);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
-		String directlyConnectedElements = provider.getDiagramText(selection);
+		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertTrue(directlyConnectedElements.equals(EXPECTED_TEXT_FOR_INTERNAL_LINKS));
 
 	}

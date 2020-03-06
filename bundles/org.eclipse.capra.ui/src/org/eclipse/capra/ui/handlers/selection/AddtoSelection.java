@@ -15,7 +15,7 @@ package org.eclipse.capra.ui.handlers.selection;
 
 import java.util.List;
 
-import org.eclipse.capra.ui.helpers.TraceCreationHelper;
+import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,7 +30,7 @@ public class AddtoSelection extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		List<Object> selection = TraceCreationHelper.extractSelectedElements(event);
+		List<Object> selection = SelectionSupportHelper.extractSelectedElements(event);
 		SelectionView.getOpenedView().dropToSelection(selection);
 		return null;
 	}

@@ -15,6 +15,7 @@ package org.eclipse.capra.ui.plantuml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -25,7 +26,7 @@ import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.helpers.TraceCreationHelper;
+import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -59,25 +60,27 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	public String getDiagramText(IWorkbenchPart part, ISelection input) {
 		List<Object> selectedModels = new ArrayList<>();
 		if (part.getSite().getSelectionProvider() != null) {
-			selectedModels.addAll(
-					TraceCreationHelper.extractSelectedElements(part.getSite().getSelectionProvider().getSelection()));
+			selectedModels.addAll(SelectionSupportHelper
+					.extractSelectedElements(part.getSite().getSelectionProvider().getSelection(), part));
 		}
-		return getDiagramText(selectedModels);
+		return getDiagramText(selectedModels, Optional.of(part));
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getDiagramText(List<Object> selectedModels) {
+	public String getDiagramText(List<Object> selectedModels, Optional<IWorkbenchPart> part) {
 		List<EObject> firstModelElements = null;
 		List<EObject> secondModelElements = null;
 		EObject selectedObject = null;
-		ResourceSet resourceSet = new ResourceSetImpl();
 		EObject traceModel = null;
 		List<Connection> traces = new ArrayList<>();
 
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
-		artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ResourceSet artifactResourceSet = part.isPresent() ? SelectionSupportHelper.getResourceSet(part.get()) : null;
+
+		artifactModel = persistenceAdapter
+				.getArtifactWrappers(artifactResourceSet != null ? artifactResourceSet : new ResourceSetImpl());
 
 		if (selectedModels.size() > 0) {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -94,7 +97,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 					firstElement_unpacked = selectedModels.get(0);
 				selectedObject = handler.createWrapper(firstElement_unpacked, artifactModel);
 				if (selectedObject != null && selectedObject.eResource() != null) {
-					resourceSet = selectedObject.eResource().getResourceSet();
+					ResourceSet resourceSet = selectedObject.eResource().getResourceSet();
 					traceModel = persistenceAdapter.getTraceModel(resourceSet);
 					List<String> selectedRelationshipTypes = SelectRelationshipsHandler.getSelectedRelationshipTypes();
 					if (selectedModels.size() == 1) {
@@ -142,7 +145,8 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 						List<EObject> links = extractLinksFromTraces(traces);
 						SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
 						return VisualizationHelper.createNeighboursView(traces,
-								EMFHelper.linearize(handler.createWrapper(firstElement_unpacked, artifactModel)), artifactModel);
+								EMFHelper.linearize(handler.createWrapper(firstElement_unpacked, artifactModel)),
+								artifactModel);
 					} else if (selectedModels.size() == 2) {
 						// unpack second element in case it is in a container
 						Object secondElement_unpacked = null;
@@ -218,7 +222,8 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 										relevantTraces.add(newConnection);
 									}
 								}
-								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers, artifactModel);
+								return VisualizationHelper.createNeighboursView(relevantTraces, wrappers,
+										artifactModel);
 							}
 						}
 
@@ -227,9 +232,11 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 			}
 		}
 		if (DisplayInternalLinksHandler.areInternalLinksShown()) {
-			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements, true);
+			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements,
+					true);
 		} else {
-			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements, false);
+			return VisualizationHelper.createMatrix(traceModel, artifactModel, firstModelElements, secondModelElements,
+					false);
 		}
 
 	}

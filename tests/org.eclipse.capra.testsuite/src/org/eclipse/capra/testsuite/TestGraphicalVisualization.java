@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -51,6 +52,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,13 +80,15 @@ public class TestGraphicalVisualization {
 			+ "o0--o1: A : EClass B : EClass : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
-			+ "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR + "object \"B : EClass\" as o1" + LINE_SEPARATOR + "object \"C : EClass\" as o2" + LINE_SEPARATOR
-			+ "o0--o1: A : EClass B : EClass : RelatedTo" + LINE_SEPARATOR + "o1--o2: B : EClass C : EClass : RelatedTo" + LINE_SEPARATOR
-			+ "@enduml" + LINE_SEPARATOR;
+			+ "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR + "object \"B : EClass\" as o1" + LINE_SEPARATOR
+			+ "object \"C : EClass\" as o2" + LINE_SEPARATOR + "o0--o1: A : EClass B : EClass : RelatedTo"
+			+ LINE_SEPARATOR + "o1--o2: B : EClass C : EClass : RelatedTo" + LINE_SEPARATOR + "@enduml"
+			+ LINE_SEPARATOR;
 	private static final String EXPECTED_TEXT_FOR_GOTO_LINKS = "@startuml" + LINE_SEPARATOR
-			+ "object \"TestClass [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/TestClass.java#org.eclipse.capra.test.TestClass (Go to)]]\" as o0 #pink" + LINE_SEPARATOR
-			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1" + LINE_SEPARATOR
-			+ "o0--o1: TestClass CClass.c : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+			+ "object \"TestClass [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/TestClass.java#org.eclipse.capra.test.TestClass (Go to)]]\" as o0 #pink"
+			+ LINE_SEPARATOR
+			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1"
+			+ LINE_SEPARATOR + "o0--o1: TestClass CClass.c : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	@Before
 	public void init() throws CoreException {
@@ -155,12 +159,12 @@ public class TestGraphicalVisualization {
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
-		String DirectlyConnectedElements = provider.getDiagramText(selection);
+		String DirectlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertTrue(DirectlyConnectedElements.equals(EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS));
 
 		// Test transitively connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
-		String transitivelysConnectedElements = provider.getDiagramText(selection);
+		String transitivelysConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertTrue(transitivelysConnectedElements.equals(EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS));
 
 	}
@@ -197,7 +201,7 @@ public class TestGraphicalVisualization {
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
-		String directlyConnectedElements = provider.getDiagramText(selection);
+		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertTrue(directlyConnectedElements.equals(EXPECTED_TEXT_FOR_GOTO_LINKS));
 
 	}
