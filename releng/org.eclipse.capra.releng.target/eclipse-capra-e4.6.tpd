@@ -58,3 +58,11 @@ location "http://hallvard.github.io/plantuml/" plantuml {
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
 	de.ovgu.featureide.featuremodeling.feature.group 3.5.4
 }
+
+location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/" APP4MC {
+	org.eclipse.app4mc.platform.sdk.feature.group
+}
+
+location "http://download.eclipse.org/ease/update/release" EASE {
+	I201709292011.Core
+}

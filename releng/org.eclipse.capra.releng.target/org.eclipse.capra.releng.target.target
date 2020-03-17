@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="Neon" sequenceNumber="71">
+<target name="Neon" sequenceNumber="72">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef4.common.sdk.feature.group" version="0.0.0"/>
@@ -66,6 +66,23 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.24"/>
 <repository location="http://hallvard.github.io/plantuml/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/ease/update/release"/>
+<unit id="org.eclipse.ease.feature.feature.group" version="0.6.0.I201802271533"/>
+<unit id="org.eclipse.ease.ui.feature.feature.group" version="0.6.0.I201804241621"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/"/>
+<unit id="org.eclipse.app4mc.platform.sdk.feature.group" version="0.9.5.201907311248"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"/>
+<unit id="org.apache.commons.math3" version="3.5.0.v20160301-1110"/>
+</location>
+<location>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.15.0.v20180916-1232"/>
 </location>
 </locations>
 </target>
