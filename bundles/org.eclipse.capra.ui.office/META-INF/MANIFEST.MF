@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  com.google.guava,
  org.dom4j,
  org.eclipse.core.runtime,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ javax.xml.bind;bundle-version="2.2.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office,
  org.eclipse.capra.ui.office.exceptions;x-internal:=true,
