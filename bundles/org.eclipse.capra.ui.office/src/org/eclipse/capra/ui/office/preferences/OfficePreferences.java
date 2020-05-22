@@ -55,7 +55,7 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	/**
 	 * Default preference values
 	 */
-	public static final String CHAR_COUNT_DEFAULT = "30";
+	public static final String CHAR_COUNT_DEFAULT = "80";
 	public static final boolean EXCEL_COLUMN_RADIO_ID_IS_LINE_NUMBER = true;
 	public static final String EXCEL_CUSTOM_COLUMN_DEFAULT = "A";
 	public static final String EXCEL_COLUMN_VALUE_DEFAULT = "0";
@@ -65,11 +65,11 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	 * Description of controls
 	 */
 	private static final String CHAR_COUNT_DESC = "Number of characters that are shown per line in the Office view:";
-	private static final String EXCEL_COLUMN_RADIO_CHOICE_DESC = "Setting the ID of Excel rows:";
-	private static final String EXCEL_COLUMN_IS_LINE_NUMBER_OPTION_DESC = "Line number is used as ID";
-	private static final String EXCEL_COLUMN_IS_CUSTOM_OPTION_DESC = "Custom ID column: ";
+	private static final String EXCEL_COLUMN_RADIO_CHOICE_DESC = "Unique identifier in spreadsheets:";
+	private static final String EXCEL_COLUMN_IS_LINE_NUMBER_OPTION_DESC = "Use the line number as the ID";
+	private static final String EXCEL_COLUMN_IS_CUSTOM_OPTION_DESC = "Use this column as the ID: ";
 	private static final String EXCEL_COLUMN_IS_CUSTOM_OPTION_HINT = "(e.g. \"A\", \"BC\"...)";
-	private static final String WORD_FIELD_NAME_DESC = "ID of Word fields to display: ";
+	private static final String WORD_FIELD_NAME_DESC = "Name of Word field to display:";
 
 	private static final int FIXED_TEXT_FIELD_WIDTH = 35;
 
@@ -86,11 +86,9 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	 * Creates a swt widget that takes the numColumns of grid space inside the
 	 * parent.
 	 * 
-	 * @param parent
-	 *            the element that will hold the widget
-	 * @param numColumns
-	 *            the number of columns that the widget will take inside the
-	 *            grid of the parent.
+	 * @param parent     the element that will hold the widget
+	 * @param numColumns the number of columns that the widget will take inside the
+	 *                   grid of the parent.
 	 * @return the created widget
 	 */
 	private Composite createComposite(Composite parent, int numColumns) {
@@ -229,15 +227,12 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	/**
-	 * Creates a label widget that takes the width of numOfColumns grid cells
-	 * inside a parent.
+	 * Creates a label widget that takes the width of numOfColumns grid cells inside
+	 * a parent.
 	 * 
-	 * @param parent
-	 *            the element that will hold the label.
-	 * @param text
-	 *            the text of the label.
-	 * @param numOfColumns
-	 *            the width (in grid cells) of the label.
+	 * @param parent       the element that will hold the label.
+	 * @param text         the text of the label.
+	 * @param numOfColumns the width (in grid cells) of the label.
 	 * @return newly created Label object
 	 */
 	private Label createLabel(Composite parent, String text, int numOfColumns) {
@@ -251,15 +246,12 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	}
 
 	/**
-	 * Creates a Text widget that takes the width of numOfColumns grid cells
-	 * inside a parent.
+	 * Creates a Text widget that takes the width of numOfColumns grid cells inside
+	 * a parent.
 	 * 
-	 * @param parent
-	 *            the element that will hold the label.
-	 * @param numOfColumns
-	 *            the width (in grid cells) of the widget.
-	 * @param minimumWidth
-	 *            the minimum width of the Text widget.
+	 * @param parent       the element that will hold the label.
+	 * @param numOfColumns the width (in grid cells) of the widget.
+	 * @param minimumWidth the minimum width of the Text widget.
 	 * @return the newly created Text widget.
 	 */
 	private Text createTextField(Composite parent, int numOfColumns, int minimumWidth) {
@@ -279,12 +271,9 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 	 * Creates a Button widget that takes the width of numOfColumns grid cells
 	 * inside a parent.
 	 * 
-	 * @param parent
-	 *            the element that will hold the label.
-	 * @param label
-	 *            the text of the widget.
-	 * @param numOfColumns
-	 *            the width (in grid cells) of the widget.
+	 * @param parent       the element that will hold the label.
+	 * @param label        the text of the widget.
+	 * @param numOfColumns the width (in grid cells) of the widget.
 	 * @return the newly created Button widget.
 	 */
 	private Button createRadioButton(Composite parent, String label, int numOfColumns) {
