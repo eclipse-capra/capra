@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!--
+    Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v20.html
+     
+    SPDX-License-Identifier: EPL-2.0
+     
+    Contributors:
+         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+         Chalmers | University of Gothenburg - additional features, updated API
+ -->
+
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.eclipse.capra.ui.views"
+            class="org.eclipse.capra.ui.sunburst.view.SunburstView"
+            icon="platform:/plugin/org.eclipse.capra.ui/icons/capra.png"
+            id="org.eclipse.capra.ui.sunburst.view.SunburstView"
+            name="Capra Sunburst viewer">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.capra.generic.perspective.CapraPerspective">
+         <view
+               id="org.eclipse.capra.ui.sunburst.view.SunburstView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.ProblemView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+ Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v2.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v20.html
+
+ SPDX-License-Identifier: EPL-2.0
+
+ Contributors:
+     Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+     Chalmers | University of Gothenburg - additional features, updated API
+     Fredrik Johansson and Themistoklis Ntoukolis - initial implementation of the Sunburst View
+-->
+<head>
+	<title>Eclipse Capra Sunburst View</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="https://unpkg.com/d3"></script>
+	<script src="https://unpkg.com/sunburst-chart"></script>
+	<style>body { margin: 0 }</style>
+</head>
+<body>
+	<div id="chart"></div>
+	<script>
+		const color = d3.scaleOrdinal(d3.schemePaired);
+		const nodeData;
+
+	    Sunburst()
+    	  .data(nodeData)
+	      .size('size')
+    	  .color(d => color(d.name))
+	      (document.getElementById('chart'));
+	</script>
+</body>
+</html>

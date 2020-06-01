@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.capra.ui.sunburst;singleton:=true
+Bundle-Version: 0.7.2.qualifier
+Require-Bundle: org.eclipse.ui.workbench,
+ org.eclipse.jface,
+ org.eclipse.capra.core,
+ org.eclipse.emf.ecore.editor,
+ org.eclipse.ui,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.capra.ui,
+ org.eclipse.capra.generic.artifactmodel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.ui.sunburst.view
+Bundle-Vendor: %Bundle-Vendor

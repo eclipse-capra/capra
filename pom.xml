@@ -48,7 +48,8 @@
 		<module>bundles/org.eclipse.capra.ui.zest</module>
 		<module>bundles/org.eclipse.capra.ui.reqif</module>
 		<module>bundles/org.eclipse.capra.ui.xtext</module>
-		
+		<module>bundles/org.eclipse.capra.ui.sunburst</module>
+
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsuite</module>
 		<module>tests/org.eclipse.capra.handler.cdt.tests</module>
@@ -76,7 +77,8 @@
 		<module>features/org.eclipse.capra.ui.plantuml.feature</module>
 		<module>features/org.eclipse.capra.ui.zest.feature</module>
 		<module>features/org.eclipse.capra.ui.xtext.feature</module>
-		
+		<module>features/org.eclipse.capra.ui.visualisations.feature</module>
+
 		<!-- Releng -->
 		<module>releng/org.eclipse.capra.releng.target</module>
 		<module>releng/org.eclipse.capra.releng.p2</module>
