@@ -109,12 +109,25 @@ public class TraceHelper {
 		}
 	}
 
+	/**
+	 * Gets connected artifacts from a given {@link Connection}.
+	 * 
+	 * @param connection
+	 * @return a list of unique connected artifacts, either the actual artifacts in
+	 *         case of EMF model elements or artifact wrappers for other artifact
+	 *         types.
+	 */
 	public List<EObject> getTracedElements(Connection connection) {
 		List<EObject> tracedElements = new ArrayList<>();
-		tracedElements.add(connection.getOrigin());
-		tracedElements.addAll(connection.getTargets());
+		if (!tracedElements.contains(connection.getOrigin())) {
+			tracedElements.add(connection.getOrigin());
+		}
+		for (EObject target : connection.getTargets()) {
+			if (!tracedElements.contains(target)) {
+				tracedElements.addAll(connection.getTargets());
+			}
+		}
 		return tracedElements;
-
 	}
 
 	/**
@@ -154,6 +167,56 @@ public class TraceHelper {
 
 		return traceAdapter.getAllTraceLinks(this.traceModel).stream().filter(c -> c.equals(connection))
 				.collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	/**
+	 * Checks if a given EMF element or artifactWrapper is contained in the trace
+	 * model.
+	 * 
+	 * @param artifact the artifact to look for
+	 * @return true if the artifact exists, false otherwise
+	 */
+
+	public boolean isArtifactInTraceModel(EObject artifact) {
+		List<EObject> artifacts = new ArrayList<EObject>();
+		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
+		for (Connection c : connections) {
+			artifacts.addAll(getTracedElements(c));
+		}
+		if (artifacts.contains(artifact)) {
+			return true;
+		} else
+			return false;
+	}
+
+	/**
+	 * Returns a list of connections containing the artifacts passed. Trace links
+	 * that contain a subset (at least 2) of the artifacts passed are also returned.
+	 * 
+	 * @param artifacts a list of EMF artifacts or artifact wrappers
+	 * @return connections containing at least two of the elements in the artifacts
+	 *         passed.
+	 */
+
+	public List<Connection> getTraces(List<EObject> artifacts) {
+		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
+		List<Connection> possibleConnections = new ArrayList<Connection>();
+		List<Connection> relevantConnections = new ArrayList<Connection>();
+		// check if the list of artifact is not null or empty before doing anything
+		if (artifacts != null && !artifacts.isEmpty()) {
+			for (Connection c : connections) {
+				List<EObject> artifactsFromConnection = getTracedElements(c);
+				for (EObject a : artifactsFromConnection) {
+					if (artifacts.contains(a) && !possibleConnections.contains(c)) {
+						possibleConnections.add(c);
+					} else if (artifacts.contains(a) && possibleConnections.contains(c)) {
+						relevantConnections.add(c);
+					}
+				}
+			}
+
+		}
+		return relevantConnections;
 	}
 
 }
