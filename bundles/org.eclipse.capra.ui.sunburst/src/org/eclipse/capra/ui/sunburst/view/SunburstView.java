@@ -31,16 +31,25 @@ import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
+import org.eclipse.capra.ui.sunburst.SunburstPreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * Provides a view of the trace model using a navigable sunburst view.
@@ -73,9 +82,11 @@ public class SunburstView extends ViewPart {
 	 */
 	private static final String HTML_SOURCE_LOCATION = "platform:/plugin/org.eclipse.capra.ui.sunburst/src/html/index.html";
 
-	private static final int MAX_RECURSION_LEVEL = 5;
+	private int maxRecursionLevel;
+	IEclipsePreferences preferences = SunburstPreferences.getPreferences();
 
 	private Browser browser;
+	private Action selectDepthAction;
 
 	final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 	TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
@@ -114,8 +125,12 @@ public class SunburstView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		this.maxRecursionLevel = preferences.getInt(SunburstPreferences.MAX_RECURSION_LEVEL,
+				SunburstPreferences.MAX_RECURSION_LEVEL_DEFAULT);
 		browser = new Browser(parent, SWT.NONE);
 		browser.setText(createHTML());
+		makeActions();
+		contributeToActionBars();
 		getViewSite().getPage().addSelectionListener(listener);
 	}
 
@@ -133,6 +148,33 @@ public class SunburstView extends ViewPart {
 	@Override
 	public void setFocus() {
 		// Deliberately do nothing.
+	}
+
+	/**
+	 * Creates the actions for the toolbar and the menu.
+	 */
+	private void makeActions() {
+		selectDepthAction = new SelectDepthAction();
+		selectDepthAction.setText("Set recursion depth...");
+		selectDepthAction.setToolTipText("Select the maximum depth until which traceability links will be traversed.");
+	}
+
+	/**
+	 * Adds the relevant actions to the pull down menu.
+	 * 
+	 * @param manager the menu manager for the pull down menu
+	 */
+	private void fillLocalPullDown(IMenuManager manager) {
+		manager.removeAll();
+		manager.add(selectDepthAction);
+	}
+
+	/**
+	 * Adds relevant entries to the tool bar and pull down menu.
+	 */
+	private void contributeToActionBars() {
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalPullDown(bars.getMenuManager());
 	}
 
 	/**
@@ -257,13 +299,13 @@ public class SunburstView extends ViewPart {
 		alreadySeen.add(parent);
 
 		// Stop the recursion if we have reached the maximum depth
-		if (currentLevel < MAX_RECURSION_LEVEL) {
+		if (currentLevel < this.maxRecursionLevel) {
 			List<EObject> children = getUniqueChildren(alreadySeen, parent);
 			if (!children.isEmpty()) {
 				builder.append("\"children\":[");
 				// Go through the children and recurse
 				for (int childLevelIndex = 0; childLevelIndex < children.size(); childLevelIndex++) {
-					processHierarchyLevel(builder, children.get(childLevelIndex), alreadySeen, currentLevel++);
+					processHierarchyLevel(builder, children.get(childLevelIndex), alreadySeen, currentLevel + 1);
 					alreadySeen.remove(children.get(childLevelIndex));
 
 					if (childLevelIndex < children.size() - 1) {
@@ -392,5 +434,50 @@ public class SunburstView extends ViewPart {
 			return false;
 		}
 	}
+
+	/**
+	 * Class to allow selecting the maximum traversal depth of trace model. Stores
+	 * the selection in the Eclipse Capra preferences.
+	 */
+	private class SelectDepthAction extends Action {
+		@Override
+		public void run() {
+			IInputValidator numberValidator = new IInputValidator() {
+
+				@Override
+				public String isValid(String newText) {
+					boolean validationError = false;
+					try {
+						int i = Integer.parseInt(newText);
+						if (i < 1) {
+							validationError = true;
+						}
+					} catch (NumberFormatException ex) {
+						validationError = true;
+					}
+					if (validationError) {
+						return "Please enter a valid number larger than 0.";
+					}
+					return null;
+				}
+			};
+			InputDialog dialog = new InputDialog(getViewSite().getShell(), "Trace link depth",
+					"Please select the maximum depth until which traceability links will be traversed for the Sunburst view.",
+					String.valueOf(maxRecursionLevel), numberValidator);
+			dialog.setBlockOnOpen(true);
+			dialog.open();
+			if (dialog.getReturnCode() == Dialog.OK) {
+				maxRecursionLevel = Integer.parseInt(dialog.getValue());
+				preferences.putInt(SunburstPreferences.MAX_RECURSION_LEVEL, maxRecursionLevel);
+				try {
+					// forces the application to save the preferences
+					preferences.flush();
+				} catch (BackingStoreException e) {
+					e.printStackTrace();
+				}
+				browser.setText(createHTML());
+			}
+		}
+	};
 
 }
