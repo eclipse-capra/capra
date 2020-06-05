@@ -49,6 +49,7 @@
 		<module>bundles/org.eclipse.capra.ui.reqif</module>
 		<module>bundles/org.eclipse.capra.ui.xtext</module>
 		<module>bundles/org.eclipse.capra.ui.sunburst</module>
+		<module>bundles/org.eclipse.capra.ui.matrix</module>
 
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsuite</module>
