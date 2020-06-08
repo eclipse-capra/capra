@@ -78,7 +78,8 @@
 		<module>features/org.eclipse.capra.ui.plantuml.feature</module>
 		<module>features/org.eclipse.capra.ui.zest.feature</module>
 		<module>features/org.eclipse.capra.ui.xtext.feature</module>
-		<module>features/org.eclipse.capra.ui.visualisations.feature</module>
+		<module>features/org.eclipse.capra.ui.sunburst.feature</module>
+		<module>features/org.eclipse.capra.ui.matrix.feature</module>
 
 		<!-- Releng -->
 		<module>releng/org.eclipse.capra.releng.target</module>

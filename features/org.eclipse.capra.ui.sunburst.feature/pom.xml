@@ -21,7 +21,7 @@
                 <version>0.7.2-SNAPSHOT</version>
         </parent>
 
-        <artifactId>org.eclipse.capra.ui.visualisations.feature</artifactId>
+        <artifactId>org.eclipse.capra.ui.sunburst.feature</artifactId>
         <packaging>eclipse-feature</packaging>
 
 </project>

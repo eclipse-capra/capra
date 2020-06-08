@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.capra.ui.visualisations.feature"
+      id="org.eclipse.capra.ui.sunburst.feature"
       label="%featureName"
       version="0.7.2.qualifier"
       provider-name="%providerName">
@@ -19,13 +19,6 @@
 
    <plugin
          id="org.eclipse.capra.ui.sunburst"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.capra.ui.matrix"
          download-size="0"
          install-size="0"
          version="0.0.0"

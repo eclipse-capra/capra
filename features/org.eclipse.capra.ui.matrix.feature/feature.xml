@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.capra.handler.app4mc.feature"
+      id="org.eclipse.capra.ui.matrix.feature"
       label="%featureName"
       version="0.7.2.qualifier"
       provider-name="%providerName">
 
-   <description url="%url">
+   <description url="%descriptionURL">
       %description
    </description>
 
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="org.eclipse.capra.handler.app4mc"
+         id="org.eclipse.capra.ui.matrix"
          download-size="0"
          install-size="0"
          version="0.0.0"
