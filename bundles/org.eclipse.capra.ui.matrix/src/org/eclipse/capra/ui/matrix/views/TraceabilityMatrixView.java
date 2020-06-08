@@ -125,12 +125,12 @@ public class TraceabilityMatrixView extends ViewPart {
 	private Composite parent;
 
 	private ResourceSet resourceSet = new ResourceSetImpl();
-	private EObject traceModel = null;
-	private EObject artifactModel = null;
 
 	private final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 	private TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 	private TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+	private EObject traceModel = null;
+	private EObject artifactModel = null;
 	private ArtifactHelper artifactHelper;
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
@@ -148,7 +148,6 @@ public class TraceabilityMatrixView extends ViewPart {
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			populateSelectedModels(part, selection);
 			if (traceMatrixTable != null && selectionModified) {
-				Composite parent = traceMatrixTable.getParent();
 				updateTraceabilityMatrix();
 			}
 		}
@@ -254,7 +253,9 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		traceMatrixTable.setFocus();
+		if (traceMatrixTable != null) {
+			traceMatrixTable.setFocus();
+		}
 	}
 
 	/**
@@ -270,6 +271,7 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		this.artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		this.artifactHelper = new ArtifactHelper(this.artifactModel);
+		this.traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
 		if (!selectedModels.isEmpty()) {
 			// Show the matrix for the selected objects
@@ -292,7 +294,9 @@ public class TraceabilityMatrixView extends ViewPart {
 			}
 		} else {
 			// Without a selection, show a matrix of all traces
-			traces = metamodelAdapter.getAllTraceLinks(traceModel);
+			if (traceModel != null) {
+				traces = metamodelAdapter.getAllTraceLinks(traceModel);
+			}
 		}
 		// If the current selection does not contain elements from the trace model, it
 		// is possible that the list of traces is empty. By catching this case, we only
