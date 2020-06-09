@@ -311,9 +311,9 @@ public class TraceabilityMatrixView extends ViewPart {
 			// rows, the labels are created.
 			this.bodyDataProvider = new TraceabilityMatrixDataProvider(traces, this.traceModel, this.traceAdapter);
 			IDataProvider colHeaderDataProvider = new TraceabilityMatrixColumnHeaderDataProvider(
-					this.bodyDataProvider.getColumns());
+					this.bodyDataProvider.getColumns(), artifactHelper);
 			IDataProvider rowHeaderDataProvider = new TraceabilityMatrixRowHeaderDataProvider(
-					this.bodyDataProvider.getRows());
+					this.bodyDataProvider.getRows(), artifactHelper);
 
 			// Putting the data providers to their respective stacks
 			this.bodyLayer = new BodyLayerStack(this.bodyDataProvider);

@@ -17,12 +17,8 @@ package org.eclipse.capra.ui.matrix;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 
 /**
@@ -37,14 +33,8 @@ public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider
 
 	private List<String> labels = new ArrayList<>();
 
-	public TraceabilityMatrixColumnHeaderDataProvider(List<EObject> data) {
-
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		ResourceSet resourceSet = new ResourceSetImpl();
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
-
+	public TraceabilityMatrixColumnHeaderDataProvider(List<EObject> data, ArtifactHelper artifactHelper) {
 		for (EObject next : data) {
-			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			this.labels.add(artifactHelper.getArtifactLabel(next));
 		}
 	}
