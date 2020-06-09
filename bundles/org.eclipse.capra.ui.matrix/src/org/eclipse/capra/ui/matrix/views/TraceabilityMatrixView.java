@@ -34,6 +34,7 @@ import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
+import org.eclipse.capra.ui.matrix.selection.TraceabilityMatrixSelectionProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -338,6 +339,9 @@ public class TraceabilityMatrixView extends ViewPart {
 			traceMatrixTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 			traceMatrixTable.addConfiguration(this.capraNatTableStyleConfiguration);
 			traceMatrixTable.configure();
+
+			// Attach the selection provider
+			getSite().setSelectionProvider(new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(), bodyDataProvider));
 
 			// Adding the tool tips
 			attachToolTip();
