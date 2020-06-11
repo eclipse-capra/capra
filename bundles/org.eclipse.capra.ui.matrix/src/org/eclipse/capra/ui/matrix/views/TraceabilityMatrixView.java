@@ -137,6 +137,7 @@ public class TraceabilityMatrixView extends ViewPart {
 	private TraceHelper traceHelper;
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
+	private TraceabilityMatrixSelectionProvider selectionProvider;
 	private BodyLayerStack bodyLayer;
 
 	private List<Object> selectedModels = new ArrayList<>();
@@ -344,8 +345,13 @@ public class TraceabilityMatrixView extends ViewPart {
 			traceMatrixTable.configure();
 
 			// Attach the selection provider
-			getSite().setSelectionProvider(
-					new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(), bodyDataProvider));
+			if (this.selectionProvider == null) {
+				this.selectionProvider = new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(),
+						this.bodyDataProvider);
+			} else {
+				selectionProvider.updateProvider(bodyLayer.getSelectionLayer(), this.bodyDataProvider);
+			}
+			getSite().setSelectionProvider(this.selectionProvider);
 
 			// Adding the tool tips
 			attachToolTip();

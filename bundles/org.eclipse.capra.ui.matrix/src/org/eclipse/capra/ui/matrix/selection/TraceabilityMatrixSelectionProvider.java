@@ -54,10 +54,7 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 
 	public TraceabilityMatrixSelectionProvider(SelectionLayer selectionLayer,
 			TraceabilityMatrixDataProvider dataProvider) {
-		this.selectionLayer = selectionLayer;
-		this.dataProvider = dataProvider;
-
-		this.selectionLayer.addLayerListener(this);
+		this.updateProvider(selectionLayer, dataProvider);
 	}
 
 	@Override
@@ -116,6 +113,19 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	@Override
 	public void setSelection(ISelection selection) {
 		// Deliberately do nothing
+	}
+
+	/**
+	 * Sets the selection layer and the data provider used by this
+	 * {@code SelectionProvider} to retrieve selected data from the underlying
+	 * NatTable.
+	 * 
+	 * @param selectionLayer the new selection layer
+	 */
+	public void updateProvider(SelectionLayer selectionLayer, TraceabilityMatrixDataProvider dataProvider) {
+		this.selectionLayer = selectionLayer;
+		this.dataProvider = dataProvider;
+		this.selectionLayer.addLayerListener(this);
 	}
 
 }
