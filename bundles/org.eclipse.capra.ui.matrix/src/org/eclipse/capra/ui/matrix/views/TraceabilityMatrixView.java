@@ -28,6 +28,7 @@ import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixBodyToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
@@ -133,6 +134,7 @@ public class TraceabilityMatrixView extends ViewPart {
 	private EObject traceModel = null;
 	private EObject artifactModel = null;
 	private ArtifactHelper artifactHelper;
+	private TraceHelper traceHelper;
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
 	private BodyLayerStack bodyLayer;
@@ -273,6 +275,7 @@ public class TraceabilityMatrixView extends ViewPart {
 		this.artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		this.artifactHelper = new ArtifactHelper(this.artifactModel);
 		this.traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		this.traceHelper = new TraceHelper(traceModel);
 
 		if (!selectedModels.isEmpty()) {
 			// Show the matrix for the selected objects
@@ -287,7 +290,7 @@ public class TraceabilityMatrixView extends ViewPart {
 						unpackedElement = model;
 					}
 					EObject wrappedElement = handler.createWrapper(unpackedElement, this.artifactModel);
-					if (isInTraceModel(wrappedElement)) {
+					if (traceHelper.isArtifactInTraceModel(wrappedElement)) {
 						selectedObject = wrappedElement;
 						traces.addAll(this.traceAdapter.getConnectedElements(selectedObject, this.traceModel));
 					}
@@ -341,7 +344,8 @@ public class TraceabilityMatrixView extends ViewPart {
 			traceMatrixTable.configure();
 
 			// Attach the selection provider
-			getSite().setSelectionProvider(new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(), bodyDataProvider));
+			getSite().setSelectionProvider(
+					new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(), bodyDataProvider));
 
 			// Adding the tool tips
 			attachToolTip();
@@ -464,53 +468,6 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	private boolean sameElement(EObject first, EObject second) {
 		return EMFHelper.getIdentifier(first).equals(EMFHelper.getIdentifier(second));
-	}
-
-	private boolean isElementInList(List<EObject> list, EObject obj) {
-		for (EObject next : list) {
-			if (sameElement(obj, next)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private List<EObject> getAllUniqueElements(List<Connection> traces) {
-		List<EObject> inserted = new ArrayList<>();
-		for (Connection trace : traces) {
-			EObject element = trace.getOrigin();
-			if (inserted.isEmpty()) {
-				inserted.add(element);
-			} else {
-				if (!isElementInList(inserted, element)) {
-					inserted.add(element);
-				}
-			}
-			List<EObject> targets = trace.getTargets();
-			for (EObject target : targets) {
-				if (!isElementInList(inserted, target)) {
-					inserted.add(target);
-				}
-			}
-		}
-		return inserted;
-	}
-
-	/**
-	 * Checks if the given {@code artifact} is part of the trace model.
-	 * 
-	 * @param artifact the artifact whose presence is checked
-	 * @return {@code true} if the artifact is contained in the trace model,
-	 *         {@code false} otherwise
-	 */
-	private boolean isInTraceModel(EObject artifact) {
-		List<EObject> artifacts = getAllUniqueElements(metamodelAdapter.getAllTraceLinks(traceModel));
-
-		if (isElementInList(artifacts, artifact)) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
