@@ -30,6 +30,7 @@ import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.sunburst.SunburstPreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -97,6 +98,7 @@ public class SunburstView extends ViewPart {
 	private EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 
 	private ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+	private TraceHelper traceHelper = new TraceHelper(traceModel);
 
 	private List<Object> selectedModels = new ArrayList<>();
 
@@ -247,7 +249,7 @@ public class SunburstView extends ViewPart {
 						unpackedElement = selection;
 					}
 					EObject wrappedElement = handler.createWrapper(unpackedElement, artifactModel);
-					if (isInTraceModel(wrappedElement)) {
+					if (traceHelper.isArtifactInTraceModel(wrappedElement)) {
 						selectedObject = wrappedElement;
 						if (selectedModels.size() == 1) {
 							secondLevelNodes = getUniqueChildren(null, selectedObject);
@@ -346,93 +348,18 @@ public class SunburstView extends ViewPart {
 	 */
 	public List<EObject> getUniqueChildren(List<EObject> prev, EObject artifact) {
 		List<Connection> conNow = traceAdapter.getConnectedElements(artifact, traceModel);
-		List<EObject> allConnected = getAllUniqueElements(conNow);
-		if (isElementInList(allConnected, artifact)) {
+		List<EObject> allConnected = new ArrayList<>(TraceHelper.getTracedElements(conNow));
+		if (EMFHelper.isElementInList(allConnected, artifact)) {
 			allConnected.remove(artifact);
 		}
 		if (prev != null) {
 			for (EObject x : prev) {
-				if (isElementInList(allConnected, x)) {
+				if (EMFHelper.isElementInList(allConnected, x)) {
 					allConnected.remove(x);
 				}
 			}
 		}
 		return allConnected;
-	}
-
-	/**
-	 * Compares to {@link EObject} instances based on their identifier using
-	 * {@link EMFHelper#getIdentifier(EObject)}.
-	 * 
-	 * @param first  the first {@code EObject} to compare
-	 * @param second the second {@code EObject} to compare
-	 * @return {@code true} if the identifiers of the two instances are equal,
-	 *         {@code false} otherwise
-	 */
-	private boolean sameElement(EObject first, EObject second) {
-		return EMFHelper.getIdentifier(first).equals(EMFHelper.getIdentifier(second));
-	}
-
-	/**
-	 * Checks if the given {@link EObject} is in the list of {@code EObject}s using
-	 * {@link #sameElement(EObject, EObject)}.
-	 * 
-	 * @param list the list to check
-	 * @param obj  the object to check for
-	 * @return {@code true} if {@code obj} is in {@code list}, {@code false}
-	 *         otherwise
-	 */
-	private boolean isElementInList(List<EObject> list, EObject obj) {
-		for (EObject next : list) {
-			if (sameElement(obj, next)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Retrieves a list of all unique artifacts connected by the provided list of
-	 * {@code traces}.
-	 * <p>
-	 * The method will always return a valid list which can be empty.
-	 * 
-	 * @param traces the list of traces whose artifacts
-	 * @return a list of unique artifacts connected by the provided list of
-	 *         {@code traces}
-	 */
-	private List<EObject> getAllUniqueElements(List<Connection> traces) {
-		List<EObject> inserted = new ArrayList<>();
-		for (Connection trace : traces) {
-			EObject element = trace.getOrigin();
-			if (!isElementInList(inserted, element)) {
-				inserted.add(element);
-			}
-
-			for (EObject target : trace.getTargets()) {
-				if (!isElementInList(inserted, target)) {
-					inserted.add(target);
-				}
-			}
-		}
-		return inserted;
-	}
-
-	/**
-	 * Checks if the given {@code artifact} is part of the trace model.
-	 * 
-	 * @param artifact the artifact whose presence is checked
-	 * @return {@code true} if the artifact is contained in the trace model,
-	 *         {@code false} otherwise
-	 */
-	private boolean isInTraceModel(EObject artifact) {
-		List<EObject> artifacts = getAllUniqueElements(metamodelAdapter.getAllTraceLinks(traceModel));
-
-		if (isElementInList(artifacts, artifact)) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**

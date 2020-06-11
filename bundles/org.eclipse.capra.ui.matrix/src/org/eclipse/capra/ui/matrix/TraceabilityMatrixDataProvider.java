@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
@@ -57,7 +58,7 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 */
 	public TraceabilityMatrixDataProvider(List<Connection> connections, EObject traceModel,
 			TraceMetaModelAdapter traceAdapter) {
-		for (EObject element : getAllUniqueElements(connections)) {
+		for (EObject element : TraceHelper.getTracedElements(connections)) {
 			EntryData colEntry = new EntryData(element);
 			colEntry.connections = traceAdapter.getConnectedElements(element, traceModel);
 			this.columns.add(colEntry);
@@ -77,7 +78,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 		EntryData rowEntry = columns.get(rowIndex);
 		for (Connection connection : colEntry.connections) {
 			for (EObject target : connection.getTargets()) {
-				if (!sameElement(colEntry.artifact, target) && sameElement(rowEntry.artifact, target)) {
+				if (!EMFHelper.hasSameIdentifier(colEntry.artifact, target)
+						&& EMFHelper.hasSameIdentifier(rowEntry.artifact, target)) {
 					EObject eClass = connection.getTlink().eClass();
 					return (eClass == null ? "" : ((EClass) eClass).getName());
 				}
@@ -147,7 +149,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 		EntryData rowEntry = columns.get(row);
 		for (Connection connection : colEntry.connections) {
 			for (EObject target : connection.getTargets()) {
-				if (!sameElement(colEntry.artifact, target) && sameElement(rowEntry.artifact, target)) {
+				if (!EMFHelper.hasSameIdentifier(colEntry.artifact, target)
+						&& EMFHelper.hasSameIdentifier(rowEntry.artifact, target)) {
 					return connection;
 				}
 			}
@@ -155,37 +158,4 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 		return null;
 	}
 
-	private List<EObject> getAllUniqueElements(List<Connection> traces) {
-		List<EObject> inserted = new ArrayList<>();
-		for (Connection trace : traces) {
-			EObject element = trace.getOrigin();
-			if (inserted.isEmpty()) {
-				inserted.add(element);
-			} else {
-				if (!isElementInList(inserted, element)) {
-					inserted.add(element);
-				}
-			}
-			List<EObject> targets = trace.getTargets();
-			for (EObject target : targets) {
-				if (!isElementInList(inserted, target)) {
-					inserted.add(target);
-				}
-			}
-		}
-		return inserted;
-	}
-
-	private boolean isElementInList(List<EObject> list, EObject obj) {
-		for (EObject next : list) {
-			if (sameElement(obj, next)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean sameElement(EObject first, EObject second) {
-		return EMFHelper.getIdentifier(first).equals(EMFHelper.getIdentifier(second));
-	}
 }

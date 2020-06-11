@@ -14,6 +14,7 @@
 package org.eclipse.capra.core.helpers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -217,6 +218,28 @@ public class TraceHelper {
 
 		}
 		return relevantConnections;
+	}
+
+	/**
+	 * Retrieves all unique artifacts connected by the provided collection of
+	 * {@code traces}.
+	 * <p>
+	 * The method will always return a valid set which can be empty.
+	 * 
+	 * @param traces the collection of traces whose artifacts should be retrieved
+	 * @return a set of unique artifacts connected by the provided list of
+	 *         {@code traces}
+	 */
+	public static Set<EObject> getTracedElements(Collection<Connection> traces) {
+		Set<EObject> inserted = new HashSet<>();
+		for (Connection trace : traces) {
+			inserted.add(trace.getOrigin());
+			List<EObject> targets = trace.getTargets();
+			for (EObject target : targets) {
+				inserted.add(target);
+			}
+		}
+		return inserted;
 	}
 
 }
