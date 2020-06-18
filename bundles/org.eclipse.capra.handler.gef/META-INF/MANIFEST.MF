@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.gef;singleton:=true
-Bundle-Version: 0.7.2.qualifier
+Bundle-Version: 0.8.0.RC_20200618
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.papyrus.infra.gmfdiag.css,
  org.eclipse.papyrus.infra.emf,

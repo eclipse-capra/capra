@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.uml;singleton:=true
-Bundle-Version: 0.7.2.qualifier
+Bundle-Version: 0.8.0.RC_20200618
 Export-Package: org.eclipse.capra.handler.uml
 Require-Bundle: org.eclipse.uml2.uml,
  org.eclipse.emf.ecore,

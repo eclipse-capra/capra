@@ -18,7 +18,7 @@
 		<relativePath>../../pom.xml</relativePath>
 		<groupId>org.eclipse.capra</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.7.2-SNAPSHOT</version>
+		<version>0.8.0.RC_20200618</version>
 	</parent>
 
 	<artifactId>org.eclipse.capra.ui.office</artifactId>

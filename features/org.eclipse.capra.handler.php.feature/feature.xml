@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.capra.handler.php.feature"
       label="%featureName"
-      version="0.7.2.qualifier"
+      version="0.8.0.RC_20200618"
       provider-name="%providerName">
 
    <description url="%descriptionURL">
