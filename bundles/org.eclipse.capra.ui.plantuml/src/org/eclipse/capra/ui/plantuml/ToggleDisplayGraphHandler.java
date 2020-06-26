@@ -41,13 +41,11 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 	/**
 	 * Checks whether the trace view is set to show a graph.
 	 * 
-	 * @return {@code true} if the graph view is enabled, {@code false}
-	 *         otherwise
+	 * @return {@code true} if the graph view is enabled, {@code false} otherwise
 	 */
 	public static boolean isDisplayGraph() {
 		Preferences graphDisplay = getPreference();
-
-		return graphDisplay.get("option", "graph").equals("matrix");
+		return graphDisplay.get("option", "graph").equals("graph");
 	}
 
 	private static Preferences getPreference() {
@@ -59,9 +57,8 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 	/**
 	 * Sets whether the trace view is set to show a graph or a matrix.
 	 * 
-	 * @param value
-	 *            {@code true} if the graph view is enabled, {@code false}
-	 *            otherwise
+	 * @param value {@code true} if the graph view is enabled, {@code false}
+	 *              otherwise
 	 * 
 	 */
 	public static void setDisplayGraph(boolean value) {
