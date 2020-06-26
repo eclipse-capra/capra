@@ -30,6 +30,8 @@ import org.osgi.service.prefs.Preferences;
  */
 public class ToggleDisplayGraphHandler extends AbstractHandler {
 
+	public static final String DISPLAY_GRAPH_PREFERENCE = "org.eclipse.capra.ui.plantuml.displayGraph";
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Command command = event.getCommand();
@@ -41,8 +43,7 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 	/**
 	 * Checks whether the trace view is set to show a graph.
 	 * 
-	 * @return {@code true} if the graph view is enabled, {@code false}
-	 *         otherwise
+	 * @return {@code true} if the graph view is enabled, {@code false} otherwise
 	 */
 	public static boolean isDisplayGraph() {
 		Preferences graphDisplay = getPreference();
@@ -51,17 +52,14 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.displayGraph");
-		Preferences transitivity = preferences.node("displayGraph");
-		return transitivity;
+		return InstanceScope.INSTANCE.getNode(DISPLAY_GRAPH_PREFERENCE);
 	}
 
 	/**
 	 * Sets whether the trace view is set to show a graph or a matrix.
 	 * 
-	 * @param value
-	 *            {@code true} if the graph view is enabled, {@code false}
-	 *            otherwise
+	 * @param value {@code true} if the graph view is enabled, {@code false}
+	 *              otherwise
 	 * 
 	 */
 	public static void setDisplayGraph(boolean value) {

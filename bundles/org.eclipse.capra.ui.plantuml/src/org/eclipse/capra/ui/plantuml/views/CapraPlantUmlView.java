@@ -13,6 +13,15 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.plantuml.views;
 
+import org.eclipse.capra.ui.plantuml.DisplayInternalLinksHandler;
+import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.TransitivityDepthHandler;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.swt.widgets.Composite;
+
 import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
 
 /**
@@ -20,5 +29,30 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  * menu contributions and later extensions.
  */
 public class CapraPlantUmlView extends PlantUmlView {
+
+	private IPreferenceChangeListener preferenceChangeListener;
+
+	@Override
+	public void createPartControl(final Composite parent) {
+		super.createPartControl(parent);
+		registerPreferenceChangeListener();
+	}
+
+	private void registerPreferenceChangeListener() {
+		preferenceChangeListener = new IPreferenceChangeListener() {
+			@Override
+			public void preferenceChange(PreferenceChangeEvent event) {
+				updateDiagramTextFromCurrentPart();
+			}
+		};
+		InstanceScope.INSTANCE.getNode(DisplayInternalLinksHandler.TOGGLE_INTERNAL_LINKS_PREFERENCE)
+				.addPreferenceChangeListener(preferenceChangeListener);
+		InstanceScope.INSTANCE.getNode(ToggleTransitivityHandler.TOGGLE_TRANSITIVITY_PREFERENCE)
+				.addPreferenceChangeListener(preferenceChangeListener);
+		InstanceScope.INSTANCE.getNode(ToggleDisplayGraphHandler.DISPLAY_GRAPH_PREFERENCE)
+				.addPreferenceChangeListener(preferenceChangeListener);
+		InstanceScope.INSTANCE.getNode(TransitivityDepthHandler.TRANSITIVITY_DEPTH_PREFERENCE)
+				.addPreferenceChangeListener(preferenceChangeListener);
+	}
 
 }

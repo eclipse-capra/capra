@@ -31,6 +31,8 @@ import org.osgi.service.prefs.Preferences;
  */
 public class TransitivityDepthHandler extends AbstractHandler {
 
+	public static final String TRANSITIVITY_DEPTH_PREFERENCE = "org.eclipse.capra.ui.plantuml.transitivityDepth";
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
@@ -46,8 +48,8 @@ public class TransitivityDepthHandler extends AbstractHandler {
 	}
 
 	/**
-	 * Gets the depth that was set by the user for transitivity returns 0 in
-	 * case no depth was set or no depth limit is wanted
+	 * Gets the depth that was set by the user for transitivity returns 0 in case no
+	 * depth was set or no depth limit is wanted
 	 * 
 	 * @return
 	 */
@@ -57,16 +59,13 @@ public class TransitivityDepthHandler extends AbstractHandler {
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.transitivityDepth");
-		Preferences transitivity = preferences.node("transitivityDepth");
-		return transitivity;
+		return InstanceScope.INSTANCE.getNode(TRANSITIVITY_DEPTH_PREFERENCE);
 	}
 
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 * 
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void setTransitivityDepth(String depth) {
 		Preferences transitivity = getPreference();

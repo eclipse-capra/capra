@@ -27,6 +27,8 @@ import org.osgi.service.prefs.Preferences;
  */
 public class DisplayInternalLinksHandler extends AbstractHandler {
 
+	public static final String TOGGLE_INTERNAL_LINKS_PREFERENCE = "org.eclipse.capra.ui.plantuml.toggleInternalLinks";
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (areInternalLinksShown())
@@ -50,16 +52,13 @@ public class DisplayInternalLinksHandler extends AbstractHandler {
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.toggleInternalLinks");
-		Preferences transitivity = preferences.node("internalLinks");
-		return transitivity;
+		return InstanceScope.INSTANCE.getNode(TOGGLE_INTERNAL_LINKS_PREFERENCE);
 	}
 
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 * 
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void showInternalLinks(boolean value) {
 		Preferences internalLinks = getPreference();

@@ -29,6 +29,8 @@ import org.osgi.service.prefs.Preferences;
  */
 public class ToggleTransitivityHandler extends AbstractHandler {
 
+	public static final String TOGGLE_TRANSITIVITY_PREFERENCE = "org.eclipse.capra.ui.plantuml.toggleTransitivity";
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Command command = event.getCommand();
@@ -50,16 +52,13 @@ public class ToggleTransitivityHandler extends AbstractHandler {
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.toggleTransitivity");
-		Preferences transitivity = preferences.node("transitivity");
-		return transitivity;
+		return InstanceScope.INSTANCE.getNode(TOGGLE_TRANSITIVITY_PREFERENCE);
 	}
 
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 *
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void setTraceViewTransitive(boolean value) {
 		Preferences transitivity = getPreference();
