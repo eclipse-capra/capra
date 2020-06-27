@@ -37,6 +37,7 @@ import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
+import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
@@ -68,14 +69,17 @@ public class TestTraceabiltyMatrix {
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml" + LINE_SEPARATOR + "salt"
-			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|modelB : EPackage" + LINE_SEPARATOR + "modelA : EPackage |X"
-			+ LINE_SEPARATOR + "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|modelA : EPackage|modelB : EPackage" + LINE_SEPARATOR
+			+ "modelA : EPackage |. |X" + LINE_SEPARATOR + "modelB : EPackage |X |." + LINE_SEPARATOR + "}"
+			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml" + LINE_SEPARATOR + "salt"
-			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|B : EClass|BB : EClass|modelB : EPackage" + LINE_SEPARATOR
-			+ "A : EClass |X |. |." + LINE_SEPARATOR + "AA : EClass |. |X |." + LINE_SEPARATOR
-			+ "modelA : EPackage |. |. |X" + LINE_SEPARATOR + "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml"
-			+ LINE_SEPARATOR;
+			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR
+			+ ".|A : EClass|AA : EClass|modelA : EPackage|B : EClass|BB : EClass|modelB : EPackage" + LINE_SEPARATOR
+			+ "A : EClass |. |. |. |X |. |." + LINE_SEPARATOR + "AA : EClass |. |. |. |. |X |." + LINE_SEPARATOR
+			+ "modelA : EPackage |. |. |. |. |. |X" + LINE_SEPARATOR + "B : EClass |X |. |. |. |. |." + LINE_SEPARATOR
+			+ "BB : EClass |. |X |. |. |. |." + LINE_SEPARATOR + "modelB : EPackage |. |. |X |. |. |." + LINE_SEPARATOR
+			+ "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|A : EClass|B : EClass|AA : EClass|BB : EClass"
@@ -176,6 +180,7 @@ public class TestTraceabiltyMatrix {
 
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
+		ToggleDisplayGraphHandler.setDisplayGraph(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());

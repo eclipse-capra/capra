@@ -35,6 +35,7 @@
          point="org.eclipse.ui.commands">
      
       <command
+            description="%command.description.transitivity"
             id="org.eclipse.capra.ui.plantuml.toggleTransitivity"
             name="%command.name.transitivity">
          <state
@@ -43,6 +44,7 @@
          </state>
       </command>
       <command
+            description="%command.description.graph"
             id="org.eclipse.capra.ui.plantuml.displayGraph"
             name="%command.name.graph">
          <state

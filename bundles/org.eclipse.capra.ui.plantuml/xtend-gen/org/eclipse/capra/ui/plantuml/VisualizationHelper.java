@@ -1,9 +1,7 @@
 package org.eclipse.capra.ui.plantuml;
 
-import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -14,11 +12,10 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {
-  public static String createMatrix(final EObject traceModel, final EObject artifactModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements, final Boolean internalLinks) {
+  public static String createMatrix(final EObject traceModel, final EObject artifactModel, final Collection<EObject> rows, final Collection<EObject> columns, final Boolean internalLinks) {
     String _xblockexpression = null;
     {
-      Optional<TraceMetaModelAdapter> _traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter();
-      final TraceMetaModelAdapter traceAdapter = _traceMetamodelAdapter.get();
+      final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
       final ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");
@@ -28,23 +25,22 @@ public class VisualizationHelper {
       _builder.append("{#");
       _builder.newLine();
       {
-        boolean _notEquals = (!Objects.equal(firstElements, null));
-        if (_notEquals) {
+        if (((rows != null) && (rows.size() > 0))) {
           _builder.append(".");
           {
-            for(final EObject e : secondElements) {
+            for(final EObject e : columns) {
               _builder.append("|");
               String _artifactLabel = artifactHelper.getArtifactLabel(e);
-              _builder.append(_artifactLabel, "");
+              _builder.append(_artifactLabel);
             }
           }
           _builder.newLineIfNotEmpty();
           {
-            for(final EObject first : firstElements) {
+            for(final EObject first : rows) {
               String _artifactLabel_1 = artifactHelper.getArtifactLabel(first);
-              _builder.append(_artifactLabel_1, "");
+              _builder.append(_artifactLabel_1);
               {
-                for(final EObject second : secondElements) {
+                for(final EObject second : columns) {
                   _builder.append(" |");
                   {
                     if ((internalLinks).booleanValue()) {
@@ -72,7 +68,7 @@ public class VisualizationHelper {
             }
           }
         } else {
-          _builder.append("Choose two containers to show a traceability matrix of their contents.");
+          _builder.append("Choose at least two elements to show their traceability matrix.");
           _builder.newLine();
         }
       }
@@ -95,19 +91,19 @@ public class VisualizationHelper {
       _builder.newLine();
       _builder.append("object \"");
       String _originLabel = helper.originLabel();
-      _builder.append(_originLabel, "");
+      _builder.append(_originLabel);
       {
         boolean _originHasLocation = helper.originHasLocation();
         if (_originHasLocation) {
           _builder.append(" [[");
           String _originLocation = helper.originLocation();
-          _builder.append(_originLocation, "");
+          _builder.append(_originLocation);
           _builder.append(" (Go to)]]");
         }
       }
       _builder.append("\" as ");
       String _originId = helper.originId();
-      _builder.append(_originId, "");
+      _builder.append(_originId);
       _builder.append(" #pink");
       _builder.newLineIfNotEmpty();
       {
@@ -115,25 +111,25 @@ public class VisualizationHelper {
         for(final String id : _objectIdsWithoutOrigin) {
           _builder.append("object \"");
           String _label = helper.label(id);
-          _builder.append(_label, "");
+          _builder.append(_label);
           {
             boolean _hasLocation = helper.hasLocation(id);
             if (_hasLocation) {
               _builder.append(" [[");
               String _location = helper.location(id);
-              _builder.append(_location, "");
+              _builder.append(_location);
               _builder.append(" (Go to)]]");
             }
           }
           _builder.append("\" as ");
-          _builder.append(id, "");
+          _builder.append(id);
           _builder.newLineIfNotEmpty();
         }
       }
       {
         List<String> _arrows = helper.arrows();
         for(final String a : _arrows) {
-          _builder.append(a, "");
+          _builder.append(a);
           _builder.newLineIfNotEmpty();
         }
       }
