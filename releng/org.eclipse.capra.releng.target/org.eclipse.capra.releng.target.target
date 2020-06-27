@@ -43,6 +43,7 @@
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
 <unit id="org.eclipse.zest.sdk.feature.group" version="1.7.0.201606061308"/>
 <unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.21.0.v20160630-2019"/>
+<unit id="org.eclipse.pde.source.feature.group" version="3.12.3.v20170301-0400"/>
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">

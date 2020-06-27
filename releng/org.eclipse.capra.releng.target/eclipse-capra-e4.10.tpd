@@ -13,6 +13,7 @@ location "http://download.eclipse.org/releases/2018-12/" eclipse-2018-12 {
 	org.eclipse.mylyn.hudson.feature.group
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
+	org.eclipse.pde.source.feature.group
 }
 
 location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-gef4 {
