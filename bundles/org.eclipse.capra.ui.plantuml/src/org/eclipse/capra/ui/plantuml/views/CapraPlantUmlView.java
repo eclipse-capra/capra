@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.plantuml.views;
 
+import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.core.commands.Command;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.commands.ICommandService;
+
 import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
 
 /**
@@ -21,4 +27,19 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  */
 public class CapraPlantUmlView extends PlantUmlView {
 
+	@Override
+	public void createPartControl(final Composite parent) {
+		super.createPartControl(parent);
+		ICommandService cmdService = getSite().getService(ICommandService.class);
+		Command toggleTransitivity = cmdService.getCommand("org.eclipse.capra.ui.plantuml.toggleTransitivity");
+		if (toggleTransitivity != null) {
+			toggleTransitivity.getState("org.eclipse.ui.commands.toggleState")
+					.setValue(ToggleTransitivityHandler.isTraceViewTransitive());
+		}
+		Command displayGraph = cmdService.getCommand("org.eclipse.capra.ui.plantuml.displayGraph");
+		if (displayGraph != null) {
+			displayGraph.getState("org.eclipse.ui.commands.toggleState")
+					.setValue(ToggleDisplayGraphHandler.isDisplayGraph());
+		}
+	}
 }

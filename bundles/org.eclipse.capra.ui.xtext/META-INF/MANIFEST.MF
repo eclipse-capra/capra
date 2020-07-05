@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse Capra Selection Support for Xtext Editors
+Bundle-SymbolicName: org.eclipse.capra.ui.xtext;singleton:=true
+Bundle-Version: 0.8.1.qualifier
+Automatic-Module-Name: org.eclipse.capra.handler.xtext
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.resource,
+ org.eclipse.emf.ecore.resource.impl,
+ org.eclipse.jface.text,
+ org.eclipse.jface.viewers,
+ org.eclipse.ui,
+ org.eclipse.ui.editors.text,
+ org.eclipse.ui.views.contentoutline,
+ org.eclipse.xtext.resource,
+ org.eclipse.xtext.ui.editor,
+ org.eclipse.xtext.ui.editor.model,
+ org.eclipse.xtext.ui.editor.outline.impl,
+ org.eclipse.xtext.util.concurrent
+Require-Bundle: org.eclipse.capra.ui
+Bundle-Vendor: Eclipse Capra
+Export-Package: org.eclipse.capra.ui.xtext.selections

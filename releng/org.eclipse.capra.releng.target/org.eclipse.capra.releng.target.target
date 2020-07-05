@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Neon" sequenceNumber="61">
+<?pde version="3.8"?>
+<target name="Neon" sequenceNumber="77">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.gef4.common.sdk.feature.group" version="0.0.0"/>
@@ -40,9 +41,9 @@
 <unit id="org.eclipse.mylyn_feature.feature.group" version="3.21.0.v20160914-0252"/>
 <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.13.0.v20160806-1446"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
 <unit id="org.eclipse.zest.sdk.feature.group" version="1.7.0.201606061308"/>
 <unit id="org.eclipse.mylyn.trac_feature.feature.group" version="3.21.0.v20160630-2019"/>
+<unit id="org.eclipse.pde.source.feature.group" version="3.12.3.v20170301-0400"/>
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -60,11 +61,29 @@
 <unit id="ch.qos.logback.slf4j" version="1.0.7.v201505121915"/>
 <unit id="org.apache.poi" version="3.9.0.v201405241750"/>
 <unit id="com.fasterxml.jackson.core.jackson-core" version="2.5.0.v201504151636"/>
+<unit id="javax.xml.bind" version="2.2.0.v201105210648"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.23"/>
+<unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.24"/>
 <repository location="http://hallvard.github.io/plantuml/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/ease/update/release"/>
+<unit id="org.eclipse.ease.feature.feature.group" version="0.6.0.I201802271533"/>
+<unit id="org.eclipse.ease.ui.feature.feature.group" version="0.6.0.I201804241621"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/"/>
+<unit id="org.eclipse.app4mc.platform.sdk.feature.group" version="0.9.5.201907311248"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/tools/orbit/R-builds/R20170307180635/repository"/>
+<unit id="org.apache.commons.math3" version="3.5.0.v20160301-1110"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.15.0.v20180916-1232"/>
 </location>
 </locations>
 </target>

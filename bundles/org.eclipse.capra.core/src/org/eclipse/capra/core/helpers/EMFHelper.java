@@ -24,8 +24,8 @@ import org.eclipse.emf.ecore.EObject;
  * handling EMF models.
  */
 public class EMFHelper {
-	
-	private EMFHelper () {
+
+	private EMFHelper() {
 		super();
 	}
 
@@ -33,17 +33,16 @@ public class EMFHelper {
 	 * Builds an identifier String for the given EObject. This identifier starts
 	 * with
 	 * <ul>
-	 * <li>the attribute of the EObject as a String, if the EObject does only
-	 * have one attribute.</li>
+	 * <li>the attribute of the EObject as a String, if the EObject does only have
+	 * one attribute.</li>
 	 * <li>the attribute called 'name' of the EObject, if it has such an
 	 * attribute</li>
-	 * <li>any attribute of the EObject, but String attributes are preferred
-	 * </li>
+	 * <li>any attribute of the EObject, but String attributes are preferred</li>
 	 * </ul>
 	 * The identifier ends with " : " followed by the type of the EObject. <br>
 	 * Example: A Node with the name "foo" will result in "foo : Node" <br>
-	 * If the EObject does not have any attributes or all attributes have the
-	 * value null, this function will only return the type of the EObject.
+	 * If the EObject does not have any attributes or all attributes have the value
+	 * null, this function will only return the type of the EObject.
 	 */
 	public static String getIdentifier(final EObject eObject) {
 		if (eObject == null) {
@@ -78,10 +77,9 @@ public class EMFHelper {
 	}
 
 	/**
-	 * @param name
-	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 * @param name Use an empty StringBuilder as input. If this function returns
+	 *             true, this parameter has been filled, if it returns false,
+	 *             nothing happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
@@ -99,10 +97,9 @@ public class EMFHelper {
 	}
 
 	/**
-	 * @param name
-	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 * @param name Use an empty StringBuilder as input. If this function returns
+	 *             true, this parameter has been filled, if it returns false,
+	 *             nothing happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
@@ -123,10 +120,9 @@ public class EMFHelper {
 	}
 
 	/**
-	 * @param name
-	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 * @param name Use an empty StringBuilder as input. If this function returns
+	 *             true, this parameter has been filled, if it returns false,
+	 *             nothing happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
@@ -157,15 +153,13 @@ public class EMFHelper {
 	}
 
 	/**
-	 * Linearizes a tree to a list. The function checks if the provided
-	 * parameter is of type {@link EObject} and linearizes only if that is the
-	 * case.
+	 * Linearizes a tree to a list. The function checks if the provided parameter is
+	 * of type {@link EObject} and linearizes only if that is the case.
 	 * 
-	 * @param object
-	 *            the object to linearize
-	 * @return a list of {@link EObject}s originally contained in the tree
-	 *         structure of the parameter or an empty list if the paramter was
-	 *         not an {@link EObject}
+	 * @param object the object to linearize
+	 * @return a list of {@link EObject}s originally contained in the tree structure
+	 *         of the parameter or an empty list if the paramter was not an
+	 *         {@link EObject}
 	 */
 	public static List<EObject> linearize(Object object) {
 		ArrayList<EObject> elementList = new ArrayList<EObject>();
@@ -177,11 +171,8 @@ public class EMFHelper {
 		return elementList;
 	}
 
-	
-
 	/**
-	 * Public API access for other classes to get the name attribute of an
-	 * EObject
+	 * Public API access for other classes to get the name attribute of an EObject
 	 * 
 	 * @param eObject
 	 * @return String
@@ -197,5 +188,36 @@ public class EMFHelper {
 			}
 		}
 		return name;
+	}
+
+	/**
+	 * Compares to {@link EObject} instances based on their identifier using
+	 * {@link EMFHelper#getIdentifier(EObject)}.
+	 * 
+	 * @param first  the first {@code EObject} to compare
+	 * @param second the second {@code EObject} to compare
+	 * @return {@code true} if the identifiers of the two instances are equal,
+	 *         {@code false} otherwise
+	 */
+	public static boolean hasSameIdentifier(EObject first, EObject second) {
+		return EMFHelper.getIdentifier(first).equals(EMFHelper.getIdentifier(second));
+	}
+
+	/**
+	 * Checks if the given {@link EObject} is in the list of {@code EObject}s using
+	 * {@link #hasSameIdentifier(EObject, EObject)}.
+	 * 
+	 * @param list the list to check
+	 * @param obj  the object to check for
+	 * @return {@code true} if {@code obj} is in {@code list}, {@code false}
+	 *         otherwise
+	 */
+	public static boolean isElementInList(List<EObject> list, EObject obj) {
+		for (EObject next : list) {
+			if (EMFHelper.hasSameIdentifier(obj, next)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

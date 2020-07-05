@@ -31,11 +31,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
+import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
@@ -45,6 +47,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,16 +66,26 @@ public class TestTraceabiltyMatrix {
 
 	private static final String TEST_PROJECT_NAME = "TestProject";
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|modelB : EPackage\n" + "modelA : EPackage |X\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String LINE_SEPARATOR = System.lineSeparator();
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|B : EClass|BB : EClass|modelB : EPackage\n" + "A : EClass |X |. |.\n" + "AA : EClass |. |X |.\n"
-			+ "modelA : EPackage |. |. |X\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml" + LINE_SEPARATOR + "salt"
+			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|modelA : EPackage|modelB : EPackage" + LINE_SEPARATOR
+			+ "modelA : EPackage |. |X" + LINE_SEPARATOR + "modelB : EPackage |X |." + LINE_SEPARATOR + "}"
+			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
-	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml\n" + "salt\n" + "{#\n"
-			+ ".|A : EClass|B : EClass|AA : EClass|BB : EClass\n" + "A : EClass |. |X |. |.\n" + "B : EClass |X |. |. |.\n"
-			+ "AA : EClass |. |. |. |X\n" + "BB : EClass |. |. |X |.\n" + "}\n" + "\n" + "@enduml\n";
+	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml" + LINE_SEPARATOR + "salt"
+			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR
+			+ ".|A : EClass|AA : EClass|modelA : EPackage|B : EClass|BB : EClass|modelB : EPackage" + LINE_SEPARATOR
+			+ "A : EClass |. |. |. |X |. |." + LINE_SEPARATOR + "AA : EClass |. |. |. |. |X |." + LINE_SEPARATOR
+			+ "modelA : EPackage |. |. |. |. |. |X" + LINE_SEPARATOR + "B : EClass |X |. |. |. |. |." + LINE_SEPARATOR
+			+ "BB : EClass |. |X |. |. |. |." + LINE_SEPARATOR + "modelB : EPackage |. |. |X |. |. |." + LINE_SEPARATOR
+			+ "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+
+	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml" + LINE_SEPARATOR + "salt"
+			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|A : EClass|B : EClass|AA : EClass|BB : EClass"
+			+ LINE_SEPARATOR + "A : EClass |. |X |. |." + LINE_SEPARATOR + "B : EClass |X |. |. |." + LINE_SEPARATOR
+			+ "AA : EClass |. |. |. |X" + LINE_SEPARATOR + "BB : EClass |. |. |X |." + LINE_SEPARATOR + "}"
+			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	@Before
 	public void init() throws CoreException {
@@ -167,13 +180,16 @@ public class TestTraceabiltyMatrix {
 
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
+		ToggleDisplayGraphHandler.setDisplayGraph(false);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
-		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages);
+		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages,
+				Optional.<IWorkbenchPart>empty());
 		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
 
 		// Test transitively connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
-		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages);
+		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages,
+				Optional.<IWorkbenchPart>empty());
 		assertTrue(plantUMLTextForSelectedPackages_Transitive.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE));
 
 		// test multiple classes selected
@@ -183,7 +199,8 @@ public class TestTraceabiltyMatrix {
 		selectedClasses.add(_AA);
 		selectedClasses.add(_BB);
 
-		String plantUMLTextForSelectedClasses = provider.getDiagramText(selectedClasses);
+		String plantUMLTextForSelectedClasses = provider.getDiagramText(selectedClasses,
+				Optional.<IWorkbenchPart>empty());
 		assertTrue(plantUMLTextForSelectedClasses.equals(EXPECTED_TEXT_FOR_SELECTED_CLASSES));
 	}
 

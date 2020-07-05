@@ -45,8 +45,7 @@ public class ToggleTransitivityHandler extends AbstractHandler {
 	 */
 	public static boolean isTraceViewTransitive() {
 		Preferences transitivity = getPreference();
-
-		return transitivity.get("option", "direct").equals("direct");
+		return transitivity.get("option", "direct").equals("transitive");
 	}
 
 	private static Preferences getPreference() {
@@ -58,12 +57,11 @@ public class ToggleTransitivityHandler extends AbstractHandler {
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 *
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void setTraceViewTransitive(boolean value) {
 		Preferences transitivity = getPreference();
-		transitivity.put("option", value ? "direct" : "transitive");
+		transitivity.put("option", value ? "transitive" : "direct");
 
 		try {
 			// forces the application to save the preferences

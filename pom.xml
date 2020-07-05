@@ -12,7 +12,7 @@
 
 	<groupId>org.eclipse.capra</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.7.2-SNAPSHOT</version>
+	<version>0.8.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
     <name>Capra</name>
 
@@ -23,6 +23,7 @@
 		<module>bundles/org.eclipse.capra.generic.priority</module>
 		<module>bundles/org.eclipse.capra.generic.tracemodel</module>
 		<module>bundles/org.eclipse.capra.generic.artifactmodel</module>
+		<module>bundles/org.eclipse.capra.handler.app4mc</module>
 		<module>bundles/org.eclipse.capra.handler.cdt</module>
 		<module>bundles/org.eclipse.capra.handler.emf</module>
 		<module>bundles/org.eclipse.capra.handler.file</module>
@@ -46,7 +47,10 @@
 		<module>bundles/org.eclipse.capra.ui.drive</module>
 		<module>bundles/org.eclipse.capra.ui.zest</module>
 		<module>bundles/org.eclipse.capra.ui.reqif</module>
-		
+		<module>bundles/org.eclipse.capra.ui.xtext</module>
+		<module>bundles/org.eclipse.capra.ui.sunburst</module>
+		<module>bundles/org.eclipse.capra.ui.matrix</module>
+
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsuite</module>
 		<module>tests/org.eclipse.capra.handler.cdt.tests</module>
@@ -61,6 +65,7 @@
 		<module>features/org.eclipse.capra.feature</module>
 		<module>features/org.eclipse.capra.core.feature</module>
 		<module>features/org.eclipse.capra.generic.feature</module>
+		<module>features/org.eclipse.capra.handler.app4mc.feature</module>
 		<module>features/org.eclipse.capra.handler.cdt.feature</module>
 		<module>features/org.eclipse.capra.handler.hudson.feature</module>
 		<module>features/org.eclipse.capra.handler.office.feature</module>
@@ -72,7 +77,10 @@
 		<module>features/org.eclipse.capra.ui.feature</module>
 		<module>features/org.eclipse.capra.ui.plantuml.feature</module>
 		<module>features/org.eclipse.capra.ui.zest.feature</module>
-		
+		<module>features/org.eclipse.capra.ui.xtext.feature</module>
+		<module>features/org.eclipse.capra.ui.sunburst.feature</module>
+		<module>features/org.eclipse.capra.ui.matrix.feature</module>
+
 		<!-- Releng -->
 		<module>releng/org.eclipse.capra.releng.target</module>
 		<module>releng/org.eclipse.capra.releng.p2</module>
@@ -155,7 +163,7 @@
 						<artifact>
 							<groupId>org.eclipse.capra</groupId>
 							<artifactId>org.eclipse.capra.releng.target</artifactId>
-							<version>0.7.2-SNAPSHOT</version>
+							<version>0.8.1-SNAPSHOT</version>
 						</artifact>
 					</target>
 					<environments>

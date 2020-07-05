@@ -13,6 +13,7 @@ location "http://download.eclipse.org/releases/2018-12/" eclipse-2018-12 {
 	org.eclipse.mylyn.hudson.feature.group
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
+	org.eclipse.pde.source.feature.group
 }
 
 location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-gef4 {
@@ -46,7 +47,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 	org.mortbay.jetty.server
 }
 
-location "http://download.eclipse.org/sphinx/releases/0.8.x" {
+location "http://download.eclipse.org/sphinx/releases/0.9.x" {
 	org.eclipse.sphinx.sdk.feature.group
 }
 
@@ -56,9 +57,17 @@ location "http://download.eclipse.org/rmf/updates/releases" {
 }
 
 location "http://hallvard.github.io/plantuml/" plantuml {
-	net.sourceforge.plantuml.feature.feature.group 1.1.23
+	net.sourceforge.plantuml.feature.feature.group 1.1.24
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
 	de.ovgu.featureide.featuremodeling.feature.group 3.5.4
+}
+
+location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.7/" APP4MC {
+	org.eclipse.app4mc.platform.sdk.feature.group
+}
+
+location "http://download.eclipse.org/ease/update/release" EASE {
+	I201709292011.Core
 }

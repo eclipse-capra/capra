@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.uml.tests
-Bundle-Version: 0.7.2.qualifier
+Bundle-Version: 0.8.1.qualifier
 Require-Bundle: 
  org.eclipse.capra.core,
  org.eclipse.capra.generic.tracemodel,
@@ -17,6 +17,7 @@ Require-Bundle:
  org.eclipse.ui,
  org.eclipse.uml2.uml,
  org.junit,
- ch.qos.logback.slf4j;resolution:=optional
+ ch.qos.logback.slf4j;resolution:=optional,
+ net.sourceforge.plantuml.eclipse;bundle-version="1.1.24"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.handler.uml.tests;x-internal:=true

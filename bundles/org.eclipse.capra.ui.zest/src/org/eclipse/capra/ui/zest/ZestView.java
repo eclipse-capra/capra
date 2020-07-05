@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.helpers.TraceCreationHelper;
+import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.gef4.common.adapt.inject.AdapterInjectionSupport;
@@ -79,7 +79,7 @@ public class ZestView extends ViewPart {
 				TraceMetaModelAdapter metaModelAdapter;
 				ResourceSet resourceSet;
 
-				List<Object> selectedModels = TraceCreationHelper.extractSelectedElements(selection);
+				List<Object> selectedModels = SelectionSupportHelper.extractSelectedElements(selection, part);
 
 				if (selectedModels.size() >= 1 && selectedModels.get(0) instanceof EObject) {
 					EObject selectedEObject = (EObject) selectedModels.get(0);
