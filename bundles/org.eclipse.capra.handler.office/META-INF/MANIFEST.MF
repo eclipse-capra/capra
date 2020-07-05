@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.office;singleton:=true
-Bundle-Version: 0.7.2.qualifier
+Bundle-Version: 0.8.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.capra.ui.office,
