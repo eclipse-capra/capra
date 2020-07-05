@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.capra.handler.app4mc.feature"
       label="%featureName"
-      version="0.7.2.qualifier"
+      version="0.8.0"
       provider-name="%providerName">
 
    <description url="%url">
