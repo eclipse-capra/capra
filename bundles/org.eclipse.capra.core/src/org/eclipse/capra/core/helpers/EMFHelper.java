@@ -154,7 +154,8 @@ public class EMFHelper {
 
 	/**
 	 * Linearizes a tree to a list. The function checks if the provided parameter is
-	 * of type {@link EObject} and linearizes only if that is the case.
+	 * of type {@link EObject} and linearizes only if that is the case. The root of
+	 * the tree will always be the first element in the list.
 	 * 
 	 * @param object the object to linearize
 	 * @return a list of {@link EObject}s originally contained in the tree structure
@@ -165,8 +166,8 @@ public class EMFHelper {
 		ArrayList<EObject> elementList = new ArrayList<EObject>();
 		if (object instanceof EObject) {
 			EObject root = (EObject) object;
-			root.eAllContents().forEachRemaining(element -> elementList.add(element));
 			elementList.add(root);
+			root.eAllContents().forEachRemaining(element -> elementList.add(element));
 		}
 		return elementList;
 	}
