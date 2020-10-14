@@ -75,11 +75,11 @@ public class TestTraceabiltyMatrix {
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR
-			+ ".|A : EClass|AA : EClass|modelA : EPackage|B : EClass|BB : EClass|modelB : EPackage" + LINE_SEPARATOR
-			+ "A : EClass |. |. |. |X |. |." + LINE_SEPARATOR + "AA : EClass |. |. |. |. |X |." + LINE_SEPARATOR
-			+ "modelA : EPackage |. |. |. |. |. |X" + LINE_SEPARATOR + "B : EClass |X |. |. |. |. |." + LINE_SEPARATOR
-			+ "BB : EClass |. |X |. |. |. |." + LINE_SEPARATOR + "modelB : EPackage |. |. |X |. |. |." + LINE_SEPARATOR
-			+ "}" + LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+			+ ".|modelA : EPackage|A : EClass|AA : EClass|modelB : EPackage|B : EClass|BB : EClass" + LINE_SEPARATOR
+			+ "modelA : EPackage |. |. |. |X |. |." + LINE_SEPARATOR + "A : EClass |. |. |. |. |X |." + LINE_SEPARATOR
+			+ "AA : EClass |. |. |. |. |. |X" + LINE_SEPARATOR + "modelB : EPackage |X |. |. |. |. |." + LINE_SEPARATOR
+			+ "B : EClass |. |X |. |. |. |." + LINE_SEPARATOR + "BB : EClass |. |. |X |. |. |." + LINE_SEPARATOR + "}"
+			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|A : EClass|B : EClass|AA : EClass|BB : EClass"
