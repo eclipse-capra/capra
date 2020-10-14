@@ -68,7 +68,7 @@ public class VisualizationHelper {
             }
           }
         } else {
-          _builder.append("Choose at least two elements to show their traceability matrix.");
+          _builder.append("Select a single element to view a traceability graph and at least two elements to show their traceability matrix.");
           _builder.newLine();
         }
       }

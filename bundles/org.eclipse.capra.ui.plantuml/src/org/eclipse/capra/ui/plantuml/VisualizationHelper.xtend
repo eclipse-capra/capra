@@ -21,7 +21,7 @@ class VisualizationHelper {
 	«FOR first : rows»«artifactHelper.getArtifactLabel(first)»«FOR second : columns» |«IF internalLinks»«IF traceAdapter.isThereATraceBetween(first, second, traceModel) || traceAdapter.isThereAnInternalTraceBetween(first, second)»X«ELSE ».«ENDIF»«ELSE»«IF traceAdapter.isThereATraceBetween(first, second, traceModel)»X«ELSE ».«ENDIF»«ENDIF»«ENDFOR»
 	«ENDFOR»
 	«ELSE»
-	Choose at least two elements to show their traceability matrix.
+	Select a single element to view a traceability graph and at least two elements to show their traceability matrix.
 	«ENDIF»
 	}
 	
