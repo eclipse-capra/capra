@@ -47,7 +47,7 @@
 <repository location="http://download.eclipse.org/releases/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.5.5.201906282321"/>
+<unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.7.0.202010141034"/>
 <repository location="http://featureide.cs.ovgu.de/update/v3/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">

@@ -53,7 +53,8 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
 
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
-				Long.toString(feature.getInternalId()), feature.getName(), feature.getFeatureModel().getSourceFile().toString());
+				Long.toString(feature.getInternalId()), feature.getName(),
+				feature.getFeatureModel().getSourceFile().toString());
 		return wrapper;
 	}
 
@@ -61,7 +62,7 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 	public IFeature resolveWrapper(EObject wrapper) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		FileHandler<IFeatureModel> fileHandler = FeatureModelManager
-				.load(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
+				.getFileHandler(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
 		return fileHandler.getObject().getFeature(adapter.getArtifactName(wrapper));
 	}
 
