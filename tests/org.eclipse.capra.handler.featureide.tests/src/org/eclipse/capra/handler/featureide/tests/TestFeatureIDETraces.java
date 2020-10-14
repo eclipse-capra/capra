@@ -36,8 +36,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
 import de.ovgu.featureide.fm.core.base.impl.FMFactoryManager;
 import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
 import de.ovgu.featureide.fm.core.io.xml.XmlFeatureModelFormat;
@@ -58,15 +60,18 @@ public class TestFeatureIDETraces {
 	}
 
 	@Test
-	public void TestTraceCreation() throws CoreException, IOException {
+	public void TestTraceCreation() throws CoreException, IOException, NoSuchExtensionException {
+		FMFactoryManager fmFactoryManager = FMFactoryManager.getInstance();
+
 		// Create a project
 		IProject testProject = TestHelper.createSimpleProject(TEST_PROJECT_NAME);
 		assert (TestHelper.projectExists(TEST_PROJECT_NAME));
 
 		// Create a feature model with one feature
-		IFeatureModel modelA = FMFactoryManager.getDefaultFactory().createFeatureModel();
+		IFeatureModel modelA = fmFactoryManager.getFactory(DefaultFeatureModelFactory.ID).create();
 		modelA.createDefaultValues(TEST_PROJECT_NAME);
-		IFeature feature = FMFactoryManager.getDefaultFactory().createFeature(modelA, FEATURE_A_NAME);
+
+		IFeature feature = fmFactoryManager.getFactory(modelA).createFeature(modelA, FEATURE_A_NAME);
 		modelA.addFeature(feature);
 		modelA.getStructure().getRoot().addChild(feature.getStructure());
 

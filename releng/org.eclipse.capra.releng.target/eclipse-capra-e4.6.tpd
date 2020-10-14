@@ -57,7 +57,7 @@ location "http://hallvard.github.io/plantuml/" plantuml {
 }
 
 location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
-	de.ovgu.featureide.featuremodeling.feature.group 3.5.4
+	de.ovgu.featureide.featuremodeling.feature.group
 }
 
 location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/" APP4MC {
