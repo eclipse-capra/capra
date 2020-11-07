@@ -22,7 +22,7 @@
 			name="%category.name">
       </category>
       <view
-            category="org.eclipse.capra.generic.views"
+            category="org.eclipse.capra.ui.views"
             class="org.eclipse.capra.ui.zest.ZestView"
             icon="platform:/plugin/org.eclipse.capra.ui/icons/capra.png"
             id="org.eclipse.capra.ui.zest.zestView"
