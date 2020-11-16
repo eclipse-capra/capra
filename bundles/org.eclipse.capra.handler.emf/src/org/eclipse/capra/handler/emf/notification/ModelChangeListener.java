@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
@@ -40,7 +41,6 @@ import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -71,18 +71,16 @@ public class ModelChangeListener extends EContentAdapter {
 
 	private void compareTracedItems(Resource changedResource) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
-		ResourceSetImpl newResourceSet = new ResourceSetImpl();
-		EObject traceModel = persistenceAdapter.getTraceModel(newResourceSet);
-		// check that atleast one trace link exists
+		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
+		// check that at least one trace link exists
 		if (traceModel != null && !traceModel.eContents().isEmpty()) {
-
 			IPath path = new Path(EcoreUtil.getURI(traceModel).toPlatformString(false));
 			IFile traceContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
 			TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 
 			List<Connection> connections = traceMetamodelAdapter
-					.getAllTraceLinks(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+					.getAllTraceLinks(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 			if (!connections.isEmpty()) {
 				for (Connection c : connections) {
 					List<EObject> tempList = new ArrayList<>();
@@ -92,7 +90,8 @@ public class ModelChangeListener extends EContentAdapter {
 					for (EObject tracedItem : tempList) {
 						Resource oldResource = tracedItem.eResource();
 						if (oldResource == null) {
-							oldResource = newResourceSet.getResource(EcoreUtil.getURI(tracedItem).trimFragment(), true);
+							oldResource = EditingDomainHelper.getResourceSet()
+									.getResource(EcoreUtil.getURI(tracedItem).trimFragment(), true);
 						} else if (CapraNotificationHelper.getFileUri(oldResource)
 								.equals(CapraNotificationHelper.getFileUri(changedResource))) {
 							IComparisonScope scope = new DefaultComparisonScope(changedResource, oldResource, null);

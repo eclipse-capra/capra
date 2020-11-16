@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.emf.ecore.xcore.lib,
- org.eclipse.capra.core
+ org.eclipse.capra.core,
+ org.eclipse.emf.transaction
 Bundle-ActivationPolicy: lazy
 Import-Package: org.slf4j

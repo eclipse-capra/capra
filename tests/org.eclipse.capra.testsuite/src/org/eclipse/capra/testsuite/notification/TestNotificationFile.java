@@ -14,11 +14,13 @@
 
 package org.eclipse.capra.testsuite.notification;
 
+import static org.eclipse.capra.testsuite.TestHelper.UI_REACTION_WAITING_TIME;
 import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
 import static org.eclipse.capra.testsuite.TestHelper.createEmptyFileInProject;
 import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
@@ -64,12 +66,11 @@ public class TestNotificationFile {
 	private static final String TEST_FILE2_NAME = "TestFile2";
 	private static final String TEST_FILE1_NAME = "TestFile1";
 
-	private static final int UI_REACTION_WAITING_TIME = 1000;
-
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	/**

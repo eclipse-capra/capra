@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsuite.TestHelper;
@@ -103,11 +104,11 @@ public class TestUMLInternalLinks {
 		// Create a trace via the selection view
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		EObject traceModel = persistenceAdapter.getTraceModel(_A.eResource().getResourceSet());
+		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		assertFalse(traceAdapter.isThereATraceBetween(_A, _B, traceModel));
 
 		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
-		EObject upDatedTraceModel = persistenceAdapter.getTraceModel(_A.eResource().getResourceSet());
+		EObject upDatedTraceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		assertTrue(traceAdapter.isThereATraceBetween(_A, _B, upDatedTraceModel));
 
 		// Clear selection view
