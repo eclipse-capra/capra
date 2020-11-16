@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.php.PhpHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
@@ -40,7 +41,6 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
@@ -58,7 +58,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 	public void elementChanged(ElementChangedEvent event) {
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 				.orElseThrow();
-		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
 		List<EObject> phpArtifacts = allArtifacts.stream()
@@ -87,6 +87,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 				handleDelta(subDelta, phpArtifacts, wrapperContainer);
 			}
 		}
+
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
 		IssueType issueType = null;

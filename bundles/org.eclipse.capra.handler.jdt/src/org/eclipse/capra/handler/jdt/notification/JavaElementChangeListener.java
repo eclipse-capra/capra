@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
@@ -33,7 +34,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -55,10 +55,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
-
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 				.orElseThrow();
-		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
 		List<EObject> javaArtifacts = allArtifacts.stream()
@@ -95,6 +94,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				handleDelta(subDelta, javaArtifacts, wrapperContainer);
 			}
 		}
+
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
 		IssueType issueType = null;

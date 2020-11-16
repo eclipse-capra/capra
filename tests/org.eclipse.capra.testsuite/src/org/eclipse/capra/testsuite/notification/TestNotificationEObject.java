@@ -22,6 +22,7 @@ import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingl
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
@@ -88,6 +89,7 @@ public class TestNotificationEObject {
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	@Rule
@@ -265,7 +267,7 @@ public class TestNotificationEObject {
 		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
 		save(testProject, modelA);
 		EClass classA = (EClass) modelA.getEClassifier(CLASS_A_NAME);
-		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
+		EPackage packageA = modelA.getESubpackages().get(0);
 
 		// Create a trace via the selection view
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
@@ -341,7 +343,7 @@ public class TestNotificationEObject {
 		IProject testProject = getProject(TEST_PROJECT_NAME);
 		EPackage modelA = createEcoreModel(MODEL_A_NAME);
 		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
-		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
+		EPackage packageA = modelA.getESubpackages().get(0);
 		createEClassInEPackage(packageA, CLASS_A_NAME);
 		EClass classA = (EClass) packageA.getEClassifier(CLASS_A_NAME);
 		save(testProject, modelA);
@@ -420,8 +422,8 @@ public class TestNotificationEObject {
 		EPackage modelA = createEcoreModel(MODEL_A_NAME);
 		createEPackageInEPackage(modelA, PACKAGE_A_NAME);
 		createEPackageInEPackage(modelA, PACKAGE_B_NAME);
-		EPackage packageA = (EPackage) modelA.getESubpackages().get(0);
-		EPackage packageB = (EPackage) modelA.getESubpackages().get(1);
+		EPackage packageA = modelA.getESubpackages().get(0);
+		EPackage packageB = modelA.getESubpackages().get(1);
 		createEClassInEPackage(packageA, "A");
 		EClass classA = (EClass) packageA.getEClassifier("A");
 		save(testProject, modelA);

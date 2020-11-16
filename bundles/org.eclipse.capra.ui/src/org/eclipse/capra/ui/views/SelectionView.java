@@ -29,13 +29,13 @@ import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -154,7 +154,7 @@ public class SelectionView extends ViewPart {
 		public String getText(Object element) {
 			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 					.orElseThrow();
-			EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+			EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			IArtifactHandler<?> handler = artifactHelper.getHandler(element).orElseThrow();
 			return handler.withCastedHandler(element, (h, o) -> h.getDisplayName(o)).orElseGet(element::toString);
@@ -293,7 +293,7 @@ public class SelectionView extends ViewPart {
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
-		ResourceSet resourceSet = new ResourceSetImpl();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// add artifact model to resource set
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 

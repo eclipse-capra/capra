@@ -22,13 +22,13 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.ui.IMarkerResolution;
 
@@ -55,7 +55,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 	@Override
 	public void run(IMarker marker) {
 
-		ResourceSet resourceSet = new ResourceSetImpl();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		List<Connection> toDelete = new ArrayList<>();
 		List<Connection> toRecreate = new ArrayList<>();
 		EObject artifactToDelete = null;
