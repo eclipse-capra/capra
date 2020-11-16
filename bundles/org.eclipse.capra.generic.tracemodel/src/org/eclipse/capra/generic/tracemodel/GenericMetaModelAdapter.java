@@ -22,23 +22,23 @@ import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * Provides generic functionality to deal with traceability meta models.
  */
 public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(GenericMetaModelAdapter.class);
-
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
-
 
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
@@ -65,7 +65,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		RelatedTo relatedToTrace = (RelatedTo) trace;
 		relatedToTrace.getItem().addAll(selection);
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
 		// String builder to build the name of the trace link so by adding the
@@ -79,7 +79,24 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 							.orElseGet(obj::toString));
 		}
 		relatedToTrace.setName(name.toString());
-		tm.getTraces().add(relatedToTrace);
+
+		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+		// We're saving the trace model and the artifact model in the same transaction
+		Command cmd = new RecordingCommand(editingDomain, "Add trace") {
+			@Override
+			protected void doExecute() {
+				tm.getTraces().add(relatedToTrace);
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+		} catch (RollbackException e) {
+			throw new IllegalStateException("Adding a trace link was rolled back.", e);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException("Adding a trace link was interrupted.", e);
+		}
+
 		return relatedToTrace;
 	}
 
@@ -200,12 +217,28 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 					}
 				}
 			}
-			for (Object trace : toRemove) {
-				tModel.getTraces().remove(trace);
+
+			TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+			Command cmd = new RecordingCommand(editingDomain, "Remove traces") {
+				@Override
+				protected void doExecute() {
+					for (Object trace : toRemove) {
+						tModel.getTraces().remove(trace);
+					}
+				}
+			};
+
+			try {
+				((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+			} catch (RollbackException e) {
+				throw new IllegalStateException("Removing trace links was rolled back.", e);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException("Removing trace links was interrupted.", e);
 			}
-			
+
 			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-			persistenceAdapter.saveTracesAndArtifacts(tModel, persistenceAdapter.getArtifactWrappers(new ResourceSetImpl()));
+			persistenceAdapter.saveTracesAndArtifacts(tModel,
+					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()));
 		}
 	}
 

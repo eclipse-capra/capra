@@ -25,11 +25,11 @@ import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
@@ -79,11 +79,9 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 
-		ResourceSet artifactResourceSet = part.isPresent() ? SelectionSupportHelper.getResourceSet(part.get()) : null;
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
-		artifactModel = persistenceAdapter
-				.getArtifactWrappers(artifactResourceSet != null ? artifactResourceSet : new ResourceSetImpl());
-
+		artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		if (selectedModels.size() > 0) {
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			// Get the artifact wrappers for all selected elements
@@ -110,7 +108,6 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 			final EObject selectedObject = selectedEObjects.size() > 0 ? selectedEObjects.get(0) : null;
 			if (selectedObject != null && selectedObject.eResource() != null) {
-				ResourceSet resourceSet = selectedObject.eResource().getResourceSet();
 				traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
 				List<String> selectedRelationshipTypes = SelectRelationshipsHandler.getSelectedRelationshipTypes();

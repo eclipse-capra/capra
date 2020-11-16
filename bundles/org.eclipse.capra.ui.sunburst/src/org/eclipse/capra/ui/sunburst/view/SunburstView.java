@@ -29,6 +29,7 @@ import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
@@ -36,7 +37,6 @@ import org.eclipse.capra.ui.sunburst.SunburstPreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.Dialog;
@@ -93,7 +93,7 @@ public class SunburstView extends ViewPart {
 	TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 	TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 
-	private ResourceSet resourceSet = new ResourceSetImpl();
+	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 	private EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 	private EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 

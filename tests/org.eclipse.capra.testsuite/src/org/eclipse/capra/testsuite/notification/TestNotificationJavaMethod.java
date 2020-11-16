@@ -14,12 +14,14 @@
 
 package org.eclipse.capra.testsuite.notification;
 
+import static org.eclipse.capra.testsuite.TestHelper.UI_REACTION_WAITING_TIME;
 import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
 import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
 import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingleJavaClass;
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
@@ -67,13 +69,13 @@ public class TestNotificationJavaMethod {
 	private static final String CLASS_A_NAME = "A";
 	private static final String MODEL_A_NAME = "modelA";
 
-	private static final int UI_REACTION_WAITING_TIME = 1000;
 	private static final int NUMBER_OF_RETRIES = 5;
 
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	@Rule
@@ -131,7 +133,7 @@ public class TestNotificationJavaMethod {
 		File classFile = javaClass.getResource().getLocation().makeAbsolute().toFile();
 		PrintWriter writer = new PrintWriter(classFile);
 		writer.write(classSource);
-		writer.close();		
+		writer.close();
 		root.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		TimeUnit.MILLISECONDS.sleep(3000);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -185,7 +187,7 @@ public class TestNotificationJavaMethod {
 		assertEquals(currMarkerLength + 1, markers.length);
 		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
-		
+
 		// Undo operation
 		method = (IMethod) javaClass.getChildren()[0];
 		method.rename(oldName, true, new NullProgressMonitor());
@@ -240,7 +242,7 @@ public class TestNotificationJavaMethod {
 		assertEquals(currMarkerLength + 1, markers.length);
 		assertEquals(markers[0].getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "deleted");
 		currMarkerLength = markers.length;
-		
+
 		// Undo operation
 		createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);

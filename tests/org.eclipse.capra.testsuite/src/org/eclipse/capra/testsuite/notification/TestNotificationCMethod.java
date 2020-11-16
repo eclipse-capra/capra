@@ -14,12 +14,14 @@
 
 package org.eclipse.capra.testsuite.notification;
 
+import static org.eclipse.capra.testsuite.TestHelper.UI_REACTION_WAITING_TIME;
 import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
 import static org.eclipse.capra.testsuite.TestHelper.createCDTProject;
 import static org.eclipse.capra.testsuite.TestHelper.createCSourceFileInProject;
 import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
@@ -68,21 +70,20 @@ public class TestNotificationCMethod {
 	private static final String TEST_PROJECT_NAME = "TestProject";
 
 	private static final int NUMBER_OF_RETRIES = 5;
-	private static final int UI_REACTION_WAITING_TIME = 1000;
-
 
 	@Before
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	@Rule
 	public TestRetry retry = new TestRetry(NUMBER_OF_RETRIES);
 
 	/**
-	 * Tests if a marker appears after deleting a C method that is referenced in
-	 * the trace model.
+	 * Tests if a marker appears after deleting a C method that is referenced in the
+	 * trace model.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException
@@ -130,6 +131,7 @@ public class TestNotificationCMethod {
 
 		// Undo operation
 		cSourceFile.delete(true, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		createCSourceFileInProject(FILE_NAME, cProject);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
@@ -137,8 +139,8 @@ public class TestNotificationCMethod {
 	}
 
 	/**
-	 * Tests if a marker appears after renaming a C method that is referenced in
-	 * the trace model.
+	 * Tests if a marker appears after renaming a C method that is referenced in the
+	 * trace model.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException
@@ -193,9 +195,9 @@ public class TestNotificationCMethod {
 	}
 
 	/**
-	 * Tests if a marker appears after deleting a project that is referenced by
-	 * the trace model and contains a method that is referenced as well. Two
-	 * markers should appear, one for each element.
+	 * Tests if a marker appears after deleting a project that is referenced by the
+	 * trace model and contains a method that is referenced as well. Two markers
+	 * should appear, one for each element.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException

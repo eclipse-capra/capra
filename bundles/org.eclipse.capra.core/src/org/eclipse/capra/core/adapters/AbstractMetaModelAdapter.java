@@ -18,10 +18,10 @@ import java.util.List;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 /**
  * Implements standard functionality for the methods defined in the
@@ -55,20 +55,17 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 	/**
 	 * Used to get internal links connected to a selected element.
 	 * 
-	 * @param element
-	 *            the selected element
-	 * @param traceModel
-	 *            the current trace model
-	 * @param selectedRelationshipTypes
-	 *            the selected relationship types from the filter, if the user
-	 *            has selected any
-	 * @param maximumDepth
-	 *            The maximum depth the transitivity should go. 0 means show all
-	 *            the links
-	 * @param existingTraces
-	 *            The trace links that have been created manually by the user,
-	 *            these are obtained from the trace model
+	 * @param element                   the selected element
+	 * @param traceModel                the current trace model
+	 * @param selectedRelationshipTypes the selected relationship types from the
+	 *                                  filter, if the user has selected any
+	 * @param maximumDepth              The maximum depth the transitivity should
+	 *                                  go. 0 means show all the links
+	 * @param existingTraces            The trace links that have been created
+	 *                                  manually by the user, these are obtained
+	 *                                  from the trace model
 	 */
+	@Override
 	public List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, int maximumDepth, List<Connection> existingTraces) {
 		List<Object> accumulator = new ArrayList<>();
@@ -99,7 +96,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			hashCodes.add(connectionHash);
 		}
 
-		ResourceSet resourceSet = new ResourceSetImpl();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -147,7 +144,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 	@Override
 	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
 
-		ResourceSet resourceSet = new ResourceSetImpl();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);

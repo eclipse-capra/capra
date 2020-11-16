@@ -16,9 +16,15 @@ package org.eclipse.capra.generic.artifactmodel;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractArtifactMetaModelAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * Provides generic functionality to deal with artifact meta models.
@@ -58,7 +64,23 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		wrapper.setName(artifactName);
 		wrapper.setPath(artifactPath);
 		wrapper.setIdentifier(artifactId);
-		container.getArtifacts().add(wrapper);
+
+		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+		// We're saving the trace model and the artifact model in the same transaction
+		Command cmd = new RecordingCommand(editingDomain, "Add trace") {
+			@Override
+			protected void doExecute() {
+				container.getArtifacts().add(wrapper);
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+		} catch (RollbackException e) {
+			throw new IllegalStateException("Adding a trace link was rolled back.", e);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException("Adding a trace link was interrupted.", e);
+		}
 
 		return wrapper;
 	}

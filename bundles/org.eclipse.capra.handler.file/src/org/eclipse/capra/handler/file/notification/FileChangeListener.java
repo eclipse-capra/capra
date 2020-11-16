@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.handler.file.FileHandler;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
@@ -38,7 +39,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
@@ -54,7 +54,7 @@ public class FileChangeListener implements IResourceChangeListener {
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);

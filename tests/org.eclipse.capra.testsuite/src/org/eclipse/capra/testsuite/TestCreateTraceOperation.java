@@ -20,6 +20,7 @@ import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
 import static org.eclipse.capra.testsuite.TestHelper.load;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +35,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
@@ -72,6 +74,7 @@ public class TestCreateTraceOperation {
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	@Test
@@ -130,13 +133,14 @@ public class TestCreateTraceOperation {
 		}
 
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceHelper traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+		TraceHelper traceHelper = new TraceHelper(
+				persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(_A.eResource().getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		List<EObject> selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 
 		// Check that the trace between A and B exists
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 		assertTrue(traceHelper.traceExists(selection, traceType));
 
@@ -164,7 +168,7 @@ public class TestCreateTraceOperation {
 		}
 
 		// Check that the trace between A and C exists
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
 		assertTrue(traceHelper.traceExists(selection, traceType));
 
@@ -176,7 +180,7 @@ public class TestCreateTraceOperation {
 		}
 
 		// Check that the trace between A and C does not exist
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(new ResourceSetImpl()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		assertFalse(traceHelper.traceExists(selection, traceType));
 
 		// Check that the trace between A and B is still around

@@ -20,11 +20,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
+import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
@@ -49,6 +54,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -57,6 +63,10 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -72,6 +82,13 @@ import org.eclipse.ui.PlatformUI;
  */
 @SuppressWarnings("restriction")
 public class TestHelper {
+
+	/**
+	 * A standard waiting time that can be used whenever the IDE needs to
+	 * asynchronously complete a task that the test should wait for, e.g., create or
+	 * delete a resource, generate a marker, etc.
+	 */
+	public static final int UI_REACTION_WAITING_TIME = 1000;
 
 	private TestHelper() {
 		// Deliberately do nothing
@@ -265,45 +282,39 @@ public class TestHelper {
 	}
 
 	/**
-	 * Checks if there is a trace between the provided Objects.
+	 * Checks if there is a trace between the provided {@link EObject} instances.
 	 *
-	 * @param a first EObject
-	 * @param b second EObject
-	 * @return true if a trace exists between the two objects, false otherwise
+	 * @param firstObject  first {@code EObject}
+	 * @param secondObject second {@code EObject}
+	 * @return {@code true} if a trace exists between the two objects, {@code false}
+	 *         otherwise
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
 		if (firstObject instanceof EObject && secondObject instanceof EObject) {
-			EObject traceModel = persistenceAdapter.getTraceModel(((EObject) firstObject).eResource().getResourceSet());
 			if (traceModel != null) {
 				return traceAdapter.isThereATraceBetween((EObject) firstObject, (EObject) secondObject, traceModel);
 			}
 		}
 		if (firstObject instanceof EObject && !(secondObject instanceof EObject)) {
-			ResourceSet resource = ((EObject) firstObject).eResource().getResourceSet();
-			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
 			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
-			EObject traceModel = persistenceAdapter.getTraceModel(resource);
 			if (traceModel != null) {
 				return traceAdapter.isThereATraceBetween((EObject) firstObject, wrapper_b, traceModel);
 			}
 		}
 		if (!(firstObject instanceof EObject) && secondObject instanceof EObject) {
-			ResourceSet resource = ((EObject) secondObject).eResource().getResourceSet();
-			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
 			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
-			EObject traceModel = persistenceAdapter.getTraceModel(resource);
 			if (traceModel != null) {
 				return traceAdapter.isThereATraceBetween(wrapper_a, (EObject) secondObject, traceModel);
 			}
 		}
 		if (!(firstObject instanceof EObject) && !(secondObject instanceof EObject)) {
-			ResourceSet resource = new ResourceSetImpl();
-			ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
 			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
 			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
-			EObject traceModel = persistenceAdapter.getTraceModel(resource);
 			if (traceModel != null) {
 				return traceAdapter.isThereATraceBetween(wrapper_a, wrapper_b, traceModel);
 			}
@@ -348,7 +359,7 @@ public class TestHelper {
 	 * @throws CoreException
 	 */
 	public static ITranslationUnit createCSourceFileInProject(String fileName, ICProject cProject)
-			throws CoreException {
+			throws CoreException, InterruptedException {
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("#include <stdio.h>\n");
@@ -358,8 +369,10 @@ public class TestHelper {
 		buffer.append("\treturn 0;\n");
 		buffer.append("}\n");
 		IFile cSourceFile = cProject.getProject().getFile(fileName);
+
 		cSourceFile.create(new ByteArrayInputStream(buffer.toString().getBytes()), true, new NullProgressMonitor());
 
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
 		return ((ISourceRoot) (cProject.getChildren()[0])).getTranslationUnits()[0];
 	}
 
@@ -386,5 +399,41 @@ public class TestHelper {
 		SelectionView.getOpenedView().clearSelection();
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
+	}
+
+	/**
+	 * Removes all existing trace links and artifacts from the trace model and the
+	 * artifact model.
+	 */
+	public static void purgeModels() {
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
+
+		// Purge traces
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		traceAdapter.deleteTrace(traceAdapter.getAllTraceLinks(traceModel), traceModel);
+
+		// Purge artifacts
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
+		ArtifactWrapperContainer container = (ArtifactWrapperContainer) artifactModel;
+		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+		// We're saving the trace model and the artifact model in the same transaction
+		Command cmd = new RecordingCommand(editingDomain, "Purge artifacts") {
+			@Override
+			protected void doExecute() {
+				container.getArtifacts().removeAll(allArtifacts);
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+		} catch (RollbackException e) {
+			throw new IllegalStateException("Adding a trace link was rolled back.", e);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException("Adding a trace link was interrupted.", e);
+		}
 	}
 }

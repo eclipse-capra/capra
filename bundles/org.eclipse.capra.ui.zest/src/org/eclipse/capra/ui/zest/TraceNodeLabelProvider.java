@@ -16,9 +16,9 @@ package org.eclipse.capra.ui.zest;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
@@ -32,7 +32,7 @@ public class TraceNodeLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		IArtifactHandler<?> handler = artifactHelper.getHandler(element).get();
 		return handler.withCastedHandler(element, (h, o) -> h.getDisplayName(o)).orElseGet(element::toString);

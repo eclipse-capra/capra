@@ -21,6 +21,7 @@ import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelect
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
 import static org.eclipse.capra.testsuite.TestHelper.load;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +35,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.generic.tracemodel.RelatedTo;
@@ -69,6 +71,7 @@ public class TestDuplicateLinks {
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	@Test
@@ -186,8 +189,9 @@ public class TestDuplicateLinks {
 
 		// Test the trace exists method
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceHelper traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(_A.eResource().getResourceSet());
+		TraceHelper traceHelper = new TraceHelper(
+				persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		EClass traceType = TracemodelPackage.eINSTANCE.getRelatedTo();
 		List<EObject> selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
@@ -196,7 +200,7 @@ public class TestDuplicateLinks {
 
 		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		assertTrue(traceHelper.traceExists(selection, traceType));
 
 		// Change the order of the selection in the selection view
@@ -208,7 +212,7 @@ public class TestDuplicateLinks {
 
 		// Check that the trace exists
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		assertTrue(traceHelper.traceExists(selection, traceType));
 
 		// Add another class to the selection view
@@ -216,7 +220,7 @@ public class TestDuplicateLinks {
 
 		// Check that the trace does not exist
 		selection = artifactHelper.createWrappers(SelectionView.getOpenedView().getSelection());
-		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(_A.eResource().getResourceSet()));
+		traceHelper = new TraceHelper(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		assertFalse(traceHelper.traceExists(selection, traceType));
 	}
 

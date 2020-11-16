@@ -20,6 +20,7 @@ import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingl
 import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
 import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
+import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertFalse;
@@ -27,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.ui.views.SelectionView;
@@ -38,9 +40,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,10 +58,16 @@ public class TestUnwrapWrapper {
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
+	}
+
+	@After
+	public void resetModels() {
+		purgeModels();
 	}
 
 	@Test
-	public void testUnwrapWrapper_Java_and_C() throws CoreException, BuildException {
+	public void testUnwrapWrapper_Java_and_C() throws CoreException, BuildException, InterruptedException {
 		// Create a java project
 		IType javaClass = createJavaProjectWithASingleJavaClass(TEST_PROJECT_NAME_JAVA);
 		assertTrue(projectExists(TEST_PROJECT_NAME_JAVA));
@@ -84,11 +92,12 @@ public class TestUnwrapWrapper {
 		assertTrue(thereIsATraceBetween(javaClass, cClass));
 
 		// check that the artifact wrappers have been created
-		TracePersistenceAdapter persistentAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		ResourceSet resourceSet = new ResourceSetImpl();
-		EObject artifactModel = persistentAdapter.getArtifactWrappers(resourceSet);
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		assertTrue(artifactModel.eContents().size() == 2);
+		assertTrue(String.format("Expected %d elements in artifact model, got %d", 2, artifactModel.eContents().size()),
+				artifactModel.eContents().size() == 2);
 
 		// get the first artifact wrapper and unwrap
 		EObject javaWrapper = artifactModel.eContents().get(0);
@@ -124,11 +133,11 @@ public class TestUnwrapWrapper {
 		assertTrue(thereIsATraceBetween(fileA, fileB));
 
 		// check that the artifact wrappers have been created
-		TracePersistenceAdapter persistentAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		ResourceSet resourceSet = new ResourceSetImpl();
-		EObject artifactModel = persistentAdapter.getArtifactWrappers(resourceSet);
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		assertTrue(artifactModel.eContents().size() == 2);
+		assertTrue(String.format("Expected %d elements in artifact model, got %d", 2, artifactModel.eContents().size()),
+				artifactModel.eContents().size() == 2);
 
 		// get the first artifact wrapper and unwrap
 		EObject fileAWrapper = artifactModel.eContents().get(0);

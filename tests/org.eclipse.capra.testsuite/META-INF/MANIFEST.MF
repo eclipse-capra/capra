@@ -41,7 +41,8 @@ Require-Bundle: org.junit,
  org.eclipse.capra.ui,
  org.eclipse.capra.ui.notification,
  ch.qos.logback.slf4j;resolution:=optional,
- net.sourceforge.plantuml.eclipse;bundle-version="1.1.24"
+ net.sourceforge.plantuml.eclipse;bundle-version="1.1.24",
+ org.eclipse.emf.transaction
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.swt.dnd,
  org.slf4j
