@@ -101,8 +101,7 @@ public class OfficeView extends ViewPart {
 	public static final String ID = "org.eclipse.capra.ui.views.OfficeView";
 
 	/**
-	 * The caption that is shown when a message dialog appears describing an
-	 * error.
+	 * The caption that is shown when a message dialog appears describing an error.
 	 */
 	private static final String ERROR_TITLE = "Error";
 
@@ -122,8 +121,8 @@ public class OfficeView extends ViewPart {
 	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
 
 	/**
-	 * The names (String) of all the sheets, contained in the selected workbook
-	 * and information about whether they are empty or not (Boolean).
+	 * The names (String) of all the sheets, contained in the selected workbook and
+	 * information about whether they are empty or not (Boolean).
 	 */
 	private Map<String, Boolean> isSheetEmptyMap;
 
@@ -138,16 +137,16 @@ public class OfficeView extends ViewPart {
 	private File selectedFile;
 
 	/**
-	 * The ID of the file that is currently displayed in the view (non-null only
-	 * if acquired from Google Drive).
+	 * The ID of the file that is currently displayed in the view (non-null only if
+	 * acquired from Google Drive).
 	 */
 	private String selectedFileId;
 
 	/**
 	 * Instance of OfficeSourceProvider (used for hiding context menu options)
 	 */
-	private OfficeSourceProvider provider = (OfficeSourceProvider) ((ISourceProviderService) PlatformUI.getWorkbench()
-			.getService(ISourceProviderService.class)).getSourceProvider(OfficeSourceProvider.CAPRA_OFFICE_OBJECT);
+	private OfficeSourceProvider provider = (OfficeSourceProvider) PlatformUI.getWorkbench()
+			.getService(ISourceProviderService.class).getSourceProvider(OfficeSourceProvider.CAPRA_OFFICE_OBJECT);
 
 	/**
 	 * The content provider class used by the view.
@@ -292,11 +291,10 @@ public class OfficeView extends ViewPart {
 	/**
 	 * A method that is called when the user drags file (word or excel) into the
 	 * OfficeView. Its main task is to parse the dragged file and display its
-	 * contents in the OfficeView. It only parses the file if it is of type
-	 * xlsx, xls, or docx.
+	 * contents in the OfficeView. It only parses the file if it is of type xlsx,
+	 * xls, or docx.
 	 *
-	 * @param data
-	 *            the object that was dragged into the view
+	 * @param data the object that was dragged into the view
 	 * @throws CapraOfficeFileNotSupportedException
 	 */
 	private void parseGenericFile(File file) throws CapraOfficeFileNotSupportedException {
@@ -314,20 +312,20 @@ public class OfficeView extends ViewPart {
 	/**
 	 * Extracts the data from the Excel document and adds it to the view.
 	 *
-	 * @param officeFile
-	 *            the File object pointing to the Excel document that was
-	 *            dragged into the view
-	 * @param googleDriveFileId
-	 *            the id of the file from Google drive (shown in the URL when a
-	 *            user opens a file inside Google Drive). If provided it will be
-	 *            used when creating the URI of the objects, otherwise (if null)
-	 *            the path of the containing file will be used instead. That
-	 *            also means that, if googleDriveFileId is provided, the Objects
-	 *            in the OfficeView will be of type CapraGoogleSheetsRow,
-	 *            otherwise of type CapraExcelRow.
-	 * @param sheetName
-	 *            the name of the sheet that should be displayed in the Office
-	 *            view. If null, the currently active sheet will be displayed.
+	 * @param officeFile        the File object pointing to the Excel document that
+	 *                          was dragged into the view
+	 * @param googleDriveFileId the id of the file from Google drive (shown in the
+	 *                          URL when a user opens a file inside Google Drive).
+	 *                          If provided it will be used when creating the URI of
+	 *                          the objects, otherwise (if null) the path of the
+	 *                          containing file will be used instead. That also
+	 *                          means that, if googleDriveFileId is provided, the
+	 *                          Objects in the OfficeView will be of type
+	 *                          CapraGoogleSheetsRow, otherwise of type
+	 *                          CapraExcelRow.
+	 * @param sheetName         the name of the sheet that should be displayed in
+	 *                          the Office view. If null, the currently active sheet
+	 *                          will be displayed.
 	 */
 	public void parseExcelDocument(File officeFile, String googleDriveFileId, String sheetName) {
 
@@ -409,9 +407,8 @@ public class OfficeView extends ViewPart {
 	/**
 	 * Extracts the data from the Word document and adds it to the view.
 	 *
-	 * @param officeFile
-	 *            the File object pointing of the Word document that was dragged
-	 *            into the view.
+	 * @param officeFile the File object pointing of the Word document that was
+	 *                   dragged into the view.
 	 */
 	private void parseWordDocument(File officeFile) {
 
@@ -461,19 +458,17 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Shows the details of the object in its native environment (MS Word, MS
-	 * Excel or Google Drive (sheets)).
+	 * Shows the details of the object in its native environment (MS Word, MS Excel
+	 * or Google Drive (sheets)).
 	 * 
-	 * @param event
-	 *            Should be of type DoubleClickEvent or ExecutionEvent, hold the
-	 *            event that triggered the request for details.
-	 * @param parentShell
-	 *            Shell which will be the parent of the dialog window.
+	 * @param event       Should be of type DoubleClickEvent or ExecutionEvent, hold
+	 *                    the event that triggered the request for details.
+	 * @param parentShell Shell which will be the parent of the dialog window.
 	 */
 	public void showObjectDetails(Object event, Shell parentShell) {
 		CapraOfficeObject officeObject;
 		IStructuredSelection eventSelection;
-		
+
 		if (event instanceof DoubleClickEvent) { // If called with double click
 			eventSelection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
 			officeObject = (CapraOfficeObject) eventSelection.getFirstElement();
@@ -514,8 +509,8 @@ public class OfficeView extends ViewPart {
 
 	/**
 	 * Opens a file-chooser dialog and calls the parseOfficeFile method, which
-	 * displays the contents of the selected file in the TableViewer (if the
-	 * file is of type xlsx, xls or docx).
+	 * displays the contents of the selected file in the TableViewer (if the file is
+	 * of type xlsx, xls or docx).
 	 */
 	public void openFile() {
 
@@ -538,8 +533,7 @@ public class OfficeView extends ViewPart {
 	/**
 	 * Displays the provided sheet from the current workbook.
 	 * 
-	 * @param sheetName
-	 *            the name of the sheet to be displayed in the Office view.
+	 * @param sheetName the name of the sheet to be displayed in the Office view.
 	 */
 	public void displaySheet(String sheetName) {
 		if (selection.isEmpty()) {
@@ -550,17 +544,16 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Getter method for the HashMap that contains the sheet names and
-	 * information about whether they are empty or not
+	 * Getter method for the HashMap that contains the sheet names and information
+	 * about whether they are empty or not
 	 * 
-	 * @return names and information about "emptiness" of all the sheets
-	 *         contained in the current workbook or null if a workbook isn't
-	 *         opened.
+	 * @return names and information about "emptiness" of all the sheets contained
+	 *         in the current workbook or null if no workbook is opened.
 	 */
 	public Map<String, Boolean> getIsSheetEmptyMap() {
 
 		// isSheetEmptyMap is used by the SelectSheetDynamicMenu class.
-		if (isSheetEmptyMap == null) {
+		if (isSheetEmptyMap == null && selection.size() > 0) {
 			try {
 				isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(
 						CapraOfficeUtils.getExcelWorkbook(((CapraExcelRow) (selection.get(0))).getFile()));
@@ -618,6 +611,7 @@ public class OfficeView extends ViewPart {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 			}
 		});
@@ -627,12 +621,13 @@ public class OfficeView extends ViewPart {
 	}
 
 	private void showErrorMessage(String caption, String message, String url) {
-		new HyperlinkDialog(new HyperlinkDialog.HyperlinkDialogParameter(viewer.getControl().getShell(), caption, null, MessageDialog.ERROR, new String[] { "OK" }, 0), message, url).open();
+		new HyperlinkDialog(new HyperlinkDialog.HyperlinkDialogParameter(viewer.getControl().getShell(), caption, null,
+				MessageDialog.ERROR, new String[] { "OK" }, 0), message, url).open();
 	}
 
 	/**
-	 * A pop-up dialog that can contain a hyperlink that, on click, opens a
-	 * browser window at the provided url.
+	 * A pop-up dialog that can contain a hyperlink that, on click, opens a browser
+	 * window at the provided url.
 	 */
 	static class HyperlinkDialog extends MessageDialog {
 
@@ -660,22 +655,24 @@ public class OfficeView extends ViewPart {
 		}
 
 		/**
-		 * A constructor that creates the dialog with the provided parameters.
-		 * Call open() in order to display the dialog.
-		 * @param parameterObject TODO
-		 * @param hyperlinkMessage
-		 *            a String that will be shown to the user and can contain a
-		 *            hyperlink, that will, on click, open a browser window at
-		 *            the provided url
-		 * @param url
-		 *            the hyperlink to the web page, or null, if not required
+		 * A constructor that creates the dialog with the provided parameters. Call
+		 * open() in order to display the dialog.
+		 * 
+		 * @param parameterObject  TODO
+		 * @param hyperlinkMessage a String that will be shown to the user and can
+		 *                         contain a hyperlink, that will, on click, open a
+		 *                         browser window at the provided url
+		 * @param url              the hyperlink to the web page, or null, if not
+		 *                         required
 		 */
 		public HyperlinkDialog(HyperlinkDialogParameter parameterObject, String hyperlinkMessage, String url) {
-			super(parameterObject.parentShell, parameterObject.dialogTitle, parameterObject.dialogTitleImage, null, parameterObject.dialogImageType, parameterObject.dialogButtonLabels, parameterObject.defaultIndex);
+			super(parameterObject.parentShell, parameterObject.dialogTitle, parameterObject.dialogTitleImage, null,
+					parameterObject.dialogImageType, parameterObject.dialogButtonLabels, parameterObject.defaultIndex);
 			this.hyperlinkMessage = hyperlinkMessage;
 			this.url = url;
 		}
 
+		@Override
 		protected Control createCustomArea(Composite parent) {
 			Link link = new Link(parent, SWT.None);
 			link.setText(hyperlinkMessage);
@@ -685,6 +682,7 @@ public class OfficeView extends ViewPart {
 			if (url != null && !url.contentEquals("")) {
 				link.setToolTipText(url);
 				link.addSelectionListener(new SelectionAdapter() {
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						try {
 							Desktop.getDesktop().browse(new URI(url));

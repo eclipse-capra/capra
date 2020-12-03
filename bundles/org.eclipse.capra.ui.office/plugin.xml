@@ -76,7 +76,8 @@
                   class="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu"
                   id="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu">
             </dynamic>
-            <visibleWhen>
+            <visibleWhen
+                  checkEnabled="true">
                <reference
                      definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
                </reference>
@@ -87,7 +88,8 @@
                label="%command.label.0"
                style="push"
                tooltip="%command.tooltip.0">
-            <visibleWhen>
+            <visibleWhen
+                  checkEnabled="true">
     		   <reference
     		   	   definitionId="org.eclipse.capra.ui.office.utils.isViewPopulatedExpression"/>
 			</visibleWhen>
