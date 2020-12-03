@@ -27,6 +27,7 @@ import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -34,6 +35,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
+import org.osgi.service.prefs.Preferences;
 
 import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
 import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
@@ -46,6 +48,11 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  */
 public class DiagramTextProviderHandler implements DiagramTextProvider {
 	private EObject artifactModel = null;
+
+	private boolean isLockDiagram() {
+		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.lockDiagram");
+		return preferences.node("lockDiagram").getBoolean("option", false);
+	}
 
 	@Override
 	public String getDiagramText(IEditorPart editor, ISelection input) {
@@ -231,11 +238,19 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 	@Override
 	public boolean supportsEditor(IEditorPart editor) {
+		// This is a work around to disable update of the diagram if the view is locked.
+		if (isLockDiagram()) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean supportsView(IViewPart part) {
+		// This is a work around to disable update of the diagram if the view is locked.
+		if (isLockDiagram()) {
+			return false;
+		}
 		if (part instanceof PlantUmlView) {
 			return false;
 		}
@@ -244,6 +259,10 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 	@Override
 	public boolean supportsSelection(ISelection selection) {
+		// This is a work around to disable update of the diagram if the view is locked.
+		if (isLockDiagram()) {
+			return false;
+		}
 		return true;
 	}
 

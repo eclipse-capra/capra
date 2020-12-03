@@ -18,6 +18,7 @@
    <extension
          point="net.sourceforge.plantuml.eclipse.diagramTextProvider">
       <diagramTextProvider
+            id="org.eclipse.capra.ui.plantuml.diagramTextProviderHandler"
             providerClass="org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler">
       </diagramTextProvider>
    </extension>
@@ -68,6 +69,14 @@
             id="org.eclipse.capra.ui.plantuml.transitivtyDepth"
             name="%command.name.depth">
       </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.lockDiagram"
+            name="%command.name.lock">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -90,6 +99,10 @@
       <handler
             class="org.eclipse.capra.ui.plantuml.TransitivityDepthHandler"
             commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.ToggleLockDiagramHandler"
+            commandId="org.eclipse.capra.ui.plantuml.lockDiagram">
       </handler>
    </extension>
 	<extension
@@ -120,6 +133,11 @@
                commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth"
                label="%command.label.depth"
                style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.lockDiagram"
+               label="%command.name.lock"
+               style="toggle">
          </command>
       </menuContribution>
    </extension>

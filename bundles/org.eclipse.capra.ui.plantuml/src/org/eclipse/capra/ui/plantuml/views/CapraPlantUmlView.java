@@ -14,6 +14,7 @@
 package org.eclipse.capra.ui.plantuml.views;
 
 import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.ToggleLockDiagramHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.core.commands.Command;
 import org.eclipse.swt.widgets.Composite;
@@ -41,5 +42,11 @@ public class CapraPlantUmlView extends PlantUmlView {
 			displayGraph.getState("org.eclipse.ui.commands.toggleState")
 					.setValue(ToggleDisplayGraphHandler.isDisplayGraph());
 		}
+		Command lockDiagram = cmdService.getCommand("org.eclipse.capra.ui.plantuml.lockDiagram");
+		if (lockDiagram != null) {
+			lockDiagram.getState("org.eclipse.ui.commands.toggleState")
+					.setValue(ToggleLockDiagramHandler.isLockDiagram());
+		}
+
 	}
 }
