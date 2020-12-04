@@ -96,8 +96,8 @@ public class VisualizationHelper {
         boolean _originHasLocation = helper.originHasLocation();
         if (_originHasLocation) {
           _builder.append(" [[");
-          String _originLocation = helper.originLocation();
-          _builder.append(_originLocation);
+          String _replaceAll = helper.originLocation().replaceAll(" ", "%20");
+          _builder.append(_replaceAll);
           _builder.append(" (Go to)]]");
         }
       }
@@ -116,8 +116,8 @@ public class VisualizationHelper {
             boolean _hasLocation = helper.hasLocation(id);
             if (_hasLocation) {
               _builder.append(" [[");
-              String _location = helper.location(id);
-              _builder.append(_location);
+              String _replaceAll_1 = helper.location(id).replaceAll(" ", "%20");
+              _builder.append(_replaceAll_1);
               _builder.append(" (Go to)]]");
             }
           }

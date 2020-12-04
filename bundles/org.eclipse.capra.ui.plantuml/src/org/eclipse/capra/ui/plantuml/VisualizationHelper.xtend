@@ -27,15 +27,15 @@ class VisualizationHelper {
 	
 	@enduml
 	'''
-	} 
+	}
 	
 	def static String createNeighboursView(List<Connection> connections, List<EObject> selectedObjects, EObject artifactModel){
 	var helper = new Connections(connections, selectedObjects, artifactModel);
 	'''
 	@startuml
-	object "«helper.originLabel()»«IF helper.originHasLocation()» [[«helper.originLocation()» (Go to)]]«ENDIF»" as «helper.originId()» #pink
+	object "«helper.originLabel()»«IF helper.originHasLocation()» [[«helper.originLocation().replaceAll(" ", "%20")» (Go to)]]«ENDIF»" as «helper.originId()» #pink
 	«FOR id:helper.objectIdsWithoutOrigin()»
-	object "«helper.label(id)»«IF helper.hasLocation(id)» [[«helper.location(id)» (Go to)]]«ENDIF»" as «id»
+	object "«helper.label(id)»«IF helper.hasLocation(id)» [[«helper.location(id).replaceAll(" ", "%20")» (Go to)]]«ENDIF»" as «id»
 	«ENDFOR»
 	«FOR a:helper.arrows()» 
 	«a»
