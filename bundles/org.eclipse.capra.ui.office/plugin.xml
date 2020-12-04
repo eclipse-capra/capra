@@ -33,15 +33,15 @@
          point="org.eclipse.ui.commands">
       <command
 			id="org.eclipse.capra.ui.office.clearselection"
-            name="%command.name">
+            name="%command.clear.name">
       </command>
       <command
             id="org.eclipse.capra.ui.office.showdetails"
-            name="%command.name.0">
+            name="%command.details.name">
       </command>
       <command
             id="org.eclipse.capra.ui.office.openfile"
-            name="%command.name.1">
+            name="%command.open.name">
       </command>
    </extension>
    <extension
@@ -65,13 +65,13 @@
             locationURI="menu:org.eclipse.capra.ui.views.OfficeView?after=additions"> 
          <command
                commandId="org.eclipse.capra.ui.office.openfile"
-               label="%command.label"
+               label="%command.open.label"
                style="push"
-               tooltip="%command.tooltip">
+               tooltip="%command.open.tooltip">
          </command>
          <menu
-               label="%menu.label"
-               tooltip="%menu.tooltip">
+               label="%menu.select.label"
+               tooltip="%menu.select.tooltip">
             <dynamic
                   class="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu"
                   id="org.eclipse.capra.ui.office.views.SelectSheetDynamicMenu">
@@ -85,9 +85,9 @@
          </menu>
          <command
                commandId="org.eclipse.capra.ui.office.clearselection"
-               label="%command.label.0"
+               label="%command.clear.label"
                style="push"
-               tooltip="%command.tooltip.0">
+               tooltip="%command.clear.tooltip">
             <visibleWhen
                   checkEnabled="true">
     		   <reference
@@ -96,22 +96,60 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:net.sourceforge.plantuml.eclipse.views.PlantUmlView?after=additions">
-         <menu
-		       label="%menu.label.0"
-		       id="org.eclipse.capra.ui.contextsubmenu">
-            <command
-                  commandId="org.eclipse.capra.ui.office.showdetails"
-                  label="%command.label.1"
-                  style="push"
-                  tooltip="%command.tooltip.1">
-               <visibleWhen>
-     	          <iterate ifEmpty="false">
-                     <instanceof value="org.eclipse.capra.ui.office.model.CapraOfficeObject"/>
-                  </iterate>
-               </visibleWhen>
-            </command>
-         </menu>     
+            locationURI="popup:org.eclipse.capra.ui.views.OfficeView?after=additions">
+         <command
+               commandId="org.eclipse.capra.ui.office.showdetails"
+               icon="platform:/plugin/org.eclipse.debug.ui/icons/full/eview16/details_view.png"
+               label="%command.details.label"
+               style="push"
+               tooltip="%command.details.tooltip">
+            <visibleWhen>
+               <iterate
+                     ifEmpty="false">
+                  <instanceof
+                        value="org.eclipse.capra.ui.office.model.CapraOfficeObject">
+                  </instanceof>
+               </iterate>
+            </visibleWhen>
+         </command>     
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.capra.ui.views.OfficeView">
+         <command
+               commandId="org.eclipse.capra.ui.office.openfile"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/obj16/fldr_obj.png"
+               label="%command.open.name"
+               style="push">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.office.showdetails"
+               icon="platform:/plugin/org.eclipse.debug.ui/icons/full/eview16/details_view.png"
+               label="%command.details.label"
+               style="push"
+               tooltip="%command.details.tooltip">
+            <visibleWhen
+                  checkEnabled="true">
+               <iterate
+                     ifEmpty="false">
+                  <instanceof
+                        value="org.eclipse.capra.ui.office.model.CapraOfficeObject">
+                  </instanceof>
+               </iterate>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.office.clearselection"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/clear.png"
+               label="%command.clear.name"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <reference
+                     definitionId="org.eclipse.capra.ui.office.utils.isExcelObjectExpression">
+               </reference>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
