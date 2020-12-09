@@ -64,6 +64,6 @@ location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/" APP4MC
 	org.eclipse.app4mc.platform.sdk.feature.group
 }
 
-location "http://download.eclipse.org/ease/update/release" EASE {
+location "https://download.eclipse.org/ease/release/0.5.0/" EASE {
 	I201709292011.Core
 }
