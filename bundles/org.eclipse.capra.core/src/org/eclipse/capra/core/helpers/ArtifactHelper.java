@@ -27,7 +27,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class ArtifactHelper {
 
-	private static final String CHARACTERS_TO_BE_REMOVED = "[\", \']";
+	private static final String QUOTE_CHARACTERS = "[\"\']";
+	private static final String NEWLINE_CHARACTERS = "[\r\n]+";
 
 	private EObject artifactModel;
 
@@ -43,6 +44,10 @@ public class ArtifactHelper {
 	// Collection<IArtifactHandler<?>> can only hold
 	// IArtifactHandler<?>.
 	private static Collection<? extends IArtifactHandler<?>> handlers = ExtensionPointHelper.getArtifactHandlers();
+
+	private String sanitize(String input) {
+		return input.replaceAll(QUOTE_CHARACTERS, " ").replaceAll(NEWLINE_CHARACTERS, " ");
+	}
 
 	/**
 	 * @param artifactModel
@@ -147,7 +152,7 @@ public class ArtifactHelper {
 		}
 		// remove unwanted characters like ", '
 		if (artifactLabel != null) {
-			return artifactLabel.replaceAll(CHARACTERS_TO_BE_REMOVED, " ");
+			return sanitize(artifactLabel);
 		} else {
 			// This can happen if the trace model contains elements for which
 			// the artifact handler is not available.

@@ -40,7 +40,7 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// an EObject, or if it is Adaptable to an EObject
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-				officeObject.getData(), officeObject.getUri());
+				this.getDisplayName(officeObject), officeObject.getUri());
 		return wrapper;
 	}
 
@@ -56,13 +56,14 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 
 	@Override
 	public String getDisplayName(CapraOfficeObject officeObject) {
-		int minAllowed = Activator.getDefault().getPreferenceStore()
-				.getInt(OfficePreferences.CHAR_COUNT);
+		int minAllowed = Activator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
 		String text = officeObject.toString();
 		int textLength = Math.min(text.length(), minAllowed);
 		if (textLength == minAllowed) {
 			text = text.substring(0, textLength) + "...";
 		}
+		// Remove new lines
+		text = text.replaceAll("\\R+", " ");
 		return text;
 	}
 

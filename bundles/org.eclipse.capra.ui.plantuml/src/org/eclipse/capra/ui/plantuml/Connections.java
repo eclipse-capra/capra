@@ -34,11 +34,12 @@ import com.google.common.base.Strings;
  * Helper class for generating PlantUML diagrams from a collection of
  * {@link Connection}
  *
- * @author Anthony Anjorin, Salome Maro
+ * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  */
 public class Connections {
 
-	private static final String CHARACTERS_TO_BE_REMOVED = "[\", \']";
+	private static final String QUOTE_CHARACTERS = "[\"\']";
+	private static final String NEWLINE_CHARACTERS = "[\r\n]+";
 	private List<Connection> connections;
 	private EObject origin;
 
@@ -48,7 +49,11 @@ public class Connections {
 	private Map<String, String> id2Location;
 
 	private ArtifactHelper artifactHelper;
-	
+
+	private String sanitize(String input) {
+		return input.replaceAll(QUOTE_CHARACTERS, " ").replaceAll(NEWLINE_CHARACTERS, " ");
+	}
+
 	Connections(List<Connection> connections, List<EObject> selectedObjects, EObject artifactModel) {
 		this.artifactHelper = new ArtifactHelper(artifactModel);
 		this.connections = connections;
@@ -78,7 +83,7 @@ public class Connections {
 	}
 
 	public String originLabel() {
-		return id2Label.get(object2Id.get(origin));
+		return sanitize(id2Label.get(object2Id.get(origin)));
 	}
 
 	public String originLocation() {
@@ -101,7 +106,7 @@ public class Connections {
 	}
 
 	public String label(String id) {
-		return id2Label.get(id);
+		return sanitize(id2Label.get(id));
 	}
 
 	public String location(String id) {
