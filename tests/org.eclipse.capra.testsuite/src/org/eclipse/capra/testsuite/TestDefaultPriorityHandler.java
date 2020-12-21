@@ -13,12 +13,19 @@
  *******************************************************************************/
 package org.eclipse.capra.testsuite;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.handler.hudson.BuildElementHandler;
+import org.eclipse.capra.handler.hudson.TestElementHandler;
+import org.eclipse.mylyn.builds.core.IBuildElement;
+import org.eclipse.mylyn.builds.core.ITestCase;
+import org.eclipse.mylyn.builds.internal.core.BuildFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +38,12 @@ public class TestDefaultPriorityHandler {
 
 	private PriorityHandler priorityHandler;
 
+	@SuppressWarnings("restriction")
+	private IBuildElement buildElement = BuildFactory.eINSTANCE.createBuildPlan();
+
+	@SuppressWarnings("restriction")
+	private ITestCase testCase = BuildFactory.eINSTANCE.createTestCase();
+
 	@Before
 	public void setup() {
 		priorityHandler = ExtensionPointHelper.getPriorityHandler().get();
@@ -42,28 +55,34 @@ public class TestDefaultPriorityHandler {
 	}
 
 	@Test
+	public void testCorrectSelection() {
+		assertEquals(BuildElementHandler.class, priorityHandler
+				.getSelectedHandler(ExtensionPointHelper.getArtifactHandlers(), buildElement).getClass());
+		assertEquals(TestElementHandler.class,
+				priorityHandler.getSelectedHandler(ExtensionPointHelper.getArtifactHandlers(), testCase).getClass());
+	}
+
+	@Test
 	public void testPrioritiesOrder() {
 		Collection<IArtifactHandler<?>> handlers = new ArrayList<>();
 		handlers.add(emfHandler);
 		handlers.add(buildElementHandler);
 
-		Assert.assertEquals(buildElementHandler, priorityHandler.getSelectedHandler(handlers, null));
+		// First, without the testCaseHandler, test case is picked up by EMF (fallback)
+		Assert.assertEquals(buildElementHandler, priorityHandler.getSelectedHandler(handlers, buildElement));
+		Assert.assertEquals(emfHandler, priorityHandler.getSelectedHandler(handlers, testCase));
+
+		// Now, we add the testCaseHandler and we should see a change in priority
+		handlers.add(testElementHandler);
+		Assert.assertEquals(testElementHandler, priorityHandler.getSelectedHandler(handlers, testCase));
 
 		// Turn order around
 		handlers.clear();
-		handlers.add(buildElementHandler);
-		handlers.add(emfHandler);
-		Assert.assertEquals(buildElementHandler, priorityHandler.getSelectedHandler(handlers, null));
-	}
-
-	@Test
-	public void testPrioritiesConflict() {
-		Collection<IArtifactHandler<?>> handlers = new ArrayList<>();
 		handlers.add(testElementHandler);
 		handlers.add(buildElementHandler);
-		// PriorityHandler should choose first element in list in case of a
-		// conflict
-		Assert.assertEquals(testElementHandler, priorityHandler.getSelectedHandler(handlers, null));
+		handlers.add(emfHandler);
+		Assert.assertEquals(buildElementHandler, priorityHandler.getSelectedHandler(handlers, buildElement));
+		Assert.assertEquals(testElementHandler, priorityHandler.getSelectedHandler(handlers, testCase));
 	}
 
 }
