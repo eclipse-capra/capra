@@ -22,6 +22,7 @@ import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -38,7 +39,6 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	private static final Logger LOG = LoggerFactory.getLogger(GenericMetaModelAdapter.class);
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
-
 
 	public GenericMetaModelAdapter() {
 		// TODO Auto-generated constructor stub
@@ -91,7 +91,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 		for (RelatedTo trace : allTraces) {
 			if (!firstElement.equals(secondElement)) {
-				if (trace.getItem().contains(firstElement) && trace.getItem().contains(secondElement)) {
+				if (EMFHelper.isElementInList(trace.getItem(), firstElement)
+						&& EMFHelper.isElementInList(trace.getItem(), secondElement)) {
 					relevantLinks.add(trace);
 				}
 			}
@@ -203,9 +204,10 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 			for (Object trace : toRemove) {
 				tModel.getTraces().remove(trace);
 			}
-			
+
 			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-			persistenceAdapter.saveTracesAndArtifacts(tModel, persistenceAdapter.getArtifactWrappers(new ResourceSetImpl()));
+			persistenceAdapter.saveTracesAndArtifacts(tModel,
+					persistenceAdapter.getArtifactWrappers(new ResourceSetImpl()));
 		}
 	}
 
