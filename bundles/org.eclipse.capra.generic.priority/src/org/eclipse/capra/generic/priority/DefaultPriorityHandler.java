@@ -30,15 +30,15 @@ public class DefaultPriorityHandler implements PriorityHandler {
 	@Override
 	public <T> IArtifactHandler<? extends T> getSelectedHandler(
 			Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact) {
-		return handlers.stream().max(new ArtifactHandlerPriorityComparator()).get();
+		return handlers.stream().filter(handler -> handler.canHandleArtifact(artifact))
+				.max(new ArtifactHandlerPriorityComparator()).get();
 	}
 
 	/**
 	 * A comparator that compares two classes by whether the handled classes are
-	 * assignable to each other. If instance A is of a type that is a superclass
-	 * or superinterface of instance B, it will return A>B. A=B if the
-	 * assignment works in both directions or if the assignment does not work at
-	 * all.
+	 * assignable to each other. If instance A is of a type that is a superclass or
+	 * superinterface of instance B, it will return A>B. A=B if the assignment works
+	 * in both directions or if the assignment does not work at all.
 	 */
 	private class ArtifactHandlerPriorityComparator implements Comparator<IArtifactHandler<?>> {
 
