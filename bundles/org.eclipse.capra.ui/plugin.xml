@@ -106,7 +106,6 @@
 		<menuContribution allPopups="false"
 			locationURI="toolbar:org.eclipse.capra.ui.views.SelectionView">
 			<command commandId="org.eclipse.capra.ui.commands.createTrace"
-				disabledIcon="platform:/plugin/org.eclipse.pde.ui/icons/dlcl16/add_att.png"
 				icon="platform:/plugin/org.eclipse.ui/icons/full/obj16/add_obj.png"
 				label="%command.createtrace.name" mnemonic="%command.createtrace.mnemonic"
 				style="push" tooltip="%command.createtrace.tooltip">
