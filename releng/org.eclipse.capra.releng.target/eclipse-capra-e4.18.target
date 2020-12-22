@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.17" sequenceNumber="1607512622">
+<target name="eclipse-capra-e4.17" sequenceNumber="1608634456">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.cdt.sdk.feature.group" version="10.0.0.202009071455"/>
-      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="10.0.0.202008310002"/>
-      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.12.202008311302"/>
-      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.15.0.v20200701-0840"/>
-      <unit id="org.eclipse.emf.sdk.feature.group" version="2.23.0.v20200822-0801"/>
-      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="4.8.0.202006100749"/>
+      <unit id="org.eclipse.cdt.sdk.feature.group" version="10.1.0.202012020953"/>
+      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="10.1.0.202010121414"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.13.202011201248"/>
+      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.16.0.v20201105-0712"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.24.0.v20200917-1439"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="5.0.0.202012091059"/>
       <unit id="org.eclipse.php.feature.group" version="7.2.0.202005271851"/>
-      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.23.0.v20200831-0926"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.24.0.v20201130-1016"/>
       <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="2.16.1.v20200828-1618"/>
       <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.17.0.v20200730-1155"/>
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
-      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.23.0.v20200831-0926"/>
-      <unit id="org.eclipse.pde.source.feature.group" version="3.14.500.v20200902-1800"/>
-      <repository id="eclipse-2020-09" location="http://download.eclipse.org/releases/2020-09/"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.24.0.v20201130-1016"/>
+      <unit id="org.eclipse.pde.source.feature.group" version="3.14.600.v20201202-1800"/>
+      <repository id="eclipse-2020-12" location="http://download.eclipse.org/releases/2020-12/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.gef4.common.sdk.feature.group" version="1.1.0.201609060946"/>
@@ -35,16 +35,16 @@
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.poi.ooxml" version="4.1.1.v20200820-1148"/>
-      <unit id="org.apache.xmlbeans" version="3.1.0.v20200817-1535"/>
+      <unit id="org.apache.xmlbeans" version="3.1.0.v20200922-1359"/>
       <unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
       <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
-      <unit id="org.apache.poi.ooxml.schemas" version="4.1.1.v20200820-1148"/>
+      <unit id="org.apache.poi.ooxml.schemas" version="4.1.1.v20200922-2105"/>
       <unit id="org.apache.poi" version="4.1.1.v20200604-1524"/>
       <unit id="com.fasterxml.jackson.core.jackson-core" version="2.10.3.v20200512-1600"/>
       <unit id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
       <unit id="ch.qos.logback.slf4j" version="1.2.3.v20200428-2012"/>
       <unit id="org.dom4j" version="2.1.1.v20190321-1528"/>
-      <repository id="eclipse-orbit-2020-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository/"/>
+      <repository id="eclipse-orbit-2020-12" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
