@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.17" sequenceNumber="1632497884">
+<target name="eclipse-capra-e4.17" sequenceNumber="1646428166">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.0.0.202009071455"/>
@@ -55,7 +55,7 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.0.202108311440"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.1.202111301629"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -70,6 +70,22 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.collections.feature.feature.group" version="10.4.0.v20200820-2049"/>
+      <repository id="eclipse-collections" location="https://download.eclipse.org/collections/10.4.0/repository/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.polarsys.kitalpha.ad.feature.feature.group" version="1.4.2.202010141424"/>
+      <repository id="KitAlpha" location="https://download.eclipse.org/kitalpha/updates/release/runtimecore/1.4.2/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.diffmerge" version="0.13.0.202010211615"/>
+      <repository id="DiffMerge" location="https://download.eclipse.org/diffmerge/releases/0.13.0/emf-diffmerge-site/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.polarsys.capella.core.common.feature.feature.group" version="5.0.0.202012021234"/>
+      <repository id="Capella" location="https://download.eclipse.org/capella/core/updates/releases/5.0.0-R20201202-123401/org.polarsys.capella.rcp.site/"/>
     </location>
   </locations>
 </target>

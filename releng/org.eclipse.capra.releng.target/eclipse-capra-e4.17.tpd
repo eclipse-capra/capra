@@ -66,6 +66,23 @@ location "http://download.eclipse.org/ease/release/0.7.0" EASE {
 	org.eclipse.ease.ui.feature.feature.group
 }
 
+
 location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 	ode.concept.deis.feature.feature.group
+}
+
+location "https://download.eclipse.org/collections/10.4.0/repository/" eclipse-collections {
+	 org.eclipse.collections.feature.feature.group
+}
+
+location "https://download.eclipse.org/kitalpha/updates/release/runtimecore/1.4.2/" KitAlpha {
+	 org.polarsys.kitalpha.ad.feature.feature.group
+}
+
+location "https://download.eclipse.org/diffmerge/releases/0.13.0/emf-diffmerge-site/" DiffMerge {
+	org.eclipse.emf.diffmerge
+}
+
+location "https://download.eclipse.org/capella/core/updates/releases/5.0.0-R20201202-123401/org.polarsys.capella.rcp.site/" Capella {
+	org.polarsys.capella.core.common.feature.feature.group
 }
