@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
+Bundle-SymbolicName: org.eclipse.capra.handler.capella.tests
+Bundle-Version: 0.8.1.qualifier
+Require-Bundle: 
+ org.eclipse.capra.core,
+ org.eclipse.capra.generic.tracemodel,
+ org.eclipse.capra.handler.capella,
+ org.eclipse.capra.ui,
+ org.eclipse.capra.ui.plantuml,
+ org.eclipse.capra.testsuite,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.uml2.uml,
+ org.polarsys.capella.common.data.core.gen,
+ org.polarsys.capella.core.data.gen,
+ org.polarsys.capella.core.model.handler,
+ org.junit,
+ net.sourceforge.plantuml.eclipse;bundle-version="1.1.24"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.handler.capella.tests;x-internal:=true
