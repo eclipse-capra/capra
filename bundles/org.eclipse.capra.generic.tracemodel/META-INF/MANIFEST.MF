@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.capra.generic.tracemodel;singleton:=true
 Automatic-Module-Name: org.eclipse.capra.generic.tracemodel
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.8.1
 Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
