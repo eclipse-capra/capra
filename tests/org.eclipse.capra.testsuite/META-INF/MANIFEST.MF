@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsuite;singleton:=true
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.8.2.qualifier
 Export-Package: org.eclipse.capra.testsuite,
  org.eclipse.capra.testsuite.extension;x-internal:=true,
  org.eclipse.capra.testsuite.notification;x-internal:=true
