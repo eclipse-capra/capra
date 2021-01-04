@@ -45,7 +45,6 @@
 		<module>bundles/org.eclipse.capra.ui.jdt</module>
 		<module>bundles/org.eclipse.capra.ui.office</module>
 		<module>bundles/org.eclipse.capra.ui.drive</module>
-		<module>bundles/org.eclipse.capra.ui.zest</module>
 		<module>bundles/org.eclipse.capra.ui.reqif</module>
 		<module>bundles/org.eclipse.capra.ui.xtext</module>
 		<module>bundles/org.eclipse.capra.ui.sunburst</module>
@@ -76,7 +75,6 @@
 		<module>features/org.eclipse.capra.handler.featureide.feature</module>
 		<module>features/org.eclipse.capra.ui.feature</module>
 		<module>features/org.eclipse.capra.ui.plantuml.feature</module>
-		<module>features/org.eclipse.capra.ui.zest.feature</module>
 		<module>features/org.eclipse.capra.ui.xtext.feature</module>
 		<module>features/org.eclipse.capra.ui.sunburst.feature</module>
 		<module>features/org.eclipse.capra.ui.matrix.feature</module>

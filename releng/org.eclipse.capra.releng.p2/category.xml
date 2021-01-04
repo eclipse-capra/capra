@@ -33,9 +33,6 @@
    <feature url="features/org.eclipse.capra.ui.plantuml.feature_0.8.2.qualifier.jar" id="org.eclipse.capra.ui.plantuml.feature" version="0.8.2.qualifier">
       <category name="org.eclipse.capra.ui"/>
    </feature>
-   <feature url="features/org.eclipse.capra.ui.zest.feature_0.8.2.qualifier.jar" id="org.eclipse.capra.ui.zest.feature" version="0.8.2.qualifier">
-      <category name="org.eclipse.capra.ui"/>
-   </feature>
    <feature url="features/org.eclipse.capra.ui.xtext.feature_0.8.2.qualifier.jar" id="org.eclipse.capra.ui.xtext.feature" version="0.8.2.qualifier">
       <category name="org.eclipse.capra.handler"/>
    </feature>
