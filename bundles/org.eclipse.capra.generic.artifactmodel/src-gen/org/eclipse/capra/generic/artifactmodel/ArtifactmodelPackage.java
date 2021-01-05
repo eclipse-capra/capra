@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/GenModel basePackage='org.eclipse.capra.generic'"
  * @generated
  */
 public interface ArtifactmodelPackage extends EPackage {

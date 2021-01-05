@@ -46,3 +46,4 @@ Require-Bundle: org.junit,
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.swt.dnd,
  org.slf4j
+Automatic-Module-Name: org.eclipse.capra.testsuite

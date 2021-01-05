@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.capra.ui,
  org.eclipse.capra.generic.artifactmodel,
  org.eclipse.nebula.widgets.nattable.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.ui.matrix,
  org.eclipse.capra.ui.matrix.views
 Bundle-Vendor: %Bundel-Vendor
+Automatic-Module-Name: org.eclipse.capra.ui.matrix

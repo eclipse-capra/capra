@@ -6,5 +6,6 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.generic.priority;singleton:=true
 Bundle-Version: 0.8.2.qualifier
 Require-Bundle: org.eclipse.capra.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.generic.priority
+Automatic-Module-Name: org.eclipse.capra.generic.priority

@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.capra.core,
 Import-Package: org.eclipse.capra.ui.helpers
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.gef
+Automatic-Module-Name: org.eclipse.capra.handler.gef

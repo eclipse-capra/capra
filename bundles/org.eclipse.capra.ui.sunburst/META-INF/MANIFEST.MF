@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.core.runtime,
  org.eclipse.capra.ui,
  org.eclipse.capra.generic.artifactmodel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.ui.sunburst.view
 Bundle-Vendor: %Bundle-Vendor
+Automatic-Module-Name: org.eclipse.capra.ui.sunburst

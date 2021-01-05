@@ -100,7 +100,6 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public String getID() {
 		return EcoreUtil.generateUUID();
 	}
@@ -110,7 +109,6 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -120,7 +118,6 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -133,7 +130,6 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EList<EObject> getItem() {
 		if (item == null) {
 			item = new EObjectResolvingEList<EObject>(EObject.class, this, TracemodelPackage.RELATED_TO__ITEM);

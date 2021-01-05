@@ -22,4 +22,5 @@ Export-Package: org.eclipse.capra.handler.cdt,
  org.eclipse.capra.handler.cdt.preferences
 Bundle-Activator: org.eclipse.capra.handler.cdt.Activator
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.capra.handler.cdt
 
