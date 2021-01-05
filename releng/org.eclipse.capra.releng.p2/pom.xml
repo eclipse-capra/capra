@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Copyright (c) 
-	2016, 2019 Chalmers | University of Gothenburg, rt-labs and others. All rights 
-	reserved. This program and the accompanying materials are made available 
-	under the terms of the Eclipse Public License v2.0 which accompanies this 
-	distribution, and is available at http://www.eclipse.org/legal/epl-v20.html 
-	SPDX-License-Identifier: EPL-2.0 Contributors: Chalmers | University of Gothenburg 
-	and rt-labs - initial API and implementation and/or initial documentation 
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Copyright (c)
+	2016, 2019 Chalmers | University of Gothenburg, rt-labs and others. All rights
+	reserved. This program and the accompanying materials are made available
+	under the terms of the Eclipse Public License v2.0 which accompanies this
+	distribution, and is available at http://www.eclipse.org/legal/epl-v20.html
+	SPDX-License-Identifier: EPL-2.0 Contributors: Chalmers | University of Gothenburg
+	and rt-labs - initial API and implementation and/or initial documentation
 	Chalmers | University of Gothenburg - additional features, updated API --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -42,7 +42,7 @@
 			</plugin>
 
 			<!-- Generate HTML version of update site -->
-			<!-- Also add additional repositories. Note that this information could 
+			<!-- Also add additional repositories. Note that this information could
 				be entered in category.xml but Tycho ignores it currently. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
 			<plugin>
 				<groupId>org.jboss.tools.tycho-plugins</groupId>
@@ -79,4 +79,62 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>sonar</id>
+
+			<dependencies>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>org.eclipse.capra.testsuite</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>org.eclipse.capra.handler.cdt.tests</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>org.eclipse.capra.handler.jdt.tests</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>org.eclipse.capra.handler.uml.tests</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>org.eclipse.capra.handler.featureide.tests</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+
+						<executions>
+							<execution>
+								<id>report-aggregate</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<configuration>
+									<title>Eclipse Capra</title>
+									<footer>Code Coverage Report for Eclipse Capra ${project.version}</footer>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
