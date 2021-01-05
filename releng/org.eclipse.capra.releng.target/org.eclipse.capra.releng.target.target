@@ -3,20 +3,6 @@
 <target name="Neon" sequenceNumber="77">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.gef4.common.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.geometry.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.fx.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.mvc.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.mvc.examples.source.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.layout.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.graph.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.zest.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.zest.examples.source.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.dot.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.gef4.cloudio.sdk.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/tools/gef/gef4/updates/releases"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
 <unit id="org.mortbay.jetty.server" version="6.1.23.v201012071420"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>

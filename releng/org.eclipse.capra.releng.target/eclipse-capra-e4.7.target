@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.7" sequenceNumber="1607512801">
+<target name="eclipse-capra-e4.7" sequenceNumber="1609851994">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="9.4.3.201802261533"/>
@@ -18,20 +18,6 @@
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.12.0.v20170519-1412"/>
       <unit id="org.eclipse.pde.source.feature.group" version="3.13.4.v20180330-0640"/>
       <repository id="eclipse-oxygen" location="http://download.eclipse.org/releases/oxygen/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.gef4.common.sdk.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.geometry.sdk.feature.group" version="1.0.1.201609060946"/>
-      <unit id="org.eclipse.gef4.fx.sdk.feature.group" version="1.0.1.201609060946"/>
-      <unit id="org.eclipse.gef4.mvc.sdk.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.mvc.examples.source.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.layout.sdk.feature.group" version="1.0.1.201609060946"/>
-      <unit id="org.eclipse.gef4.graph.sdk.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.zest.sdk.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.zest.examples.source.feature.group" version="1.1.0.201609060946"/>
-      <unit id="org.eclipse.gef4.dot.sdk.feature.group" version="1.0.1.201609060946"/>
-      <unit id="org.eclipse.gef4.cloudio.sdk.feature.group" version="1.0.1.201609060946"/>
-      <repository id="eclipse-gef4" location="http://download.eclipse.org/tools/gef/gef4/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.poi.ooxml" version="3.9.0.v201405241905"/>

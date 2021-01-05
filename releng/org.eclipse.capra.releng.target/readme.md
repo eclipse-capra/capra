@@ -14,7 +14,5 @@ When developing, any of the target platforms can be used by first generating a t
 
 # Available targets
 
- * Neon.tpd - original platform for which Capra was developed
- * Oxygen.tpd
- * 2018-09.tpd - latest build platform
+There are target platform files available for each Eclipse version starting from Eclipse Neon. Each target platform will draw from the corresponding repositories for the Eclipse platform and Eclipse Orbit.
 	
