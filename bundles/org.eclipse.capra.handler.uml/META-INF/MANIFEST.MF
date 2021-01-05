@@ -10,4 +10,5 @@ Require-Bundle: org.eclipse.uml2.uml,
  org.eclipse.emf.ecore,
  org.eclipse.capra.core,
  org.eclipse.core.resources
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.capra.handler.uml

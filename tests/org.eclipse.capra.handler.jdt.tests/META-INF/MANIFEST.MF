@@ -15,3 +15,4 @@ Require-Bundle: org.junit,
  org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.generic.artifactmodel
 Export-Package: org.eclipse.capra.handler.jdt;x-internal:=true
+Automatic-Module-Name: org.eclipse.capra.handler.jdt.tests

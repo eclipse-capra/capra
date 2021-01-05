@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.capra.ui;singleton:=true
 Bundle-Version: 0.8.2.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.equinox.registry,
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
@@ -33,3 +33,4 @@ Export-Package: org.eclipse.capra.ui.adapters,
  org.eclipse.capra.ui.preferences,
  org.eclipse.capra.ui.selections,
  org.eclipse.capra.ui.views
+Automatic-Module-Name: org.eclipse.capra.ui

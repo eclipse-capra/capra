@@ -8,8 +8,9 @@ Bundle-Version: 0.8.2.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.core.resources
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.core.adapters,
  org.eclipse.capra.core.handlers,
  org.eclipse.capra.core.helpers
+Automatic-Module-Name: org.eclipse.capra.core

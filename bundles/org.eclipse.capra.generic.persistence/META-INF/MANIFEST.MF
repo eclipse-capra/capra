@@ -9,5 +9,6 @@ Require-Bundle: org.eclipse.emf,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.capra.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.generic.persistance
+Automatic-Module-Name: org.eclipse.capra.generic.persistence

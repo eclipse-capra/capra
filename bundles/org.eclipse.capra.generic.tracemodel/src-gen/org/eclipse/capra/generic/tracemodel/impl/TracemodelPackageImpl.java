@@ -105,7 +105,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EClass getGenericTraceModel() {
 		return genericTraceModelEClass;
 	}
@@ -115,7 +114,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EReference getGenericTraceModel_Traces() {
 		return (EReference)genericTraceModelEClass.getEStructuralFeatures().get(0);
 	}
@@ -125,7 +123,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EClass getRelatedTo() {
 		return relatedToEClass;
 	}
@@ -135,7 +132,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EAttribute getRelatedTo_ID() {
 		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(0);
 	}
@@ -145,7 +141,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EAttribute getRelatedTo_Name() {
 		return (EAttribute)relatedToEClass.getEStructuralFeatures().get(1);
 	}
@@ -155,7 +150,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EReference getRelatedTo_Item() {
 		return (EReference)relatedToEClass.getEStructuralFeatures().get(2);
 	}
@@ -165,7 +159,6 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public TracemodelFactory getTracemodelFactory() {
 		return (TracemodelFactory)getEFactoryInstance();
 	}

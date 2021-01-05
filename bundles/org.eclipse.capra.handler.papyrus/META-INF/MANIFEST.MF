@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.papyrus
+Automatic-Module-Name: org.eclipse.capra.handler.papyrus

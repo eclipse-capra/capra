@@ -20,3 +20,4 @@ Require-Bundle:
  ch.qos.logback.slf4j;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.featureide.tests;x-internal:=true
+Automatic-Module-Name: org.eclipse.capra.handler.featureide.tests

@@ -10,4 +10,5 @@ Require-Bundle: org.eclipse.mylyn.hudson.core,
  org.eclipse.capra.core,
  org.eclipse.core.resources
 Export-Package: org.eclipse.capra.handler.hudson
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.capra.handler.hudson

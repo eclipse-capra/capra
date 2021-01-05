@@ -7,7 +7,7 @@ Bundle-Version: 0.8.2.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.generic.tracemodel.impl,
  org.eclipse.capra.generic.tracemodel.util

@@ -21,3 +21,4 @@ Require-Bundle:
  net.sourceforge.plantuml.eclipse;bundle-version="1.1.24"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.uml.tests;x-internal:=true
+Automatic-Module-Name: org.eclipse.capra.handler.uml.tests

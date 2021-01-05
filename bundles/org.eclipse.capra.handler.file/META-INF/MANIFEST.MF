@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.capra.core,
  org.eclipse.ui.ide,
  org.eclipse.capra.ui.notification
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.file,
  org.eclipse.capra.handler.file.notification;x-internal:=true
+Automatic-Module-Name: org.eclipse.capra.handler.file
