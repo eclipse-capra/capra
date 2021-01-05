@@ -6,7 +6,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.handler.jdt.tests
 Bundle-Version: 0.8.2.qualifier
 Fragment-Host: org.eclipse.capra.handler.jdt
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.eclipse.core.resources,
  org.eclipse.jdt.launching,
