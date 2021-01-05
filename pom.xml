@@ -89,6 +89,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>2.1.0</tycho-version>
 		<org.jboss.tools.tycho-plugins.version>1.6.0</org.jboss.tools.tycho-plugins.version>
+		<jacoco.version>0.8.6</jacoco.version>
+
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../releng/org.eclipse.capra.releng.p2/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.surefire.reportsPath>**/surefire-reports/</sonar.surefire.reportsPath>
+		<sonar.exclusions>**/src-gen/**/*,**/xtend-gen/**/*,**/xcore-gen/**/*</sonar.exclusions>
+		<sonar.issue.ignore.allfile>generated</sonar.issue.ignore.allfile>
+		<sonar.issue.ignore.allfile.generated.fileRegexp>@generated</sonar.issue.ignore.allfile.generated.fileRegexp>
+		<sonar.java.source>11</sonar.java.source>
+		<!-- coverage exclusions -->
+		<sonar.coverage.exclusions>**/*.tests/**/*.java,**/*.testsuite/**/*.java</sonar.coverage.exclusions>
+		<!-- duplication exclusion -->
+		<sonar.cpd.exclusions>**/*.tests/**/*.java,**/*.testsuite/**/*.java</sonar.cpd.exclusions>
 	</properties>
 
 	<profiles>
@@ -100,8 +112,37 @@
 				</os>
 			</activation>
 			<properties>
-				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+				<!-- The property tycho.testArgLine is used by Jacoco to inject
+				     the agent when preparing data for Sonar. By using the same
+				     property, we don't need any extra work for Tycho to pick up
+				     the right argument. Since Jenkins uses Linux, this profiles
+				     is not active when building for Sonar. -->
+				<tycho.testArgLine>-XstartOnFirstThread</tycho.testArgLine>
 			</properties>
+		</profile>
+
+		<profile>
+			<id>sonar</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+
+						<configuration>
+							<sessionId>${project.artifactId}</sessionId>
+						</configuration>
+
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
@@ -122,9 +163,18 @@
        <connection>scm:git:https://git.eclipse.org/r/capra/org.eclipse.capra.git</connection>
        <developerConnection>scm:git:https://git.eclipse.org/r/capra/org.eclipse.capra.git</developerConnection>
        <tag>0.7.0</tag>
-   </scm>
+	</scm>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -141,7 +191,7 @@
 				<configuration>
 					<useUIHarness>true</useUIHarness>
 					<useUIThread>true</useUIThread>
-					<argLine>${os-jvm-flags}</argLine>
+					<argLine>${tycho.testArgLine}</argLine>
 					<dependencies>
 						<dependency>
 							<type>eclipse-plugin</type>
@@ -198,4 +248,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
