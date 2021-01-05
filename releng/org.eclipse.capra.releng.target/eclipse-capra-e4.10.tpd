@@ -16,21 +16,7 @@ location "http://download.eclipse.org/releases/2018-12/" eclipse-2018-12 {
 	org.eclipse.pde.source.feature.group
 }
 
-location "http://download.eclipse.org/tools/gef/gef4/updates/releases" eclipse-gef4 {
-	org.eclipse.gef4.common.sdk.feature.group
-	org.eclipse.gef4.geometry.sdk.feature.group
-	org.eclipse.gef4.fx.sdk.feature.group
-	org.eclipse.gef4.mvc.sdk.feature.group
-	org.eclipse.gef4.mvc.examples.source.feature.group
-	org.eclipse.gef4.layout.sdk.feature.group
-	org.eclipse.gef4.graph.sdk.feature.group
-	org.eclipse.gef4.zest.sdk.feature.group
-	org.eclipse.gef4.zest.examples.source.feature.group
-	org.eclipse.gef4.dot.sdk.feature.group
-	org.eclipse.gef4.cloudio.sdk.feature.group
-}
-
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository" eclipse-orbit-2018-09 {
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20181128170323/repository" eclipse-orbit-2018-12 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
