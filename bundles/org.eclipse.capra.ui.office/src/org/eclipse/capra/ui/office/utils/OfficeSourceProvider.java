@@ -34,8 +34,8 @@ import org.eclipse.ui.ISources;
 public class OfficeSourceProvider extends AbstractSourceProvider {
 
 	/**
-	 * The ID of the variable that corresponds to the one in the plugin.xml and
-	 * is used to identify the resource that is being held by the class.
+	 * The ID of the variable that corresponds to the one in the plugin.xml and is
+	 * used to identify the resource that is being held by the class.
 	 */
 	public static final String CAPRA_OFFICE_OBJECT = "org.eclipse.capra.ui.office.utils.capraOfficeObject";
 
@@ -43,6 +43,7 @@ public class OfficeSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public void dispose() {
+		// Nothing to explicitly dispose here.
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class OfficeSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public Map<String, CapraOfficeObject> getCurrentState() {
-		HashMap<String, CapraOfficeObject> map = new HashMap<String, CapraOfficeObject>();
+		HashMap<String, CapraOfficeObject> map = new HashMap<>();
 		map.put(CAPRA_OFFICE_OBJECT, capraOfficeObject);
 		return map;
 	}

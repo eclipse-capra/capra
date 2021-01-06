@@ -26,12 +26,12 @@ import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
@@ -56,8 +56,8 @@ public class CapraExcelRow extends CapraOfficeObject {
 	private static final Logger LOG = LoggerFactory.getLogger(CapraExcelRow.class);
 
 	/**
-	 * RegEx of characters (tabs, newlines, carriage returns and invisible
-	 * control characters) to be replaced with white-spaces in the Office View.
+	 * RegEx of characters (tabs, newlines, carriage returns and invisible control
+	 * characters) to be replaced with white-spaces in the Office View.
 	 */
 	private static final String LINE_BREAKS_AND_CONTROL_REQ = "[\r\n\t\\p{C}]+";
 
@@ -80,24 +80,21 @@ public class CapraExcelRow extends CapraOfficeObject {
 	private static final String NO_LAST_CELL_REFERENCE = "-1";
 
 	/**
-	 * The ID of the column that is used to extract the identifier of the row
-	 * (if value is OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT, line numbers
-	 * are used as identifiers). The property is set according to the value in
-	 * the Capra preference page in Eclipse preferences.
+	 * The ID of the column that is used to extract the identifier of the row (if
+	 * value is OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT, line numbers are used
+	 * as identifiers). The property is set according to the value in the Capra
+	 * preference page in Eclipse preferences.
 	 */
 	private String idColumn;
 
 	/**
-	 * A constructor that generates a new instance of CapraExcelRow where the
-	 * parent properties are extracted from the provided Excel row and File
-	 * object that contains the row.
+	 * A constructor that generates a new instance of CapraExcelRow where the parent
+	 * properties are extracted from the provided Excel row and File object that
+	 * contains the row.
 	 * 
-	 * @param officeFile
-	 *            a File object representing an Excel file.
-	 * @param row
-	 *            an Excel row, extracted from the provided Excel file.
-	 * @param idColumn
-	 *            the excel column that is used to extract the ID of the row
+	 * @param officeFile a File object representing an Excel file.
+	 * @param row        an Excel row, extracted from the provided Excel file.
+	 * @param idColumn   the excel column that is used to extract the ID of the row
 	 */
 	public CapraExcelRow(File officeFile, Row row, String idColumn) {
 		super();
@@ -230,14 +227,13 @@ public class CapraExcelRow extends CapraOfficeObject {
 			Desktop.getDesktop().open(getFile());
 		} catch (IOException e) {
 			LOG.debug("Could not open file.", e);
-			return;
 		}
 	}
 
 	/**
-	 * Extracts the name of the sheet (from the URI of the object) which the
-	 * object is associated with. The URI of the object should always be in the
-	 * format fileId + DELIMITER + sheetName + DELIMITER + rowId.
+	 * Extracts the name of the sheet (from the URI of the object) which the object
+	 * is associated with. The URI of the object should always be in the format
+	 * fileId + DELIMITER + sheetName + DELIMITER + rowId.
 	 * 
 	 * @return name of the sheet
 	 */
@@ -248,9 +244,9 @@ public class CapraExcelRow extends CapraOfficeObject {
 	}
 
 	/**
-	 * Extracts the ID of the row from the URI of the object. The URI of the
-	 * object should always be in the format fileId + DELIMITER + sheetName +
-	 * DELIMITER + rowId.
+	 * Extracts the ID of the row from the URI of the object. The URI of the object
+	 * should always be in the format fileId + DELIMITER + sheetName + DELIMITER +
+	 * rowId.
 	 * 
 	 * @return ID of the row
 	 */
@@ -261,17 +257,16 @@ public class CapraExcelRow extends CapraOfficeObject {
 	}
 
 	/**
-	 * Extracts the ID of the Excel row (not CapraExcelRow!) based on the
-	 * idColumn value. If the value of idColumn is EXCEL_COLUMN_VALUE_DEFAULT,
-	 * then rowID is the same as row number, otherwise a specific column
-	 * (defined by idColumn property - such as A1) is used to extract the data
-	 * that will serve as the ID of the row.
+	 * Extracts the ID of the Excel row (not CapraExcelRow!) based on the idColumn
+	 * value. If the value of idColumn is EXCEL_COLUMN_VALUE_DEFAULT, then rowID is
+	 * the same as row number, otherwise a specific column (defined by idColumn
+	 * property - such as A1) is used to extract the data that will serve as the ID
+	 * of the row.
 	 * 
-	 * @param row
-	 *            the row to identify
+	 * @param row the row to identify
 	 * @return the ID of the row
 	 */
-	final protected String getRowIdFromExcelRow(Row row) {
+	protected final String getRowIdFromExcelRow(Row row) {
 		String rowId = "";
 		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT)) {
 			rowId = Integer.toString(row.getRowNum() + 1);
@@ -305,5 +300,5 @@ public class CapraExcelRow extends CapraOfficeObject {
 			return false;
 		return true;
 	}
-	
+
 }

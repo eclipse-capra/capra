@@ -201,6 +201,7 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
+				// We do not need to respond to this event.
 			}
 		});
 
@@ -214,6 +215,7 @@ public class OfficePreferences extends PreferencePage implements IWorkbenchPrefe
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
+				// We do not need to respond to this event.
 			}
 		});
 

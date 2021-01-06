@@ -44,8 +44,8 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 
 		// Add sheetNames to the dynamic context menu and make them
 		// un-selectable if they are empty
-		for (String sheetName : isSheetEmptyMap.keySet()) {
-			MenuItem menuItem = new MenuItem(menu, SWT.CHECK, index);
+		for (Map.Entry<String, Boolean> sheet : isSheetEmptyMap.entrySet()) {
+			MenuItem menuItem = new MenuItem(menu, SWT.RADIO, index);
 
 			menuItem.addSelectionListener(new SelectionListener() {
 
@@ -60,13 +60,13 @@ public class SelectSheetDynamicMenu extends ContributionItem {
 				}
 			});
 
-			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheetName)) {
+			if (OfficeView.getOpenedView().getSelectedSheetName().contentEquals(sheet.getKey())) {
 				menuItem.setSelection(true);
 			}
-			if (!isSheetEmptyMap.get(sheetName)) {
-				menuItem.setText(sheetName);
+			if (Boolean.FALSE.equals(sheet.getValue())) {
+				menuItem.setText(sheet.getKey());
 			} else {
-				menuItem.setText(sheetName + " (Empty)");
+				menuItem.setText(sheet.getKey() + " (Empty)");
 				menuItem.setEnabled(false);
 			}
 		}

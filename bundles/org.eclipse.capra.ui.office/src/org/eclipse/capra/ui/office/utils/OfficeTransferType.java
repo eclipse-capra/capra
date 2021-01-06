@@ -79,14 +79,9 @@ public class OfficeTransferType extends ByteArrayTransfer {
 		if (!(objectList.get(0) instanceof CapraOfficeObject)) {
 			return false;
 		}
-		
 
 		ArrayList<CapraOfficeObject> officeObjects = (ArrayList<CapraOfficeObject>) object;
-		if (officeObjects.isEmpty()) {
-			return false;
-		}
-
-		return true;
+		return !officeObjects.isEmpty();
 	}
 
 	/** Converts a java byte[] to a platform specific representation. */
@@ -118,13 +113,13 @@ public class OfficeTransferType extends ByteArrayTransfer {
 
 			super.javaToNative(bufferOut, transferData);
 		} catch (IOException e) {
-			LOG.warn("IOException occured when trying to convert office object to platform-specific representation: {}", e.getLocalizedMessage());
+			LOG.warn("IOException occured when trying to convert office object to platform-specific representation: {}",
+					e.getLocalizedMessage());
 		}
 	}
 
 	/**
-	 * Converts a platform specific representation of a byte array to a java
-	 * byte[].
+	 * Converts a platform specific representation of a byte array to a java byte[].
 	 */
 	@Override
 	public Object nativeToJava(TransferData transferData) {
@@ -135,7 +130,7 @@ public class OfficeTransferType extends ByteArrayTransfer {
 				return null;
 			}
 
-			ArrayList<CapraOfficeObject> officeObjects = new ArrayList<CapraOfficeObject>();
+			ArrayList<CapraOfficeObject> officeObjects = new ArrayList<>();
 
 			try (ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 					DataInputStream readIn = new DataInputStream(in)) {
@@ -159,7 +154,9 @@ public class OfficeTransferType extends ByteArrayTransfer {
 				}
 
 			} catch (IOException e) {
-				LOG.warn("IOException occured when trying to convert from platform-specific representation to office object: {}", e.getLocalizedMessage());
+				LOG.warn(
+						"IOException occured when trying to convert from platform-specific representation to office object: {}",
+						e.getLocalizedMessage());
 				return null;
 			}
 

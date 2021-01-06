@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class CapraOfficeObject {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CapraOfficeObject.class);
 
 	/**
@@ -101,17 +101,16 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the ID of the OfficeObject from its URI. The format of the URI
-	 * should always be fileId + DELIMITER + objectId.
+	 * Returns the ID of the OfficeObject from its URI. The format of the URI should
+	 * always be fileId + DELIMITER + objectId.
 	 */
 	public String getId() {
-		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
-		return uri.substring(firstDelimiterIndex + URI_DELIMITER.length());
+		return getObjectIdFromUri(this.uri);
 	}
 
 	/**
-	 * Returns the File reference of the file that contains the OfficeObject.
-	 * The format of the URI should always be fileId + DELIMITER + objectId.
+	 * Returns the File reference of the file that contains the OfficeObject. The
+	 * format of the URI should always be fileId + DELIMITER + objectId.
 	 */
 	public File getFile() throws NoSuchFileException {
 		String fileId = getFileId();
@@ -124,8 +123,8 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Returns the ID of the file - the first part of the URI. The format of the
-	 * URI should always be fileId + DELIMITER + objectId.
+	 * Returns the ID of the file - the first part of the URI. The format of the URI
+	 * should always be fileId + DELIMITER + objectId.
 	 */
 	public String getFileId() {
 		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
@@ -133,11 +132,10 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Extracts the objectId from the provided CapraOfficeObject uri. The format
-	 * of the URI should always be fileId + DELIMITER + objectId.
+	 * Extracts the objectId from the provided CapraOfficeObject uri. The format of
+	 * the URI should always be fileId + DELIMITER + objectId.
 	 * 
-	 * @param uri
-	 *            uri of the object
+	 * @param uri uri of the object
 	 * @return ID of the object
 	 */
 	public static String getObjectIdFromUri(String uri) {
@@ -146,11 +144,10 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * Extracts the fileId from the provided CapraOfficeObject uri. The format
-	 * of the URI should always be fileId + DELIMITER + objectId.
+	 * Extracts the fileId from the provided CapraOfficeObject uri. The format of
+	 * the URI should always be fileId + DELIMITER + objectId.
 	 * 
-	 * @param uri
-	 *            uri of the object
+	 * @param uri uri of the object
 	 * @return file-path of the file that contains the object
 	 */
 	public static String getFileIdFromUri(String uri) {
@@ -168,19 +165,16 @@ public class CapraOfficeObject {
 		try {
 			Desktop.getDesktop().open(getFile());
 		} catch (IOException e) {
-			LOG.error("Could not oben office file.", e);
 			throw new CapraOfficeObjectNotFound(getId(), e);
 		}
 	}
 
 	/**
-	 * Generates a uri given the fileId of the file that contains the object and
-	 * an objectId.
+	 * Generates a uri given the fileId of the file that contains the object and an
+	 * objectId.
 	 * 
-	 * @param fileId
-	 *            ID of the file that contains the object with objectId
-	 * @param objectID
-	 *            ID of the object
+	 * @param fileId   ID of the file that contains the object with objectId
+	 * @param objectID ID of the object
 	 * @return a uri of the object in the form of filePath/objectID
 	 */
 	public static String createUri(String fileId, String objectId) {
@@ -198,6 +192,7 @@ public class CapraOfficeObject {
 	/**
 	 * Provides the hash code of the OfficeObject.
 	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
