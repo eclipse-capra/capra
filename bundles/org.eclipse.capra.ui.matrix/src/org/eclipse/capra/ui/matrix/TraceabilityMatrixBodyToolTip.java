@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Event;
  * @author Jan-Philipp Steghöfer
  */
 public class TraceabilityMatrixBodyToolTip extends NatTableContentTooltip {
-	private NatTable natTable;
+
 	private TraceabilityMatrixDataProvider dataProvider;
 	private ArtifactHelper artifactHelper;
 
@@ -71,15 +71,15 @@ public class TraceabilityMatrixBodyToolTip extends NatTableContentTooltip {
 	 */
 	@Override
 	protected Object getToolTipArea(Event event) {
-		int col = this.natTable.getColumnPositionByX(event.x);
-		int row = this.natTable.getRowPositionByY(event.y);
+		int col = this.natTable.getColumnIndexByPosition(this.natTable.getColumnPositionByX(event.x) - 1);
+		int row = this.natTable.getRowIndexByPosition(this.natTable.getRowPositionByY(event.y) - 1);
 		return new Point(col, row);
 	}
 
 	@Override
 	protected String getText(Event event) {
-		int col = this.natTable.getColumnPositionByX(event.x) - 1;
-		int row = this.natTable.getRowPositionByY(event.y) - 1;
+		int col = this.natTable.getColumnIndexByPosition(this.natTable.getColumnPositionByX(event.x));
+		int row = this.natTable.getRowIndexByPosition(this.natTable.getRowPositionByY(event.y));
 		Connection connection = dataProvider.getCellConnection(col, row);
 		if (connection != null) {
 			EObject eClass = connection.getTlink().eClass();
