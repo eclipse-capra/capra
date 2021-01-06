@@ -54,13 +54,12 @@ public final class CapraOfficeUtils {
 	/**
 	 * Hide default constructor.
 	 */
-	private CapraOfficeUtils () {
+	private CapraOfficeUtils() {
 		super();
 	}
 
 	/**
-	 * Generates a HashMap that contains sheet names and info about their
-	 * emptiness:
+	 * Generates a HashMap that contains sheet names and info about their emptiness:
 	 * <ul>
 	 * <li>keySet (String) - names of all the sheets, contained in the selected
 	 * workbook</li>
@@ -68,14 +67,13 @@ public final class CapraOfficeUtils {
 	 * not</li>
 	 * </ul>
 	 * 
-	 * @param workBook
-	 *            an Excel Workbook object
-	 * @return a <code>Map</code> that contains the names (<code>String</code>) of all the sheets,
-	 *         contained in the selected workbook and information about whether
-	 *         they are empty or not (<code>Boolean</code>).
+	 * @param workBook an Excel Workbook object
+	 * @return a <code>Map</code> that contains the names (<code>String</code>) of
+	 *         all the sheets, contained in the selected workbook and information
+	 *         about whether they are empty or not (<code>Boolean</code>).
 	 */
 	public static Map<String, Boolean> getSheetsEmptinessInfo(Workbook workBook) {
-		HashMap<String, Boolean> isSheetEmptyMap = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> isSheetEmptyMap = new HashMap<>();
 		for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
 			Sheet s = workBook.getSheetAt(i);
 			isSheetEmptyMap.put(s.getSheetName(), s.getLastRowNum() < 1);
@@ -87,10 +85,8 @@ public final class CapraOfficeUtils {
 	 * Gets the sheet with the provided sheetName from inside the provided Excel
 	 * Workbook.
 	 * 
-	 * @param workBook
-	 *            an Excel Workbook object
-	 * @param sheetName
-	 *            the name of the sheet
+	 * @param workBook  an Excel Workbook object
+	 * @param sheetName the name of the sheet
 	 * @return the sheet with the provided sheetName from the provided workBook
 	 * @throws NullPointerException
 	 */
@@ -122,8 +118,7 @@ public final class CapraOfficeUtils {
 	/**
 	 * Gets the Excel Workbook from the provided Excel file.
 	 * 
-	 * @param excelFile
-	 *            a MS Excel file.
+	 * @param excelFile a MS Excel file.
 	 * @return an Excel Workbook object
 	 * @throws OldExcelFormatException
 	 * @throws IOException
@@ -137,16 +132,15 @@ public final class CapraOfficeUtils {
 		} else {
 			workBook = new HSSFWorkbook(new FileInputStream(excelFile));
 		}
-	
+
 		return workBook;
 	}
 
 	/**
-	 * Gets a list of paragraph objects that are contained in the provided MS
-	 * Word file.
+	 * Gets a list of paragraph objects that are contained in the provided MS Word
+	 * file.
 	 * 
-	 * @param wordFile
-	 *            a MS Word file
+	 * @param wordFile a MS Word file
 	 * @return a list of XWPFParagraph objects that describe the paragraphs
 	 *         contained by the provided MS Word file.
 	 * @throws SchemaTypeLoaderException
@@ -161,14 +155,16 @@ public final class CapraOfficeUtils {
 	/**
 	 * Creates a DOM document from the provided xml String.
 	 * 
-	 * @param xml
-	 *            a valid XML String
+	 * @param xml a valid XML String
 	 * @return DOM document that describes the XML String
-	 * @throws ParserConfigurationException if a DocumentBuilder cannot be created which satisfies the configuration requested.
-	 * @throws IOException if any IO errors occur.
-	 * @throws SAXException if any parse error occurs
+	 * @throws ParserConfigurationException if a DocumentBuilder cannot be created
+	 *                                      which satisfies the configuration
+	 *                                      requested.
+	 * @throws IOException                  if any IO errors occur.
+	 * @throws SAXException                 if any parse error occurs
 	 */
-	public static Document createDOMDocument(String xml) throws ParserConfigurationException, SAXException, IOException {
+	public static Document createDOMDocument(String xml)
+			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		InputSource is = new InputSource(new StringReader(xml));

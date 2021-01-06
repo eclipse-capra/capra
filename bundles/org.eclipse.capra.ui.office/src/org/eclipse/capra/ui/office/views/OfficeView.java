@@ -118,7 +118,7 @@ public class OfficeView extends ViewPart {
 	/**
 	 * The collection that contains the Excel/Word contents.
 	 */
-	private List<CapraOfficeObject> selection = new ArrayList<CapraOfficeObject>();
+	private List<CapraOfficeObject> selection = new ArrayList<>();
 
 	/**
 	 * The names (String) of all the sheets, contained in the selected workbook and
@@ -154,10 +154,12 @@ public class OfficeView extends ViewPart {
 	class ViewContentProvider implements IStructuredContentProvider {
 		@Override
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			// We do not need to react to this event.
 		}
 
 		@Override
 		public void dispose() {
+			// Nothing to dispose here.
 		}
 
 		@Override
@@ -180,7 +182,7 @@ public class OfficeView extends ViewPart {
 				text = text.substring(0, textLength) + "...";
 			}
 			return text;
-		};
+		}
 
 		@Override
 		public String getColumnText(Object obj, int index) {
@@ -212,7 +214,7 @@ public class OfficeView extends ViewPart {
 			try {
 				if (data instanceof String[]) {
 					File file = new File(((String[]) data)[0]);
-					if (file != null && file.exists()) {
+					if (file.exists()) {
 						parseGenericFile(file);
 					}
 				}
@@ -235,19 +237,19 @@ public class OfficeView extends ViewPart {
 	 */
 	private static class SelectionDragAdapter extends ViewerDragAdapter {
 
-		private TableViewer viewer;
+		private TableViewer tableViewer;
 
 		public SelectionDragAdapter(TableViewer viewer) {
 			super(viewer);
-			this.viewer = viewer;
+			this.tableViewer = viewer;
 		}
 
 		@Override
 		public void dragSetData(DragSourceEvent event) {
 
 			if (OfficeTransferType.getInstance().isSupportedType(event.dataType)) {
-				TableItem[] items = viewer.getTable().getSelection();
-				ArrayList<CapraOfficeObject> officeObjects = new ArrayList<CapraOfficeObject>();
+				TableItem[] items = tableViewer.getTable().getSelection();
+				ArrayList<CapraOfficeObject> officeObjects = new ArrayList<>();
 
 				for (int i = 0; i < items.length; i++) {
 					officeObjects.add((CapraOfficeObject) items[i].getData());
@@ -415,11 +417,7 @@ public class OfficeView extends ViewPart {
 		List<XWPFParagraph> paragraphs;
 		try {
 			paragraphs = CapraOfficeUtils.getWordParagraphs(officeFile);
-		} catch (IOException e) {
-			LOG.debug("Could not read Word file.", e);
-			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
-			return;
-		} catch (SchemaTypeLoaderException e) {
+		} catch (IOException | SchemaTypeLoaderException e) {
 			LOG.debug("Could not read Word file.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 			return;
@@ -513,13 +511,12 @@ public class OfficeView extends ViewPart {
 	 * of type xlsx, xls or docx).
 	 */
 	public void openFile() {
-
-		FileDialog fd = new FileDialog(viewer.getControl().getShell(), SWT.OK);
+		FileDialog fd = new FileDialog(this.getSite().getShell(), SWT.OK);
 		String filePath = fd.open();
 
 		if (filePath != null && !filePath.isEmpty()) {
 			File file = new File(filePath);
-			if (file != null && file.exists()) {
+			if (file.exists()) {
 				try {
 					parseGenericFile(file);
 				} catch (CapraOfficeFileNotSupportedException e) {
@@ -536,9 +533,7 @@ public class OfficeView extends ViewPart {
 	 * @param sheetName the name of the sheet to be displayed in the Office view.
 	 */
 	public void displaySheet(String sheetName) {
-		if (selection.isEmpty()) {
-			return;
-		} else if (selection.get(0) instanceof CapraExcelRow) {
+		if (!selection.isEmpty() && selection.get(0) instanceof CapraExcelRow) {
 			parseExcelDocument(selectedFile, selectedFileId, sheetName);
 		}
 	}
@@ -553,7 +548,7 @@ public class OfficeView extends ViewPart {
 	public Map<String, Boolean> getIsSheetEmptyMap() {
 
 		// isSheetEmptyMap is used by the SelectSheetDynamicMenu class.
-		if (isSheetEmptyMap == null && selection.size() > 0) {
+		if (isSheetEmptyMap == null && !selection.isEmpty()) {
 			try {
 				isSheetEmptyMap = CapraOfficeUtils.getSheetsEmptinessInfo(
 						CapraOfficeUtils.getExcelWorkbook(((CapraExcelRow) (selection.get(0))).getFile()));
@@ -613,6 +608,7 @@ public class OfficeView extends ViewPart {
 		menuMgr.addMenuListener(new IMenuListener() {
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
+				// Nothing to do for us here.
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -688,9 +684,9 @@ public class OfficeView extends ViewPart {
 							Desktop.getDesktop().browse(new URI(url));
 							HyperlinkDialog.this.okPressed();
 						} catch (IOException e1) {
-							LOG.info("No default browser found.", e);
+							LOG.info("No default browser found.", e1);
 						} catch (URISyntaxException e1) {
-							LOG.info("Provided malformed URI.", e);
+							LOG.info("Provided malformed URI.", e1);
 						}
 					}
 				});

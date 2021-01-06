@@ -39,9 +39,8 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
 				this.getDisplayName(officeObject), officeObject.getUri());
-		return wrapper;
 	}
 
 	@Override
@@ -69,7 +68,7 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 
 	@Override
 	public String generateMarkerMessage(org.eclipse.core.resources.IResourceDelta delta, String wrapperUri) {
-		// TODO Auto-generated method stub
+		// We do not generate markers for Office documents.
 		return null;
 	}
 
