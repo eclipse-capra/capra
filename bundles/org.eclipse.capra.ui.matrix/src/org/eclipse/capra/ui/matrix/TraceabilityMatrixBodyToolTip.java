@@ -27,7 +27,6 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 
 /**
@@ -96,9 +95,4 @@ public class TraceabilityMatrixBodyToolTip extends NatTableContentTooltip {
 		return null;
 	}
 
-	@Override
-	protected Composite createToolTipContentArea(Event event, Composite parent) {
-		// This is where you could get really creative with your tooltips...
-		return super.createToolTipContentArea(event, parent);
-	}
 }
