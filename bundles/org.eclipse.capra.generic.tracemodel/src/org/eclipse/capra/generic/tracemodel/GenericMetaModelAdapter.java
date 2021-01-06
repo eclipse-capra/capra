@@ -28,15 +28,11 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides generic functionality to deal with traceability meta models.
  */
 public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
-
-	private static final Logger LOG = LoggerFactory.getLogger(GenericMetaModelAdapter.class);
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
 
@@ -64,7 +60,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		EObject trace = TracemodelFactory.eINSTANCE.create(traceType);
 		RelatedTo relatedToTrace = (RelatedTo) trace;
 		relatedToTrace.getItem().addAll(selection);
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
@@ -74,7 +70,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		StringBuilder name = new StringBuilder();
 		for (Object obj : selection) {
 			name.append(" ")
-					.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj)).get()
+					.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj)).orElseThrow()
 							.withCastedHandler(artifactHelper.unwrapWrapper(obj), (h, e) -> h.getDisplayName(e))
 							.orElseGet(obj::toString));
 		}
@@ -86,18 +82,16 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
 		GenericTraceModel root = (GenericTraceModel) traceModel;
-		List<RelatedTo> relevantLinks = new ArrayList<RelatedTo>();
+		List<RelatedTo> relevantLinks = new ArrayList<>();
 		List<RelatedTo> allTraces = root.getTraces();
 
 		for (RelatedTo trace : allTraces) {
-			if (!firstElement.equals(secondElement)) {
-				if (EMFHelper.isElementInList(trace.getItem(), firstElement)
-						&& EMFHelper.isElementInList(trace.getItem(), secondElement)) {
-					relevantLinks.add(trace);
-				}
+			if (!firstElement.equals(secondElement) && EMFHelper.isElementInList(trace.getItem(), firstElement)
+					&& EMFHelper.isElementInList(trace.getItem(), secondElement)) {
+				relevantLinks.add(trace);
 			}
 		}
-		return relevantLinks.size() > 0;
+		return !relevantLinks.isEmpty();
 	}
 
 	@Override
@@ -128,7 +122,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<Connection> connections = new ArrayList<>();
 		List<RelatedTo> traces = root.getTraces();
 
-		if (selectedRelationshipTypes.size() == 0
+		if (selectedRelationshipTypes.isEmpty()
 				|| selectedRelationshipTypes.contains(TracemodelPackage.eINSTANCE.getRelatedTo().getName())) {
 			if (element instanceof RelatedTo) {
 				RelatedTo trace = (RelatedTo) element;
@@ -205,7 +199,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				tModel.getTraces().remove(trace);
 			}
 
-			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+					.orElseThrow();
 			persistenceAdapter.saveTracesAndArtifacts(tModel,
 					persistenceAdapter.getArtifactWrappers(new ResourceSetImpl()));
 		}
