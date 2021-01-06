@@ -31,7 +31,7 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
  */
 public class TraceabilityMatrixRowHeaderDataProvider implements IDataProvider {
 
-	private List<String> labels = new ArrayList<>();;
+	private List<String> labels = new ArrayList<>();
 
 	/**
 	 * Creates a new data provider for row headers in a traceability matrix. The
