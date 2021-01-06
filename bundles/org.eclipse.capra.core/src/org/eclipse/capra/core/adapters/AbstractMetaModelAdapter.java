@@ -55,20 +55,17 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 	/**
 	 * Used to get internal links connected to a selected element.
 	 * 
-	 * @param element
-	 *            the selected element
-	 * @param traceModel
-	 *            the current trace model
-	 * @param selectedRelationshipTypes
-	 *            the selected relationship types from the filter, if the user
-	 *            has selected any
-	 * @param maximumDepth
-	 *            The maximum depth the transitivity should go. 0 means show all
-	 *            the links
-	 * @param existingTraces
-	 *            The trace links that have been created manually by the user,
-	 *            these are obtained from the trace model
+	 * @param element                   the selected element
+	 * @param traceModel                the current trace model
+	 * @param selectedRelationshipTypes the selected relationship types from the
+	 *                                  filter, if the user has selected any
+	 * @param maximumDepth              The maximum depth the transitivity should
+	 *                                  go. 0 means show all the links
+	 * @param existingTraces            The trace links that have been created
+	 *                                  manually by the user, these are obtained
+	 *                                  from the trace model
 	 */
+	@Override
 	public List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, int maximumDepth, List<Connection> existingTraces) {
 		List<Object> accumulator = new ArrayList<>();
@@ -100,7 +97,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		}
 
 		ResourceSet resourceSet = new ResourceSetImpl();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		for (Connection conn : directElements) {
@@ -113,23 +110,23 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 			}
 			// get internal links from source
 			Object origin = artifactHelper.unwrapWrapper(conn.getOrigin());
-			IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).get();
+			IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).orElseThrow();
 			if (originHandler != null) {
 				allElements.addAll(originHandler.addInternalLinks(conn.getOrigin(), selectedRelationshipTypes));
 			}
 			// get internal links from targets
 			for (EObject o : conn.getTargets()) {
 				Object originalObject = artifactHelper.unwrapWrapper(o);
-				IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
+				IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
 				if (handler != null) {
 					allElements.addAll(handler.addInternalLinks(o, selectedRelationshipTypes));
 				}
 			}
 		}
 		// show internal links even when no Capra links are present
-		if (directElements.size() == 0) {
+		if (directElements.isEmpty()) {
 			Object originalObject = artifactHelper.unwrapWrapper(element);
-			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).get();
+			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
 			if (handler != null) {
 				allElements.addAll(handler.addInternalLinks(element, selectedRelationshipTypes));
 			}
@@ -138,7 +135,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 
 		if (element.getClass().getPackage().toString().contains("org.eclipse.eatop")) {
 			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(element)
-					.orElse(null);
+					.orElseThrow();
 			allElements.addAll(handler.addInternalLinks(element, selectedRelationshipTypes));
 		}
 		return allElements;
@@ -148,11 +145,11 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
 
 		ResourceSet resourceSet = new ResourceSetImpl();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		IArtifactHandler<?> handlerFirstElement = artifactHelper.getHandler(first).orElse(null);
-		IArtifactHandler<?> handlerSecondElement = artifactHelper.getHandler(second).orElse(null);
+		IArtifactHandler<?> handlerFirstElement = artifactHelper.getHandler(first).orElseThrow();
+		IArtifactHandler<?> handlerSecondElement = artifactHelper.getHandler(second).orElseThrow();
 
 		return handlerFirstElement.isThereAnInternalTraceBetween(first, second)
 				|| handlerSecondElement.isThereAnInternalTraceBetween(first, second);

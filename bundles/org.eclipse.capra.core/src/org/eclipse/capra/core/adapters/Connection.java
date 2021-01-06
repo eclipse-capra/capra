@@ -75,11 +75,22 @@ public class Connection {
 			return false;
 		}
 
-		List<String> firstElementsIds = allFirstElements.stream().map(e -> EMFHelper.getIdentifier(e))
+		List<String> firstElementsIds = allFirstElements.stream().map(EMFHelper::getIdentifier)
 				.collect(Collectors.toList());
-		List<String> secondElementsIds = allSecondElements.stream().map(e -> EMFHelper.getIdentifier(e))
+		List<String> secondElementsIds = allSecondElements.stream().map(EMFHelper::getIdentifier)
 				.collect(Collectors.toList());
 		return firstElementsIds.containsAll(secondElementsIds);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((origin == null) ? 0 : EMFHelper.getIdentifier(origin).hashCode());
+		result = prime * result
+				+ ((targets == null) ? 0 : targets.stream().mapToInt(e -> EMFHelper.getIdentifier(e).hashCode()).sum());
+		result = prime * result + ((tlink == null) ? 0 : tlink.hashCode());
+		return result;
 	}
 
 }
