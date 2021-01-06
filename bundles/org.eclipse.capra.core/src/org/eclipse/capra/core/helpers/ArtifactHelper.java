@@ -92,10 +92,10 @@ public class ArtifactHelper {
 	 * @param wrapper to be unwrapped
 	 * @return the original artifact
 	 */
-	public <T> Object unwrapWrapper(Object wrapper) {
+	public Object unwrapWrapper(Object wrapper) {
 		if (wrapper instanceof EObject) {
 			ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
-					.getArtifactWrapperMetaModelAdapter().get();
+					.getArtifactWrapperMetaModelAdapter().orElseThrow();
 			IArtifactHandler<?> handler = artifactMetaModelAdapter.getArtifactHandlerInstance((EObject) wrapper);
 			if (handler != null && handler.resolveWrapper((EObject) wrapper) != null) {
 				return handler.resolveWrapper((EObject) wrapper);
@@ -114,7 +114,7 @@ public class ArtifactHelper {
 	 * @return an {@link Optional} containing either an artifact handler or
 	 *         {@link Optional#empty()}
 	 */
-	public <T> Optional<IArtifactHandler<?>> getHandler(Object artifact) {
+	public <T> Optional<IArtifactHandler<?>> getHandler(T artifact) {
 		List<IArtifactHandler<?>> availableHandlers = handlers.stream().filter(h -> h.canHandleArtifact(artifact))
 				.collect(toList());
 		if (availableHandlers.isEmpty()) {
@@ -142,7 +142,7 @@ public class ArtifactHelper {
 		Object originalObject = this.unwrapWrapper(object);
 
 		if (originalObject != null) {
-			IArtifactHandler<?> handler = this.getHandler(originalObject).get();
+			IArtifactHandler<?> handler = this.getHandler(originalObject).orElseThrow();
 			artifactLabel = handler.withCastedHandler(originalObject, (h, o) -> h.getDisplayName(o))
 					.orElseThrow(IllegalArgumentException::new);
 		} else { // original object cannot be resolved
@@ -177,7 +177,7 @@ public class ArtifactHelper {
 	 */
 	public String getArtifactLocation(EObject object) {
 		String artifactLink = null;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 		artifactLink = adapter.getArtifactUri(object);
 		if (artifactLink == null) {

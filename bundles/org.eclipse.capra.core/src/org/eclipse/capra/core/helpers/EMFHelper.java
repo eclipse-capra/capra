@@ -133,12 +133,10 @@ public class EMFHelper {
 		String stringName = null;
 		for (EAttribute feature : attributes) {
 			Object obj = eObject.eGet(feature);
-			if (obj == null)
-				continue;
 			if (obj instanceof String) {
 				stringName = (String) obj;
 				break;
-			} else {
+			} else if (obj != null) {
 				nonStringName = obj.toString();
 			}
 		}
@@ -163,11 +161,11 @@ public class EMFHelper {
 	 *         {@link EObject}
 	 */
 	public static List<EObject> linearize(Object object) {
-		ArrayList<EObject> elementList = new ArrayList<EObject>();
+		ArrayList<EObject> elementList = new ArrayList<>();
 		if (object instanceof EObject) {
 			EObject root = (EObject) object;
 			elementList.add(root);
-			root.eAllContents().forEachRemaining(element -> elementList.add(element));
+			root.eAllContents().forEachRemaining(elementList::add);
 		}
 		return elementList;
 	}

@@ -36,8 +36,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 public class TraceHelper {
 
 	private EObject traceModel;
-	private TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-	private ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	private TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+	private ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
+			.orElseThrow();
 
 	/**
 	 * @param traceModel
@@ -82,16 +83,14 @@ public class TraceHelper {
 					// Get unique connected artifacts, not including this
 					// element
 					// TODO: maybe add an adapter method for this?
-					Set<EObject> connectedElements = new HashSet<EObject>();
+					Set<EObject> connectedElements = new HashSet<>();
 					final StringBuilder annotation = new StringBuilder();
 					List<Connection> connections = traceAdapter.getConnectedElements(wrapper, traceModel);
-					connections.forEach(c -> {
-						c.getTargets().forEach(t -> {
-							if (t != wrapper) {
-								connectedElements.add(t);
-							}
-						});
-					});
+					connections.forEach(c -> c.getTargets().forEach(t -> {
+						if (t != wrapper) {
+							connectedElements.add(t);
+						}
+					}));
 
 					// Build annotation string
 					connectedElements.forEach(e -> {
@@ -152,7 +151,6 @@ public class TraceHelper {
 	 * @return a list of trace links that fit the criteria
 	 */
 	public List<Connection> getTraces(List<EObject> selection, EClass traceType) {
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		// create a connection
 		List<EObject> allElements = new ArrayList<>(selection);
 		EObject source = allElements.get(0);
@@ -160,7 +158,7 @@ public class TraceHelper {
 		List<EObject> targets = allElements;
 
 		// create temporary trace model with a temporary trace link
-		EObject tempTraceModel = ExtensionPointHelper.getTracePersistenceAdapter().get()
+		EObject tempTraceModel = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow()
 				.getTraceModel(new ResourceSetImpl());
 		EObject tempTlink = traceAdapter.createTrace(traceType, tempTraceModel, selection);
 
@@ -179,7 +177,7 @@ public class TraceHelper {
 	 */
 
 	public boolean isArtifactInTraceModel(EObject artifact) {
-		List<EObject> artifacts = new ArrayList<EObject>();
+		List<EObject> artifacts = new ArrayList<>();
 		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
 		for (Connection c : connections) {
 			artifacts.addAll(getTracedElements(c));
@@ -201,8 +199,8 @@ public class TraceHelper {
 
 	public List<Connection> getTraces(List<EObject> artifacts) {
 		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
-		List<Connection> possibleConnections = new ArrayList<Connection>();
-		List<Connection> relevantConnections = new ArrayList<Connection>();
+		List<Connection> possibleConnections = new ArrayList<>();
+		List<Connection> relevantConnections = new ArrayList<>();
 		// check if the list of artifact is not null or empty before doing anything
 		if (artifacts != null && !artifacts.isEmpty()) {
 			for (Connection c : connections) {
