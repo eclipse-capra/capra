@@ -31,7 +31,7 @@ public class DefaultPriorityHandler implements PriorityHandler {
 	public <T> IArtifactHandler<? extends T> getSelectedHandler(
 			Collection<? extends IArtifactHandler<? extends T>> handlers, Object artifact) {
 		return handlers.stream().filter(handler -> handler.canHandleArtifact(artifact))
-				.max(new ArtifactHandlerPriorityComparator()).get();
+				.max(new ArtifactHandlerPriorityComparator()).orElseThrow();
 	}
 
 	/**

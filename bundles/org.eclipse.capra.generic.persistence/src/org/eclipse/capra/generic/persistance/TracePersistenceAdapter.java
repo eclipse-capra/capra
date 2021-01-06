@@ -29,6 +29,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This generic implementation of
@@ -37,6 +39,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * artifact model.
  */
 public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.TracePersistenceAdapter {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TracePersistenceAdapter.class);
 
 	private static final String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
 	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
@@ -51,7 +55,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 
 				return Optional.of(resource.getContents().get(0));
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.error("Could not load model", e);
 			}
 		}
 		return Optional.empty();
@@ -59,7 +63,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 
 	@Override
 	public EObject getTraceModel(ResourceSet resourceSet) {
-		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
 	}
 
@@ -99,14 +103,13 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 			resourceForArtifacts.save(null);
 			resource.save(null);
 		} catch (Exception e) {
-			System.err.println("Unable to save trace model!");
-			e.printStackTrace();
+			LOG.error("Unable to save trace model!", e);
 		}
 	}
 
 	@Override
 	public EObject getArtifactWrappers(ResourceSet resourceSet) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
 	}
 
