@@ -42,7 +42,7 @@ import org.eclipse.ui.IMarkerResolution;
  */
 public class RenameOrMoveQuickFix implements IMarkerResolution {
 
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 	private String label;
 
@@ -58,10 +58,11 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 	@Override
 	public void run(IMarker marker) {
 		ResourceSet resourceSet = new ResourceSetImpl();
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 
 		String artifactContainerFileName = artifactModel.eResource().getURI().lastSegment();
@@ -105,9 +106,7 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		try {
 			resource.save(null);
 			marker.delete();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
+		} catch (IOException | CoreException e) {
 			e.printStackTrace();
 		}
 	}
