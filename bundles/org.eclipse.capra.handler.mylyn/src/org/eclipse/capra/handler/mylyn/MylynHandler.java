@@ -37,25 +37,24 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 
 	@Override
 	public EObject createWrapper(ITask task, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(),
-				task.getSummary(), task.getUrl());
-		return wrapper;
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(), task.getSummary(),
+				task.getUrl());
 	}
 
 	@Override
 	public ITask resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		TaskList taskList = (TaskList) TasksUiInternal.getTaskList();
 		Collection<AbstractTask> allTasks = taskList.getAllTasks();
-		Optional<AbstractTask> task = allTasks.stream()
-				.filter(t -> t.getUrl().equals(adapter.getArtifactUri(wrapper)))
+		Optional<AbstractTask> task = allTasks.stream().filter(t -> t.getUrl().equals(adapter.getArtifactUri(wrapper)))
 				.findFirst();
 		if (task.isPresent()) {
 			return task.get();
-		} else
-		return null;
+		} else {
+			return null;
+		}
 	}
 
 	@Override

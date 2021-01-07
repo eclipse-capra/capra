@@ -34,20 +34,18 @@ public class FileHandler extends AbstractArtifactHandler<IFile> {
 
 	@Override
 	public EObject createWrapper(IFile file, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri, file.getName(),
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, file.getName(),
 				file.getFullPath().toString());
-		return wrapper;
 	}
 
 	@Override
 
 	public IFile resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		String uri = adapter.getArtifactUri(wrapper);
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri));
-		return file;
+		return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri));
 	}
 
 	@Override
