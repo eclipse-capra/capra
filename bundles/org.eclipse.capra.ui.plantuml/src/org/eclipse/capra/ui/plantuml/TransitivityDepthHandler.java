@@ -23,6 +23,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Toggles between showing transitive and direct links
@@ -30,6 +32,8 @@ import org.osgi.service.prefs.Preferences;
  * @author Anthony Anjorin, Salome Maro
  */
 public class TransitivityDepthHandler extends AbstractHandler {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TransitivityDepthHandler.class);
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -46,8 +50,8 @@ public class TransitivityDepthHandler extends AbstractHandler {
 	}
 
 	/**
-	 * Gets the depth that was set by the user for transitivity returns 0 in
-	 * case no depth was set or no depth limit is wanted
+	 * Gets the depth that was set by the user for transitivity returns 0 in case no
+	 * depth was set or no depth limit is wanted
 	 * 
 	 * @return
 	 */
@@ -58,15 +62,13 @@ public class TransitivityDepthHandler extends AbstractHandler {
 
 	private static Preferences getPreference() {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.transitivityDepth");
-		Preferences transitivity = preferences.node("transitivityDepth");
-		return transitivity;
+		return preferences.node("transitivityDepth");
 	}
 
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 * 
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void setTransitivityDepth(String depth) {
 		Preferences transitivity = getPreference();
@@ -77,7 +79,7 @@ public class TransitivityDepthHandler extends AbstractHandler {
 			// forces the application to save the preferences
 			transitivity.flush();
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			LOG.warn("Could not save transitivity depth preferences!", e);
 		}
 	}
 }
