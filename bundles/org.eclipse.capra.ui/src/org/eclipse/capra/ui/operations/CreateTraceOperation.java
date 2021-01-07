@@ -71,10 +71,6 @@ public class CreateTraceOperation extends AbstractOperation {
 
 	private BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType = null;
 
-	private CreateTraceOperation(String label) {
-		super(label);
-	}
-
 	/**
 	 * Creates a new operation to create links.
 	 * 
@@ -130,8 +126,8 @@ public class CreateTraceOperation extends AbstractOperation {
 	 */
 	public void createTrace(Shell shell,
 			BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// add trace model to resource set
@@ -203,10 +199,10 @@ public class CreateTraceOperation extends AbstractOperation {
 	}
 
 	private String getSelectionDisplayName(EObject element) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-		IArtifactHandler<?> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(element)).get();
+		IArtifactHandler<?> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(element)).orElseThrow();
 
 		return handler.withCastedHandler(artifactHelper.unwrapWrapper(element), (h, o) -> h.getDisplayName(o))
 				.orElse(EMFHelper.getIdentifier(element));

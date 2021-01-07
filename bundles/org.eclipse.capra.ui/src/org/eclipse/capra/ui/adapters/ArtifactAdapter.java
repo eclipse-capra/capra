@@ -58,7 +58,7 @@ public class ArtifactAdapter implements IPropertySource {
 	public ArtifactAdapter(EObject theItem) {
 		this.artifact = theItem;
 
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		ResourceSet resourceSet = new ResourceSetImpl();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		artifactHelper = new ArtifactHelper(artifactModel);

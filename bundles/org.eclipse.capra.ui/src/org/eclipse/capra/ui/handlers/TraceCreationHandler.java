@@ -39,9 +39,8 @@ public class TraceCreationHandler extends AbstractHandler {
 				SelectionView.getOpenedView().getSelection());
 		createTraceOperation.addContext(undoContext);
 		if (SelectionView.getOpenedView().getSelectedTraceType() != null) {
-			createTraceOperation.setChooseTraceType((a, b) -> {
-				return Optional.of(SelectionView.getOpenedView().getSelectedTraceType());
-			});
+			createTraceOperation
+					.setChooseTraceType((a, b) -> Optional.of(SelectionView.getOpenedView().getSelectedTraceType()));
 		}
 		operationHistory.execute(createTraceOperation, null, adapter);
 		return null;

@@ -28,8 +28,6 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 	public static final String SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL = "Show confirmation after a trace link has been created";
 	private static final String PREFERENCE_PAGE_DESCRIPTION = "Eclipse Capra UI Preferences";
 
-	private BooleanFieldEditor booleanEditor;
-
 	@Override
 	public void init(IWorkbench workbench) {
 		setDescription(PREFERENCE_PAGE_DESCRIPTION);
@@ -38,7 +36,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 
 	@Override
 	protected void createFieldEditors() {
-		booleanEditor = new BooleanFieldEditor(SHOW_TRACE_CREATED_CONFIRMATION_DIALOG,
+		BooleanFieldEditor booleanEditor = new BooleanFieldEditor(SHOW_TRACE_CREATED_CONFIRMATION_DIALOG,
 				SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL, getFieldEditorParent());
 		addField(booleanEditor);
 	}

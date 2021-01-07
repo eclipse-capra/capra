@@ -40,7 +40,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class ConnectionAdapter implements IPropertySource {
 
-	private static enum DescriptorIDs {
+	private enum DescriptorIDs {
 		ORIGIN, TARGETS, TYPE
 	}
 
@@ -58,7 +58,7 @@ public class ConnectionAdapter implements IPropertySource {
 	public ConnectionAdapter(Connection theItem) {
 		this.connection = theItem;
 
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		ResourceSet resourceSet = new ResourceSetImpl();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		artifactHelper = new ArtifactHelper(artifactModel);
@@ -97,8 +97,7 @@ public class ConnectionAdapter implements IPropertySource {
 		if (id.equals(DescriptorIDs.ORIGIN)) {
 			return artifactHelper.getArtifactLabel(connection.getOrigin());
 		} else if (id.equals(DescriptorIDs.TARGETS)) {
-			return connection.getTargets().stream().map(t -> artifactHelper.getArtifactLabel(t))
-					.collect(Collectors.toList());
+			return connection.getTargets().stream().map(artifactHelper::getArtifactLabel).collect(Collectors.toList());
 		} else if (id.equals(DescriptorIDs.TYPE)) {
 			return connection.getTlink().eClass().getName();
 		} else {

@@ -38,11 +38,10 @@ import org.eclipse.ui.views.properties.PropertySheet;
  */
 public class SelectionSupportHelper {
 
-	private static final List<ISelectionSupport> SELECTION_SUPPORTS = new ArrayList<ISelectionSupport>();
+	private static final List<ISelectionSupport> SELECTION_SUPPORTS = new ArrayList<>();
 
 	static {
-		for (Object extension : ExtensionPointHelper.getExtensions("org.eclipse.capra.ui.selectionSupport",
-				"class")) {
+		for (Object extension : ExtensionPointHelper.getExtensions("org.eclipse.capra.ui.selectionSupport", "class")) {
 			SELECTION_SUPPORTS.add((ISelectionSupport) extension);
 		}
 	}
@@ -53,8 +52,7 @@ public class SelectionSupportHelper {
 	/**
 	 * Extract selected elements from an {@link ExecutionEvent}.
 	 * 
-	 * @param event
-	 *            This is the click event to create a trace
+	 * @param event This is the click event to create a trace
 	 * @return A list of all the selected elements
 	 */
 	public static List<Object> extractSelectedElements(final ExecutionEvent event) {
@@ -76,17 +74,15 @@ public class SelectionSupportHelper {
 	/**
 	 * Extract selected elements from an {@link ISelection} by delegating the
 	 * retrieval and unwrapping of the selection to the registered
-	 * {@link ISelectionSupport} instances. If this fails, the selected
-	 * elements of type {@link IAdaptable} are retrieved using
-	 * {@link IAdaptable#getAdapter(Class)}. If this fails, too, the list is
-	 * either empty or only contains those elements that are instances of type
+	 * {@link ISelectionSupport} instances. If this fails, the selected elements of
+	 * type {@link IAdaptable} are retrieved using
+	 * {@link IAdaptable#getAdapter(Class)}. If this fails, too, the list is either
+	 * empty or only contains those elements that are instances of type
 	 * {@code IAdaptable}.
 	 * 
-	 * @param selection
-	 *            the selection from the workbench part
-	 * @param workbenchPart
-	 *            the workbench part from which the selection should be
-	 *            extracted
+	 * @param selection     the selection from the workbench part
+	 * @param workbenchPart the workbench part from which the selection should be
+	 *                      extracted
 	 * @return a list of all selected elements retrieved using the first
 	 *         {@code IWorkbenchSelectionSupport} instance registered for the
 	 *         {@code WorkbenchPart} or all selected elements of type
@@ -135,11 +131,10 @@ public class SelectionSupportHelper {
 	 * {@code WorkbenchPart} handles EMF models. If this is not the case, this
 	 * method returns {@code null}.
 	 * 
-	 * @param part
-	 *            the {@code WorkbenchPart} whose {@code ResourceSet} should be
-	 *            retrieved
-	 * @return the {@code ResourceSet} used by {@code part} or {@code null} if
-	 *         no {@code ResourceSet} can be found
+	 * @param part the {@code WorkbenchPart} whose {@code ResourceSet} should be
+	 *             retrieved
+	 * @return the {@code ResourceSet} used by {@code part} or {@code null} if no
+	 *         {@code ResourceSet} can be found
 	 */
 	public static ResourceSet getResourceSet(final IWorkbenchPart part) {
 		ResourceSet resourceSet = null;
