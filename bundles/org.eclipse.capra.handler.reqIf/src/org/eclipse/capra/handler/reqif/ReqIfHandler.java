@@ -78,8 +78,7 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 			SpecHierarchy spec = (SpecHierarchy) investigatedElement;
 
 			// get all relationships in the model
-			EList<SpecRelation> specRelations = ReqIF10Util.getReqIF(spec).getCoreContent()
-					.getSpecRelations();
+			EList<SpecRelation> specRelations = ReqIF10Util.getReqIF(spec).getCoreContent().getSpecRelations();
 			List<Specification> specifications = ReqIF10Util.getReqIF(spec).getCoreContent().getSpecifications();
 
 			// get relationships containing the investigated element
@@ -90,7 +89,7 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 
 			// get all specHierachy objects contained in the relevant links as
 			// targets
-			for(SpecRelation r: relevantRelations) {
+			for (SpecRelation r : relevantRelations) {
 				List<EObject> targets = new ArrayList<>();
 				for (Specification specification : specifications) {
 					for (EObject object : EMFHelper.linearize(specification)) {
@@ -100,14 +99,15 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 									|| spechierachy.getObject().getIdentifier().equals(r.getSource().getIdentifier())) {
 								targets.add(spechierachy);
 							}
+						}
 					}
-				}
-				connections.add(new Connection(investigatedElement, targets, r));
+					connections.add(new Connection(investigatedElement, targets, r));
 				}
 			}
 			return connections;
-		} else
-		return Collections.emptyList();
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	@Override

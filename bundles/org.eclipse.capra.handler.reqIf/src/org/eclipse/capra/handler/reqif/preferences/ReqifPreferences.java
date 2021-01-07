@@ -18,6 +18,11 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class ReqifPreferences {
+
+	private ReqifPreferences() {
+		// Private constructor to hide implicit public one.
+	}
+
 	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
 	public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.reqif";
 

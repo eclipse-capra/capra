@@ -38,14 +38,14 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 	public EObject createWrapper(CapraOfficeObject officeObject, EObject artifactModel) {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
 				this.getDisplayName(officeObject), officeObject.getUri());
 	}
 
 	@Override
 	public CapraOfficeObject resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		String uri = adapter.getArtifactUri(wrapper);
 		CapraOfficeObject object = new CapraOfficeObject();
 		object.setUri(uri);
