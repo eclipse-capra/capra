@@ -67,25 +67,23 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 		} else {
 			// Case for members: A list of '/' separated type names, followed by
 			// a member name
-			fragment = type.getFullyQualifiedName().replaceAll("\\$", "/") + "/" + element.getElementName();
+			fragment = type.getFullyQualifiedName().replace("\\$", "/") + "/" + element.getElementName();
 		}
 
 		URIBuilder uriBuilder = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
 				.setFragment(fragment);
 
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 		String displayName = (type == null ? "" : (type.getElementName() + ".")) + element.getElementName();
 
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uriBuilder.toString(),
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uriBuilder.toString(),
 				element.getHandleIdentifier(), displayName, element.getPath().toString());
-
-		return wrapper;
 	}
 
 	@Override
 	public IJavaElement resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return JavaCore.create(adapter.getArtifactIdentifier(wrapper));
 	}
 
@@ -147,11 +145,10 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 					String previousState = new BufferedReader(new InputStreamReader(fs.getContents())).lines()
 							.collect(Collectors.joining("\n"));
 
-					if (linkedElement instanceof ISourceReference) {
-						if (!previousState.contains(((ISourceReference) jElement).getSource())) {
-							message = linkedElement.getHandleIdentifier()
-									+ " has been edited. Please check if associated trace links are still valid.";
-						}
+					if ((linkedElement instanceof ISourceReference)
+							&& (!previousState.contains(((ISourceReference) jElement).getSource()))) {
+						message = linkedElement.getHandleIdentifier()
+								+ " has been edited. Please check if associated trace links are still valid.";
 					}
 				} catch (CoreException e) {
 					e.printStackTrace();

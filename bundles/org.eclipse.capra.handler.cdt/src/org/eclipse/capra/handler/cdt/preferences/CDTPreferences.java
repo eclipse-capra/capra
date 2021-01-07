@@ -19,8 +19,12 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class CDTPreferences {
 
-    public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
-    public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.cdt";
+	private CDTPreferences() {
+		// Private constructor to hide implicit public one.
+	}
+
+	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
+	public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.cdt";
 
 	// Should annotate C source code?
 	public static final String ANNOTATE_CDT = "ANNOTATE_CDT";
@@ -34,8 +38,8 @@ public class CDTPreferences {
 	public static final String ANNOTATE_CDT_TAG_PREFIX = "ANNOTATE_CDT_TAG_PREFIX";
 	public static final String ANNOTATE_CDT_TAG_PREFIX_DEFAULT = "@";
 
-    public static IEclipsePreferences getPreferences() {
-        return SCOPE_CONTEXT.getNode(PREFERENCE_NODE);
-    }
+	public static IEclipsePreferences getPreferences() {
+		return SCOPE_CONTEXT.getNode(PREFERENCE_NODE);
+	}
 
 }

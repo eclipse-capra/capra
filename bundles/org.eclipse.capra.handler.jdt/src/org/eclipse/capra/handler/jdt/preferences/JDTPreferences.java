@@ -19,8 +19,12 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class JDTPreferences {
 
-    public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
-    public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.jdt";
+	private JDTPreferences() {
+		// Private constructor to hide implicit public one.
+	}
+
+	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
+	public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.jdt";
 
 	// Should annotate Java source code?
 	public static final String ANNOTATE_JDT = "ANNOTATE_JDT";
@@ -30,8 +34,8 @@ public class JDTPreferences {
 	public static final String ANNOTATE_JDT_TAG = "ANNOTATE_JDT_TAG";
 	public static final String ANNOTATE_JDT_TAG_DEFAULT = "parent";
 
-    public static IEclipsePreferences getPreferences() {
-        return SCOPE_CONTEXT.getNode(PREFERENCE_NODE);
-    }
+	public static IEclipsePreferences getPreferences() {
+		return SCOPE_CONTEXT.getNode(PREFERENCE_NODE);
+	}
 
 }

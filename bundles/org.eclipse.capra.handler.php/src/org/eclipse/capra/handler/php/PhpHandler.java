@@ -29,15 +29,14 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 
 	@Override
 	public EObject createWrapper(IModelElement artifact, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				artifact.getHandleIdentifier(), artifact.getElementName(), artifact.getPath().toString());
-		return wrapper;
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), artifact.getHandleIdentifier(),
+				artifact.getElementName(), artifact.getPath().toString());
 	}
 
 	@Override
 	public IModelElement resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		String handleIdentifier = adapter.getArtifactUri(wrapper);
 		return DLTKCore.create(handleIdentifier);
 	}

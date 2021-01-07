@@ -52,11 +52,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class PHPElementChangeListener implements IElementChangedListener {
 
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
@@ -64,7 +65,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(PhpHandler.class.getName()))
 				.collect(Collectors.toList());
 
-		if (phpArtifacts.size() == 0)
+		if (phpArtifacts.isEmpty())
 			return;
 
 		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
@@ -80,31 +81,32 @@ public class PHPElementChangeListener implements IElementChangedListener {
 	}
 
 	private void handleDelta(IModelElementDelta delta, List<EObject> phpArtifacts, IFile wrapperContainer) {
-		if (!(delta.getElement() instanceof ISourceModule))
+		if (!(delta.getElement() instanceof ISourceModule)) {
 			// Only go as far as the source file
-			for (IModelElementDelta subDelta : delta.getAffectedChildren())
-			handleDelta(subDelta, phpArtifacts, wrapperContainer);
-
+			for (IModelElementDelta subDelta : delta.getAffectedChildren()) {
+				handleDelta(subDelta, phpArtifacts, wrapperContainer);
+			}
+		}
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
 		IssueType issueType = null;
 
-		if (changeType == IModelElementDelta.ADDED)
+		if (changeType == IModelElementDelta.ADDED) {
 			issueType = IssueType.ADDED;
-		else if (changeType == IModelElementDelta.REMOVED) {
-
-			if ((flags & IModelElementDelta.F_MOVED_TO) != 0)
-				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName()))
+		} else if (changeType == IModelElementDelta.REMOVED) {
+			if ((flags & IModelElementDelta.F_MOVED_TO) != 0) {
+				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName())) {
 					issueType = IssueType.MOVED;
-				else
+				} else {
 					issueType = IssueType.RENAMED;
-			else
+				}
+			} else {
 				issueType = IssueType.DELETED;
-
-		} else if (changeType == IModelElementDelta.CHANGED && (flags & IModelElementDelta.F_PRIMARY_RESOURCE) != 0)
+			}
+		} else if (changeType == IModelElementDelta.CHANGED && (flags & IModelElementDelta.F_PRIMARY_RESOURCE) != 0) {
 			// This is only true if a source file changes.
 			issueType = IssueType.CHANGED;
-
+		}
 		if (issueType != null) {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
 			if (affectedElementUri != null) {
@@ -141,15 +143,12 @@ public class PHPElementChangeListener implements IElementChangedListener {
 	 * Generates the attributes that will later be assigned (in the createMarker
 	 * method) to a Capra change marker.
 	 *
-	 * @param aw
-	 *            ArtifactWrapper that links to the element in the delta or to a
-	 *            child of the element in the delta
-	 * @param delta
-	 *            represents changes in the state of a PHP Element
-	 * @param issue
-	 *            the type of change that occurred
-	 * @return a key value HashMap, containing the attributes to be assigned to
-	 *         a Capra change marker and their keys (IDs).
+	 * @param aw    ArtifactWrapper that links to the element in the delta or to a
+	 *              child of the element in the delta
+	 * @param delta represents changes in the state of a PHP Element
+	 * @param issue the type of change that occurred
+	 * @return a key value HashMap, containing the attributes to be assigned to a
+	 *         Capra change marker and their keys (IDs).
 	 */
 	// This works well for child elements if files are renamed or deleted.
 	// Renaming classes/methods/variables inside a class
@@ -157,7 +156,7 @@ public class PHPElementChangeListener implements IElementChangedListener {
 	// not keep track of
 	// the new name of the class. It just knows about the old name.
 	private HashMap<String, String> generateMarkerInfo(EObject aw, IModelElementDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<String, String>();
+		HashMap<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the PHP element in the wrapper
 		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);

@@ -14,9 +14,11 @@
 package org.eclipse.capra.handler.jdt;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -49,6 +51,13 @@ public class JDTAnnotate {
 	private static final String TAG_PREFIX = "@";
 	private static final String ANNOTATION_FAILED = "Annotation failed";
 
+	/**
+	 * Private constructor to hide implicit public one.
+	 */
+	private JDTAnnotate() {
+		// Deliberately do nothing.
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void annotateArtifact(IJavaElement handle, String annotation) throws AnnotationException {
 		if (handle instanceof ISourceReference) {
@@ -56,6 +65,12 @@ public class JDTAnnotate {
 				ISourceReference sourceReference = (ISourceReference) handle;
 				ISourceRange range = sourceReference.getSourceRange();
 				ICompilationUnit cu = getCompilationUnit(sourceReference);
+				if (cu == null) {
+					Status status = new Status(IStatus.INFO, Activator.PLUGIN_ID, ANNOTATION_FAILED,
+							new NoSuchElementException(
+									"Could not find compilation unit for " + sourceReference.getSource()));
+					throw new AnnotationException(status);
+				}
 				ASTParser parser = ASTParser.newParser(AST.JLS8);
 
 				String source = cu.getSource();
@@ -76,14 +91,13 @@ public class JDTAnnotate {
 
 				// Get preferred tag name
 				IEclipsePreferences preferences = JDTPreferences.getPreferences();
-				String tagName = TAG_PREFIX + preferences.get(JDTPreferences.ANNOTATE_JDT_TAG,
-						JDTPreferences.ANNOTATE_JDT_TAG_DEFAULT).trim();
+				String tagName = TAG_PREFIX + preferences
+						.get(JDTPreferences.ANNOTATE_JDT_TAG, JDTPreferences.ANNOTATE_JDT_TAG_DEFAULT).trim();
 
 				// Remove existing tags
-				((List<TagElement>)javaDoc.tags())
-					.stream()
-					.filter(t -> t.getTagName() != null && t.getTagName().equals(tagName))
-					.forEach(t -> tagsRewriter.remove(t, null));
+				((List<TagElement>) javaDoc.tags()).stream()
+						.filter(t -> t.getTagName() != null && t.getTagName().equals(tagName))
+						.forEach(t -> tagsRewriter.remove(t, null));
 
 				// Create new tag
 				TagElement tag = ast.newTagElement();
@@ -103,11 +117,8 @@ public class JDTAnnotate {
 				cu.save(null, false);
 			} catch (JavaModelException e) {
 				throw new AnnotationException(e.getStatus());
-			} catch (MalformedTreeException e) {
-				Status status = new Status(Status.INFO, Activator.PLUGIN_ID, ANNOTATION_FAILED, e.getCause());
-				throw new AnnotationException(status);
-			} catch (BadLocationException e) {
-				Status status = new Status(Status.INFO, Activator.PLUGIN_ID, ANNOTATION_FAILED, e.getCause());
+			} catch (MalformedTreeException | BadLocationException e) {
+				Status status = new Status(IStatus.INFO, Activator.PLUGIN_ID, ANNOTATION_FAILED, e.getCause());
 				throw new AnnotationException(status);
 			}
 		}
