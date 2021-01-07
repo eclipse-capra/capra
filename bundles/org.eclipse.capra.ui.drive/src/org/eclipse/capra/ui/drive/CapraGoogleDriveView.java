@@ -27,8 +27,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -77,7 +75,7 @@ public class CapraGoogleDriveView extends ViewPart {
 	/**
 	 * Contains the File objects that are listed in the view.
 	 */
-	private List<File> selection = new ArrayList<File>();
+	private List<File> selection = new ArrayList<>();
 
 	/**
 	 * Application name for authentication purposes.
@@ -129,10 +127,8 @@ public class CapraGoogleDriveView extends ViewPart {
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				clientSecrets, Arrays.asList(DriveScopes.DRIVE)).setDataStoreFactory(DATA_STORE_FACTORY_DRIVE)
 						.setAccessType("offline").build();
-		Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
 		// Credentials saved to " + DATA_STORE_DIR_DRIVE.getAbsolutePath()
-
-		return credential;
 	}
 
 	/**
@@ -149,15 +145,14 @@ public class CapraGoogleDriveView extends ViewPart {
 	/**
 	 * Fills the Capra Drive view with Google sheet files from the Drive
 	 *
-	 * @param driveService
-	 *            authorized Drive client service
+	 * @param driveService authorized Drive client service
 	 */
 	private void fillSelection() {
 		try {
 			driveService = getAuthorizedDriveService();
 			List<File> files = driveService.files().list().setQ("mimeType='application/vnd.google-apps.spreadsheet'")
 					.setSpaces("drive").setFields("nextPageToken, files(id, name)").execute().getFiles();
-			if (files != null && files.size() > 0)
+			if (files != null && !files.isEmpty())
 				for (File file : files)
 					selection.add(file);
 			viewer.refresh();
@@ -173,10 +168,12 @@ public class CapraGoogleDriveView extends ViewPart {
 
 		@Override
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			// We're not interested in this event.
 		}
 
 		@Override
 		public void dispose() {
+			// Nothing to dispose.
 		}
 
 		@Override
@@ -190,7 +187,8 @@ public class CapraGoogleDriveView extends ViewPart {
 	 */
 	static class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-		private ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.capra.ui.drive", "icons/excel.png");
+		private ImageDescriptor imgDesc = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.capra.ui.drive",
+				"icons/excel.png");
 		private Image image = imgDesc.createImage();
 
 		@Override
@@ -199,7 +197,7 @@ public class CapraGoogleDriveView extends ViewPart {
 				return ((File) obj).getName();
 			else
 				return obj.toString();
-		};
+		}
 
 		@Override
 		public String getColumnText(Object obj, int index) {
@@ -227,20 +225,16 @@ public class CapraGoogleDriveView extends ViewPart {
 
 		getSite().setSelectionProvider(viewer);
 
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
+		viewer.addDoubleClickListener(event -> {
+			IStructuredSelection eventSelection = (IStructuredSelection) event.getSelection();
 
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection eventSelection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
-
-				if (eventSelection.getFirstElement() instanceof String)
-					fillSelection();
-				else {
-					File file = (File) eventSelection.getFirstElement();
-					String spreadSheetId = file.getId();
-					if (!spreadSheetId.isEmpty())
-						displaySheetInOfficeView(spreadSheetId);
-				}
+			if (eventSelection.getFirstElement() instanceof String)
+				fillSelection();
+			else {
+				File file = (File) eventSelection.getFirstElement();
+				String spreadSheetId = file.getId();
+				if (!spreadSheetId.isEmpty())
+					displaySheetInOfficeView(spreadSheetId);
 			}
 		});
 
@@ -253,15 +247,14 @@ public class CapraGoogleDriveView extends ViewPart {
 	 *
 	 * @return authorized drive service
 	 */
-	public static Drive getDriveService() {
+	public Drive getDriveService() {
 		return driveService;
 	}
 
 	/**
 	 * Displays the sheet with the provided ID in the Capra Office view.
 	 *
-	 * @param spreadSheetId
-	 *            the ID of the sheet
+	 * @param spreadSheetId the ID of the sheet
 	 */
 	public static void displaySheetInOfficeView(String spreadSheetId) {
 		try {
@@ -282,6 +275,7 @@ public class CapraGoogleDriveView extends ViewPart {
 		menuMgr.addMenuListener(new IMenuListener() {
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
+				// TODO: Implement something here!
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());

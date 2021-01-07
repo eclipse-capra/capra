@@ -19,12 +19,10 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
+/**
+ * Initializes the preference store for ReqIF preferences.
+ */
 public class ReqifPreferenceInitializer extends AbstractPreferenceInitializer {
-
-
-	public ReqifPreferenceInitializer() {
-
-	}
 
 	@Override
 	public void initializeDefaultPreferences() {

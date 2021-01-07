@@ -26,8 +26,8 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode;
 
 /**
- * Allows extracting EMF model elements from an {@link ISelection} of the
- * Xtext outline view.
+ * Allows extracting EMF model elements from an {@link ISelection} of the Xtext
+ * outline view.
  * 
  * @author Dominique Blouin
  *
@@ -39,15 +39,14 @@ public class XtextOutlineSelectionSupport implements ISelectionSupport {
 		if (workbenchPart instanceof ContentOutline) {
 			final ISelection selection = ((ContentOutline) workbenchPart).getSelection();
 
-			return !extractSelectedEObjectNodes(selection, workbenchPart).isEmpty();
+			return !extractSelectedEObjectNodes(selection).isEmpty();
 		}
 
 		return false;
 	}
 
-	private List<EObjectNode> extractSelectedEObjectNodes(final ISelection selection,
-			final IWorkbenchPart workbenchPart) {
-		final List<EObjectNode> selectedElements = new ArrayList<EObjectNode>();
+	private List<EObjectNode> extractSelectedEObjectNodes(final ISelection selection) {
+		final List<EObjectNode> selectedElements = new ArrayList<>();
 
 		if (selection instanceof IStructuredSelection) {
 			for (final Object selectedEleme : ((IStructuredSelection) selection).toList()) {
@@ -62,13 +61,13 @@ public class XtextOutlineSelectionSupport implements ISelectionSupport {
 
 	@Override
 	public List<Object> extractSelectedElements(final ISelection selection, final IWorkbenchPart workbenchPart) {
-		final List<Object> selectedElements = new ArrayList<Object>();
-		final List<EObjectNode> selectedEObjectNodes = extractSelectedEObjectNodes(selection, workbenchPart);
+		final List<Object> selectedElements = new ArrayList<>();
+		final List<EObjectNode> selectedEObjectNodes = extractSelectedEObjectNodes(selection);
 
 		final ResourceSet resSet = getResourceSet(workbenchPart);
 
 		for (final EObjectNode selectedEleme : selectedEObjectNodes) {
-			final URI objectUri = ((EObjectNode) selectedEleme).getEObjectURI();
+			final URI objectUri = selectedEleme.getEObjectURI();
 			selectedElements.add(resSet.getEObject(objectUri, true));
 		}
 
