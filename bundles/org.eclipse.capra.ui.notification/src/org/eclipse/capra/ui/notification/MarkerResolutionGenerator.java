@@ -42,7 +42,7 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator {
 				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link."),
 						new ChangeQuickFix("Do not update existing trace link.") };
 
-			return null;
+			return new IMarkerResolution[0];
 
 		} catch (CoreException e) {
 			return new IMarkerResolution[0];

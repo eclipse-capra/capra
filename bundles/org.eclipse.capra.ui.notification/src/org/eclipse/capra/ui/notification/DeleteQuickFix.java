@@ -39,7 +39,7 @@ import org.eclipse.ui.IMarkerResolution;
  * @author Michael Warne
  */
 public class DeleteQuickFix implements IMarkerResolution {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 	private String label;
 
@@ -59,10 +59,11 @@ public class DeleteQuickFix implements IMarkerResolution {
 		List<Connection> toDelete = new ArrayList<>();
 		List<Connection> toRecreate = new ArrayList<>();
 		EObject artifactToDelete = null;
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);
-		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
 
 		// get all artifacts
@@ -116,8 +117,8 @@ public class DeleteQuickFix implements IMarkerResolution {
 				// check for all trace links with less than two items
 				if (traceHelper.getTracedElements(c).size() < 2) {
 					toDelete.add(c);
-					}
 				}
+			}
 
 			// Delete the trace links
 			traceMetamodelAdapter.deleteTrace(toDelete, traceModel);
@@ -130,7 +131,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 	}
 
 	private void recreateTrace(List<Connection> toRecreate, EObject traceModel) {
-		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		// create a new trace link with the remaining items
 		for (Connection c : toRecreate) {
 			traceMetaModelAdapter.createTrace(c.getTlink().eClass(), traceModel, c.getTargets());
