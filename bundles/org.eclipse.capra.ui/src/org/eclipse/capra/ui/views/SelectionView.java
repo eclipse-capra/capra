@@ -92,12 +92,12 @@ public class SelectionView extends ViewPart {
 	/**
 	 * The actual table containing selected elements.
 	 */
-	public TableViewer artifactTable;
+	private TableViewer artifactTable;
 
 	/**
 	 * The combo box to select the trace type.
 	 */
-	public ComboViewer traceTypeCombo;
+	private ComboViewer traceTypeCombo;
 
 	/**
 	 * The maintained selection of EObjects .
@@ -110,16 +110,6 @@ public class SelectionView extends ViewPart {
 	 */
 	private IUndoContext undoContext = IOperationHistory.GLOBAL_UNDO_CONTEXT;
 
-	/**
-	 * Action handler to undo the creation of a trace.
-	 */
-	private UndoActionHandler undoAction;
-
-	/**
-	 * Action handler to redo the creation of a trace.
-	 */
-	private RedoActionHandler redoAction;
-
 	private Collection<EClass> traceTypes = new ArrayList<>();
 
 	/**
@@ -129,7 +119,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
+			// We do not need to react to this event.
 		}
 
 		@Override
@@ -150,7 +140,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			return (element == null || !(element instanceof EClass)) ? "" : ((EClass) element).getName();//$NON-NLS-1$
+			return (!(element instanceof EClass)) ? "" : ((EClass) element).getName();//$NON-NLS-1$
 		}
 
 	}
@@ -162,10 +152,11 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+					.orElseThrow();
 			EObject artifactModel = persistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
-			IArtifactHandler<?> handler = artifactHelper.getHandler(element).get();
+			IArtifactHandler<?> handler = artifactHelper.getHandler(element).orElseThrow();
 			return handler.withCastedHandler(element, (h, o) -> h.getDisplayName(o)).orElseGet(element::toString);
 		}
 
@@ -246,7 +237,7 @@ public class SelectionView extends ViewPart {
 
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
 
-		List<Transfer> transfers = new ArrayList<Transfer>(Arrays.asList(DEFAULT_TRANSFERS));
+		List<Transfer> transfers = new ArrayList<>(Arrays.asList(DEFAULT_TRANSFERS));
 
 		// Get all additionally configured transfers from the extension point.
 		transfers.addAll(ExtensionPointHelper.getExtensions(TRANSFER_EXTENSION_POINT_ID, "class").stream()
@@ -264,7 +255,7 @@ public class SelectionView extends ViewPart {
 		menuMgr.addMenuListener(new IMenuListener() {
 			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-
+				// Do something here
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(artifactTable.getControl());
@@ -299,8 +290,8 @@ public class SelectionView extends ViewPart {
 	}
 
 	private void refreshAvailableTraceTypes() {
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = new ResourceSetImpl();
 		// add artifact model to resource set
@@ -309,7 +300,7 @@ public class SelectionView extends ViewPart {
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
 		// Create the artifact wrappers
-		List<EObject> wrappers = artifactHelper.createWrappers(new ArrayList<Object>(selection));
+		List<EObject> wrappers = artifactHelper.createWrappers(new ArrayList<>(selection));
 
 		// Get the type of trace to be created
 		traceTypes = traceAdapter.getAvailableTraceTypes(wrappers);
@@ -322,7 +313,7 @@ public class SelectionView extends ViewPart {
 				.filter(handler -> handler.canHandleArtifact(target)).collect(toList());
 
 		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
-		if (availableHandlers.size() == 0) {
+		if (availableHandlers.isEmpty()) {
 			MessageDialog.openWarning(getSite().getShell(), "No handler for selected item",
 					"There is no handler for " + target + " so it will be ignored.");
 		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
@@ -337,7 +328,7 @@ public class SelectionView extends ViewPart {
 	}
 
 	public List<Object> getSelection() {
-		return new ArrayList<Object>(selection);
+		return new ArrayList<>(selection);
 	}
 
 	public void clearSelection() {
@@ -368,8 +359,8 @@ public class SelectionView extends ViewPart {
 
 	private void createGlobalActionHandlers() {
 		// set up action handlers that operate on the current context
-		undoAction = new UndoActionHandler(this.getSite(), undoContext);
-		redoAction = new RedoActionHandler(this.getSite(), undoContext);
+		UndoActionHandler undoAction = new UndoActionHandler(this.getSite(), undoContext);
+		RedoActionHandler redoAction = new RedoActionHandler(this.getSite(), undoContext);
 		IActionBars actionBars = getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), undoAction);
 		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redoAction);
