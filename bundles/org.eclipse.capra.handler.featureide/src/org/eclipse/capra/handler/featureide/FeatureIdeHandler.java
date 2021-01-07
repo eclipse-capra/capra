@@ -45,22 +45,21 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 
 	@Override
 	public EObject createWrapper(IFeature feature, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 		final IPath path = Path.fromOSString(feature.getFeatureModel().getSourceFile().toString());
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IFile file = root.getFileForLocation(path);
 		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
 
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
 				Long.toString(feature.getInternalId()), feature.getName(),
 				feature.getFeatureModel().getSourceFile().toString());
-		return wrapper;
 	}
 
 	@Override
 	public IFeature resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		FileHandler<IFeatureModel> fileHandler = FeatureModelManager
 				.getFileHandler(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
 		return fileHandler.getObject().getFeature(adapter.getArtifactName(wrapper));
