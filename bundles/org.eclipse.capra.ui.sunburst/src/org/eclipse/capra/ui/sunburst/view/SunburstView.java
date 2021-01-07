@@ -39,10 +39,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
@@ -89,9 +89,9 @@ public class SunburstView extends ViewPart {
 	private Browser browser;
 	private Action selectDepthAction;
 
-	final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-	TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-	TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+	private final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+	private final TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+			.orElseThrow();
 
 	private ResourceSet resourceSet = new ResourceSetImpl();
 	private EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
@@ -108,22 +108,22 @@ public class SunburstView extends ViewPart {
 			getSelected(part, selection);
 			browser.setText(createHTML());
 		}
-	};
 
-	/**
-	 * Retrieves the selected elements from {@code selection} and stores them in
-	 * {@link #selectedModels}.
-	 * 
-	 * @param part      the workbench part
-	 * @param selection the selection
-	 */
-	private void getSelected(IWorkbenchPart part, ISelection selection) {
-		selectedModels.clear();
-		if (part.getSite().getSelectionProvider() != null) {
-			selectedModels.addAll(SelectionSupportHelper
-					.extractSelectedElements(part.getSite().getSelectionProvider().getSelection(), part));
+		/**
+		 * Retrieves the selected elements from {@code selection} and stores them in
+		 * {@link #selectedModels}.
+		 * 
+		 * @param part      the workbench part
+		 * @param selection the selection
+		 */
+		private void getSelected(IWorkbenchPart part, ISelection selection) {
+			selectedModels.clear();
+			if (part.getSite().getSelectionProvider() != null) {
+				selectedModels.addAll(SelectionSupportHelper
+						.extractSelectedElements(part.getSite().getSelectionProvider().getSelection(), part));
+			}
 		}
-	}
+	};
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -236,7 +236,6 @@ public class SunburstView extends ViewPart {
 		List<EObject> alreadySeen = new ArrayList<>();
 
 		if (!selectedModels.isEmpty()) {
-			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			for (Object selection : selectedModels) {
 
 				IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(selection)
@@ -273,8 +272,7 @@ public class SunburstView extends ViewPart {
 			}
 		}
 
-		String json = start + inner.toString() + end;
-		return json;
+		return start + inner.toString() + end;
 	}
 
 	/**
@@ -369,31 +367,27 @@ public class SunburstView extends ViewPart {
 	private class SelectDepthAction extends Action {
 		@Override
 		public void run() {
-			IInputValidator numberValidator = new IInputValidator() {
-
-				@Override
-				public String isValid(String newText) {
-					boolean validationError = false;
-					try {
-						int i = Integer.parseInt(newText);
-						if (i < 1) {
-							validationError = true;
-						}
-					} catch (NumberFormatException ex) {
+			IInputValidator numberValidator = newText -> {
+				boolean validationError = false;
+				try {
+					int i = Integer.parseInt(newText);
+					if (i < 1) {
 						validationError = true;
 					}
-					if (validationError) {
-						return "Please enter a valid number larger than 0.";
-					}
-					return null;
+				} catch (NumberFormatException ex) {
+					validationError = true;
 				}
+				if (validationError) {
+					return "Please enter a valid number larger than 0.";
+				}
+				return null;
 			};
 			InputDialog dialog = new InputDialog(getViewSite().getShell(), "Trace link depth",
 					"Please select the maximum depth until which traceability links will be traversed for the Sunburst view.",
 					String.valueOf(maxRecursionLevel), numberValidator);
 			dialog.setBlockOnOpen(true);
 			dialog.open();
-			if (dialog.getReturnCode() == Dialog.OK) {
+			if (dialog.getReturnCode() == Window.OK) {
 				maxRecursionLevel = Integer.parseInt(dialog.getValue());
 				preferences.putInt(SunburstPreferences.MAX_RECURSION_LEVEL, maxRecursionLevel);
 				try {
@@ -405,6 +399,6 @@ public class SunburstView extends ViewPart {
 				browser.setText(createHTML());
 			}
 		}
-	};
+	}
 
 }

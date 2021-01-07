@@ -19,6 +19,13 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class SunburstPreferences {
 
+	/**
+	 * Private constructor to hide implicit public one.
+	 */
+	private SunburstPreferences() {
+		// Deliberately do nothing.
+	}
+
 	public static final IScopeContext SCOPE_CONTEXT = InstanceScope.INSTANCE;
 	public static final String PREFERENCE_NODE = "org.eclipse.capra.ui.sunburst";
 
