@@ -30,8 +30,8 @@ import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 /**
- * Allows extracting EMF model elements from an {@link ISelection} of
- * Xtext editors.
+ * Allows extracting EMF model elements from an {@link ISelection} of Xtext
+ * editors.
  * 
  * @author Dominique Blouin
  *
@@ -63,8 +63,7 @@ public class XtextEditorSelectionSupport implements ISelectionSupport {
 
 			return Collections.singletonList(selectedElement);
 		}
-
-		return null;
+		return Collections.emptyList();
 	}
 
 	protected XtextResource getResource(final IWorkbenchPart workbenchPart) {

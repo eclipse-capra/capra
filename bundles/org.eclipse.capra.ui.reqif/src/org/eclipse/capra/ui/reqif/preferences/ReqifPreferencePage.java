@@ -25,7 +25,6 @@ public class ReqifPreferencePage extends FieldEditorPreferencePage implements IW
 
 	public static final String REQIF_PREFERENCE_PAGE_ID = "org.eclipse.capra.ui.reqif";
 	public static final String ID_ATTRIBUTE = "Attribute containing requirement ID";
-	private StringFieldEditor stringEditor;
 
 	public ReqifPreferencePage() {
 		super(GRID);
@@ -33,15 +32,14 @@ public class ReqifPreferencePage extends FieldEditorPreferencePage implements IW
 
 	@Override
 	protected void createFieldEditors() {
-		stringEditor = new StringFieldEditor(ReqifPreferences.REQIF_ID_ATTRIBUTE, ID_ATTRIBUTE,
+		StringFieldEditor stringEditor = new StringFieldEditor(ReqifPreferences.REQIF_ID_ATTRIBUTE, ID_ATTRIBUTE,
 				getFieldEditorParent());
 		addField(stringEditor);
 	}
 
 	@Override
 	public void init(IWorkbench workbench) {
-		setPreferenceStore(
-				new ScopedPreferenceStore(InstanceScope.INSTANCE, REQIF_PREFERENCE_PAGE_ID));
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, REQIF_PREFERENCE_PAGE_ID));
 		setDescription(null);
 	}
 }
