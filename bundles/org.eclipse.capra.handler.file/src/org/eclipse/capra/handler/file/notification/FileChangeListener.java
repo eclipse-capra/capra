@@ -49,11 +49,13 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 public class FileChangeListener implements IResourceChangeListener {
 
-	private final ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	private final ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
+			.orElseThrow();
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 
 		// get all artifacts
@@ -62,7 +64,7 @@ public class FileChangeListener implements IResourceChangeListener {
 				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(FileHandler.class.getName()))
 				.collect(Collectors.toList());
 
-		if (fileArtifacts.size() == 0) {
+		if (fileArtifacts.isEmpty()) {
 			return;
 		}
 
@@ -97,12 +99,9 @@ public class FileChangeListener implements IResourceChangeListener {
 	 * Checks if the provided delta affects any of the artifacts and if it does,
 	 * produces a marker and attaches it to the wrapperContainer.
 	 *
-	 * @param delta
-	 *            represents changes in the state of the file
-	 * @param fileArtifacts
-	 *            the artifacts that were created by the file handler
-	 * @param wrapperContainer
-	 *            the file that contains the ArtifactWrapper model
+	 * @param delta            represents changes in the state of the file
+	 * @param fileArtifacts    the artifacts that were created by the file handler
+	 * @param wrapperContainer the file that contains the ArtifactWrapper model
 	 */
 	private void handleDelta(IResourceDelta delta, List<EObject> fileArtifacts, IFile wrapperContainer) {
 		for (EObject aw : fileArtifacts) {
@@ -131,8 +130,8 @@ public class FileChangeListener implements IResourceChangeListener {
 					CapraNotificationHelper.deleteCapraMarker(artifactAdapter.getArtifactUri(aw),
 							new IssueType[] { IssueType.MOVED, IssueType.RENAMED, IssueType.DELETED },
 							wrapperContainer);
-				} else {
-					Map<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
+				} else if (issueType != null) {
+					Map<String, String> markerInfo = generateMarkerInfo(delta, issueType);
 					CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 				}
 			}
@@ -140,20 +139,16 @@ public class FileChangeListener implements IResourceChangeListener {
 	}
 
 	/**
-	 * Generates the attributes that will be assigned (in the createMarker
-	 * method) to a Capra warning marker.
+	 * Generates the attributes that will be assigned (in the createMarker method)
+	 * to a Capra warning marker.
 	 *
-	 * @param aw
-	 *            ArtifactWrapper that links to the file in the delta
-	 * @param delta
-	 *            represents changes in the state of the file
-	 * @param issueType
-	 *            the type of change that occurred
-	 * @return a key value HashMap, containing the attributes to be assigned to
-	 *         a Capra change marker and their keys (IDs).
+	 * @param delta     represents changes in the state of the file
+	 * @param issueType the type of change that occurred
+	 * @return a key value HashMap, containing the attributes to be assigned to a
+	 *         Capra change marker and their keys (IDs).
 	 */
-	private Map<String, String> generateMarkerInfo(EObject aw, IResourceDelta delta, IssueType issueType) {
-		Map<String, String> markerInfo = new HashMap<String, String>();
+	private Map<String, String> generateMarkerInfo(IResourceDelta delta, IssueType issueType) {
+		Map<String, String> markerInfo = new HashMap<>();
 
 		String oldArtifactUri = delta.getFullPath().toString();
 		IPath newArtifactUri = delta.getMovedToPath();

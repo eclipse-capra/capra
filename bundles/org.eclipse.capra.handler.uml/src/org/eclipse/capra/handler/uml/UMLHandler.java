@@ -63,7 +63,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 		List<Integer> duplicationCheck = new ArrayList<>();
 		List<Connection> allElements = new ArrayList<>();
 		if (Relationship.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				Relationship rel = Relationship.class.cast(investigatedElement);
 				List<EObject> relatedElements = new ArrayList<>();
@@ -79,7 +79,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				}
 			}
 		} else if (ActivityEdge.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				ActivityEdge activityEdge = ActivityEdge.class.cast(investigatedElement);
 				List<EObject> relatedElements = new ArrayList<>();
@@ -93,7 +93,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				}
 			}
 		} else if (Transition.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				Transition transition = Transition.class.cast(investigatedElement);
 				List<EObject> relatedElements = new ArrayList<>();
@@ -108,7 +108,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				}
 			}
 		} else if (Message.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				Message msg = Message.class.cast(investigatedElement);
 				MessageOccurrenceSpecification receiver = (MessageOccurrenceSpecification) msg.getReceiveEvent();
@@ -128,7 +128,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				}
 			}
 		} else if (Port.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				Port port = Port.class.cast(investigatedElement);
 				EList<Interface> provideds = port.getProvideds();
@@ -147,7 +147,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				}
 			}
 		} else if (Connector.class.isAssignableFrom(investigatedElement.getClass())) {
-			if (selectedRelationshipTypes.size() == 0
+			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
 				Connector connector = Connector.class.cast(investigatedElement);
 				EList<ConnectorEnd> connectedEnds = connector.getEnds();
@@ -174,7 +174,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 			TreeIterator<EObject> modelContents = root.eAllContents();
 			while (modelContents.hasNext()) {
 				EObject content = modelContents.next();
-				if (selectedRelationshipTypes.size() == 0
+				if (selectedRelationshipTypes.isEmpty()
 						|| selectedRelationshipTypes.contains(content.eClass().getName())) {
 					if (Relationship.class.isAssignableFrom(content.getClass())) {
 						Relationship relation = Relationship.class.cast(content);
@@ -199,7 +199,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							}
 						}
 					} else if (ActivityEdge.class.isAssignableFrom(content.getClass())) {
-						if (selectedRelationshipTypes.size() == 0
+						if (selectedRelationshipTypes.isEmpty()
 								|| selectedRelationshipTypes.contains(content.eClass().getName())) {
 							ActivityEdge activityEdge = ActivityEdge.class.cast(content);
 							List<EObject> relatedElements = new ArrayList<>();
@@ -386,7 +386,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 			int sourceHash = transition.getSource().hashCode();
 			int targetHash = transition.getTarget().hashCode();
 			boolean relationContainsFirstElement = sourceHash == first.hashCode() || targetHash == first.hashCode();
-			boolean relationContainsSecondElement = sourceHash == second.hashCode() || sourceHash == second.hashCode();
+			boolean relationContainsSecondElement = sourceHash == second.hashCode() || targetHash == second.hashCode();
 			if (relationContainsFirstElement && relationContainsSecondElement) {
 				return true;
 			}
@@ -419,20 +419,15 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				connector = Connector.class.cast(second);
 			}
 			EList<ConnectorEnd> connectedEnds = connector.getEnds();
-			boolean isRelated = false;
 			for (ConnectorEnd connectedEnd : connectedEnds) {
-				if (connectedEnd.getPartWithPort() != null
-						&& (connectedEnd.getPartWithPort().hashCode() == first.hashCode()
-								|| connectedEnd.getPartWithPort().hashCode() == second.hashCode())) {
-					isRelated = true;
-				} else if (connectedEnd.hashCode() == first.hashCode()
-						|| connectedEnd.hashCode() == second.hashCode()) {
-					isRelated = true;
+				if ((connectedEnd.hashCode() == first.hashCode() || connectedEnd.hashCode() == second.hashCode())
+						|| (connectedEnd.getPartWithPort() != null
+								&& (connectedEnd.getPartWithPort().hashCode() == first.hashCode()
+										|| connectedEnd.getPartWithPort().hashCode() == second.hashCode()))) {
+					return true;
 				}
 			}
-			if (isRelated) {
-				return true;
-			}
+
 		} else {
 			boolean relationContainsFirstElement = false;
 			boolean relationContainsSecondElement = false;

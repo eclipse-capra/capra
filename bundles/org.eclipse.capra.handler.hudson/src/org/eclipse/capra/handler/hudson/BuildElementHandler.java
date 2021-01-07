@@ -32,10 +32,9 @@ public class BuildElementHandler extends AbstractArtifactHandler<BuildElement> {
 
 	@Override
 	public EObject createWrapper(BuildElement build, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), build.getUrl(),
-				build.getLabel(), build.getUrl());
-		return wrapper;
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), build.getUrl(), build.getLabel(),
+				build.getUrl());
 	}
 
 	@Override

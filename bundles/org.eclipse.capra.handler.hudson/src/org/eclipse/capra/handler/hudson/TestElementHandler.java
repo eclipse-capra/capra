@@ -33,10 +33,9 @@ public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 
 	@Override
 	public EObject createWrapper(TestElement test, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		return adapter.createArtifact(artifactModel, this.getClass().getName(),
 				EcoreUtil.getURI(test).toPlatformString(false), test.getLabel(), test.getLabel());
-		return wrapper;
 	}
 
 	@Override

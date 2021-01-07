@@ -86,17 +86,21 @@ public class EditorListener implements IPartListener {
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart part) {
+		// We are not interested in this event.
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
+		// We are not interested in this event.
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
+		// We are not interested in this event.
 	}
 
 	@Override
 	public void partOpened(IWorkbenchPart part) {
+		// We are not interested in this event.
 	}
 }

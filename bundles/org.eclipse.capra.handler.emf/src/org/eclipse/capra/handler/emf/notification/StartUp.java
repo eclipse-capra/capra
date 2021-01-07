@@ -25,14 +25,9 @@ public class StartUp implements IStartup {
 
 	@Override
 	public void earlyStartup() {
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				// Add the EditorListener that registers the ModelChangeListener
-				// to newly opened EMF editors.
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.addPartListener(new EditorListener());
-			}
-		});
+		// Add the EditorListener that registers the ModelChangeListener to newly opened
+		// EMF editors.
+		Display.getDefault().syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				.addPartListener(new EditorListener()));
 	}
 }

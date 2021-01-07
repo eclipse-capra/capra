@@ -36,25 +36,21 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 
 	@Override
 	public EObject createWrapper(IMarker artifact, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 		IResource resource = artifact.getResource();
 
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				resource.getLocationURI().toString(), Long.toString(artifact.getId()), this.getDisplayName(artifact),
-				resource.getFullPath().toString());
-
-		return wrapper;
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), resource.getLocationURI().toString(),
+				Long.toString(artifact.getId()), this.getDisplayName(artifact), resource.getFullPath().toString());
 	}
 
 	@Override
 	public IMarker resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		IResource target = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(adapter.getArtifactPath(wrapper));
-		Long id = new Long(adapter.getArtifactIdentifier(wrapper));
-		IMarker marker = target.getMarker(id);
-		return marker;
+		Long id = Long.getLong(adapter.getArtifactIdentifier(wrapper));
+		return target.getMarker(id);
 	}
 
 	@Override
