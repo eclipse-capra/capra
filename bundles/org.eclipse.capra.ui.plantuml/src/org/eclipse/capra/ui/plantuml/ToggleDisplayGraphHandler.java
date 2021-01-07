@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Toggles between showing displaying a graph and a matrix if several model
@@ -29,6 +31,8 @@ import org.osgi.service.prefs.Preferences;
  * @author Jan-Philipp Steghöfer
  */
 public class ToggleDisplayGraphHandler extends AbstractHandler {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ToggleDisplayGraphHandler.class);
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -50,8 +54,7 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 
 	private static Preferences getPreference() {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.displayGraph");
-		Preferences transitivity = preferences.node("displayGraph");
-		return transitivity;
+		return preferences.node("displayGraph");
 	}
 
 	/**
@@ -70,7 +73,7 @@ public class ToggleDisplayGraphHandler extends AbstractHandler {
 			// forces the application to save the preferences
 			transitivity.flush();
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			LOG.warn("Could not save display graph preferences!", e);
 		}
 	}
 }

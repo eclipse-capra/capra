@@ -28,23 +28,25 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  */
 public class CapraPlantUmlView extends PlantUmlView {
 
+	private static final String COMMANDS_TOGGLE_STATE = "org.eclipse.ui.commands.toggleState";
+
 	@Override
 	public void createPartControl(final Composite parent) {
 		super.createPartControl(parent);
 		ICommandService cmdService = getSite().getService(ICommandService.class);
 		Command toggleTransitivity = cmdService.getCommand("org.eclipse.capra.ui.plantuml.toggleTransitivity");
 		if (toggleTransitivity != null) {
-			toggleTransitivity.getState("org.eclipse.ui.commands.toggleState")
+			toggleTransitivity.getState(COMMANDS_TOGGLE_STATE)
 					.setValue(ToggleTransitivityHandler.isTraceViewTransitive());
 		}
 		Command displayGraph = cmdService.getCommand("org.eclipse.capra.ui.plantuml.displayGraph");
 		if (displayGraph != null) {
-			displayGraph.getState("org.eclipse.ui.commands.toggleState")
+			displayGraph.getState(COMMANDS_TOGGLE_STATE)
 					.setValue(ToggleDisplayGraphHandler.isDisplayGraph());
 		}
 		Command lockDiagram = cmdService.getCommand("org.eclipse.capra.ui.plantuml.lockDiagram");
 		if (lockDiagram != null) {
-			lockDiagram.getState("org.eclipse.ui.commands.toggleState")
+			lockDiagram.getState(COMMANDS_TOGGLE_STATE)
 					.setValue(ToggleLockDiagramHandler.isLockDiagram());
 		}
 

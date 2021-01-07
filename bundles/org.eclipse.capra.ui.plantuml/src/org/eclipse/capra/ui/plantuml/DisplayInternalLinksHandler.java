@@ -19,6 +19,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Toggles between showing (DSL) internal links or not
@@ -27,13 +29,11 @@ import org.osgi.service.prefs.Preferences;
  */
 public class DisplayInternalLinksHandler extends AbstractHandler {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DisplayInternalLinksHandler.class);
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (areInternalLinksShown())
-			showInternalLinks(false);
-		else
-			showInternalLinks(true);
-
+		showInternalLinks(!areInternalLinksShown());
 		return null;
 	}
 
@@ -51,15 +51,13 @@ public class DisplayInternalLinksHandler extends AbstractHandler {
 
 	private static Preferences getPreference() {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.toggleInternalLinks");
-		Preferences transitivity = preferences.node("internalLinks");
-		return transitivity;
+		return preferences.node("internalLinks");
 	}
 
 	/**
 	 * Sets whether the trace view is set to show transitive traces.
 	 * 
-	 * @param value
-	 *            indicates whether transitive traces should be shown
+	 * @param value indicates whether transitive traces should be shown
 	 */
 	public static void showInternalLinks(boolean value) {
 		Preferences internalLinks = getPreference();
@@ -70,7 +68,7 @@ public class DisplayInternalLinksHandler extends AbstractHandler {
 			// forces the application to save the preferences
 			internalLinks.flush();
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			LOG.warn("Could not save internal links preferences!", e);
 		}
 	}
 }
