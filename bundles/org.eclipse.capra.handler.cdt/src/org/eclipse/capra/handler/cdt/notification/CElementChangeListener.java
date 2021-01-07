@@ -49,19 +49,20 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * @author Dusan Kalanj
  */
 public class CElementChangeListener implements IElementChangedListener {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
 		List<EObject> cArtifacts = allArtifacts.stream()
 				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(CDTHandler.class.getName()))
 				.collect(Collectors.toList());
 
-		if (cArtifacts.size() == 0)
+		if (cArtifacts.isEmpty())
 			return;
 
 		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
@@ -94,15 +95,17 @@ public class CElementChangeListener implements IElementChangedListener {
 		// renamed. But renaming the src folder isn't good practice anyway.
 		else if (changeType == ICElementDelta.REMOVED) {
 
-			if ((flags & ICElementDelta.F_MOVED_TO) != 0)
-				if (delta.getMovedToElement().getElementName().equals(affectedElement.getElementName()))
+			if ((flags & ICElementDelta.F_MOVED_TO) != 0) {
+				if (delta.getMovedToElement().getElementName().equals(affectedElement.getElementName())) {
 					issueType = IssueType.MOVED;
-				else
+				} else {
 					issueType = IssueType.RENAMED;
-			else {
+				}
+			} else {
 				if (!(affectedElement instanceof ITranslationUnit
-						&& ((ITranslationUnit) affectedElement).isWorkingCopy()))
+						&& ((ITranslationUnit) affectedElement).isWorkingCopy())) {
 					issueType = IssueType.DELETED;
+				}
 			}
 
 		} else if (changeType == ICElementDelta.CHANGED)
@@ -152,18 +155,15 @@ public class CElementChangeListener implements IElementChangedListener {
 	 * Generates the attributes that will later be assigned (in the createMarker
 	 * method in the CapraNotificationHelper) to a Capra change marker.
 	 *
-	 * @param aw
-	 *            ArtifactWrapper that links to the element in the delta or to a
-	 *            child of the element in the delta
-	 * @param delta
-	 *            represents changes in the state of a C/C++ element
-	 * @param issueType
-	 *            the type of change that occurred
-	 * @return a key value HashMap, containing the attributes to be assigned to
-	 *         a Capra change marker and their keys (IDs).
+	 * @param aw        ArtifactWrapper that links to the element in the delta or to
+	 *                  a child of the element in the delta
+	 * @param delta     represents changes in the state of a C/C++ element
+	 * @param issueType the type of change that occurred
+	 * @return a key value HashMap, containing the attributes to be assigned to a
+	 *         Capra change marker and their keys (IDs).
 	 */
 	private HashMap<String, String> generateMarkerInfo(EObject aw, ICElementDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<String, String>();
+		HashMap<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the C/C++ element in the wrapper (all elements)
 		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);

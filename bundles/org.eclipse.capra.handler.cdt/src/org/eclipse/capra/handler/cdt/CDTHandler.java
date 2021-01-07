@@ -61,16 +61,14 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 		String uri = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
 				.setFragment(typePrefix + element.getElementName()).toString();
 
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
-				element.getHandleIdentifier(), element.getElementName(), element.getPath().toString());
-
-		return wrapper;
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, element.getHandleIdentifier(),
+				element.getElementName(), element.getPath().toString());
 	}
 
 	@Override
 	public ICElement resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return CoreModel.create(adapter.getArtifactIdentifier(wrapper));
 	}
 

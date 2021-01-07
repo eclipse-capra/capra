@@ -51,12 +51,13 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Dusan Kalanj
  */
 public class JavaElementChangeListener implements IElementChangedListener {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
 
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+				.orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(new ResourceSetImpl());
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
@@ -64,7 +65,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				.filter(p -> artifactAdapter.getArtifactHandler(p).equals(JavaElementHandler.class.getName()))
 				.collect(Collectors.toList());
 
-		if (javaArtifacts.size() == 0)
+		if (javaArtifacts.isEmpty())
 			return;
 
 		IPath path = new Path(EcoreUtil.getURI(artifactModel).toPlatformString(false));
@@ -88,30 +89,33 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		// performed, the change only traverses up to the first element that was
 		// affected. Example: if a package is moved, this won't reach the files
 		// in the package.
-		if (!(delta.getElement() instanceof ICompilationUnit))
+		if (!(delta.getElement() instanceof ICompilationUnit)) {
 			// Only go as far as the source file
-			for (IJavaElementDelta subDelta : delta.getAffectedChildren())
-			handleDelta(subDelta, javaArtifacts, wrapperContainer);
-
+			for (IJavaElementDelta subDelta : delta.getAffectedChildren()) {
+				handleDelta(subDelta, javaArtifacts, wrapperContainer);
+			}
+		}
 		int flags = delta.getFlags();
 		int changeType = delta.getKind();
 		IssueType issueType = null;
 
-		if (changeType == IJavaElementDelta.ADDED)
+		if (changeType == IJavaElementDelta.ADDED) {
 			issueType = IssueType.ADDED;
-		else if (changeType == IJavaElementDelta.REMOVED) {
+		} else if (changeType == IJavaElementDelta.REMOVED) {
 
-			if ((flags & IJavaElementDelta.F_MOVED_TO) != 0)
-				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName()))
+			if ((flags & IJavaElementDelta.F_MOVED_TO) != 0) {
+				if (delta.getMovedToElement().getElementName().equals(delta.getElement().getElementName())) {
 					issueType = IssueType.MOVED;
-				else
+				} else {
 					issueType = IssueType.RENAMED;
-			else
+				}
+			} else {
 				issueType = IssueType.DELETED;
-
-		} else if (changeType == IJavaElementDelta.CHANGED && (flags & IJavaElementDelta.F_PRIMARY_RESOURCE) != 0)
+			}
+		} else if (changeType == IJavaElementDelta.CHANGED && (flags & IJavaElementDelta.F_PRIMARY_RESOURCE) != 0) {
 			// This is only true if a source file changes.
 			issueType = IssueType.CHANGED;
+		}
 
 		if (issueType != null) {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
@@ -149,15 +153,12 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * Generates the attributes that will later be assigned (in the createMarker
 	 * method) to a Capra change marker.
 	 *
-	 * @param aw
-	 *            ArtifactWrapper that links to the element in the delta or to a
-	 *            child of the element in the delta
-	 * @param delta
-	 *            represents changes in the state of a JavaElement
-	 * @param issue
-	 *            the type of change that occurred
-	 * @return a key value HashMap, containing the attributes to be assigned to
-	 *         a Capra change marker and their keys (IDs).
+	 * @param aw    ArtifactWrapper that links to the element in the delta or to a
+	 *              child of the element in the delta
+	 * @param delta represents changes in the state of a JavaElement
+	 * @param issue the type of change that occurred
+	 * @return a key value HashMap, containing the attributes to be assigned to a
+	 *         Capra change marker and their keys (IDs).
 	 */
 	// This works OK for all levels above the class level. For variables,
 	// methods, classes, if the signature is changed, it will say that the
@@ -171,7 +172,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	// and variables with identical bodies, although highly unlikely. Either
 	// way, I don't think there is a completely foolproof solution for this.
 	private HashMap<String, String> generateMarkerInfo(EObject aw, IJavaElementDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<String, String>();
+		HashMap<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the Java element in the wrapper (all elements)
 		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);
