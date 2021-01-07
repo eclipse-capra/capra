@@ -25,6 +25,7 @@ import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -121,6 +122,7 @@ public class TestDuplicateLinks {
 
 		// check if the connections are equal
 		assertTrue(con1.equals(con2));
+		assertEquals(con1.hashCode(), con2.hashCode());
 
 		// change the order of artifacts
 		List<EObject> newTarget = new ArrayList<>();
@@ -137,16 +139,20 @@ public class TestDuplicateLinks {
 
 		// check that the connections are not equal
 		assertFalse(con3.equals(con4));
+		assertNotEquals(con3.hashCode(), con4.hashCode());
 
 		// create a connection with differesnt artifact
 		Connection con5 = new Connection(classC, targets, tlinkA);
 
 		// check that the conenctions are not equal
 		assertFalse(con5.equals(con1));
+		assertNotEquals(con5.hashCode(), con1.hashCode());
 		assertFalse(con5.equals(con2));
+		assertNotEquals(con5.hashCode(), con2.hashCode());
 		assertFalse(con5.equals(con3));
+		assertNotEquals(con5.hashCode(), con3.hashCode());
 		assertFalse(con5.equals(con4));
-
+		assertNotEquals(con5.hashCode(), con4.hashCode());
 	}
 
 	@Test
