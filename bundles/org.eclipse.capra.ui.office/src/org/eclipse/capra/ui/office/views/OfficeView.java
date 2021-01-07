@@ -48,7 +48,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -281,13 +280,7 @@ public class OfficeView extends ViewPart {
 
 		viewer.addDropSupport(ops, transfersIn, new SelectionDropAdapter(viewer));
 		viewer.addDragSupport(ops, transfersOut, new SelectionDragAdapter(viewer));
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				showObjectDetails(event, parent.getShell());
-			}
-		});
+		viewer.addDoubleClickListener(event -> showObjectDetails(event, parent.getShell()));
 	}
 
 	/**

@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a custom object for describing the contents of MS Excel
@@ -31,8 +29,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class CapraOfficeObject {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CapraOfficeObject.class);
 
 	/**
 	 * The MS Office file-types that are supported by the plugin.
