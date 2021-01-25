@@ -81,6 +81,9 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
+		if (traceModel == null || firstElement == null || secondElement == null) {
+			return false;
+		}
 		GenericTraceModel root = (GenericTraceModel) traceModel;
 		List<RelatedTo> relevantLinks = new ArrayList<>();
 		List<RelatedTo> allTraces = root.getTraces();
