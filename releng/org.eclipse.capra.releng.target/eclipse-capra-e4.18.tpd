@@ -1,4 +1,4 @@
-target "eclipse-capra-e4.17" with source requirements
+target "eclipse-capra-e4.18" with source requirements
 
 location "http://download.eclipse.org/releases/2020-12/" eclipse-2020-12 {
 	org.eclipse.cdt.sdk.feature.group
