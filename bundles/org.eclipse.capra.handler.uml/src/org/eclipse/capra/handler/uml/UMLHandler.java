@@ -14,6 +14,7 @@
 package org.eclipse.capra.handler.uml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -73,7 +74,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 					connectionHash += element.hashCode();
 				}
 				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(investigatedElement, relatedElements, rel);
+					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, rel);
 					allElements.add(conn);
 					duplicationCheck.add(connectionHash);
 				}
@@ -87,7 +88,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				relatedElements.add(activityEdge.getSource());
 				int connectionHash = investigatedElement.hashCode() + activityEdge.hashCode();
 				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(investigatedElement, relatedElements, activityEdge);
+					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, activityEdge);
 					allElements.add(conn);
 					duplicationCheck.add(connectionHash);
 				}
@@ -102,7 +103,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 						+ transition.getTarget().hashCode() + transition.getSource().hashCode();
 				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(investigatedElement, relatedElements, transition);
+					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, transition);
 					allElements.add(conn);
 					duplicationCheck.add(connectionHash);
 				}
@@ -121,7 +122,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							+ msg.getMessageSort().hashCode() + sender.getCovered().hashCode()
 							+ receiver.getCovered().hashCode();
 					if (!duplicationCheck.contains(connectionHash)) {
-						Connection conn = new Connection(investigatedElement, relatedElements, msg);
+						Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, msg);
 						allElements.add(conn);
 						duplicationCheck.add(connectionHash);
 					}
@@ -141,7 +142,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 					connectionHash += el.hashCode();
 				}
 				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(investigatedElement, relatedElements, port);
+					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, port);
 					allElements.add(conn);
 					duplicationCheck.add(connectionHash);
 				}
@@ -164,7 +165,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 					connectionHash += el.hashCode();
 				}
 				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(investigatedElement, relatedElements, connector);
+					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, connector);
 					allElements.add(conn);
 					duplicationCheck.add(connectionHash);
 				}
@@ -193,7 +194,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								connectionHash += element.hashCode();
 							}
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, relation);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										relation);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}
@@ -210,7 +212,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							}
 							int connectionHash = investigatedElement.hashCode() + activityEdge.hashCode();
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, activityEdge);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										activityEdge);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}
@@ -223,7 +226,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 									+ transition.getTarget().hashCode();
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, transition);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										transition);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}
@@ -232,7 +236,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 									+ transition.getSource().hashCode();
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, transition);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										transition);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}
@@ -249,7 +254,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								int connectionHash = investigatedElement.hashCode() + msg.hashCode()
 										+ msg.getMessageSort().hashCode() + sender.getCovered().hashCode();
 								if (!duplicationCheck.contains(connectionHash)) {
-									Connection conn = new Connection(investigatedElement, relatedElements, msg);
+									Connection conn = new Connection(Arrays.asList(investigatedElement),
+											relatedElements, msg);
 									allElements.add(conn);
 									duplicationCheck.add(connectionHash);
 								}
@@ -258,7 +264,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								int connectionHash = investigatedElement.hashCode() + msg.hashCode()
 										+ msg.getMessageSort().hashCode() + receiver.getCovered().hashCode();
 								if (!duplicationCheck.contains(connectionHash)) {
-									Connection conn = new Connection(investigatedElement, relatedElements, msg);
+									Connection conn = new Connection(Arrays.asList(investigatedElement),
+											relatedElements, msg);
 									allElements.add(conn);
 									duplicationCheck.add(connectionHash);
 								}
@@ -294,7 +301,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								connectionHash += el.hashCode();
 							}
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, port);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										port);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}
@@ -325,7 +333,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								connectionHash += el.hashCode();
 							}
 							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(investigatedElement, relatedElements, connector);
+								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
+										connector);
 								allElements.add(conn);
 								duplicationCheck.add(connectionHash);
 							}

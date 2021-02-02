@@ -121,11 +121,11 @@ public class Connections {
 		Set<String> arrows = new HashSet<>();
 
 		connections.forEach(c -> {
-			c.getTargets().forEach(trg -> {
-				if (!trg.equals(c.getOrigin())) {
-					arrows.add(object2Id.get(c.getOrigin()) + "--" + object2Id.get(trg) + ":"
+			c.getOrigins().forEach(org -> {
+				c.getTargets().forEach(trg -> {
+					arrows.add(object2Id.get(org) + "--" + object2Id.get(trg) + ": "
 							+ EMFHelper.getIdentifier(c.getTlink()));
-				}
+				});
 			});
 		});
 

@@ -93,7 +93,7 @@ public class TestFeatureIDETraces {
 
 		// Create a trace via the selection view
 		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
-		assertTrue(TestHelper.thereIsATraceBetween(dummyFile, feature));
+		assertTrue(TestHelper.thereIsATraceBetween(feature, dummyFile));
 
 		// Clear selection view
 		SelectionView.getOpenedView().clearSelection();

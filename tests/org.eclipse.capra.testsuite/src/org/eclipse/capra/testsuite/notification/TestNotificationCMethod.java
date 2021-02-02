@@ -109,9 +109,9 @@ public class TestNotificationCMethod {
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
 		SelectionView.getOpenedView().dropToSelection(method);
 		SelectionView.getOpenedView().dropToSelection(A);
-		assertFalse(thereIsATraceBetween(A, method));
+		assertFalse(thereIsATraceBetween(method, A));
 		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
-		assertTrue(thereIsATraceBetween(A, method));
+		assertTrue(thereIsATraceBetween(method, A));
 
 		// Get current number of markers
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.operations;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -61,15 +62,18 @@ public class CreateTraceOperation extends AbstractOperation {
 	private static final String TRACE_LINK_SUCCESSFULLY_CREATED = "Trace link has been successfully created";
 	private static final String DO_NOT_SHOW_DIALOG_AGAIN = "Do not show this dialog again";
 	private static final String SELECT_TRACE_LINK_TYPE = "Select the trace type you want to create";
-	private static final String SELECTION = "Selection";
+	private static final String SOURCE = "Source:";
+	private static final String TARGET = "Target:";
 
 	private Optional<EClass> chosenType;
-	private List<EObject> wrappers;
+	private List<EObject> originWrappers;
+	private List<EObject> targetWrappers;
 	private EObject traceModel;
 
-	private List<?> artifacts = null;
+	private List<?> origins = null;
+	private List<?> targets = null;
 
-	private BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType = null;
+	private BiFunction<Collection<EClass>, TraceableObjects, Optional<EClass>> chooseTraceType = null;
 
 	/**
 	 * Creates a new operation to create links.
@@ -79,15 +83,17 @@ public class CreateTraceOperation extends AbstractOperation {
 	 * @param artifacts the artifacts on which this operation is performed. Should
 	 *                  never be <code>null</code>.
 	 */
-	public CreateTraceOperation(String label, List<?> artifacts) {
+	public CreateTraceOperation(String label, List<?> origins, List<?> targets) {
 		super(label);
-		Assert.isNotNull(artifacts);
-		this.artifacts = artifacts;
+		Assert.isNotNull(origins);
+		Assert.isNotNull(targets);
+		this.origins = origins;
+		this.targets = targets;
 	}
 
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-		if (artifacts == null || artifacts.isEmpty()) {
+		if (origins == null || targets == null || origins.isEmpty() || targets.isEmpty()) {
 			return Status.CANCEL_STATUS;
 		}
 		Shell shell = info.getAdapter(Shell.class);
@@ -106,14 +112,21 @@ public class CreateTraceOperation extends AbstractOperation {
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		TraceHelper traceHelper = new TraceHelper(traceModel);
-		if (this.wrappers != null && this.chosenType != null && this.traceModel != null) {
-			List<Connection> connections = traceHelper.getTraces(this.wrappers, this.chosenType.get());
+		if (this.originWrappers != null && this.targetWrappers != null && this.chosenType != null
+				&& this.traceModel != null) {
+			List<Connection> connections = traceHelper.getTraces(this.originWrappers, this.targetWrappers,
+					this.chosenType.get());
 			if (!connections.isEmpty()) {
 				traceHelper.deleteTraces(connections);
 				return Status.OK_STATUS;
 			}
 		}
 		return Status.CANCEL_STATUS;
+	}
+
+	public void createTrace(Shell shell) {
+		Assert.isNotNull(this.chooseTraceType);
+		this.createTrace(shell, this.chooseTraceType);
 	}
 
 	/**
@@ -125,7 +138,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	 *                        type
 	 */
 	public void createTrace(Shell shell,
-			BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
+			BiFunction<Collection<EClass>, TraceableObjects, Optional<EClass>> chooseTraceType) {
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
@@ -139,21 +152,25 @@ public class CreateTraceOperation extends AbstractOperation {
 		TraceHelper traceHelper = new TraceHelper(this.traceModel);
 
 		// Create the artifact wrappers
-		this.wrappers = artifactHelper.createWrappers(this.artifacts);
+		this.originWrappers = artifactHelper.createWrappers(this.origins);
+		this.targetWrappers = artifactHelper.createWrappers(this.targets);
+		List<EObject> allWrappers = new ArrayList<EObject>(this.originWrappers);
+		allWrappers.addAll(this.targetWrappers);
 
 		// Get the type of trace to be created
-		Collection<EClass> traceTypes = traceAdapter.getAvailableTraceTypes(this.wrappers);
-		this.chosenType = chooseTraceType.apply(traceTypes, this.wrappers);
+		Collection<EClass> traceTypes = traceAdapter.getAvailableTraceTypes(allWrappers);
+		this.chosenType = chooseTraceType.apply(traceTypes,
+				new TraceableObjects(this.originWrappers, this.targetWrappers));
 
 		// Create trace
 		if (this.chosenType.isPresent()) {
 			// check if the connection already exists
-			if (traceHelper.traceExists(this.wrappers, this.chosenType.get())) {
+			if (traceHelper.traceExists(this.originWrappers, this.targetWrappers, this.chosenType.get())) {
 				MessageDialog.openInformation(shell, CAPRA_INFORMATION, TRACE_LINK_EXISTS);
 			} else {
-				traceHelper.createTrace(this.wrappers, this.chosenType.get());
+				traceHelper.createTrace(originWrappers, targetWrappers, this.chosenType.get());
 				persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
-				traceHelper.annotateTrace(this.wrappers);
+				traceHelper.annotateTrace(allWrappers);
 
 				// check from preferences if user wants to see the "trace
 				// successfully created dialog"
@@ -173,11 +190,12 @@ public class CreateTraceOperation extends AbstractOperation {
 	 * @param chooseTraceType the bi-function to use to select a suitable trace link
 	 *                        type
 	 */
-	public void setChooseTraceType(BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
+	public void setChooseTraceType(BiFunction<Collection<EClass>, TraceableObjects, Optional<EClass>> chooseTraceType) {
 		this.chooseTraceType = chooseTraceType;
 	}
 
-	private Optional<EClass> getTraceTypeToCreate(Shell shell, Collection<EClass> traceTypes, List<EObject> wrappers) {
+	private Optional<EClass> getTraceTypeToCreate(Shell shell, Collection<EClass> traceTypes,
+			TraceableObjects traceableObjects) {
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -188,8 +206,10 @@ public class CreateTraceOperation extends AbstractOperation {
 		dialog.setTitle(SELECT_TRACE_LINK_TYPE);
 		dialog.setElements(traceTypes.toArray());
 
-		dialog.setMessage(
-				SELECTION + " : " + wrappers.stream().map(this::getSelectionDisplayName).collect(Collectors.toList()));
+		dialog.setMessage(SOURCE + ": "
+				+ traceableObjects.getOrigins().stream().map(this::getSelectionDisplayName).collect(Collectors.toList())
+				+ "\n" + TARGET + ": " + traceableObjects.getTargets().stream().map(this::getSelectionDisplayName)
+						.collect(Collectors.toList()));
 
 		if (dialog.open() == Window.OK) {
 			return Optional.of((EClass) dialog.getFirstResult());
@@ -206,6 +226,26 @@ public class CreateTraceOperation extends AbstractOperation {
 
 		return handler.withCastedHandler(artifactHelper.unwrapWrapper(element), (h, o) -> h.getDisplayName(o))
 				.orElse(EMFHelper.getIdentifier(element));
+
+	}
+
+	public class TraceableObjects {
+
+		public TraceableObjects(List<EObject> origins, List<EObject> targets) {
+			this.origins = origins;
+			this.targets = targets;
+		}
+
+		private List<EObject> origins;
+		private List<EObject> targets;
+
+		public List<EObject> getOrigins() {
+			return origins;
+		}
+
+		public List<EObject> getTargets() {
+			return targets;
+		}
 
 	}
 
