@@ -92,7 +92,8 @@ public class ConnectionAdapter implements IPropertySource {
 	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(DescriptorIDs.ORIGIN)) {
-			return artifactHelper.getArtifactLabel(connection.getOrigin());
+			return connection.getOrigins().stream().map(o -> artifactHelper.getArtifactLabel(o))
+					.collect(Collectors.toList());
 		} else if (id.equals(DescriptorIDs.TARGETS)) {
 			return connection.getTargets().stream().map(artifactHelper::getArtifactLabel).collect(Collectors.toList());
 		} else if (id.equals(DescriptorIDs.TYPE)) {

@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -117,15 +116,8 @@ public class TestCreateTraceOperation {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IOperationHistory operationHistory = workbench.getOperationSupport().getOperationHistory();
 
-		CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create trace link",
-				SelectionView.getOpenedView().getSelection());
-		createTraceOperation.setChooseTraceType((traceTypes, selection) -> {
-			if (traceTypes.contains(traceType)) {
-				return Optional.of(traceType);
-			} else {
-				return Optional.empty();
-			}
-		});
+		CreateTraceOperation createTraceOperation = TestHelper
+				.prepareCreateTraceOperationForCurrentSelectionOfType(traceType);
 		try {
 			assertEquals(operationHistory.execute(createTraceOperation, null, adapter), Status.OK_STATUS);
 		} catch (ExecutionException e) {
@@ -152,15 +144,8 @@ public class TestCreateTraceOperation {
 		SelectionView.getOpenedView().dropToSelection(_A);
 		SelectionView.getOpenedView().dropToSelection(_C);
 
-		CreateTraceOperation createTraceOperation2 = new CreateTraceOperation("Create trace link",
-				SelectionView.getOpenedView().getSelection());
-		createTraceOperation2.setChooseTraceType((traceTypes, sel) -> {
-			if (traceTypes.contains(traceType)) {
-				return Optional.of(traceType);
-			} else {
-				return Optional.empty();
-			}
-		});
+		CreateTraceOperation createTraceOperation2 = TestHelper
+				.prepareCreateTraceOperationForCurrentSelectionOfType(traceType);
 		try {
 			assertEquals(operationHistory.execute(createTraceOperation2, null, adapter), Status.OK_STATUS);
 		} catch (ExecutionException e) {

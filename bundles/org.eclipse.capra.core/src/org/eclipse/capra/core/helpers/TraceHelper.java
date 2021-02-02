@@ -14,6 +14,7 @@
 package org.eclipse.capra.core.helpers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -50,12 +51,13 @@ public class TraceHelper {
 	/**
 	 * Create a trace of the given traceType
 	 *
-	 * @param wrappers
+	 * @param origins
+	 * @param targets
 	 * @param traceType
 	 * @return the trace link that has been created
 	 */
-	public EObject createTrace(List<EObject> wrappers, EClass traceType) {
-		return traceAdapter.createTrace(traceType, traceModel, wrappers);
+	public EObject createTrace(List<EObject> origins, List<EObject> targets, EClass traceType) {
+		return traceAdapter.createTrace(traceType, traceModel, origins, targets);
 	}
 
 	/**
@@ -119,8 +121,10 @@ public class TraceHelper {
 	 */
 	public List<EObject> getTracedElements(Connection connection) {
 		List<EObject> tracedElements = new ArrayList<>();
-		if (!tracedElements.contains(connection.getOrigin())) {
-			tracedElements.add(connection.getOrigin());
+		for (EObject origin : connection.getOrigins()) {
+			if (!tracedElements.contains(origin)) {
+				tracedElements.add(origin);
+			}
 		}
 		for (EObject target : connection.getTargets()) {
 			if (!tracedElements.contains(target)) {
@@ -137,32 +141,57 @@ public class TraceHelper {
 	 * @param selection the selected elements
 	 * @param traceType the type of trace link
 	 * @return true if the link exists
+	 * @deprecated As of 0.8.2. Please use {@link #traceExists(List, List, EClass)}
+	 *             instead
 	 */
+	@Deprecated
 	public boolean traceExists(List<EObject> selection, EClass traceType) {
 		return !getTraces(selection, traceType).isEmpty();
+	}
+
+	public boolean traceExists(List<EObject> origins, List<EObject> targets, EClass traceType) {
+		return !getTraces(origins, targets, traceType).isEmpty();
 	}
 
 	/**
 	 * Returns all trace links of the given type containing the given selection that
 	 * exist in the trace model set in the instance of this class.
 	 * 
+	 * This version of the method implicitly treats the first element in the
+	 * provided list as the source and the rest as the targets of the link.
+	 * 
 	 * @param selection the selected elements
 	 * @param traceType the type of trace link
 	 * @return a list of trace links that fit the criteria
+	 * @deprecated As of 0.8.2. Please use {@link #getTraces(List, List, EClass)}
+	 *             instead.
 	 */
+	@Deprecated
 	public List<Connection> getTraces(List<EObject> selection, EClass traceType) {
-		// create a connection
-		List<EObject> allElements = new ArrayList<>(selection);
-		EObject source = allElements.get(0);
-		allElements.remove(0);
-		List<EObject> targets = allElements;
 
+		List<EObject> targets = new ArrayList<>(selection);
+		EObject origin = targets.get(0);
+		targets.remove(0);
+		return getTraces(Arrays.asList(origin), targets, traceType);
+	}
+
+	/**
+	 * Returns all trace links of the given type containing the given origins and
+	 * targets that exist in the trace model set in the instance of this class.
+	 * 
+	 * @param origins
+	 * @param targets
+	 * @param traceType the type of trace link
+	 * @return a list of trace links that fit the criteria
+	 */
+	public List<Connection> getTraces(List<EObject> origins, List<EObject> targets, EClass traceType) {
 		// create temporary trace model with a temporary trace link
 		EObject tempTraceModel = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow()
 				.getTraceModel(new ResourceSetImpl());
-		EObject tempTlink = traceAdapter.createTrace(traceType, tempTraceModel, selection);
+		EObject tempTlink = traceAdapter.createTrace(traceType, tempTraceModel, origins, targets);
 
-		Connection connection = new Connection(source, targets, tempTlink);
+		// create a connection
+		Connection connection = new Connection(origins, targets, tempTlink);
 
 		return traceAdapter.getAllTraceLinks(this.traceModel).stream().filter(c -> c.equals(connection))
 				.collect(Collectors.toCollection(ArrayList::new));
@@ -175,7 +204,6 @@ public class TraceHelper {
 	 * @param artifact the artifact to look for
 	 * @return true if the artifact exists, false otherwise
 	 */
-
 	public boolean isArtifactInTraceModel(EObject artifact) {
 		List<EObject> artifacts = new ArrayList<>();
 		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
@@ -231,11 +259,8 @@ public class TraceHelper {
 	public static Set<EObject> getTracedElements(Collection<Connection> traces) {
 		Set<EObject> inserted = new HashSet<>();
 		for (Connection trace : traces) {
-			inserted.add(trace.getOrigin());
-			List<EObject> targets = trace.getTargets();
-			for (EObject target : targets) {
-				inserted.add(target);
-			}
+			inserted.addAll(trace.getOrigins());
+			inserted.addAll(trace.getTargets());
 		}
 		return inserted;
 	}

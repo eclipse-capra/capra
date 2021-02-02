@@ -28,18 +28,18 @@ import org.eclipse.emf.ecore.EObject;
  * @author Anthony Anjorin, Salome Maro
  */
 public class Connection {
-	private EObject origin;
+	private List<EObject> origins;
 	private List<EObject> targets;
 	private EObject tlink;
 
-	public Connection(EObject origin, List<EObject> targets, EObject tlink) {
-		this.origin = origin;
+	public Connection(List<EObject> origins, List<EObject> targets, EObject tlink) {
+		this.origins = origins;
 		this.targets = targets;
 		this.tlink = tlink;
 	}
 
-	public EObject getOrigin() {
-		return origin;
+	public List<EObject> getOrigins() {
+		return origins;
 	}
 
 	public List<EObject> getTargets() {
@@ -64,10 +64,10 @@ public class Connection {
 		Connection connection = (Connection) object;
 
 		List<EObject> allFirstElements = new ArrayList<>(this.getTargets());
-		allFirstElements.add(this.getOrigin());
+		allFirstElements.addAll(this.getOrigins());
 
 		List<EObject> allSecondElements = new ArrayList<>(connection.getTargets());
-		allSecondElements.add(connection.getOrigin());
+		allSecondElements.addAll(connection.getOrigins());
 
 		String firstTraceType = EMFHelper.getIdentifier(this.getTlink().eClass());
 		String secondTracetype = EMFHelper.getIdentifier(connection.getTlink().eClass());
@@ -86,7 +86,8 @@ public class Connection {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((origin == null) ? 0 : EMFHelper.getIdentifier(origin).hashCode());
+		result = prime * result
+				+ ((origins == null) ? 0 : origins.stream().mapToInt(e -> EMFHelper.getIdentifier(e).hashCode()).sum());
 		result = prime * result
 				+ ((targets == null) ? 0 : targets.stream().mapToInt(e -> EMFHelper.getIdentifier(e).hashCode()).sum());
 		result = prime * result + ((tlink == null) ? 0 : tlink.hashCode());

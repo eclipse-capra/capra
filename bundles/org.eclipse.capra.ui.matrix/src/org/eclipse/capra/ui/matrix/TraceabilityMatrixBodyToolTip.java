@@ -84,7 +84,8 @@ public class TraceabilityMatrixBodyToolTip extends NatTableContentTooltip {
 			EObject eClass = connection.getTlink().eClass();
 			String traceType = (eClass == null ? "" : ((EClass) eClass).getName());
 			Set<String> artifactNames = new LinkedHashSet<>();
-			artifactNames.add(artifactHelper.getArtifactLabel(connection.getOrigin()));
+			artifactNames.addAll(connection.getOrigins().stream().map(a -> artifactHelper.getArtifactLabel(a))
+					.collect(Collectors.toCollection(ArrayList::new)));
 			artifactNames.addAll(connection.getTargets().stream().map(a -> artifactHelper.getArtifactLabel(a))
 					.collect(Collectors.toCollection(ArrayList::new)));
 			StringBuilder tooltipBuilder = new StringBuilder();

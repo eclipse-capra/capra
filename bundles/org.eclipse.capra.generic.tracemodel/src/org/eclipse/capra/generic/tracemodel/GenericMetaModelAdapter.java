@@ -14,6 +14,7 @@
 package org.eclipse.capra.generic.tracemodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,11 +61,12 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 	}
 
 	@Override
-	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection) {
+	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> origins, List<EObject> targets) {
 		GenericTraceModel tm = (GenericTraceModel) traceModel;
 		EObject trace = TracemodelFactory.eINSTANCE.create(traceType);
 		RelatedTo relatedToTrace = (RelatedTo) trace;
-		relatedToTrace.getItem().addAll(selection);
+		relatedToTrace.setOrigin(origins.get(0));
+		relatedToTrace.getTargets().addAll(targets);
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -73,7 +75,10 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		// elements it connects so as to make it easy for a user to visually
 		// differentiate trace links
 		StringBuilder name = new StringBuilder();
-		for (Object obj : selection) {
+		name.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(origins.get(0))).orElseThrow()
+				.withCastedHandler(artifactHelper.unwrapWrapper(origins.get(0)), (h, e) -> h.getDisplayName(e))
+				.orElseGet(origins.get(0)::toString));
+		for (Object obj : targets) {
 			name.append(" ")
 					.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj)).orElseThrow()
 							.withCastedHandler(artifactHelper.unwrapWrapper(obj), (h, e) -> h.getDisplayName(e))
@@ -111,8 +116,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<RelatedTo> allTraces = root.getTraces();
 
 		for (RelatedTo trace : allTraces) {
-			if (!firstElement.equals(secondElement) && EMFHelper.isElementInList(trace.getItem(), firstElement)
-					&& EMFHelper.isElementInList(trace.getItem(), secondElement)) {
+			if (!firstElement.equals(secondElement) && EMFHelper.hasSameIdentifier(firstElement, trace.getOrigin())
+					&& EMFHelper.isElementInList(trace.getTargets(), secondElement)) {
 				relevantLinks.add(trace);
 			}
 		}
@@ -121,23 +126,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public List<Connection> getConnectedElements(EObject element, EObject tracemodel) {
-		GenericTraceModel root = (GenericTraceModel) tracemodel;
-		List<Connection> connections = new ArrayList<>();
-		List<RelatedTo> traces = root.getTraces();
-
-		if (element instanceof RelatedTo) {
-			RelatedTo trace = (RelatedTo) element;
-			connections.add(new Connection(element, trace.getItem(), trace));
-		} else {
-			for (RelatedTo trace : traces) {
-				for (EObject item : trace.getItem()) {
-					if (EcoreUtil.equals(item, element)) {
-						connections.add(new Connection(element, trace.getItem(), trace));
-					}
-				}
-			}
-		}
-		return connections;
+		return this.getConnectedElements(element, tracemodel, new ArrayList<String>());
 	}
 
 	@Override
@@ -151,12 +140,14 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				|| selectedRelationshipTypes.contains(TracemodelPackage.eINSTANCE.getRelatedTo().getName())) {
 			if (element instanceof RelatedTo) {
 				RelatedTo trace = (RelatedTo) element;
-				connections.add(new Connection(element, trace.getItem(), trace));
+				connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
 			} else {
 				for (RelatedTo trace : traces) {
-					for (EObject item : trace.getItem()) {
+					List<EObject> allItems = new ArrayList<>(trace.getTargets());
+					allItems.add(trace.getOrigin());
+					for (EObject item : allItems) {
 						if (EcoreUtil.equals(item, element)) {
-							connections.add(new Connection(element, trace.getItem(), trace));
+							connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
 						}
 					}
 				}
@@ -199,11 +190,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		List<Connection> allLinks = new ArrayList<>();
 
 		for (RelatedTo trace : model.getTraces()) {
-			List<EObject> allItems = new ArrayList<>();
-			allItems.addAll(trace.getItem());
-			EObject origin = allItems.get(0);
-			allItems.remove(0);
-			allLinks.add(new Connection(origin, allItems, trace));
+			allLinks.add(new Connection(Arrays.asList(trace.getOrigin()), trace.getTargets(), trace));
 		}
 		return allLinks;
 	}

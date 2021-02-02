@@ -71,21 +71,21 @@ public class TestTraceabiltyMatrix {
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|modelA : EPackage|modelB : EPackage" + LINE_SEPARATOR
-			+ "modelA : EPackage |. |X" + LINE_SEPARATOR + "modelB : EPackage |X |." + LINE_SEPARATOR + "}"
+			+ "modelA : EPackage |. |X" + LINE_SEPARATOR + "modelB : EPackage |. |." + LINE_SEPARATOR + "}"
 			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR
 			+ ".|modelA : EPackage|A : EClass|AA : EClass|modelB : EPackage|B : EClass|BB : EClass" + LINE_SEPARATOR
 			+ "modelA : EPackage |. |. |. |X |. |." + LINE_SEPARATOR + "A : EClass |. |. |. |. |X |." + LINE_SEPARATOR
-			+ "AA : EClass |. |. |. |. |. |X" + LINE_SEPARATOR + "modelB : EPackage |X |. |. |. |. |." + LINE_SEPARATOR
-			+ "B : EClass |. |X |. |. |. |." + LINE_SEPARATOR + "BB : EClass |. |. |X |. |. |." + LINE_SEPARATOR + "}"
+			+ "AA : EClass |. |. |. |. |. |X" + LINE_SEPARATOR + "modelB : EPackage |. |. |. |. |. |." + LINE_SEPARATOR
+			+ "B : EClass |. |. |. |. |. |." + LINE_SEPARATOR + "BB : EClass |. |. |. |. |. |." + LINE_SEPARATOR + "}"
 			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_SELECTED_CLASSES = "@startuml" + LINE_SEPARATOR + "salt"
 			+ LINE_SEPARATOR + "{#" + LINE_SEPARATOR + ".|A : EClass|B : EClass|AA : EClass|BB : EClass"
-			+ LINE_SEPARATOR + "A : EClass |. |X |. |." + LINE_SEPARATOR + "B : EClass |X |. |. |." + LINE_SEPARATOR
-			+ "AA : EClass |. |. |. |X" + LINE_SEPARATOR + "BB : EClass |. |. |X |." + LINE_SEPARATOR + "}"
+			+ LINE_SEPARATOR + "A : EClass |. |X |. |." + LINE_SEPARATOR + "B : EClass |. |. |. |." + LINE_SEPARATOR
+			+ "AA : EClass |. |. |. |X" + LINE_SEPARATOR + "BB : EClass |. |. |. |." + LINE_SEPARATOR + "}"
 			+ LINE_SEPARATOR + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	@Before
@@ -186,13 +186,13 @@ public class TestTraceabiltyMatrix {
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT, plantUMLTextForSelectedPackages_Direct);
 
 		// Test transitively connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedPackages_Transitive.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE, plantUMLTextForSelectedPackages_Transitive);
 
 		// test multiple classes selected
 		List<Object> selectedClasses = new ArrayList<>();
@@ -203,7 +203,7 @@ public class TestTraceabiltyMatrix {
 
 		String plantUMLTextForSelectedClasses = provider.getDiagramText(selectedClasses,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedClasses.equals(EXPECTED_TEXT_FOR_SELECTED_CLASSES));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_CLASSES, plantUMLTextForSelectedClasses);
 	}
 
 	private void removeTraceModel(ResourceSet rs) {

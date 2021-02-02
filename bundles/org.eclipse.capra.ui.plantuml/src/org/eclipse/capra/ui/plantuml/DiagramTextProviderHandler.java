@@ -158,17 +158,19 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		List<Connection> relevantTraces = new ArrayList<>();
 		List<EObject> wrappers = new ArrayList<>();
 		for (Connection connection : traces) {
-			if (selectedEObjects.contains(connection.getOrigin())
+			if (selectedEObjects.containsAll(connection.getOrigins())
 					&& selectedEObjects.stream().anyMatch(connection.getTargets()::contains)) {
-				Connection newConnection = new Connection(connection.getOrigin(), connection.getTargets().stream()
+				Connection newConnection = new Connection(connection.getOrigins(), connection.getTargets().stream()
 						.filter(selectedEObjects::contains).collect(Collectors.toList()), connection.getTlink());
 				relevantTraces.add(newConnection);
-				IArtifactHandler<Object> originHandler = (IArtifactHandler<Object>) artifactHelper
-						.getHandler(connection.getOrigin()).orElseThrow();
-				wrappers.add(originHandler.createWrapper(connection.getOrigin(), artifactModel));
+				connection.getOrigins().stream().filter(selectedEObjects::contains).forEach(o -> {
+					IArtifactHandler<Object> originHandler = (IArtifactHandler<Object>) artifactHelper.getHandler(o)
+							.orElseThrow();
+					wrappers.add(originHandler.createWrapper(o, artifactModel));
+				});
 				connection.getTargets().stream().filter(selectedEObjects::contains).forEach(t -> {
-					IArtifactHandler<Object> targetHandler = (IArtifactHandler<Object>) artifactHelper
-							.getHandler(connection.getOrigin()).orElseThrow();
+					IArtifactHandler<Object> targetHandler = (IArtifactHandler<Object>) artifactHelper.getHandler(t)
+							.orElseThrow();
 					wrappers.add(targetHandler.createWrapper(t, artifactModel));
 				});
 			}

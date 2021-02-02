@@ -84,7 +84,7 @@ public class ModelChangeListener extends EContentAdapter {
 			if (!connections.isEmpty()) {
 				for (Connection c : connections) {
 					List<EObject> tempList = new ArrayList<>();
-					tempList.add(c.getOrigin());
+					tempList.addAll(c.getOrigins());
 					tempList.addAll(c.getTargets());
 
 					for (EObject tracedItem : tempList) {

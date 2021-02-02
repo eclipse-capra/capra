@@ -122,13 +122,22 @@ public interface TracemodelPackage extends EPackage {
 	int RELATED_TO__NAME = 1;
 
 	/**
-	 * The feature id for the '<em><b>Item</b></em>' reference list.
+	 * The feature id for the '<em><b>Origin</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RELATED_TO__ITEM = 2;
+	int RELATED_TO__ORIGIN = 2;
+
+	/**
+	 * The feature id for the '<em><b>Targets</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELATED_TO__TARGETS = 3;
 
 	/**
 	 * The number of structural features of the '<em>Related To</em>' class.
@@ -137,7 +146,7 @@ public interface TracemodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RELATED_TO_FEATURE_COUNT = 3;
+	int RELATED_TO_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Related To</em>' class.
@@ -203,15 +212,26 @@ public interface TracemodelPackage extends EPackage {
 	EAttribute getRelatedTo_Name();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getItem <em>Item</em>}'.
+	 * Returns the meta object for the reference '{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getOrigin <em>Origin</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Item</em>'.
-	 * @see org.eclipse.capra.generic.tracemodel.RelatedTo#getItem()
+	 * @return the meta object for the reference '<em>Origin</em>'.
+	 * @see org.eclipse.capra.generic.tracemodel.RelatedTo#getOrigin()
 	 * @see #getRelatedTo()
 	 * @generated
 	 */
-	EReference getRelatedTo_Item();
+	EReference getRelatedTo_Origin();
+
+	/**
+	 * Returns the meta object for the reference list '{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getTargets <em>Targets</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Targets</em>'.
+	 * @see org.eclipse.capra.generic.tracemodel.RelatedTo#getTargets()
+	 * @see #getRelatedTo()
+	 * @generated
+	 */
+	EReference getRelatedTo_Targets();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -281,12 +301,20 @@ public interface TracemodelPackage extends EPackage {
 		EAttribute RELATED_TO__NAME = eINSTANCE.getRelatedTo_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Item</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Origin</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference RELATED_TO__ITEM = eINSTANCE.getRelatedTo_Item();
+		EReference RELATED_TO__ORIGIN = eINSTANCE.getRelatedTo_Origin();
+
+		/**
+		 * The meta object literal for the '<em><b>Targets</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference RELATED_TO__TARGETS = eINSTANCE.getRelatedTo_Targets();
 
 	}
 

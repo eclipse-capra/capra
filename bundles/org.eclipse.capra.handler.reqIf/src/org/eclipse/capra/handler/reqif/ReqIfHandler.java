@@ -14,6 +14,7 @@
 package org.eclipse.capra.handler.reqif;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,13 +102,12 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 							}
 						}
 					}
-					connections.add(new Connection(investigatedElement, targets, r));
+					connections.add(new Connection(Arrays.asList(investigatedElement), targets, r));
 				}
 			}
 			return connections;
-		} else {
+		} else
 			return Collections.emptyList();
-		}
 	}
 
 	@Override

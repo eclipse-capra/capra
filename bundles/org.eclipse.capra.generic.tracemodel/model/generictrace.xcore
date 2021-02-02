@@ -11,5 +11,6 @@ class RelatedTo {
 			EcoreUtil.generateUUID();
 	}
 	String name
-	refers EObject [0..*] item 
+	refers EObject [1] origin
+	refers EObject [1..*] targets 
 }    
