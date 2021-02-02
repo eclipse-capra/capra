@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -263,22 +264,29 @@ public class TestHelper {
 		return (EPackage) rs.getResource(path, true).getContents().get(0);
 	}
 
-	/**
-	 * Creates a trace between the objects that are in the Selection view.
-	 *
-	 * @param traceType the type of the trace that is to connect the objects
-	 */
-	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+	public static CreateTraceOperation prepareCreateTraceOperationForCurrentSelectionOfType(EClass traceType) {
 		CreateTraceOperation operation = new CreateTraceOperation("Create trace link",
-				SelectionView.getOpenedView().getSelection());
-		operation.createTrace(shell, (traceTypes, selection) -> {
+				Arrays.asList(SelectionView.getOpenedView().getSelection().get(0)), SelectionView.getOpenedView()
+						.getSelection().subList(1, SelectionView.getOpenedView().getSelection().size()));
+		operation.setChooseTraceType((traceTypes, selection) -> {
 			if (traceTypes.contains(traceType)) {
 				return Optional.of(traceType);
 			} else {
 				return Optional.empty();
 			}
 		});
+		return operation;
+	}
+
+	/**
+	 * Creates a trace between the objects that are in the Selection view.
+	 *
+	 * @param traceType the type of the trace that is to connect the objects
+	 */
+	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
+		CreateTraceOperation operation = prepareCreateTraceOperationForCurrentSelectionOfType(traceType);
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		operation.createTrace(shell);
 	}
 
 	/**

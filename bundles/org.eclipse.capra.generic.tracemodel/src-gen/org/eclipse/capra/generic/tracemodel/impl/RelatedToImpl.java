@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -30,7 +31,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <ul>
  *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getID <em>ID</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getItem <em>Item</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getOrigin <em>Origin</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.tracemodel.impl.RelatedToImpl#getTargets <em>Targets</em>}</li>
  * </ul>
  *
  * @generated
@@ -67,14 +69,24 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getItem() <em>Item</em>}' reference list.
+	 * The cached value of the '{@link #getOrigin() <em>Origin</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getItem()
+	 * @see #getOrigin()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<EObject> item;
+	protected EObject origin;
+
+	/**
+	 * The cached value of the '{@link #getTargets() <em>Targets</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTargets()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<EObject> targets;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -130,11 +142,49 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<EObject> getItem() {
-		if (item == null) {
-			item = new EObjectResolvingEList<EObject>(EObject.class, this, TracemodelPackage.RELATED_TO__ITEM);
+	public EObject getOrigin() {
+		if (origin != null && origin.eIsProxy()) {
+			InternalEObject oldOrigin = (InternalEObject)origin;
+			origin = eResolveProxy(oldOrigin);
+			if (origin != oldOrigin) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, TracemodelPackage.RELATED_TO__ORIGIN, oldOrigin, origin));
+			}
 		}
-		return item;
+		return origin;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EObject basicGetOrigin() {
+		return origin;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setOrigin(EObject newOrigin) {
+		EObject oldOrigin = origin;
+		origin = newOrigin;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TracemodelPackage.RELATED_TO__ORIGIN, oldOrigin, origin));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<EObject> getTargets() {
+		if (targets == null) {
+			targets = new EObjectResolvingEList<EObject>(EObject.class, this, TracemodelPackage.RELATED_TO__TARGETS);
+		}
+		return targets;
 	}
 
 	/**
@@ -149,8 +199,11 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 				return getID();
 			case TracemodelPackage.RELATED_TO__NAME:
 				return getName();
-			case TracemodelPackage.RELATED_TO__ITEM:
-				return getItem();
+			case TracemodelPackage.RELATED_TO__ORIGIN:
+				if (resolve) return getOrigin();
+				return basicGetOrigin();
+			case TracemodelPackage.RELATED_TO__TARGETS:
+				return getTargets();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -167,9 +220,12 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 			case TracemodelPackage.RELATED_TO__NAME:
 				setName((String)newValue);
 				return;
-			case TracemodelPackage.RELATED_TO__ITEM:
-				getItem().clear();
-				getItem().addAll((Collection<? extends EObject>)newValue);
+			case TracemodelPackage.RELATED_TO__ORIGIN:
+				setOrigin((EObject)newValue);
+				return;
+			case TracemodelPackage.RELATED_TO__TARGETS:
+				getTargets().clear();
+				getTargets().addAll((Collection<? extends EObject>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -186,8 +242,11 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 			case TracemodelPackage.RELATED_TO__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case TracemodelPackage.RELATED_TO__ITEM:
-				getItem().clear();
+			case TracemodelPackage.RELATED_TO__ORIGIN:
+				setOrigin((EObject)null);
+				return;
+			case TracemodelPackage.RELATED_TO__TARGETS:
+				getTargets().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -205,8 +264,10 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 				return ID_EDEFAULT == null ? getID() != null : !ID_EDEFAULT.equals(getID());
 			case TracemodelPackage.RELATED_TO__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case TracemodelPackage.RELATED_TO__ITEM:
-				return item != null && !item.isEmpty();
+			case TracemodelPackage.RELATED_TO__ORIGIN:
+				return origin != null;
+			case TracemodelPackage.RELATED_TO__TARGETS:
+				return targets != null && !targets.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

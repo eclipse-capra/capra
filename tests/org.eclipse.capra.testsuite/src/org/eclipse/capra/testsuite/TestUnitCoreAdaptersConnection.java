@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -110,22 +111,22 @@ public class TestUnitCoreAdaptersConnection {
 		targetsAll.add(classC);
 
 		// create a connection
-		Connection con1 = new Connection(classA, targets, tlinkB);
+		Connection con1 = new Connection(Arrays.asList(classA), targets, tlinkB);
 		// create a connection
-		Connection con2 = new Connection(classA, targets, tlinkB);
+		Connection con2 = new Connection(Arrays.asList(classA), targets, tlinkB);
 		// create a connection
-		Connection con3 = new Connection(classA, targets, tlinkB);
+		Connection con3 = new Connection(Arrays.asList(classA), targets, tlinkB);
 
 		// create a connection
-		Connection con4 = new Connection(classA, targets, tlinkA);
+		Connection con4 = new Connection(Arrays.asList(classA), targets, tlinkA);
 
 		// create a connection
-		Connection con5 = new Connection(classB, targets, tlinkB);
+		Connection con5 = new Connection(Arrays.asList(classB), targets, tlinkB);
 		// create a connection
-		Connection con8 = new Connection(classC, targets, tlinkB);
+		Connection con8 = new Connection(Arrays.asList(classC), targets, tlinkB);
 
 		// create a connection
-		Connection con6 = new Connection(classA, targetsAll, tlinkB);
+		Connection con6 = new Connection(Arrays.asList(classA), targetsAll, tlinkB);
 
 		// check if the connections equals not null
 		assertFalse("expected: " + con1 + " equals: " + null, con1.equals(null));
@@ -163,7 +164,7 @@ public class TestUnitCoreAdaptersConnection {
 
 		targets.remove(0);
 		// create a connection
-		Connection con7 = new Connection(classA, targets, tlinkB);
+		Connection con7 = new Connection(Arrays.asList(classA), targets, tlinkB);
 		// check if con is consistent when target is being modified
 		assertTrue(con1.equals(con7));
 		targetsAll.removeAll(targetsAll.subList(0, 2));
@@ -220,13 +221,13 @@ public class TestUnitCoreAdaptersConnection {
 		targets.add(classC);
 
 		// create a connection
-		Connection con1 = new Connection(classA, targets, tlinkA);
+		Connection con1 = new Connection(Arrays.asList(classA), targets, tlinkA);
 
 		// create a connection
-		Connection con2 = new Connection(classA, targets, tlinkA);
+		Connection con2 = new Connection(Arrays.asList(classA), targets, tlinkA);
 
 		// create a connection
-		Connection con3 = new Connection(classA, targetsC, tlinkA);
+		Connection con3 = new Connection(Arrays.asList(classA), targetsC, tlinkA);
 
 		// create an empty origin connection
 		Connection emptyOrigin1 = new Connection(null, targets, tlinkA);
@@ -236,18 +237,18 @@ public class TestUnitCoreAdaptersConnection {
 		Connection emptyOrigin3 = new Connection(null, targetsC, tlinkA);
 
 		// create an empty target connection
-		Connection emptyTargetCon1 = new Connection(classA, null, tlinkA);
+		Connection emptyTargetCon1 = new Connection(Arrays.asList(classA), null, tlinkA);
 		// create an empty target connection
-		Connection emptyTargetCon2 = new Connection(classA, null, tlinkA);
+		Connection emptyTargetCon2 = new Connection(Arrays.asList(classA), null, tlinkA);
 		// create an empty target connection
-		Connection emptyTargetCon3 = new Connection(classB, null, tlinkA);
+		Connection emptyTargetCon3 = new Connection(Arrays.asList(classB), null, tlinkA);
 
 		// create an empty link connection
-		Connection emptyTLinkCon1 = new Connection(classA, targets, null);
+		Connection emptyTLinkCon1 = new Connection(Arrays.asList(classA), targets, null);
 		// create an empty link connection
-		Connection emptyTLinkCon2 = new Connection(classA, targets, null);
+		Connection emptyTLinkCon2 = new Connection(Arrays.asList(classA), targets, null);
 		// create an empty link connection
-		Connection emptyTLinkCon3 = new Connection(classB, targets, null);
+		Connection emptyTLinkCon3 = new Connection(Arrays.asList(classB), targets, null);
 
 		// check if the hashcode returns the same when invoked on the same object
 		assertEquals(con1.hashCode(), con1.hashCode());

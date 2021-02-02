@@ -89,11 +89,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		List<Integer> hashCodes = new ArrayList<>();
 
 		for (Connection conn : existingTraces) {
-			int connectionHash = conn.getOrigin().hashCode() + conn.getTlink().hashCode();
-			for (EObject targ : conn.getTargets()) {
-				connectionHash += targ.hashCode();
-			}
-			hashCodes.add(connectionHash);
+			hashCodes.add(conn.hashCode());
 		}
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -101,18 +97,16 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		for (Connection conn : directElements) {
-			int connectionHash = conn.getOrigin().hashCode() + conn.getTlink().hashCode();
-			for (EObject targ : conn.getTargets()) {
-				connectionHash += targ.hashCode();
-			}
-			if (!hashCodes.contains(connectionHash)) {
+			if (!hashCodes.contains(conn.hashCode())) {
 				allElements.add(conn);
 			}
 			// get internal links from source
-			Object origin = artifactHelper.unwrapWrapper(conn.getOrigin());
-			IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).orElseThrow();
-			if (originHandler != null) {
-				allElements.addAll(originHandler.addInternalLinks(conn.getOrigin(), selectedRelationshipTypes));
+			for (EObject o : conn.getOrigins()) {
+				Object origin = artifactHelper.unwrapWrapper(o);
+				IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).get();
+				if (originHandler != null) {
+					allElements.addAll(originHandler.addInternalLinks(o, selectedRelationshipTypes));
+				}
 			}
 			// get internal links from targets
 			for (EObject o : conn.getTargets()) {

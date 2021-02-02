@@ -150,8 +150,17 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getRelatedTo_Item() {
+	public EReference getRelatedTo_Origin() {
 		return (EReference)relatedToEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getRelatedTo_Targets() {
+		return (EReference)relatedToEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -188,7 +197,8 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 		relatedToEClass = createEClass(RELATED_TO);
 		createEAttribute(relatedToEClass, RELATED_TO__ID);
 		createEAttribute(relatedToEClass, RELATED_TO__NAME);
-		createEReference(relatedToEClass, RELATED_TO__ITEM);
+		createEReference(relatedToEClass, RELATED_TO__ORIGIN);
+		createEReference(relatedToEClass, RELATED_TO__TARGETS);
 	}
 
 	/**
@@ -230,7 +240,8 @@ public class TracemodelPackageImpl extends EPackageImpl implements TracemodelPac
 		initEClass(relatedToEClass, RelatedTo.class, "RelatedTo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRelatedTo_ID(), theEcorePackage.getEString(), "ID", null, 0, 1, RelatedTo.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRelatedTo_Name(), theEcorePackage.getEString(), "name", null, 0, 1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getRelatedTo_Item(), theEcorePackage.getEObject(), null, "item", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getRelatedTo_Origin(), theEcorePackage.getEObject(), null, "origin", null, 1, 1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getRelatedTo_Targets(), theEcorePackage.getEObject(), null, "targets", null, 1, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

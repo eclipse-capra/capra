@@ -74,14 +74,15 @@ public class APP4MCHandler extends AbstractArtifactHandler<INamed> {
 			if (named.eCrossReferences() != null) {
 				List<EObject> refs = named.eCrossReferences();
 				for (EObject ref : refs) {
-					if ((selectedRelationshipTypes != null) && (selectedRelationshipTypes.isEmpty()
-							|| selectedRelationshipTypes.contains(ref.eClass().getName()))) {
-						connections.add(new Connection(investigatedElement, Arrays.asList(ref), ref));
-
-					} else {
-						// selectedRelationshipTypes is null and therefore return all cross references
+					if (selectedRelationshipTypes != null) {
+						if (selectedRelationshipTypes.size() == 0
+								|| selectedRelationshipTypes.contains(ref.eClass().getName())) {
+							connections
+									.add(new Connection(Arrays.asList(investigatedElement), Arrays.asList(ref), ref));
+						}
+					} else {// selectedRelationshipTypes is null and therefore return all cross references
 						// as internal links
-						connections.add(new Connection(investigatedElement, Arrays.asList(ref), ref));
+						connections.add(new Connection(Arrays.asList(investigatedElement), Arrays.asList(ref), ref));
 					}
 				}
 			}

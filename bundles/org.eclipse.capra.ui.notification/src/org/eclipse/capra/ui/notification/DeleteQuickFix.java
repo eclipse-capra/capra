@@ -134,7 +134,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		// create a new trace link with the remaining items
 		for (Connection c : toRecreate) {
-			traceMetaModelAdapter.createTrace(c.getTlink().eClass(), traceModel, c.getTargets());
+			traceMetaModelAdapter.createTrace(c.getTlink().eClass(), traceModel, c.getOrigins(), c.getTargets());
 		}
 
 		// delete the existing trace link

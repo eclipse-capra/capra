@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -114,38 +114,34 @@ public class TestDuplicateLinks {
 
 		EClass tlinkA = (EClass) _tm.getEClassifier(T_LINK_NAME_A);
 
-		List<EObject> targets = new ArrayList<EObject>();
-		targets.add(classB);
+		List<EObject> origins = Arrays.asList(classA);
+		List<EObject> targets = Arrays.asList(classB);
 
 		// create a connection
-		Connection con1 = new Connection(classA, targets, tlinkA);
+		Connection con1 = new Connection(origins, targets, tlinkA);
 
 		// create a second connection with the same content
-		Connection con2 = new Connection(classA, targets, tlinkA);
+		Connection con2 = new Connection(origins, targets, tlinkA);
 
 		// check if the connections are equal
 		assertTrue(con1.equals(con2));
 		assertEquals(con1.hashCode(), con2.hashCode());
 
 		// change the order of artifacts
-		List<EObject> newTarget = new ArrayList<>();
-		newTarget.add(classA);
-
-		// create the connections again
-		Connection con3 = new Connection(classB, newTarget, tlinkA);
+		Connection con3 = new Connection(targets, origins, tlinkA);
 
 		// check if the connections are equal
 		assertTrue(con1.equals(con2) && con1.equals(con3) && con2.equals(con3));
 
 		// create a new connection with the second trace type
-		Connection con4 = new Connection(classB, newTarget, tlinkB);
+		Connection con4 = new Connection(targets, origins, tlinkB);
 
 		// check that the connections are not equal
 		assertFalse(con3.equals(con4));
 		assertNotEquals(con3.hashCode(), con4.hashCode());
 
 		// create a connection with differesnt artifact
-		Connection con5 = new Connection(classC, targets, tlinkA);
+		Connection con5 = new Connection(Arrays.asList(classC), targets, tlinkA);
 
 		// check that the conenctions are not equal
 		assertFalse(con5.equals(con1));
