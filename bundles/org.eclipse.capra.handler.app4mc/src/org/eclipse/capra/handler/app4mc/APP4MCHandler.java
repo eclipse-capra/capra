@@ -67,7 +67,7 @@ public class APP4MCHandler extends AbstractArtifactHandler<INamed> {
 	}
 
 	@Override
-	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		List<Connection> connections = new ArrayList<>();
 		if (investigatedElement instanceof INamed) {
 			INamed named = (INamed) investigatedElement;

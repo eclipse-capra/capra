@@ -36,7 +36,10 @@ import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
- * Provides generic functionality to deal with traceability meta models.
+ * Provides functionality to access the generic trace meta-model. This trace
+ * meta-model only contains one link type {@code RelatedTo} that can be used to
+ * relate any artifacts to each other. It is directed and has a single origin
+ * artifacts and one or more target artifacts.
  */
 public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
 
@@ -235,15 +238,15 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 	@Override
 	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<String> selectedRelationshipTypes, int maximumDepth) {
+			List<String> traceLinkTypes, int maximumDepth) {
 		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator, selectedRelationshipTypes,
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, traceLinkTypes,
 				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
 	}
 
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<Object> accumulator, List<String> selectedRelationshipTypes, int currentDepth, int maximumDepth) {
-		List<Connection> directElements = getConnectedElements(element, traceModel, selectedRelationshipTypes);
+			List<Object> accumulator, List<String> traceLinkTypes, int currentDepth, int maximumDepth) {
+		List<Connection> directElements = getConnectedElements(element, traceModel, traceLinkTypes);
 		List<Connection> allElements = new ArrayList<>();
 		int currDepth = currentDepth + 1;
 		for (Connection connection : directElements) {
@@ -252,8 +255,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				accumulator.add(connection.getTlink());
 				for (EObject e : connection.getTargets()) {
 					if (maximumDepth == 0 || currDepth <= maximumDepth) {
-						allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator,
-								selectedRelationshipTypes, currDepth, maximumDepth));
+						allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator, traceLinkTypes,
+								currDepth, maximumDepth));
 					}
 				}
 			}

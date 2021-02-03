@@ -60,7 +60,7 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 	}
 
 	@Override
-	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		List<Integer> duplicationCheck = new ArrayList<>();
 		List<Connection> allElements = new ArrayList<>();
 		if (Relationship.class.isAssignableFrom(investigatedElement.getClass())) {
