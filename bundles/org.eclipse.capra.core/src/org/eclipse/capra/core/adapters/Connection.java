@@ -32,20 +32,44 @@ public class Connection {
 	private List<EObject> targets;
 	private EObject tlink;
 
+	/**
+	 * Constructs a new {@code Connection} instance based on the provided origins,
+	 * targets, and underlying trace link.
+	 * 
+	 * @param origins the origins, i.e., the artifacts from which the link
+	 *                originates
+	 * @param targets the targets, i.e., the artifacts to which the link points
+	 * @param tlink   the underlying trace link from the trace model
+	 */
 	public Connection(List<EObject> origins, List<EObject> targets, EObject tlink) {
 		this.origins = origins;
 		this.targets = targets;
 		this.tlink = tlink;
 	}
 
+	/**
+	 * Get all origins, i.e., artifacts from which the trace link originates.
+	 * 
+	 * @return the origins
+	 */
 	public List<EObject> getOrigins() {
 		return origins;
 	}
 
+	/**
+	 * Get all targets, i.e., artifacts to which the trace link points.
+	 * 
+	 * @return the targets
+	 */
 	public List<EObject> getTargets() {
 		return targets;
 	}
 
+	/**
+	 * Gets the underlying trace link from the trace model.
+	 * 
+	 * @return the trace link which this {@code Connection} instance represents
+	 */
 	public EObject getTlink() {
 		return tlink;
 	}

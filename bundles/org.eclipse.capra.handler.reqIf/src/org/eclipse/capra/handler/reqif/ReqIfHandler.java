@@ -74,7 +74,7 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 	}
 
 	@Override
-	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		if (investigatedElement instanceof SpecHierarchy) {
 			SpecHierarchy spec = (SpecHierarchy) investigatedElement;
 
