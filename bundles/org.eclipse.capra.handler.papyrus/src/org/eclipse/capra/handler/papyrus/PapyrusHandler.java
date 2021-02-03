@@ -53,7 +53,7 @@ public class PapyrusHandler extends AbstractArtifactHandler<EObjectTreeElement> 
 	}
 
 	@Override
-	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links specific for Papyrus models.
 		// Currently, UML links such as association and those from the SYSML

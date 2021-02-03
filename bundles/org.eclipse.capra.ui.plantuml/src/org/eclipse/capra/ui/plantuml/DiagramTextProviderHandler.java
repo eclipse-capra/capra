@@ -213,7 +213,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 				SelectRelationshipsHandler.setPreviousElement(selectedObject);
 			}
 			traces.addAll(metamodelAdapter.getInternalElementsTransitive(selectedObject, traceModel,
-					selectedRelationshipTypes, transitivityDepth, traces));
+					selectedRelationshipTypes, transitivityDepth));
 		} else if (DisplayInternalLinksHandler.areInternalLinksShown()) {
 			EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
 			if (previousElement != null) {
@@ -227,8 +227,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 			} else {
 				SelectRelationshipsHandler.setPreviousElement(selectedObject);
 			}
-			traces.addAll(metamodelAdapter.getInternalElements(selectedObject, traceModel, selectedRelationshipTypes,
-					false, 0, traces));
+			traces.addAll(metamodelAdapter.getInternalElements(selectedObject, traceModel, selectedRelationshipTypes));
 		}
 		List<EObject> links = extractLinksFromTraces(traces);
 		SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);

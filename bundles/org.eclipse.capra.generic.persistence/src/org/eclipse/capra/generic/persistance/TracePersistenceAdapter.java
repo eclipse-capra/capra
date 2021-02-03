@@ -155,17 +155,4 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
 	}
-
-	@Override
-	public EObject getTraceModel(EObject object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EObject getArtifactWrappers(EObject object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

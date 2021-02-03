@@ -28,56 +28,33 @@ public interface TracePersistenceAdapter {
 	/**
 	 * Load and return the trace model in the given resource set
 	 * 
-	 * @param resourceSet
-	 *            Resource set to load the trace model in
-	 * @return Root of loaded trace model, Optional can be empty to indicate
-	 *         that loading failed or was not possible (there is no trace model
-	 *         to load at the moment)
+	 * @param resourceSet Resource set to load the trace model in
+	 * @return Root of loaded trace model, Optional can be empty to indicate that
+	 *         loading failed or was not possible (there is no trace model to load
+	 *         at the moment)
 	 */
 	EObject getTraceModel(ResourceSet resourceSet);
 
 	/**
-	 * Return the trace model for the given object
+	 * Load and return the container for all artifact wrappers in the given resource
+	 * set
 	 * 
-	 * @param object
-	 *            EObject to return the model for
-	 * @return Root of trace model, Optional can be empty to indicate that there
-	 *         is no trace model for the object
-	 */
-	EObject getTraceModel(EObject object);
-
-	/**
-	 * Load and return the container for all artifact wrappers in the given
-	 * resource set
-	 * 
-	 * @param resourceSet
-	 *            Resource set to load the container for artifact wrappers in
+	 * @param resourceSet Resource set to load the container for artifact wrappers
+	 *                    in
 	 * @return Container for all artifact wrappers, Optional can be empty to
-	 *         indicate that loading failed or was not possible (no container
-	 *         exists at the moment)
+	 *         indicate that loading failed or was not possible (no container exists
+	 *         at the moment)
 	 */
 	EObject getArtifactWrappers(ResourceSet resourceSet);
 
 	/**
-	 * Return the trace model for the given object
+	 * Save the trace and artifact models. Implementations are expected to: (i) save
+	 * the trace model, (ii) check selectionForTraceCreation for artifact wrappers
+	 * that are not already contained in artifactWrappers, (iii) add these new
+	 * artifact wrappers to artifactWrappers before saving it as well
 	 * 
-	 * @param object
-	 *            EObject to return the model for
-	 * @return Root of trace model, Optional can be empty to indicate that there
-	 *         is no trace model for the object
-	 */
-	EObject getArtifactWrappers(EObject object);
-
-	/**
-	 * Save the trace and artifact models. Implementations are expected to: (i)
-	 * save the trace model, (ii) check selectionForTraceCreation for artifact
-	 * wrappers that are not already contained in artifactWrappers, (iii) add
-	 * these new artifact wrappers to artifactWrappers before saving it as well
-	 * 
-	 * @param traceModel
-	 *            The updated trace model to be saved
-	 * @param artifactModel
-	 *            The updated artifacts to be saved
+	 * @param traceModel    The updated trace model to be saved
+	 * @param artifactModel The updated artifacts to be saved
 	 */
 	void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel);
 }
