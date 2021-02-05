@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.handlers;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
@@ -36,9 +36,10 @@ public class TraceCreationHandler extends AbstractHandler {
 
 		IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
 
-		CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create trace link",
-				Arrays.asList(SelectionView.getOpenedView().getSelection().get(0)), SelectionView.getOpenedView()
-						.getSelection().subList(1, SelectionView.getOpenedView().getSelection().size()));
+		List<Object> sources = SelectionView.getOpenedView().getSources();
+		List<Object> targets = SelectionView.getOpenedView().getTargets();
+
+		CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create trace link", sources, targets);
 		createTraceOperation.addContext(undoContext);
 		if (SelectionView.getOpenedView().getSelectedTraceType() != null) {
 			createTraceOperation

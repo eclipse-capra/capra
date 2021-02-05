@@ -18,10 +18,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
@@ -40,8 +40,12 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -92,7 +96,7 @@ public class SelectionView extends ViewPart {
 	/**
 	 * The actual table containing selected elements.
 	 */
-	private TableViewer artifactTable;
+	private CheckboxTableViewer artifactTable;
 
 	/**
 	 * The combo box to select the trace type.
@@ -102,7 +106,7 @@ public class SelectionView extends ViewPart {
 	/**
 	 * The maintained selection of EObjects .
 	 */
-	private Set<Object> selection = new LinkedHashSet<>();
+	private HashMap<Object, Boolean> selection = new LinkedHashMap<>();
 
 	/**
 	 * The appropriate undo context. We are using the global context to ensure that
@@ -124,7 +128,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public Object[] getElements(Object parent) {
-			return selection.toArray();
+			return selection.keySet().toArray();
 		}
 	}
 
@@ -141,6 +145,18 @@ public class SelectionView extends ViewPart {
 		@Override
 		public String getText(Object element) {
 			return (!(element instanceof EClass)) ? "" : ((EClass) element).getName();//$NON-NLS-1$
+		}
+
+	}
+
+	/**
+	 * Updates the data backing of the table whenever the checkbox changes state.
+	 */
+	class ArtifactTableStateChangeListenser implements ICheckStateListener {
+
+		@Override
+		public void checkStateChanged(CheckStateChangedEvent event) {
+			selection.put(event.getElement(), event.getChecked());
 		}
 
 	}
@@ -174,6 +190,23 @@ public class SelectionView extends ViewPart {
 		public Image getImage(Object obj) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
 		}
+	}
+
+	/**
+	 * Determines if an element should be shown as checked or not.
+	 */
+	class ArtifactTableCheckStateProvider implements ICheckStateProvider {
+
+		@Override
+		public boolean isChecked(Object element) {
+			return selection.get(element);
+		}
+
+		@Override
+		public boolean isGrayed(Object element) {
+			return false;
+		}
+
 	}
 
 	/**
@@ -225,10 +258,13 @@ public class SelectionView extends ViewPart {
 		traceTypeCombo.setInput(getViewSite());
 		traceTypeCombo.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-		artifactTable = new TableViewer(area, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		artifactTable = CheckboxTableViewer.newCheckList(area,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.CHECK);
 		artifactTable.setContentProvider(new ArtifactTableContentProvider());
 		artifactTable.setLabelProvider(new ArtifactTableLabelProvider());
 		artifactTable.setComparator(new NoChangeComparator());
+		artifactTable.addCheckStateListener(new ArtifactTableStateChangeListenser());
+		artifactTable.setCheckStateProvider(new ArtifactTableCheckStateProvider());
 		artifactTable.setInput(getViewSite());
 		artifactTable.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -270,20 +306,21 @@ public class SelectionView extends ViewPart {
 
 	@SuppressWarnings("unchecked")
 	public void dropToSelection(Object data) {
+		boolean selectAsSource = selection.isEmpty();
 		if (data instanceof TreeSelection) {
 			TreeSelection tree = (TreeSelection) data;
 			if (tree.toList().stream().allMatch(this::validateSelection))
-				selection.addAll(tree.toList());
+				tree.toList().forEach(t -> selection.put(t, selectAsSource));
 		} else if (data instanceof Collection<?>) {
 			Collection<Object> arrayselection = (Collection<Object>) data;
 			if (arrayselection.stream().allMatch(this::validateSelection))
-				selection.addAll(arrayselection);
+				arrayselection.forEach(a -> selection.put(a, selectAsSource));
 		} else if (data instanceof IStructuredSelection) {
 			IStructuredSelection iselection = (IStructuredSelection) data;
 			if (iselection.toList().stream().allMatch(this::validateSelection))
-				selection.addAll(iselection.toList());
+				iselection.toList().forEach(i -> selection.put(i, selectAsSource));
 		} else if (validateSelection(data))
-			selection.add(data);
+			selection.put(data, selectAsSource);
 
 		artifactTable.refresh();
 		refreshAvailableTraceTypes();
@@ -300,7 +337,7 @@ public class SelectionView extends ViewPart {
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
 		// Create the artifact wrappers
-		List<EObject> wrappers = artifactHelper.createWrappers(new ArrayList<>(selection));
+		List<EObject> wrappers = artifactHelper.createWrappers(new ArrayList<>(selection.keySet()));
 
 		// Get the type of trace to be created
 		traceTypes = traceAdapter.getAvailableTraceTypes(wrappers);
@@ -328,7 +365,17 @@ public class SelectionView extends ViewPart {
 	}
 
 	public List<Object> getSelection() {
-		return new ArrayList<>(selection);
+		return new ArrayList<>(selection.keySet());
+	}
+
+	public List<Object> getSources() {
+		return new ArrayList<>(selection.entrySet().stream().filter(entry -> Boolean.TRUE.equals(entry.getValue()))
+				.map(entry -> entry.getKey()).collect(Collectors.toList()));
+	}
+
+	public List<Object> getTargets() {
+		return new ArrayList<>(selection.entrySet().stream().filter(entry -> Boolean.FALSE.equals(entry.getValue()))
+				.map(entry -> entry.getKey()).collect(Collectors.toList()));
 	}
 
 	public void clearSelection() {
@@ -348,7 +395,7 @@ public class SelectionView extends ViewPart {
 	}
 
 	public void removeFromSelection(List<Object> currentselection) {
-		selection.removeAll(currentselection);
+		currentselection.forEach(selection::remove);
 		artifactTable.refresh();
 		refreshAvailableTraceTypes();
 	}

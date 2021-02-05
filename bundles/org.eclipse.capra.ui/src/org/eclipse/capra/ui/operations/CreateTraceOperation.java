@@ -93,10 +93,12 @@ public class CreateTraceOperation extends AbstractOperation {
 
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+		Shell shell = info.getAdapter(Shell.class);
 		if (origins == null || targets == null || origins.isEmpty() || targets.isEmpty()) {
+			MessageDialog.openWarning(shell, "No origins or targets selected",
+					"At least one source artifact (marked by a checkbox) and one target artifact need to be in the list.");
 			return Status.CANCEL_STATUS;
 		}
-		Shell shell = info.getAdapter(Shell.class);
 		if (chooseTraceType == null) {
 			chooseTraceType = (traceTypes, selection) -> getTraceTypeToCreate(shell, traceTypes, selection);
 		}
@@ -229,8 +231,21 @@ public class CreateTraceOperation extends AbstractOperation {
 
 	}
 
+	/**
+	 * A simple helper class that stores the origin and target artifacts for access
+	 * in the bifunctions used in the trace creation.
+	 */
 	public class TraceableObjects {
 
+		/**
+		 * Construct a new instance of {@code TraceableObjects} with the given origins
+		 * and targets.
+		 * 
+		 * @param origins a list of artifacts that should be the origin of the new trace
+		 *                link
+		 * @param targets a list of artifacts that should be the target of the new trace
+		 *                link
+		 */
 		public TraceableObjects(List<EObject> origins, List<EObject> targets) {
 			this.origins = origins;
 			this.targets = targets;
@@ -239,10 +254,20 @@ public class CreateTraceOperation extends AbstractOperation {
 		private List<EObject> origins;
 		private List<EObject> targets;
 
+		/**
+		 * Gets the origins of the new trace link.
+		 * 
+		 * @return a list of artifacts that should be the origin of the new trace link
+		 */
 		public List<EObject> getOrigins() {
 			return origins;
 		}
 
+		/**
+		 * Gets the targets of the new trace link.
+		 * 
+		 * @return a list of artifacts that should be the target of the new trace link
+		 */
 		public List<EObject> getTargets() {
 			return targets;
 		}
