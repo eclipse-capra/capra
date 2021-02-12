@@ -79,7 +79,7 @@ public class Connection {
 				.collect(Collectors.toList());
 		List<String> secondElementsIds = allSecondElements.stream().map(EMFHelper::getIdentifier)
 				.collect(Collectors.toList());
-		return firstElementsIds.containsAll(secondElementsIds);
+		return (firstElementsIds.containsAll(secondElementsIds) && secondElementsIds.containsAll(firstElementsIds));
 	}
 
 	@Override
