@@ -51,6 +51,7 @@
 		<module>bundles/org.eclipse.capra.ui.matrix</module>
 
 		<!-- Tests -->
+		<module>tests/org.eclipse.capra.testsupport</module>
 		<module>tests/org.eclipse.capra.testsuite</module>
 		<module>tests/org.eclipse.capra.handler.cdt.tests</module>
 		<module>tests/org.eclipse.capra.handler.jdt.tests</module>
