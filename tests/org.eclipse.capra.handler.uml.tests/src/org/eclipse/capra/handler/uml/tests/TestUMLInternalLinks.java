@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.uml.tests;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,7 @@ import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
-import org.eclipse.capra.testsuite.TestHelper;
+import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
 import org.eclipse.capra.ui.plantuml.DisplayInternalLinksHandler;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;

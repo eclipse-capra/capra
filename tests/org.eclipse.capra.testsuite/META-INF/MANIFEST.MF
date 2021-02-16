@@ -6,8 +6,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsuite;singleton:=true
 Bundle-Version: 0.8.2.qualifier
 Export-Package: org.eclipse.capra.testsuite,
- org.eclipse.capra.testsuite.extension;x-internal:=true,
- org.eclipse.capra.testsuite.notification;x-internal:=true
+ org.eclipse.capra.testsuite.notification
 Require-Bundle: org.junit,
  org.eclipse.equinox.registry,
  org.eclipse.core.resources,
@@ -32,6 +31,7 @@ Require-Bundle: org.junit,
  org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.generic.priority,
  org.eclipse.capra.core,
+ org.eclipse.capra.testsupport,
  org.eclipse.capra.ui.plantuml,
  org.eclipse.capra.handler.jdt,
  org.eclipse.capra.handler.cdt,

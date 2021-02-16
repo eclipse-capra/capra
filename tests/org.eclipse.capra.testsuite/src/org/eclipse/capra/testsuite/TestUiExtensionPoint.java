@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.testsuite.extension.UiTransferExtensionDummy;
+import org.eclipse.capra.testsupport.extension.UiTransferExtensionDummy;
 import org.eclipse.swt.dnd.Transfer;
 import org.junit.Assert;
 import org.junit.Test;

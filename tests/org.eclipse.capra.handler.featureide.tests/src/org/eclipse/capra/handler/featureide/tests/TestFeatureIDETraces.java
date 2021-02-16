@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.featureide.tests;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +25,7 @@ import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
-import org.eclipse.capra.testsuite.TestHelper;
+import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

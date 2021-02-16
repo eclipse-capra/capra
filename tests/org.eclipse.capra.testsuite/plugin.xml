@@ -18,7 +18,7 @@
    <extension
          point="org.eclipse.capra.ui.transfers">
       <transfer
-            class="org.eclipse.capra.testsuite.extension.UiTransferExtensionDummy">
+            class="org.eclipse.capra.testsupport.extension.UiTransferExtensionDummy">
       </transfer>
    </extension>
 

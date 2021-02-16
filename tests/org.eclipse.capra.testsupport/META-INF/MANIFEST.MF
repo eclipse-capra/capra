@@ -6,7 +6,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsupport;singleton:=true
 Bundle-Version: 0.8.2.qualifier
 Export-Package: org.eclipse.capra.testsupport,
- org.eclipse.capra.testsupport.extension;x-internal:=true
+ org.eclipse.capra.testsupport.extension
 Require-Bundle: org.junit,
  org.eclipse.equinox.registry,
  org.eclipse.core.resources,

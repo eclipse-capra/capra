@@ -14,17 +14,17 @@
 
 package org.eclipse.capra.testsuite.notification;
 
-import static org.eclipse.capra.testsuite.TestHelper.UI_REACTION_WAITING_TIME;
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.createCDTProject;
-import static org.eclipse.capra.testsuite.TestHelper.createCSourceFileInProject;
-import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
-import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
-import static org.eclipse.capra.testsuite.TestHelper.getProject;
-import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
-import static org.eclipse.capra.testsuite.TestHelper.save;
-import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.eclipse.capra.testsupport.TestHelper.UI_REACTION_WAITING_TIME;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.createCDTProject;
+import static org.eclipse.capra.testsupport.TestHelper.createCSourceFileInProject;
+import static org.eclipse.capra.testsupport.TestHelper.createEClassInEPackage;
+import static org.eclipse.capra.testsupport.TestHelper.createTraceForCurrentSelectionOfType;
+import static org.eclipse.capra.testsupport.TestHelper.getProject;
+import static org.eclipse.capra.testsupport.TestHelper.purgeModels;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.save;
+import static org.eclipse.capra.testsupport.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -33,8 +33,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
-import org.eclipse.capra.testsuite.TestHelper;
-import org.eclipse.capra.testsuite.TestRetry;
+import org.eclipse.capra.testsupport.TestHelper;
+import org.eclipse.capra.testsupport.TestRetry;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.IFunction;
