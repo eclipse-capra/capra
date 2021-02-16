@@ -14,18 +14,18 @@
 
 package org.eclipse.capra.testsuite.notification;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
-import static org.eclipse.capra.testsuite.TestHelper.createEPackageInEPackage;
-import static org.eclipse.capra.testsuite.TestHelper.createEcoreModel;
-import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingleJavaClass;
-import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
-import static org.eclipse.capra.testsuite.TestHelper.getProject;
-import static org.eclipse.capra.testsuite.TestHelper.projectExists;
-import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
-import static org.eclipse.capra.testsuite.TestHelper.save;
-import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.createEClassInEPackage;
+import static org.eclipse.capra.testsupport.TestHelper.createEPackageInEPackage;
+import static org.eclipse.capra.testsupport.TestHelper.createEcoreModel;
+import static org.eclipse.capra.testsupport.TestHelper.createJavaProjectWithASingleJavaClass;
+import static org.eclipse.capra.testsupport.TestHelper.createTraceForCurrentSelectionOfType;
+import static org.eclipse.capra.testsupport.TestHelper.getProject;
+import static org.eclipse.capra.testsupport.TestHelper.projectExists;
+import static org.eclipse.capra.testsupport.TestHelper.purgeModels;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.save;
+import static org.eclipse.capra.testsupport.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,8 +35,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
-import org.eclipse.capra.testsuite.TestHelper;
-import org.eclipse.capra.testsuite.TestRetry;
+import org.eclipse.capra.testsupport.TestHelper;
+import org.eclipse.capra.testsupport.TestRetry;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -96,8 +96,8 @@ public class TestNotificationEObject {
 	public TestRetry retry = new TestRetry(NUMBER_OF_RETRIES);
 
 	/**
-	 * Tests if a marker appears after deleting a model element that is
-	 * referenced in the trace model.
+	 * Tests if a marker appears after deleting a model element that is referenced
+	 * in the trace model.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException
@@ -170,8 +170,8 @@ public class TestNotificationEObject {
 	}
 
 	/**
-	 * Tests if a marker appears after renaming a model element that is
-	 * referenced in the trace model.
+	 * Tests if a marker appears after renaming a model element that is referenced
+	 * in the trace model.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException
@@ -246,8 +246,8 @@ public class TestNotificationEObject {
 	}
 
 	/**
-	 * Tests if a marker appears after moving a model element that is referenced
-	 * in the trace model.
+	 * Tests if a marker appears after moving a model element that is referenced in
+	 * the trace model.
 	 * 
 	 * @throws CoreException
 	 * @throws IOException

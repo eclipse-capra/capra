@@ -19,11 +19,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -74,6 +77,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -82,6 +86,11 @@ import org.eclipse.ui.PlatformUI;
  */
 @SuppressWarnings("restriction")
 public class TestHelper {
+
+	/**
+	 * The package in which new Java classes will be created.
+	 */
+	private static final String JAVA_PACKAGE_NAME = "org.eclipse.capra.test";
 
 	/**
 	 * A standard waiting time that can be used whenever the IDE needs to
@@ -108,6 +117,7 @@ public class TestHelper {
 	public static IProject createSimpleProject(String projectName) throws CoreException {
 		IProject project = getProject(projectName);
 
+		// Create project
 		IProgressMonitor progressMonitor = new NullProgressMonitor();
 		project.create(progressMonitor);
 		project.open(progressMonitor);
@@ -122,13 +132,36 @@ public class TestHelper {
 	 * @throws CoreException
 	 */
 	public static IType createJavaProjectWithASingleJavaClass(String projectName) throws CoreException {
-		IProject project = getProject(projectName);
+		IProject project = createSimpleProject(projectName);
+		IJavaProject javaProject = createJavaProject(project);
+		IFolder sourceFolder = createSourceFolder(project);
+		return createJavaClassInFolder(javaProject, sourceFolder, "TestClass");
+	}
 
-		// Create project
-		IProgressMonitor progressMonitor = new NullProgressMonitor();
-		project.create(progressMonitor);
-		project.open(progressMonitor);
+	/**
+	 * Creates a &quot;src&quot; folder inside the given project.
+	 * 
+	 * @param project the project for which to create a &quot;src&quot;
+	 * @return the created folder
+	 * @throws CoreException
+	 */
+	public static IFolder createSourceFolder(IProject project) throws CoreException {
+		// Create a src file
+		IFolder sourceFolder = project.getFolder("src");
+		sourceFolder.create(false, true, null);
+		return sourceFolder;
+	}
 
+	/**
+	 * Turns the given project into a {@link IJavaProject} instance by adding the
+	 * Java nature and creating and setting the build path.
+	 * 
+	 * @param project the project to turn into a {@code IJavaProject}
+	 * @return the newly created Java project
+	 * @throws CoreException
+	 * @throws JavaModelException
+	 */
+	public static IJavaProject createJavaProject(IProject project) throws CoreException, JavaModelException {
 		// Add Java nature
 		IProjectDescription description = project.getDescription();
 		description.setNatureIds(new String[] { JavaCore.NATURE_ID });
@@ -142,27 +175,38 @@ public class TestHelper {
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
 
 		javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
+		return javaProject;
+	}
 
-		// Create a src file
-		IFolder sourceFolder = project.getFolder("src");
-		sourceFolder.create(false, true, null);
+	/**
+	 * Creates a java class with the specified name in the provided folder of the
+	 * provided project. The new class will be created in a package specified by
+	 * (@code JAVA_PACKAGE_NAME}.
+	 * 
+	 * @param javaProject  the project in which to create the class
+	 * @param sourceFolder the folder in which to create the class
+	 * @return the newly created class
+	 * @throws JavaModelException
+	 */
+	public static IType createJavaClassInFolder(IJavaProject javaProject, IFolder sourceFolder, String className)
+			throws JavaModelException {
 		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(sourceFolder);
-		IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-		IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
-		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-		newEntries[oldEntries.length] = JavaCore.newSourceEntry(root.getPath());
-		javaProject.setRawClasspath(newEntries, null);
+		Set<IClasspathEntry> classPathEntries = new HashSet<>(Arrays.asList(javaProject.getRawClasspath()));
+		classPathEntries.add(JavaCore.newSourceEntry(root.getPath()));
+		IClasspathEntry[] classPathEntryArray = new IClasspathEntry[classPathEntries.size()];
+		classPathEntries.toArray(classPathEntryArray);
+		javaProject.setRawClasspath(classPathEntryArray, null);
 
 		IPackageFragment pack = javaProject.getPackageFragmentRoot(sourceFolder)
-				.createPackageFragment("org.eclipse.capra.test", false, null);
+				.createPackageFragment(JAVA_PACKAGE_NAME, false, null);
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + pack.getElementName() + ";\n");
 		buffer.append("\n");
-		buffer.append("public class TestClass { public void doNothing(){ } }");
+		buffer.append("public class " + className + " { public void doNothing(){ } }");
 
-		ICompilationUnit icu = pack.createCompilationUnit("TestClass.java", buffer.toString(), false, null);
-		return icu.getType("TestClass");
+		ICompilationUnit icu = pack.createCompilationUnit(className + ".java", buffer.toString(), false, null);
+		return icu.getType(className);
 	}
 
 	/**
@@ -327,6 +371,30 @@ public class TestHelper {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Gets the first trace between the two given objects that can be found in the
+	 * trace model. Returns {@code null} if no such trace exists.
+	 * 
+	 * @param origin the origin of the trace
+	 * @param target the target of the trace
+	 * @return a trace between {@code origin} and {@code target} or {@code null}
+	 */
+	public static EObject getTraceBetween(Object origin, Object target) {
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
+		List<Connection> connections = traceAdapter.getConnectedElements(artifactHelper.createWrapper(origin),
+				traceModel);
+		for (Connection conn : connections) {
+			if (conn.getTargets().contains(artifactHelper.createWrapper(target))) {
+				return conn.getTlink();
+			}
+		}
+		return null;
 	}
 
 	/**

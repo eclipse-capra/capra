@@ -10,7 +10,7 @@ Require-Bundle:
  org.eclipse.capra.generic.tracemodel,
  org.eclipse.capra.handler.featureide,
  org.eclipse.capra.ui,
- org.eclipse.capra.testsuite,
+ org.eclipse.capra.testsupport,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui,

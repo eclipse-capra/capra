@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.capra.testsuite;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.createEmptyFileInProject;
-import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
-import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
-import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.createEmptyFileInProject;
+import static org.eclipse.capra.testsupport.TestHelper.createSimpleProject;
+import static org.eclipse.capra.testsupport.TestHelper.createTraceForCurrentSelectionOfType;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

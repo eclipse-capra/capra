@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.capra.testsuite;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.createCDTProject;
-import static org.eclipse.capra.testsuite.TestHelper.createCSourceFileInProject;
-import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingleJavaClass;
-import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
-import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
-import static org.eclipse.capra.testsuite.TestHelper.projectExists;
-import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
-import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.createCDTProject;
+import static org.eclipse.capra.testsupport.TestHelper.createCSourceFileInProject;
+import static org.eclipse.capra.testsupport.TestHelper.createJavaProjectWithASingleJavaClass;
+import static org.eclipse.capra.testsupport.TestHelper.createSimpleProject;
+import static org.eclipse.capra.testsupport.TestHelper.createTraceForCurrentSelectionOfType;
+import static org.eclipse.capra.testsupport.TestHelper.projectExists;
+import static org.eclipse.capra.testsupport.TestHelper.purgeModels;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +32,7 @@ import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
+import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.cdt.core.model.ICProject;
