@@ -10,7 +10,6 @@ import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -129,36 +128,36 @@ public class TestUnitCoreAdaptersConnection {
 		Connection con6 = new Connection(Arrays.asList(classA), targetsAll, tlinkB);
 
 		// check if the connections equals not null
-		assertFalse("expected: " + con1 + " equals: " + null, con1.equals(null));
+		assertNotEquals(con1, null);
 
 		// check if the connections not null
-		assertFalse("expected: " + con1 + " equals: " + classA, con1.equals(classA));
+		assertNotEquals(con1, classA);
 
 		// check if the con is reflexive
-		assertTrue(con1.equals(con1));
+		assertEquals(con1, con1);
 
 		// check if con is symmetric
-		assertTrue(con1.equals(con2));
+		assertEquals(con1, con2);
 		assertEquals(con1.equals(con2), con2.equals(con1));
 
 		// check if con is transitive
-		assertTrue(con1.equals(con2));
-		assertTrue(con2.equals(con3));
-		assertTrue(con3.equals(con1));
+		assertEquals(con1, con2);
+		assertEquals(con2, con3);
+		assertEquals(con3, con1);
 
-		assertFalse(con1.equals(con8));
-		assertFalse(con8.equals(con1));
+		assertNotEquals(con1, con8);
+		assertNotEquals(con8, con1);
 
-		assertFalse(con1.equals(con5));
-		assertFalse(con5.equals(con1));
+		assertNotEquals(con1, con5);
+		assertNotEquals(con5, con1);
 
 		// check if con is consistent
 		int i = 0;
 		while (i <= 3) {
-			assertTrue(con1.equals(con2));
-			assertFalse(con1.equals(con4));
-			assertFalse(con1.equals(con5));
-			assertTrue(con1.equals(con6));
+			assertEquals(con1, con2);
+			assertNotEquals(con1, con4);
+			assertNotEquals(con1, con5);
+			assertEquals(con1, con6);
 			i++;
 		}
 
@@ -166,9 +165,9 @@ public class TestUnitCoreAdaptersConnection {
 		// create a connection
 		Connection con7 = new Connection(Arrays.asList(classA), targets, tlinkB);
 		// check if con is consistent when target is being modified
-		assertTrue(con1.equals(con7));
+		assertEquals(con1, con7);
 		targetsAll.removeAll(targetsAll.subList(0, 2));
-		assertTrue(con1.equals(con6));
+		assertEquals(con1, con6);
 
 	}
 
@@ -260,12 +259,12 @@ public class TestUnitCoreAdaptersConnection {
 		assertNotEquals(con1.hashCode(), i);
 
 		// if two distinct objects are equal the integer result of hashCode is equal
-		assertTrue(con1.equals(con2));
+		assertEquals(con1, con2);
 		assertEquals(con1.equals(con2), con1.hashCode() == con2.hashCode());
 
 		// if two distinct objects are unequal the integer result of hashCode is not
 		// equal
-		assertFalse(con1.equals(con3));
+		assertNotEquals(con1, con3);
 		assertEquals(con1.equals(con3), con1.hashCode() == con3.hashCode());
 
 		// check if the hashCode() for invalid connections are equals

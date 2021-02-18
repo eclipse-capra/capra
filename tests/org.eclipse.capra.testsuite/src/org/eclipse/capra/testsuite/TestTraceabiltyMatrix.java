@@ -186,13 +186,13 @@ public class TestTraceabiltyMatrix {
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedPackages_Direct.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT, plantUMLTextForSelectedPackages_Direct);
 
 		// Test transitively connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
 		String plantUMLTextForSelectedPackages_Transitive = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedPackages_Transitive.equals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_TRANSITIVE, plantUMLTextForSelectedPackages_Transitive);
 
 		// test multiple classes selected
 		List<Object> selectedClasses = new ArrayList<>();
@@ -203,7 +203,7 @@ public class TestTraceabiltyMatrix {
 
 		String plantUMLTextForSelectedClasses = provider.getDiagramText(selectedClasses,
 				Optional.<IWorkbenchPart>empty());
-		assertTrue(plantUMLTextForSelectedClasses.equals(EXPECTED_TEXT_FOR_SELECTED_CLASSES));
+		assertEquals(EXPECTED_TEXT_FOR_SELECTED_CLASSES, plantUMLTextForSelectedClasses);
 	}
 
 	private void removeTraceModel(ResourceSet rs) {

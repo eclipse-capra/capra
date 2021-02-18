@@ -23,6 +23,7 @@ import static org.eclipse.capra.testsuite.TestHelper.projectExists;
 import static org.eclipse.capra.testsuite.TestHelper.purgeModels;
 import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -104,14 +105,14 @@ public class TestUnwrapWrapper {
 		assertTrue(artifactHelper.unwrapWrapper(javaWrapper) instanceof IJavaElement);
 		IJavaElement javaElement = (IJavaElement) artifactHelper.unwrapWrapper(javaWrapper);
 		// test that the unwrappedObject is equal to the original java class
-		assertTrue(javaClass.equals(javaElement));
+		assertEquals(javaClass, javaElement);
 
 		// get the second artifact wrapper and unwrap
 		EObject cWrapper = artifactModel.eContents().get(1);
 		assertTrue(artifactHelper.unwrapWrapper(cWrapper) instanceof ICElement);
 		ICElement cElement = (ICElement) artifactHelper.unwrapWrapper(cWrapper);
 		// test that the unwrappedObject is equal to the original C class
-		assertTrue(cClass.equals(cElement));
+		assertEquals(cClass, cElement);
 
 	}
 
@@ -144,14 +145,14 @@ public class TestUnwrapWrapper {
 		assertTrue(artifactHelper.unwrapWrapper(fileAWrapper) instanceof IFile);
 		IFile unwrapedFileA = (IFile) artifactHelper.unwrapWrapper(fileAWrapper);
 		// test that the unwrappedObject is equal to the original file
-		assertTrue(fileA.equals(unwrapedFileA));
+		assertEquals(fileA, unwrapedFileA);
 
 		// get the second artifact wrapper and unwrap
 		EObject fileBWrapper = artifactModel.eContents().get(1);
 		assertTrue(artifactHelper.unwrapWrapper(fileBWrapper) instanceof IFile);
 		IFile unwrapedFileB = (IFile) artifactHelper.unwrapWrapper(fileBWrapper);
 		// test that the unwrappedObject is equal to the original file
-		assertTrue(fileB.equals(unwrapedFileB));
+		assertEquals(fileB, unwrapedFileB);
 
 	}
 
