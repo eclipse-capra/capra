@@ -124,33 +124,34 @@ public class TestDuplicateLinks {
 		Connection con2 = new Connection(origins, targets, tlinkA);
 
 		// check if the connections are equal
-		assertTrue(con1.equals(con2));
+		assertEquals(con1, con2);
 		assertEquals(con1.hashCode(), con2.hashCode());
 
 		// change the order of artifacts
 		Connection con3 = new Connection(targets, origins, tlinkA);
 
 		// check if the connections are equal
-		assertTrue(con1.equals(con2) && con1.equals(con3) && con2.equals(con3));
+		assertEquals(con1, con3);
+		assertEquals(con2, con3);
 
 		// create a new connection with the second trace type
 		Connection con4 = new Connection(targets, origins, tlinkB);
 
 		// check that the connections are not equal
-		assertFalse(con3.equals(con4));
+		assertNotEquals(con3, con4);
 		assertNotEquals(con3.hashCode(), con4.hashCode());
 
 		// create a connection with differesnt artifact
 		Connection con5 = new Connection(Arrays.asList(classC), targets, tlinkA);
 
 		// check that the conenctions are not equal
-		assertFalse(con5.equals(con1));
+		assertNotEquals(con5, con1);
 		assertNotEquals(con5.hashCode(), con1.hashCode());
-		assertFalse(con5.equals(con2));
+		assertNotEquals(con5, con2);
 		assertNotEquals(con5.hashCode(), con2.hashCode());
-		assertFalse(con5.equals(con3));
+		assertNotEquals(con5, con3);
 		assertNotEquals(con5.hashCode(), con3.hashCode());
-		assertFalse(con5.equals(con4));
+		assertNotEquals(con5, con4);
 		assertNotEquals(con5.hashCode(), con4.hashCode());
 	}
 

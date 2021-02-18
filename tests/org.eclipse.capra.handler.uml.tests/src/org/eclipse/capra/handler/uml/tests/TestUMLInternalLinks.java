@@ -123,7 +123,7 @@ public class TestUMLInternalLinks {
 		DisplayInternalLinksHandler.showInternalLinks(true);
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
-		assertTrue(directlyConnectedElements.equals(EXPECTED_TEXT_FOR_INTERNAL_LINKS));
+		assertEquals(EXPECTED_TEXT_FOR_INTERNAL_LINKS, directlyConnectedElements);
 
 	}
 }
