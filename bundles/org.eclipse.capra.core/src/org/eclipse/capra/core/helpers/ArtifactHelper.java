@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,9 @@ import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+/**
+ * Provides support methods for working with artifacts and wrappers.
+ */
 public class ArtifactHelper {
 
 	private static final String QUOTE_CHARACTERS = "[\"\']";
@@ -50,17 +53,23 @@ public class ArtifactHelper {
 	}
 
 	/**
-	 * @param artifactModel
+	 * Constructs a new {@code ArtifactHelper} for the given artifact model.
+	 * 
+	 * @param artifactModel the model containing the artifact this helper should
+	 *                      access
 	 */
 	public ArtifactHelper(EObject artifactModel) {
 		this.artifactModel = artifactModel;
 	}
 
 	/**
-	 * Creates wrappers for artifacts
+	 * Creates wrappers for the given artifacts. For this purpose, this method
+	 * identifies the handler for each artifact and retrieves a wrapper from the
+	 * handler.
 	 *
-	 * @param artifacts
-	 * @return List of wrappers
+	 * @param artifacts the artifacts that should be wrapped
+	 * @return a list of wrappers for the given artifacts
+	 * @see IArtifactHandler#createWrapper(Object, EObject)
 	 */
 	public List<EObject> createWrappers(List<?> artifacts) {
 		return artifacts.stream()
@@ -75,7 +84,7 @@ public class ArtifactHelper {
 	 * returned by {@link #getHandler(Object)}.
 	 *
 	 * @param vagueArtifact the object that should be wrapped
-	 * @return the wrapped artifact or null if no handler exists
+	 * @return the wrapped artifact or {@code null} if no handler exists
 	 */
 	public EObject createWrapper(Object vagueArtifact) {
 		Optional<EObject> wrapped = getHandler(vagueArtifact)
@@ -87,7 +96,8 @@ public class ArtifactHelper {
 
 	/**
 	 * Unwraps an artifact wrapper to get its original object. If the original
-	 * object is <code>null</code>, the wrapper is returned as it is.
+	 * object is <code>null</code>, the wrapper is returned as it is. If the
+	 * provided object is not a wrapper, it is also returned as is.
 	 * 
 	 * @param wrapper to be unwrapped
 	 * @return the original artifact
