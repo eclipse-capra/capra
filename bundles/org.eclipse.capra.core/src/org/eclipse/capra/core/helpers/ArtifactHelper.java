@@ -158,7 +158,9 @@ public class ArtifactHelper {
 		} else { // original object cannot be resolved
 			// therefore use the wrapper name
 			String label = EMFHelper.getIdentifier(object);
-			artifactLabel = label.substring(0, label.indexOf(':'));
+			if (label.indexOf(':') > 0) {
+				artifactLabel = label.substring(0, label.indexOf(':'));
+			}
 		}
 		// remove unwanted characters like ", '
 		if (artifactLabel != null) {
