@@ -59,3 +59,7 @@ location "http://download.eclipse.org/ease/release/0.7.0" EASE {
 	org.eclipse.ease.feature.feature.group
 	org.eclipse.ease.ui.feature.feature.group
 }
+
+location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
+	ode.concept.deis.feature.feature.group
+}
