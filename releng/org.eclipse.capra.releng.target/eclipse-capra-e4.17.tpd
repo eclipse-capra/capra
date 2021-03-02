@@ -51,7 +51,7 @@ location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
 	de.ovgu.featureide.featuremodeling.feature.group
 }
 
-location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.9" APP4MC {
+location "http://download.eclipse.org/app4mc/updatesites/releases/1.0.0" APP4MC {
 	org.eclipse.app4mc.platform.sdk.feature.group
 }
 
