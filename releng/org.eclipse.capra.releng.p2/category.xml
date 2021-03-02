@@ -42,6 +42,9 @@
    <feature id="org.eclipse.capra.ui.sunburst.feature">
       <category name="org.eclipse.capra.ui"/>
    </feature>
+   <feature id="org.eclipse.capra.handler.ode.feature">
+      <category name="org.eclipse.capra.handler"/>
+   </feature>
    <category-def name="org.eclipse.capra" label="Eclipse Capra Traceability">
       <description>
          Eclipse Capra is an extensible traceability management tool.

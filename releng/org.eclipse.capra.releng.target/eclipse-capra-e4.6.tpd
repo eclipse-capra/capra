@@ -53,3 +53,7 @@ location "http://download.eclipse.org/app4mc/updatesites/releases/0.9.5/" APP4MC
 location "https://download.eclipse.org/ease/release/0.5.0/" EASE {
 	I201709292011.Core
 }
+
+location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
+	ode.concept.deis.feature.feature.group
+}
