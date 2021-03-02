@@ -558,21 +558,9 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
-      defaultValue="eclipse-capra-e4.17"
+      defaultValue="eclipse-capra-e4.18"
       storageURI="scope://Workspace"
       label="Target Platform">
-    <choice
-        value="eclipse-capra-e4.6"
-        label="Capra for Eclipse Neon - 4.6"/>
-    <choice
-        value="eclipse-capra-e4.7"
-        label="Capra for Eclipse Oxygen - 4.7"/>
-    <choice
-        value="eclipse-capra-e4.8"
-        label="Capra for Eclipse Photon - 4.8"/>
-    <choice
-        value="eclipse-capra-e4.9"
-        label="Capra for Eclipse 2018-09 - 4.9"/>
     <choice
         value="eclipse-capra-e4.10"
         label="Capra for Eclipse 2018-12 - 4.10"/>
@@ -650,9 +638,9 @@
       label="Developer">
     <setupTask
         xsi:type="jdt:JRETask"
-        version="JavaSE-1.8"
-        location="${jre.location-1.8}"
-        name="JRE for JavaSE-1.8 or newer">
+        version="JavaSE-11"
+        location="${jre.location-11}"
+        name="JRE for JavaSE-11 or newer">
       <description>Define the JRE needed to compile and run the Java projects of ${scope.project.label}</description>
     </setupTask>
     <setupTask
