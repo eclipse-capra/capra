@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Dusan Kalanj
  */
 public class CapraNotificationHelper {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CapraNotificationHelper.class);
 
 	/**
@@ -97,14 +97,12 @@ public class CapraNotificationHelper {
 	// order for the method to work! Maybe make a custom exception for when
 	// something is not filled out?
 	/**
-	 * Creates a Capra marker from the provided information about the artifact
-	 * and the change that occurred.
+	 * Creates a Capra marker from the provided information about the artifact and
+	 * the change that occurred.
 	 * 
-	 * @param markerInfo
-	 *            contains attributes that are to be assigned to the created
-	 *            marker
-	 * @param container
-	 *            file that the created marker will be attached to
+	 * @param markerInfo contains attributes that are to be assigned to the created
+	 *                   marker
+	 * @param container  file that the created marker will be attached to
 	 */
 	public static void createCapraMarker(Map<String, String> markerInfo, IFile container) {
 
@@ -117,6 +115,9 @@ public class CapraNotificationHelper {
 				String existingMarkerIssue = existingMarker.getAttribute(ISSUE_TYPE, null);
 				String existingMarkerUri = existingMarker.getAttribute(OLD_URI, null);
 
+				if (existingMarkerUri == null || existingMarkerIssue == null) {
+					continue;
+				}
 				if (existingMarkerUri.equals(newMarkerUri) && existingMarkerIssue.equals(newMarkerIssue)) {
 					existingMarker.delete();
 				}
@@ -133,11 +134,12 @@ public class CapraNotificationHelper {
 						&& newMarkerIssue.matches(IssueType.RENAMED.getValue() + "|" + IssueType.MOVED.getValue())) {
 					existingMarker.delete();
 				}
-				if (existingMarkerUri.equals(newMarkerUri) && newMarkerIssue.equalsIgnoreCase(IssueType.ADDED.getValue())) {
+				if (existingMarkerUri.equals(newMarkerUri)
+						&& newMarkerIssue.equalsIgnoreCase(IssueType.ADDED.getValue())) {
 					existingMarker.delete();
 				}
 			}
-			
+
 			String message = markerInfo.get(MESSAGE);
 			if (message == null || message.isEmpty()) {
 				return;
@@ -160,14 +162,12 @@ public class CapraNotificationHelper {
 	/**
 	 * Deletes an existing marker.
 	 * 
-	 * @param uri
-	 *            the uri of the artifact/element that the marker points to
-	 * @param issues
-	 *            an array of issues - only markers that describe the provided
-	 *            issues will be deleted. If null is provided, all will be
-	 *            deleted.
-	 * @param containingFile
-	 *            the file that contains the marker to be deleted
+	 * @param uri            the uri of the artifact/element that the marker points
+	 *                       to
+	 * @param issues         an array of issues - only markers that describe the
+	 *                       provided issues will be deleted. If null is provided,
+	 *                       all will be deleted.
+	 * @param containingFile the file that contains the marker to be deleted
 	 */
 	public static void deleteCapraMarker(String uri, IssueType[] issues, IFile containingFile) {
 		try {
@@ -198,8 +198,7 @@ public class CapraNotificationHelper {
 	 * Converts the platform URI into a file URI. Returns the same object if it
 	 * already is a file URI.
 	 * 
-	 * @param uri
-	 *            the URI to be converted
+	 * @param uri the URI to be converted
 	 * @return the same URI in a file scheme
 	 */
 	public static URI convertToFileUri(URI uri) {
@@ -222,8 +221,7 @@ public class CapraNotificationHelper {
 	/**
 	 * Gets the file-scheme URI of an EObject.
 	 * 
-	 * @param eObject
-	 *            the eObject in question
+	 * @param eObject the eObject in question
 	 * @return the URI of the eObject with a file scheme
 	 */
 	public static URI getFileUri(EObject eObject) {
@@ -233,8 +231,7 @@ public class CapraNotificationHelper {
 	/**
 	 * Gets the file-scheme URI of a resource.
 	 * 
-	 * @param resource
-	 *            the resource in question
+	 * @param resource the resource in question
 	 * @return the URI of the resource with a file scheme
 	 */
 	public static URI getFileUri(Resource resource) {
