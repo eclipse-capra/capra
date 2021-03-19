@@ -16,12 +16,20 @@ package org.eclipse.capra.ui.office.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +45,12 @@ import org.xml.sax.SAXException;
  *
  */
 public class CapraWordRequirement extends CapraOfficeObject {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(CapraWordRequirement.class);
 
 	/**
-	 * RegEx of characters (tabs, newlines, carriage returns and invisible
-	 * control characters) to be replaced with white-spaces in the Office View.
+	 * RegEx of characters (tabs, newlines, carriage returns and invisible control
+	 * characters) to be replaced with white-spaces in the Office View.
 	 */
 	private static final String LINE_BREAKS_AND_CONTROL_REGEX = "[\r\n\t\\p{C}]+";
 
@@ -58,18 +66,15 @@ public class CapraWordRequirement extends CapraOfficeObject {
 	private static final String FIELD_TAG = "w:instrText";
 
 	/**
-	 * A constructor that generates a new instance of CapraWordRequirement where
-	 * the parent properties are extracted from the provided paragraph, the file
-	 * that contains the paragraph and the id (name) of the field that denotes
-	 * the data that is to be extracted.
+	 * A constructor that generates a new instance of CapraWordRequirement where the
+	 * parent properties are extracted from the provided paragraph, the file that
+	 * contains the paragraph and the id (name) of the field that denotes the data
+	 * that is to be extracted.
 	 * 
-	 * @param officeFile
-	 *            the file that contains the paragraph
-	 * @param paragraph
-	 *            a Word paragraph
-	 * @param fieldName
-	 *            the name of the field that denotes the data that is to be
-	 *            extracted from the paragraph
+	 * @param officeFile the file that contains the paragraph
+	 * @param paragraph  a Word paragraph
+	 * @param fieldName  the name of the field that denotes the data that is to be
+	 *                   extracted from the paragraph
 	 */
 	public CapraWordRequirement(File officeFile, XWPFParagraph paragraph, String fieldName) {
 		// TODO This solution assumes that there is only one requirement per
@@ -92,7 +97,7 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		} catch (SAXException e) {
 			LOG.info("Could not create DOM document: malformed XML.", e);
 			return;
-		} 
+		}
 
 		// Get all nodes from the paragraph (there should be just one node if
 		// the TODO bellow isn't implemented)
@@ -114,10 +119,23 @@ public class CapraWordRequirement extends CapraOfficeObject {
 		// Set the data and uri properties of the CapraOfficeObject
 		if (!rText.isEmpty()) {
 			rText = "ID " + rId + ": " + rText;
-			String pUri = createUri(officeFile.getAbsolutePath(), rId);
+			IPath path = new Path(officeFile.getAbsolutePath());
+			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			IFile file = root.getFileForLocation(path);
 
-			this.setData(rText);
-			this.setUri(pUri);
+			URI uri;
+			try {
+				if (file != null) {
+					uri = new URIBuilder().setScheme("platform").setPath("/resource" + file.getFullPath())
+							.addParameter(CapraOfficeObject.ROW_PARAMETER, rId).build();
+				} else {
+					uri = new URIBuilder().setScheme("file").setPath(officeFile.getAbsolutePath())
+							.addParameter(CapraOfficeObject.ROW_PARAMETER, rId).build();
+				}
+				this.setUri(uri);
+			} catch (URISyntaxException e) {
+				LOG.error("Could not build URI for ", officeFile.getPath());
+			}
 		}
 	}
 }

@@ -17,11 +17,18 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -36,6 +43,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
 import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSelection;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetView;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTSheetViews;
@@ -127,11 +139,26 @@ public class CapraExcelRow extends CapraOfficeObject {
 			Matcher m = p.matcher(rowBuilder);
 			String rowData = (m.replaceAll(" ")).trim();
 
-			String rowUriEnd = row.getSheet().getSheetName() + CapraOfficeObject.URI_DELIMITER + rowId;
-			String rowUri = createUri(officeFile.getAbsolutePath(), rowUriEnd);
+			IPath path = new Path(officeFile.getAbsolutePath());
+			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			IFile file = root.getFileForLocation(path);
 
-			this.setData(rowData);
-			this.setUri(rowUri);
+			URI uri;
+			try {
+				if (file != null) {
+					uri = new URIBuilder().setScheme("platform").setPath("/resource" + file.getFullPath())
+							.addParameter(CapraOfficeObject.SHEET_PARAMETER, row.getSheet().getSheetName())
+							.addParameter(CapraOfficeObject.ROW_PARAMETER, rowId).build();
+				} else {
+					uri = new URIBuilder().setScheme("file").setPath(officeFile.getAbsolutePath())
+							.addParameter(CapraOfficeObject.SHEET_PARAMETER, row.getSheet().getSheetName())
+							.addParameter(CapraOfficeObject.ROW_PARAMETER, rowId).build();
+				}
+				this.setData(rowData);
+				this.setUri(uri);
+			} catch (URISyntaxException e) {
+				LOG.error("Could not build URI for ", officeFile.getPath());
+			}
 		}
 	}
 
@@ -143,13 +170,13 @@ public class CapraExcelRow extends CapraOfficeObject {
 		try {
 			officeFile = getFile();
 		} catch (NoSuchFileException e) {
-			LOG.warn("Could not find file {}", getFileId());
+			LOG.warn("Could not find file {}", getPath());
 			return;
 		}
 
 		// Extract relevant info from the object.
 		String fileType = Files.getFileExtension(officeFile.getAbsolutePath());
-		String rowId = getRowIdFromObjectUri();
+		String rowId = getRowId();
 		String sheetName = getSheetName();
 
 		// Get the object's sheet
@@ -180,7 +207,7 @@ public class CapraExcelRow extends CapraOfficeObject {
 		}
 
 		if (rowIndex == NO_ROW_INDEX || lastCellReference.equals(NO_LAST_CELL_REFERENCE)) {
-			throw new CapraOfficeObjectNotFound(getRowIdFromObjectUri());
+			throw new CapraOfficeObjectNotFound(getRowId());
 		}
 
 		// firstDisplayedRowIndex is used to set the first visible row in the
@@ -238,9 +265,13 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 * @return name of the sheet
 	 */
 	public String getSheetName() {
-		String itemId = getId();
-		int lastIndexOfDelimiter = itemId.indexOf(CapraOfficeObject.URI_DELIMITER);
-		return itemId.substring(0, lastIndexOfDelimiter);
+		List<NameValuePair> params = URLEncodedUtils.parse(getUri(), Charset.forName("UTF-8"));
+		for (NameValuePair param : params) {
+			if (param.getName().equals(CapraOfficeObject.SHEET_PARAMETER)) {
+				return param.getValue();
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -250,10 +281,14 @@ public class CapraExcelRow extends CapraOfficeObject {
 	 * 
 	 * @return ID of the row
 	 */
-	private String getRowIdFromObjectUri() {
-		String itemId = getId();
-		int lastIndexOfDelimiter = itemId.indexOf(CapraOfficeObject.URI_DELIMITER);
-		return itemId.substring(lastIndexOfDelimiter + CapraOfficeObject.URI_DELIMITER.length());
+	public String getRowId() {
+		List<NameValuePair> params = URLEncodedUtils.parse(getUri(), Charset.forName("UTF-8"));
+		for (NameValuePair param : params) {
+			if (param.getName().equals(CapraOfficeObject.ROW_PARAMETER)) {
+				return param.getValue();
+			}
+		}
+		return "";
 	}
 
 	/**

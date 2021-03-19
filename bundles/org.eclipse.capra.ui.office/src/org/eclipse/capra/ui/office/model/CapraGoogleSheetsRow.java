@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.poi.ss.usermodel.Row;
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
 import org.slf4j.Logger;
@@ -35,36 +36,41 @@ import org.slf4j.LoggerFactory;
 public class CapraGoogleSheetsRow extends CapraExcelRow {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CapraGoogleSheetsRow.class);
-	
+
 	/**
 	 * Extracts the data from the Excel row the same way as its parent
 	 * (CapraExcelRow), but sets a different URI. Because the excel file is only
-	 * stored temporarily, it uses a Google drive fileId instead of a file path
-	 * in the first part of the uri (the format of the uri is fileId + DELIMITER
-	 * + sheetId + DELIMITER + rowId).
+	 * stored temporarily, it uses a Google drive fileId instead of a file path in
+	 * the first part of the uri (the format of the uri is fileId + DELIMITER +
+	 * sheetId + DELIMITER + rowId).
 	 * 
-	 * @param officeFile
-	 *            the (temporarily stored) excel file that holds the row
-	 * @param row
-	 *            the row from which to extract the data
-	 * @param idColumn
-	 *            the column to be used to extract the ID of the row
-	 * @param googleDriveFileId
-	 *            the Google drive file ID of the file (found in the URL when
-	 *            opening the file in Google Drive)
+	 * @param officeFile        the (temporarily stored) excel file that holds the
+	 *                          row
+	 * @param row               the row from which to extract the data
+	 * @param idColumn          the column to be used to extract the ID of the row
+	 * @param googleDriveFileId the Google drive file ID of the file (found in the
+	 *                          URL when opening the file in Google Drive)
 	 */
 	public CapraGoogleSheetsRow(File officeFile, Row row, String idColumn, String googleDriveFileId) {
 		super(officeFile, row, idColumn);
 		String rowId = getRowIdFromExcelRow(row);
-		String objectId = row.getSheet().getSheetName() + CapraOfficeObject.URI_DELIMITER + rowId;
-		String uri = createUri(googleDriveFileId, objectId);
-		this.setUri(uri);
+
+		URI uri;
+		try {
+			uri = new URIBuilder().setScheme("google").setPath(googleDriveFileId)
+					.addParameter(CapraOfficeObject.SHEET_PARAMETER, row.getSheet().getSheetName())
+					.addParameter(CapraOfficeObject.ROW_PARAMETER, rowId).build();
+
+			this.setUri(uri);
+		} catch (URISyntaxException e) {
+			LOG.error("Could not build URI for ", googleDriveFileId);
+		}
 	}
 
 	@Override
 	public void showOfficeObjectInNativeEnvironment() throws CapraOfficeObjectNotFound {
 		try {
-			Desktop.getDesktop().browse(new URI("https://docs.google.com/spreadsheets/d/" + this.getFileId()));
+			Desktop.getDesktop().browse(new URI("https://docs.google.com/spreadsheets/d/" + this.getPath()));
 		} catch (IOException | URISyntaxException e) {
 			LOG.info("Could not open Google spreadsheet.", e);
 		}
