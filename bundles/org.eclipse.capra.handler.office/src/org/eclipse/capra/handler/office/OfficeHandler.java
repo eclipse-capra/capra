@@ -39,8 +39,8 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
-		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri(),
-				this.getDisplayName(officeObject), officeObject.getUri());
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri().toString(),
+				this.getDisplayName(officeObject), officeObject.getUri().toString());
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class OfficeTransferType extends ByteArrayTransfer {
 				writeOut.writeInt(buffer.length);
 				writeOut.write(buffer);
 
-				buffer = currOfficeObject.getUri().getBytes();
+				buffer = currOfficeObject.getUri().toString().getBytes();
 				writeOut.writeInt(buffer.length);
 				writeOut.write(buffer);
 			}

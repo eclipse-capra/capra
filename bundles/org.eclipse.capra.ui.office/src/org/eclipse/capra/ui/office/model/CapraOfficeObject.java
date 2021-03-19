@@ -17,6 +17,8 @@ package org.eclipse.capra.ui.office.model;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
 
 import org.eclipse.capra.ui.office.exceptions.CapraOfficeObjectNotFound;
@@ -37,11 +39,8 @@ public class CapraOfficeObject {
 	public static final String XLS = "xls";
 	public static final String XLSX = "xlsx";
 
-	/**
-	 * The String that separates the file-path from the object-id in the
-	 * OfficeObject uri.
-	 */
-	public static final String URI_DELIMITER = "\\\\::";
+	public static final String SHEET_PARAMETER = "sheet";
+	public static final String ROW_PARAMETER = "row";
 
 	/**
 	 * The description of the object (row in Excel, requirement in Word)
@@ -51,7 +50,7 @@ public class CapraOfficeObject {
 	/**
 	 * The uri of the object in the form of filePath/objectId
 	 */
-	private String uri = "";
+	private URI uri;
 
 	/**
 	 * A constructor that generates an empty instance of OfficeObject.
@@ -60,26 +59,26 @@ public class CapraOfficeObject {
 	}
 
 	/**
-	 * A constructor that generates a new instance of OfficeObject with defined
-	 * OfficeData and rowUri properties.
-	 */
-	public CapraOfficeObject(String data, String uri) {
-		this.data = data;
-		this.uri = uri;
-	}
-
-	/**
 	 * Returns the uri of the OfficeObject
 	 */
-	public String getUri() {
+	public URI getUri() {
 		return uri;
 	}
 
 	/**
 	 * Sets the uri of the OfficeObject
 	 */
-	public void setUri(String uri) {
+	public void setUri(URI uri) {
 		this.uri = uri;
+	}
+
+	public void setUri(String uri) {
+		try {
+			this.uri = new URI(uri);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -100,8 +99,8 @@ public class CapraOfficeObject {
 	 * Returns the ID of the OfficeObject from its URI. The format of the URI should
 	 * always be fileId + DELIMITER + objectId.
 	 */
-	public String getId() {
-		return getObjectIdFromUri(this.uri);
+	public String getInternalLocation() {
+		return uri.getFragment();
 	}
 
 	/**
@@ -109,12 +108,11 @@ public class CapraOfficeObject {
 	 * format of the URI should always be fileId + DELIMITER + objectId.
 	 */
 	public File getFile() throws NoSuchFileException {
-		String fileId = getFileId();
-		File officeFile = new File(fileId);
+		File officeFile = new File(uri);
 		if (officeFile.exists()) {
 			return officeFile;
 		} else {
-			throw new NoSuchFileException(fileId);
+			throw new NoSuchFileException(uri.getPath());
 		}
 	}
 
@@ -122,33 +120,8 @@ public class CapraOfficeObject {
 	 * Returns the ID of the file - the first part of the URI. The format of the URI
 	 * should always be fileId + DELIMITER + objectId.
 	 */
-	public String getFileId() {
-		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
-		return uri.substring(0, firstDelimiterIndex);
-	}
-
-	/**
-	 * Extracts the objectId from the provided CapraOfficeObject uri. The format of
-	 * the URI should always be fileId + DELIMITER + objectId.
-	 * 
-	 * @param uri uri of the object
-	 * @return ID of the object
-	 */
-	public static String getObjectIdFromUri(String uri) {
-		int firstDelimiterIndex = uri.indexOf(URI_DELIMITER);
-		return uri.substring(firstDelimiterIndex + URI_DELIMITER.length());
-	}
-
-	/**
-	 * Extracts the fileId from the provided CapraOfficeObject uri. The format of
-	 * the URI should always be fileId + DELIMITER + objectId.
-	 * 
-	 * @param uri uri of the object
-	 * @return file-path of the file that contains the object
-	 */
-	public static String getFileIdFromUri(String uri) {
-		int delimiterIndex = uri.indexOf(URI_DELIMITER);
-		return uri.substring(0, delimiterIndex);
+	public String getPath() {
+		return uri.getPath();
 	}
 
 	/**
@@ -161,20 +134,8 @@ public class CapraOfficeObject {
 		try {
 			Desktop.getDesktop().open(getFile());
 		} catch (IOException e) {
-			throw new CapraOfficeObjectNotFound(getId(), e);
+			throw new CapraOfficeObjectNotFound(getInternalLocation(), e);
 		}
-	}
-
-	/**
-	 * Generates a uri given the fileId of the file that contains the object and an
-	 * objectId.
-	 * 
-	 * @param fileId   ID of the file that contains the object with objectId
-	 * @param objectID ID of the object
-	 * @return a uri of the object in the form of filePath/objectID
-	 */
-	public static String createUri(String fileId, String objectId) {
-		return fileId + URI_DELIMITER + objectId;
 	}
 
 	/**
