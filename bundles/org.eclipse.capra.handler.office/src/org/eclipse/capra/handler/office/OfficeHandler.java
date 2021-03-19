@@ -14,9 +14,13 @@
 
 package org.eclipse.capra.handler.office;
 
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
@@ -55,15 +59,37 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 
 	@Override
 	public String getDisplayName(CapraOfficeObject officeObject) {
-		int minAllowed = Activator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
-		String text = officeObject.toString();
-		int textLength = Math.min(text.length(), minAllowed);
-		if (textLength == minAllowed) {
-			text = text.substring(0, textLength) + "...";
+		StringBuilder displayName = new StringBuilder();
+		if (officeObject.getUri().getQuery().contains(CapraOfficeObject.SHEET_PARAMETER)) {
+			String sheetName = "";
+			String rowId = "";
+			List<NameValuePair> params = URLEncodedUtils.parse(officeObject.getUri(), Charset.forName("UTF-8"));
+			for (NameValuePair param : params) {
+				if (param.getName().equals(CapraOfficeObject.SHEET_PARAMETER)) {
+					sheetName = param.getValue();
+				} else if (param.getName().equals(CapraOfficeObject.ROW_PARAMETER)) {
+					rowId = param.getValue();
+				}
+			}
+
+			displayName.append(sheetName);
+			displayName.append("!");
+			displayName.append(rowId);
+			displayName.append(" (");
+			displayName.append(Paths.get(officeObject.getUri().getPath()).getFileName().toString());
+			displayName.append(")");
+		} else {
+			int minAllowed = Activator.getDefault().getPreferenceStore().getInt(OfficePreferences.CHAR_COUNT);
+			String text = officeObject.toString();
+			int textLength = Math.min(text.length(), minAllowed);
+			if (textLength == minAllowed) {
+				text = text.substring(0, textLength) + "...";
+			}
+			// Remove new lines
+			text = text.replaceAll("\\R+", " ");
+			displayName.append(text);
 		}
-		// Remove new lines
-		text = text.replaceAll("\\R+", " ");
-		return text;
+		return displayName.toString();
 	}
 
 	@Override
