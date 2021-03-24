@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,10 @@ package org.eclipse.capra.ui.operations;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -57,6 +60,11 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  */
 public class CreateTraceOperation extends AbstractOperation {
 
+	private static final String ERROR_DIALOG_TITLE = "Error creating new trace link";
+	private static final String EXCEPTION_MESSAGE_RUNTIME_EXCEPTION = "An exception occured during trace link creation.";
+	private static final String EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION = "The selected trace link type does not support these types of artifacts.";
+	private static final String EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION_REASON = "Selected origin of class %s and targets of class %s are not compatible with the selected trace link type.";
+
 	private static final String CAPRA_INFORMATION = "Capra Information";
 	private static final String TRACE_LINK_EXISTS = "The trace link you want to create already exists and will therefore not be created";
 	private static final String TRACE_LINK_SUCCESSFULLY_CREATED = "Trace link has been successfully created";
@@ -64,6 +72,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	private static final String SELECT_TRACE_LINK_TYPE = "Select the trace type you want to create";
 	private static final String SOURCE = "Source:";
 	private static final String TARGET = "Target:";
+	private static final String PLUGIN_ID = "org.eclipse.capra.ui";
 
 	private Optional<EClass> chosenType;
 	private List<EObject> originWrappers;
@@ -94,6 +103,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
 		Shell shell = info.getAdapter(Shell.class);
+		IStatus executionStatus = null;
 		if (origins == null || targets == null || origins.isEmpty() || targets.isEmpty()) {
 			MessageDialog.openWarning(shell, "No origins or targets selected",
 					"At least one source artifact (marked by a checkbox) and one target artifact need to be in the list.");
@@ -102,8 +112,24 @@ public class CreateTraceOperation extends AbstractOperation {
 		if (chooseTraceType == null) {
 			chooseTraceType = (traceTypes, selection) -> getTraceTypeToCreate(shell, traceTypes, selection);
 		}
-		createTrace(shell, chooseTraceType);
-		return Status.OK_STATUS;
+		try {
+			createTrace(shell, chooseTraceType);
+			executionStatus = Status.OK_STATUS;
+		} catch (IllegalStateException e) {
+			executionStatus = new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e);
+			createErrorMessage(shell, executionStatus, e.getMessage());
+		} catch (ClassCastException e) {
+			executionStatus = new Status(Status.ERROR, PLUGIN_ID,
+					String.format(EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION_REASON, returnElementClasses(this.origins),
+							returnElementClasses(this.targets)),
+					e);
+			createErrorMessage(shell, executionStatus, EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION);
+		} catch (RuntimeException e) {
+			executionStatus = new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e);
+			createErrorMessage(shell, executionStatus, EXCEPTION_MESSAGE_RUNTIME_EXCEPTION);
+		}
+		return executionStatus;
+
 	}
 
 	@Override
@@ -175,7 +201,7 @@ public class CreateTraceOperation extends AbstractOperation {
 				traceHelper.annotateTrace(allWrappers);
 
 				// check from preferences if user wants to see the "trace
-				// successfully created dialog"
+				// successfully created dialog
 				IPreferenceStore store = CapraPreferences.getPreferences();
 				if (store.getBoolean(CapraPreferences.SHOW_TRACE_CREATED_CONFIRMATION_DIALOG)) {
 					MessageDialogWithToggle.open(MessageDialog.INFORMATION, shell, CAPRA_INFORMATION,
@@ -229,6 +255,16 @@ public class CreateTraceOperation extends AbstractOperation {
 		return handler.withCastedHandler(artifactHelper.unwrapWrapper(element), (h, o) -> h.getDisplayName(o))
 				.orElse(EMFHelper.getIdentifier(element));
 
+	}
+
+	private static void createErrorMessage(Shell shell, IStatus status, String message) {
+		ErrorDialog.openError(shell, ERROR_DIALOG_TITLE, message, status);
+	}
+
+	private static String returnElementClasses(List<?> elements) {
+		Set<String> unique = new HashSet<String>();
+		elements.forEach(el -> unique.add(el.getClass().getCanonicalName()));
+		return unique.toString().replace("[", "").replace("]", "");
 	}
 
 	/**
