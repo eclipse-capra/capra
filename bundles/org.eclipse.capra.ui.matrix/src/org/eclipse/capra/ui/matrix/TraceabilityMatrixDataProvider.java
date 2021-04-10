@@ -74,18 +74,13 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 
 	@Override
 	public Object getDataValue(int colIndex, int rowIndex) {
-		EntryData colEntry = columns.get(colIndex);
-		EntryData rowEntry = columns.get(rowIndex);
-		for (Connection connection : colEntry.connections) {
-			for (EObject target : connection.getTargets()) {
-				if (!EMFHelper.hasSameIdentifier(colEntry.artifact, target)
-						&& EMFHelper.hasSameIdentifier(rowEntry.artifact, target)) {
-					EObject eClass = connection.getTlink().eClass();
-					return (eClass == null ? "" : ((EClass) eClass).getName());
-				}
-			}
+		Connection connection = getCellConnection(colIndex, rowIndex);
+		if (connection != null) {
+			EObject eClass = connection.getTlink().eClass();
+			return (eClass == null ? "" : ((EClass) eClass).getName());
+		} else {
+			return "";
 		}
-		return "";
 	}
 
 	@Override
