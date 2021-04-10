@@ -121,4 +121,12 @@ public class ConnectionAdapter implements IPropertySource {
 		connection.getTlink().eSet(feature, value);
 	}
 
+	/**
+	 * Provides the connection represented by this adapter.
+	 * 
+	 * @return the connection
+	 */
+	public Connection getConnection() {
+		return this.connection;
+	}
 }

@@ -30,6 +30,7 @@ import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
+import org.eclipse.capra.ui.adapters.ConnectionAdapter;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixBodyToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
@@ -123,6 +124,7 @@ public class TraceabilityMatrixView extends ViewPart {
 	private static final String LINK_LABEL = "LINKED"; // When there is a link between
 
 	private NatTable traceMatrixTable;
+	private Action deleteLinkAction;
 	private Action refreshAction;
 	private Action showAllAction;
 	private Action exportExcelAction;
@@ -431,6 +433,8 @@ public class TraceabilityMatrixView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
+		manager.add(deleteLinkAction);
+		manager.add(new Separator());
 		manager.add(refreshAction);
 		manager.add(showAllAction);
 		manager.add(new Separator());
@@ -438,11 +442,27 @@ public class TraceabilityMatrixView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
+		manager.add(deleteLinkAction);
 		manager.add(refreshAction);
 		manager.add(showAllAction);
 	}
 
 	private void makeActions() {
+		deleteLinkAction = new Action() {
+			@Override
+			public void run() {
+				if (selectedModels != null && !selectedModels.isEmpty()
+						&& selectedModels.get(0) instanceof ConnectionAdapter) {
+					ConnectionAdapter adapter = (ConnectionAdapter) selectedModels.get(0);
+					Connection connection = adapter.getConnection();
+					EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
+					traceAdapter.deleteTrace(List.of(connection), traceModel);
+					showAllAction.run();
+				}
+			}
+		};
+		deleteLinkAction.setText("Delete Link");
+		deleteLinkAction.setToolTipText("Delete Link");
 		refreshAction = new Action() {
 			@Override
 			public void run() {
