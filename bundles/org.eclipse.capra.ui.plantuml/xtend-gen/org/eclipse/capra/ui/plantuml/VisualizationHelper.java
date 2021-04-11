@@ -89,6 +89,8 @@ public class VisualizationHelper {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");
       _builder.newLine();
+      _builder.append("left to right direction");
+      _builder.newLine();
       _builder.append("object \"");
       String _originLabel = helper.originLabel();
       _builder.append(_originLabel);
