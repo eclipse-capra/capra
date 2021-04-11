@@ -54,8 +54,8 @@ public class TestUMLInternalLinks {
 
 	private static final String TEST_PROJECT_NAME = "TestProject";
 
-	private static final String EXPECTED_TEXT_FOR_INTERNAL_LINKS = "@startuml\n" + "object \"A : Class\" as o0 #pink\n"
-			+ "object \"B : Class\" as o1\n" + "object \"C : Class\" as o2\n"
+	private static final String EXPECTED_TEXT_FOR_INTERNAL_LINKS = "@startuml\n" + "left to right direction\n"
+			+ "object \"A : Class\" as o0 #pink\n" + "object \"B : Class\" as o1\n" + "object \"C : Class\" as o2\n"
 			+ "o0--o1: A : Class B : Class : RelatedTo\n" + "o1--o2: true : Generalization\n" + "@enduml\n";
 
 	@Before

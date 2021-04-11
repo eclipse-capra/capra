@@ -33,6 +33,7 @@ class VisualizationHelper {
 	var helper = new Connections(connections, selectedObjects, artifactModel);
 	'''
 	@startuml
+	left to right direction
 	object "«helper.originLabel()»«IF helper.originHasLocation()» [[«helper.originLocation().replaceAll(" ", "%20")» (Go to)]]«ENDIF»" as «helper.originId()» #pink
 	«FOR id:helper.objectIdsWithoutOrigin()»
 	object "«helper.label(id)»«IF helper.hasLocation(id)» [[«helper.location(id).replaceAll(" ", "%20")» (Go to)]]«ENDIF»" as «id»
