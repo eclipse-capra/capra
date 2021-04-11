@@ -77,15 +77,17 @@ public class TestGraphicalVisualization {
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private static final String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml" + LINE_SEPARATOR
-			+ "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR + "object \"B : EClass\" as o1" + LINE_SEPARATOR
-			+ "o0--o1: A : EClass B : EClass : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
+			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "o0--o1: A : EClass B : EClass : RelatedTo"
+			+ LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
-			+ "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR + "object \"B : EClass\" as o1" + LINE_SEPARATOR
-			+ "object \"C : EClass\" as o2" + LINE_SEPARATOR + "o0--o1: A : EClass B : EClass : RelatedTo"
-			+ LINE_SEPARATOR + "o1--o2: B : EClass C : EClass : RelatedTo" + LINE_SEPARATOR + "@enduml"
-			+ LINE_SEPARATOR;
-	private static final String EXPECTED_TEXT_FOR_GOTO_LINKS = "@startuml" + LINE_SEPARATOR
+			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
+			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "object \"C : EClass\" as o2" + LINE_SEPARATOR
+			+ "o0--o1: A : EClass B : EClass : RelatedTo" + LINE_SEPARATOR + "o1--o2: B : EClass C : EClass : RelatedTo"
+			+ LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+	private static final String EXPECTED_TEXT_FOR_GOTO_LINKS = "@startuml" + LINE_SEPARATOR + "left to right direction"
+			+ LINE_SEPARATOR
 			+ "object \"TestClass [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/TestClass.java#org.eclipse.capra.test.TestClass (Go to)]]\" as o0 #pink"
 			+ LINE_SEPARATOR
 			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1"
