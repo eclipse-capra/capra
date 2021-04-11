@@ -44,7 +44,7 @@ public class Connections {
 	private EObject origin;
 
 	private Set<EObject> allObjects;
-	private Map<EObject, String> object2Id;
+	private Map<String, String> object2Id;
 	private Map<String, String> id2Label;
 	private Map<String, String> id2Location;
 
@@ -66,36 +66,36 @@ public class Connections {
 		object2Id = new LinkedHashMap<>();
 		int i = 0;
 		for (EObject o : allObjects) {
-			object2Id.put(o, "o" + i++);
+			object2Id.put(EMFHelper.getIdentifier(o), "o" + i++);
 		}
 
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
-			String id = object2Id.get(o);
+			String id = object2Id.get(EMFHelper.getIdentifier(o));
 			id2Label.put(id, artifactHelper.getArtifactLabel(o));
 		});
 
 		id2Location = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
-			String id = object2Id.get(o);
+			String id = object2Id.get(EMFHelper.getIdentifier(o));
 			id2Location.put(id, artifactHelper.getArtifactLocation(o));
 		});
 	}
 
 	public String originLabel() {
-		return sanitize(id2Label.get(object2Id.get(origin)));
+		return sanitize(id2Label.get(object2Id.get(EMFHelper.getIdentifier(origin))));
 	}
 
 	public String originLocation() {
-		return id2Location.get(object2Id.get(origin));
+		return id2Location.get(object2Id.get(EMFHelper.getIdentifier(origin)));
 	}
 
 	public boolean originHasLocation() {
-		return !Strings.isNullOrEmpty(id2Location.get(object2Id.get(origin)));
+		return !Strings.isNullOrEmpty(id2Location.get(object2Id.get(EMFHelper.getIdentifier(origin))));
 	}
 
 	public String originId() {
-		return object2Id.get(origin);
+		return object2Id.get(EMFHelper.getIdentifier(origin));
 	}
 
 	public Collection<String> objectIdsWithoutOrigin() {
@@ -123,7 +123,8 @@ public class Connections {
 		connections.forEach(c -> {
 			c.getOrigins().forEach(org -> {
 				c.getTargets().forEach(trg -> {
-					arrows.add(object2Id.get(org) + "--" + object2Id.get(trg) + ": "
+					arrows.add(object2Id.get(EMFHelper.getIdentifier(org)) + "--"
+							+ object2Id.get(EMFHelper.getIdentifier(trg)) + ": "
 							+ EMFHelper.getIdentifier(c.getTlink()));
 				});
 			});
