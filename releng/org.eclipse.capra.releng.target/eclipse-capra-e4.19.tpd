@@ -1,0 +1,65 @@
+target "eclipse-capra-e4.19" with source requirements
+
+location "http://download.eclipse.org/releases/2021-03/" eclipse-2021-03 {
+	org.eclipse.cdt.sdk.feature.group
+	org.eclipse.cdt.testsrunner.feature.feature.group
+	org.eclipse.emf.compare.ide.ui.feature.group
+	org.eclipse.emf.ecore.xcore.sdk.feature.group
+	org.eclipse.emf.sdk.feature.group
+	org.eclipse.papyrus.sdk.feature.feature.group
+	org.eclipse.php.feature.group
+	org.eclipse.xtext.sdk.feature.group
+	org.eclipse.mylyn.gerrit.feature.feature.group
+	org.eclipse.mylyn.hudson.feature.group
+	org.eclipse.gef.sdk.feature.group
+	org.eclipse.xtend.sdk.feature.group
+	org.eclipse.pde.source.feature.group
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210223232630/repository/" eclipse-orbit-2021-03 {
+	org.apache.poi.ooxml
+	org.apache.xmlbeans
+	com.google.guava
+	org.apache.commons.collections
+	org.apache.poi.ooxml.schemas
+	org.apache.poi
+	com.fasterxml.jackson.core.jackson-core
+	org.slf4j.api
+	ch.qos.logback.slf4j
+	org.dom4j
+}
+
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
+	org.mortbay.jetty.util
+	org.mortbay.jetty.server
+}
+
+location "http://download.eclipse.org/sphinx/releases/0.9.x" {
+	org.eclipse.sphinx.sdk.feature.group
+}
+
+location "http://download.eclipse.org/rmf/updates/releases" {
+	org.eclipse.rmf.reqif10.sdk.feature.feature.group
+	org.eclipse.rmf.reqif10.pror.sdk.feature.feature.group
+}
+
+location "http://hallvard.github.io/plantuml/" plantuml {
+	net.sourceforge.plantuml.feature.feature.group 1.1.24
+}
+
+location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
+	de.ovgu.featureide.featuremodeling.feature.group
+}
+
+location "http://download.eclipse.org/app4mc/updatesites/releases/1.0.0" APP4MC {
+	org.eclipse.app4mc.platform.sdk.feature.group
+}
+
+location "http://download.eclipse.org/ease/release/0.7.0" EASE {
+	org.eclipse.ease.feature.feature.group
+	org.eclipse.ease.ui.feature.feature.group
+}
+
+location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
+	ode.concept.deis.feature.feature.group
+}
