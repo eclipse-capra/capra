@@ -146,12 +146,8 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
 			} else {
 				for (RelatedTo trace : traces) {
-					List<EObject> allItems = new ArrayList<>(trace.getTargets());
-					allItems.add(trace.getOrigin());
-					for (EObject item : allItems) {
-						if (EcoreUtil.equals(item, element)) {
-							connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
-						}
+					if (EcoreUtil.equals(element, trace.getOrigin())) {
+						connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
 					}
 				}
 			}

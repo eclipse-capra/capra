@@ -29,6 +29,7 @@ import static org.eclipse.capra.testsuite.TestHelper.save;
 import static org.eclipse.capra.testsuite.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.managedbuilder.core.BuildException;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EClass;
@@ -52,6 +54,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.ui.IWorkbenchPart;
 import org.junit.Before;
@@ -62,6 +65,9 @@ public class TestGraphicalVisualization {
 	private static final String CLASS_A_NAME = "A";
 	private static final String CLASS_B_NAME = "B";
 	private static final String CLASS_C_NAME = "C";
+	private static final String CLASS_D_NAME = "D";
+	private static final String CLASS_E_NAME = "E";
+	private static final String CLASS_F_NAME = "F";
 
 	private static final String MODEL_A_FILENAME = "modelA.ecore";
 	private static final String MODEL_B_FILENAME = "modelB.ecore";
@@ -80,7 +86,6 @@ public class TestGraphicalVisualization {
 			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
 			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "o0--o1: A : EClass B : EClass : RelatedTo"
 			+ LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
-
 	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
 			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
 			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "object \"C : EClass\" as o2" + LINE_SEPARATOR
@@ -92,6 +97,22 @@ public class TestGraphicalVisualization {
 			+ LINE_SEPARATOR
 			+ "object \"CClass.c [[platform:/resource/TestProject_C/CClass.c#CClass.c (Go to)]]\" as o1"
 			+ LINE_SEPARATOR + "o0--o1: TestClass CClass.c : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+	private static final String EXPECTED_TEXT_FOR_COMPLEX_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
+			+ "left to right direction" + LINE_SEPARATOR
+			+ "object \"A B C : RelatedTo [[platform:/resource/__WorkspaceTraceModels/traceModel.xmi (Go to)]]\" as o0 #pink"
+			+ LINE_SEPARATOR
+			+ "object \"B [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/B.java#org.eclipse.capra.test.B (Go to)]]\" as o1"
+			+ LINE_SEPARATOR
+			+ "object \"C [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/C.java#org.eclipse.capra.test.C (Go to)]]\" as o2"
+			+ LINE_SEPARATOR
+			+ "object \"D [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/D.java#org.eclipse.capra.test.D (Go to)]]\" as o3"
+			+ LINE_SEPARATOR
+			+ "object \"E [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/E.java#org.eclipse.capra.test.E (Go to)]]\" as o4"
+			+ LINE_SEPARATOR
+			+ "object \"F [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/F.java#org.eclipse.capra.test.F (Go to)]]\" as o5"
+			+ LINE_SEPARATOR + "o2--o4: C E F : RelatedTo" + LINE_SEPARATOR + "o0--o1: A B C : RelatedTo"
+			+ LINE_SEPARATOR + "o1--o3: B D : RelatedTo" + LINE_SEPARATOR + "o0--o2: A B C : RelatedTo" + LINE_SEPARATOR
+			+ "o2--o5: C E F : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 
 	@Before
 	public void init() throws CoreException {
@@ -207,6 +228,64 @@ public class TestGraphicalVisualization {
 		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
 		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_GOTO_LINKS, directlyConnectedElements);
+
+	}
+
+	@Test
+	public void testComplexTransitiveLinkGraph() throws CoreException, BuildException, InterruptedException {
+		// Create a java project
+		IProject project = TestHelper.createSimpleProject(TEST_PROJECT_NAME_JAVA);
+		IJavaProject javaProject = TestHelper.createJavaProject(project);
+		IFolder sourceFolder = TestHelper.createSourceFolder(project);
+		assertTrue(projectExists(TEST_PROJECT_NAME_JAVA));
+
+		IType javaClassA = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_A_NAME);
+		IType javaClassB = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_B_NAME);
+		IType javaClassC = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_C_NAME);
+		IType javaClassD = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_D_NAME);
+		IType javaClassE = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_E_NAME);
+		IType javaClassF = TestHelper.createJavaClassInFolder(javaProject, sourceFolder, CLASS_F_NAME);
+
+		// Create A -> B,C
+		SelectionView.getOpenedView().dropToSelection(javaClassA);
+		SelectionView.getOpenedView().dropToSelection(javaClassB);
+		SelectionView.getOpenedView().dropToSelection(javaClassC);
+
+		assertFalse(thereIsATraceBetween(javaClassA, javaClassB));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(javaClassA, javaClassB));
+		SelectionView.getOpenedView().clearSelection();
+
+		// Create B -> D
+		SelectionView.getOpenedView().dropToSelection(javaClassB);
+		SelectionView.getOpenedView().dropToSelection(javaClassD);
+
+		assertFalse(thereIsATraceBetween(javaClassB, javaClassD));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(javaClassB, javaClassD));
+		SelectionView.getOpenedView().clearSelection();
+
+		// Create C -> E,F
+		SelectionView.getOpenedView().dropToSelection(javaClassC);
+		SelectionView.getOpenedView().dropToSelection(javaClassE);
+		SelectionView.getOpenedView().dropToSelection(javaClassF);
+
+		assertFalse(thereIsATraceBetween(javaClassC, javaClassE));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(javaClassC, javaClassE));
+		SelectionView.getOpenedView().clearSelection();
+
+		// create a selection with the first link
+		List<Object> selection = new ArrayList<>();
+		EObject link = TestHelper.getTraceBetween(javaClassA, javaClassB);
+		assertNotNull(link);
+		selection.add(link);
+
+		// Test directly connected Elements
+		ToggleTransitivityHandler.setTraceViewTransitive(true);
+		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		String allConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
+		assertEquals(EXPECTED_TEXT_FOR_COMPLEX_TRANSITIVE_CONNECTIONS, allConnectedElements);
 
 	}
 
