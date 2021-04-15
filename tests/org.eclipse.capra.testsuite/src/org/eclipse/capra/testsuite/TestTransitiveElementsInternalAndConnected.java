@@ -140,15 +140,14 @@ public class TestTransitiveElementsInternalAndConnected {
 
 		// testing transitively connected elements when there are transitive
 		// connection
-		con1 = genMod.getTransitivelyConnectedElements(_D, traceModel, 0);
-		con2 = genMod.getConnectedElements(_D, traceModel);
-
-		assertNotEquals(con1, con2);
-		assertTrue(con1.size() + " is greater than " + con2.size(), con1.size() > con2.size());
+		List<Connection> con3 = genMod.getTransitivelyConnectedElements(_A, traceModel, 0);
+		assertNotEquals(con1, con3);
+		assertNotEquals(con2, con3);
+		assertTrue(con3.size() + " is greater than " + con2.size(), con3.size() > con2.size());
 
 		// testing transitively connected elements when current depth not 0
-		con2 = genMod.getTransitivelyConnectedElements(_D, traceModel, 1);
-		assertNotEquals(con1, con2);
+		List<Connection> con4 = genMod.getTransitivelyConnectedElements(_A, traceModel, 1);
+		assertNotEquals(con3, con4);
 
 		// testing transitive and non transitive connected elements for trace parameter
 		List<RelatedTo> traces = traceModel.getTraces();

@@ -20,6 +20,7 @@
    <extension-point id="org.eclipse.capra.configuration.artifactHandlers" name="Artifact Handlers" schema="schema/org.eclipse.capra.configuration.artifactHandlers.exsd"/>
    <extension-point id="org.eclipse.capra.configuration.priorityHandlers" name="Priority Handlers for Artifact Handlers" schema="schema/org.eclipse.capra.configuration.priorityHandlers.exsd"/>
    <extension-point id="org.eclipse.capra.configuration.artifactMetaModel" name="Artifact Meta-Model" schema="schema/org.eclipse.capra.configuration.artifactMetaModel.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.traceMetadata" name="Metadata provider for trace links" schema="schema/org.eclipse.capra.configuration.traceMetadata.exsd"/>
    <extension point="org.eclipse.emf.transaction.editingDomains">
       <editingDomain
          id="org.eclipse.capra.core.EditingDomain"
