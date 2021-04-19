@@ -17,6 +17,7 @@ import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
 import static org.eclipse.capra.testsupport.TestHelper.createEmptyFileInProject;
 import static org.eclipse.capra.testsupport.TestHelper.createSimpleProject;
 import static org.eclipse.capra.testsupport.TestHelper.createTraceForCurrentSelectionOfType;
+import static org.eclipse.capra.testsupport.TestHelper.purgeModels;
 import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
 import static org.eclipse.capra.testsupport.TestHelper.thereIsATraceBetween;
 import static org.junit.Assert.assertEquals;
@@ -62,6 +63,7 @@ public class TestTraceHelper {
 	public void init() throws CoreException {
 		clearWorkspace();
 		resetSelectionView();
+		purgeModels();
 	}
 
 	/**

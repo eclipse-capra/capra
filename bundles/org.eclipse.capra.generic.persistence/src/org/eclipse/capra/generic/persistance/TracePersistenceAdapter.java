@@ -20,10 +20,12 @@ import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.preferences.CapraPreferences;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -49,16 +51,17 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 
 	private static final Logger LOG = LoggerFactory.getLogger(TracePersistenceAdapter.class);
 
-	private static final String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
+	private static String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
 	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
 	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers.xmi";
-	private static final URI DEFAULT_TRACE_MODEL_URI = URI
-			.createPlatformResourceURI(DEFAULT_PROJECT_NAME + "/" + DEFAULT_TRACE_MODEL_NAME, true);
-	private static final URI DEFAULT_ARTIFACT_MODEL_URI = URI
-			.createPlatformResourceURI(DEFAULT_PROJECT_NAME + "/" + DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME, true);
 
 	private Optional<EObject> loadModel(ResourceSet resourceSet, String modelName) {
-		URI uri = URI.createPlatformResourceURI(DEFAULT_PROJECT_NAME + "/" + modelName, true);
+
+		return this.loadModel(this.getProjectNamePreference(), resourceSet, modelName);
+	}
+
+	private Optional<EObject> loadModel(String projectName, ResourceSet resourceSet, String modelName) {
+		URI uri = URI.createPlatformResourceURI(projectName + "/" + modelName, true);
 
 		Resource resource = resourceSet.getResource(uri, false) != null ? resourceSet.getResource(uri, false)
 				: resourceSet.createResource(uri);
@@ -101,25 +104,29 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 			project.create(new NullProgressMonitor());
 			project.open(new NullProgressMonitor());
 		}
-
 		return project;
 	}
 
 	@Override
 	public void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel) {
 		try {
+			ensureProjectExists(this.getProjectNamePreference());
 			ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
-			ensureProjectExists(DEFAULT_PROJECT_NAME);
 
-			Resource resourceForTraces = resourceSet.getResource(DEFAULT_TRACE_MODEL_URI, false) != null
-					? resourceSet.getResource(DEFAULT_TRACE_MODEL_URI, false)
-					: resourceSet.createResource(DEFAULT_TRACE_MODEL_URI);
+			URI traceURI = URI.createPlatformResourceURI(getProjectNamePreference() + "/" + DEFAULT_TRACE_MODEL_NAME,
+					true);
+			URI artifactURI = URI.createPlatformResourceURI(
+					getProjectNamePreference() + "/" + DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME, true);
 
-			Resource resourceForArtifacts = resourceSet.getResource(DEFAULT_ARTIFACT_MODEL_URI, false) != null
-					? resourceSet.getResource(DEFAULT_ARTIFACT_MODEL_URI, false)
-					: resourceSet.createResource(DEFAULT_ARTIFACT_MODEL_URI);
+			Resource resourceForTraces = resourceSet.getResource(traceURI, false) != null
+					? resourceSet.getResource(traceURI, false)
+					: resourceSet.createResource(traceURI);
 
-			if (resourceForTraces.getContents().isEmpty() || resourceForTraces.getContents().isEmpty()) {
+			Resource resourceForArtifacts = resourceSet.getResource(artifactURI, false) != null
+					? resourceSet.getResource(artifactURI, false)
+					: resourceSet.createResource(artifactURI);
+
+			if (resourceForTraces.getContents().isEmpty() || resourceForArtifacts.getContents().isEmpty()) {
 				// The trace model or the artifact model have never been saved before and we
 				// need to add it to the resource set.
 				TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
@@ -154,5 +161,15 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	public EObject getArtifactWrappers(ResourceSet resourceSet) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
+	}
+
+	// get preference for project name
+	private String getProjectNamePreference() {
+		IEclipsePreferences pref = CapraPreferences.getPreferences();
+		String projectName = pref.get(CapraPreferences.CAPRA_PERSISTENCE_PROJECT_NAME, DEFAULT_PROJECT_NAME);
+		if (projectName.isBlank() || projectName.isEmpty()) {
+			projectName = DEFAULT_PROJECT_NAME;
+		}
+		return projectName;
 	}
 }
