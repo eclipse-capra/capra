@@ -30,6 +30,7 @@ import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Helper class for creating traces
@@ -208,22 +209,22 @@ public class TraceHelper {
 	}
 
 	/**
-	 * Checks if a given EMF element or artifactWrapper is contained in the trace
-	 * model.
+	 * Checks if a given EMF element or artifactWrapper is referenced in a trace in
+	 * the trace model.
 	 * 
 	 * @param artifact the artifact to look for
-	 * @return true if the artifact exists, false otherwise
+	 * @return true if a trace that references the artifact exists, false otherwise
 	 */
 	public boolean isArtifactInTraceModel(EObject artifact) {
-		List<EObject> artifacts = new ArrayList<>();
 		List<Connection> connections = traceAdapter.getAllTraceLinks(traceModel);
 		for (Connection c : connections) {
-			artifacts.addAll(getTracedElements(c));
+			for (EObject a : getTracedElements(c)) {
+				if (EcoreUtil.equals(artifact, a)) {
+					return true;
+				}
+			}
 		}
-		if (artifacts.contains(artifact)) {
-			return true;
-		} else
-			return false;
+		return false;
 	}
 
 	/**
