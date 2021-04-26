@@ -18,7 +18,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script src="https://unpkg.com/d3"></script>
 	<script src="https://unpkg.com/sunburst-chart"></script>
-	<style>body { margin: 0 }</style>
+	<style>
+		body { 
+			margin: 0;
+			padding: 3px;
+		}
+		.sunburst-tooltip {
+			white-space: normal;
+		}
+		.sunburst-tooltip .tooltip-title {
+			text-align: left;
+		}
+	</style>
 </head>
 <body>
 	<div id="chart"></div>
@@ -31,6 +42,8 @@
 	      .size('size')
     	  .color(d => color(d.name))
 	      (document.getElementById('chart'));
+
+	
 	</script>
 </body>
 </html>
