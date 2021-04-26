@@ -46,6 +46,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -102,6 +104,16 @@ public class SunburstView extends ViewPart {
 
 	private List<Object> selectedModels = new ArrayList<>();
 
+	/**
+	 * A listener that redraws the sunburst diagram when an event occurred.
+	 */
+	private Listener redrawListener = new Listener() {
+		@Override
+		public void handleEvent(Event event) {
+			browser.setText(createHTML());
+		}
+	};
+
 	private ISelectionListener listener = new ISelectionListener() {
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -134,6 +146,8 @@ public class SunburstView extends ViewPart {
 		makeActions();
 		contributeToActionBars();
 		getViewSite().getPage().addSelectionListener(listener);
+		// Add a listener that redraws the diagram when the parent is resized
+		parent.addListener(SWT.Resize, redrawListener);
 	}
 
 	/**
