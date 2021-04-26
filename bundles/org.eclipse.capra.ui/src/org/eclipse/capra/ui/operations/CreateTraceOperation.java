@@ -42,7 +42,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -72,7 +71,6 @@ public class CreateTraceOperation extends AbstractOperation {
 	private static final String SELECT_TRACE_LINK_TYPE = "Select the trace type you want to create";
 	private static final String SOURCE = "Source:";
 	private static final String TARGET = "Target:";
-	private static final String PLUGIN_ID = "org.eclipse.capra.ui";
 
 	private Optional<EClass> chosenType;
 	private List<EObject> originWrappers;
@@ -116,17 +114,19 @@ public class CreateTraceOperation extends AbstractOperation {
 			createTrace(shell, chooseTraceType);
 			executionStatus = Status.OK_STATUS;
 		} catch (IllegalStateException e) {
-			executionStatus = new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e);
-			createErrorMessage(shell, executionStatus, e.getMessage());
+			executionStatus = new Status(Status.ERROR, OperationsHelper.PLUGIN_ID, e.getMessage(), e);
+			OperationsHelper.createErrorMessage(shell, executionStatus, ERROR_DIALOG_TITLE, e.getMessage());
 		} catch (ClassCastException e) {
-			executionStatus = new Status(Status.ERROR, PLUGIN_ID,
+			executionStatus = new Status(Status.ERROR, OperationsHelper.PLUGIN_ID,
 					String.format(EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION_REASON, returnElementClasses(this.origins),
 							returnElementClasses(this.targets)),
 					e);
-			createErrorMessage(shell, executionStatus, EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION);
+			OperationsHelper.createErrorMessage(shell, executionStatus, ERROR_DIALOG_TITLE,
+					EXCEPTION_MESSAGE_CLASS_CAST_EXCEPTION);
 		} catch (RuntimeException e) {
-			executionStatus = new Status(Status.ERROR, PLUGIN_ID, e.getMessage(), e);
-			createErrorMessage(shell, executionStatus, EXCEPTION_MESSAGE_RUNTIME_EXCEPTION);
+			executionStatus = new Status(Status.ERROR, OperationsHelper.PLUGIN_ID, e.getMessage(), e);
+			OperationsHelper.createErrorMessage(shell, executionStatus, ERROR_DIALOG_TITLE,
+					EXCEPTION_MESSAGE_RUNTIME_EXCEPTION);
 		}
 		return executionStatus;
 
@@ -255,10 +255,6 @@ public class CreateTraceOperation extends AbstractOperation {
 		return handler.withCastedHandler(artifactHelper.unwrapWrapper(element), (h, o) -> h.getDisplayName(o))
 				.orElse(EMFHelper.getIdentifier(element));
 
-	}
-
-	private static void createErrorMessage(Shell shell, IStatus status, String message) {
-		ErrorDialog.openError(shell, ERROR_DIALOG_TITLE, message, status);
 	}
 
 	private static String returnElementClasses(List<?> elements) {
