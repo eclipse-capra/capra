@@ -22,8 +22,14 @@ import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.ui.operations.UpdateTraceOperation;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -117,8 +123,17 @@ public class ConnectionAdapter implements IPropertySource {
 
 	@Override
 	public void setPropertyValue(Object id, Object value) {
-		EStructuralFeature feature = connection.getTlink().eClass().getEStructuralFeature((String) id);
-		connection.getTlink().eSet(feature, value);
+		IAdaptable adapter = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart()
+				.getSite();
+		IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
+		UpdateTraceOperation updateTraceOperation = new UpdateTraceOperation("Update trace link", this.connection, id,
+				value);
+		updateTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
+		try {
+			operationHistory.execute(updateTraceOperation, null, adapter);
+		} catch (ExecutionException e) {
+			// Deliberately do nothing. Exceptions are caught by the operation.
+		}
 	}
 
 	/**

@@ -27,10 +27,16 @@ import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * Helper class for creating traces
@@ -68,6 +74,47 @@ public class TraceHelper {
 	 */
 	public void deleteTraces(List<Connection> toDelete) {
 		traceAdapter.deleteTrace(toDelete, traceModel);
+	}
+
+	/**
+	 * Updates the given feature of the given trace link to the given value.
+	 * <p>
+	 * The update is executed within a transaction. Rethrows a
+	 * {@link RollbackException} as an {@link IllegalStateException} to mask the
+	 * EMF-specific {@code RollbackException} from classes that use this method.
+	 * <p>
+	 * Please note that this implementation does not update the wrapping connection
+	 * in case the origins or targets are being changed.
+	 * 
+	 * @param connection  the connection whose trace link should be updated
+	 * @param featureName the feature of the trace link that should be updated
+	 * @param value       the value to which the feature should be updated
+	 * @throws InterruptedException  if the current thread is interrupted while
+	 *                               waiting to start a read/write transaction for
+	 *                               the command execution
+	 * @throws IllegalStateException if the changes performed by the command are
+	 *                               rolled back by validation of the transaction
+	 */
+	public void updateTrace(Connection connection, String featureName, Object value)
+			throws InterruptedException, IllegalStateException {
+		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+		// We're saving the trace model and the artifact model in the same transaction
+		Command cmd = new RecordingCommand(editingDomain, "Update Trace Model") {
+			@Override
+			protected void doExecute() {
+				EStructuralFeature structuralFeature = connection.getTlink().eClass()
+						.getEStructuralFeature(featureName);
+				connection.getTlink().eSet(structuralFeature, value);
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null);
+		} catch (RollbackException rbe) {
+			// We need to rethrow to not expose RollbackException to other plugins
+			throw new IllegalStateException(rbe.getMessage(), rbe.getCause());
+		}
+
 	}
 
 	/**
