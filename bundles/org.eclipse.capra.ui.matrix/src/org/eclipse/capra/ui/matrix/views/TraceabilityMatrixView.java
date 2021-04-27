@@ -38,6 +38,10 @@ import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.selection.TraceabilityMatrixSelectionProvider;
+import org.eclipse.capra.ui.operations.DeleteTraceOperation;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -48,6 +52,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
@@ -86,6 +91,7 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -115,6 +121,10 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class TraceabilityMatrixView extends ViewPart {
 
+	private static final String CONFIRM_DELETION_QUESTION = "Are you sure you want to delete the trace link?";
+
+	private static final String CONFIRM_DELETION_TITLE = "Delete trace link";
+
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -133,7 +143,6 @@ public class TraceabilityMatrixView extends ViewPart {
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
 	private final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-	private TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 	private TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
@@ -319,7 +328,7 @@ public class TraceabilityMatrixView extends ViewPart {
 		} else {
 			// Without a selection, show a matrix of all traces
 			if (traceModel != null) {
-				traces = metamodelAdapter.getAllTraceLinks(traceModel);
+				traces = traceAdapter.getAllTraceLinks(traceModel);
 			}
 		}
 		// If the current selection does not contain elements from the trace model, it
@@ -453,11 +462,24 @@ public class TraceabilityMatrixView extends ViewPart {
 			public void run() {
 				if (selectedModels != null && !selectedModels.isEmpty()
 						&& selectedModels.get(0) instanceof ConnectionAdapter) {
-					ConnectionAdapter adapter = (ConnectionAdapter) selectedModels.get(0);
-					Connection connection = adapter.getConnection();
-					EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
-					traceAdapter.deleteTrace(List.of(connection), traceModel);
-					showAllAction.run();
+					Shell shell = TraceabilityMatrixView.this.getSite().getShell();
+					if (MessageDialog.open(MessageDialog.QUESTION, shell, CONFIRM_DELETION_TITLE,
+							CONFIRM_DELETION_QUESTION, SWT.NONE)) {
+						ConnectionAdapter adapter = (ConnectionAdapter) selectedModels.get(0);
+						Connection connection = adapter.getConnection();
+
+						DeleteTraceOperation deleteTraceOperation = new DeleteTraceOperation(CONFIRM_DELETION_TITLE,
+								connection);
+						deleteTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
+
+						IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
+						try {
+							operationHistory.execute(deleteTraceOperation, null, TraceabilityMatrixView.this.getSite());
+						} catch (ExecutionException e) {
+							// Deliberately do nothing. Errors should be caught by the operation.
+						}
+						showAllAction.run();
+					}
 				}
 			}
 		};
