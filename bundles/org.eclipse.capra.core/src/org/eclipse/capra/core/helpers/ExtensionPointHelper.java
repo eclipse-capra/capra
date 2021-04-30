@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
@@ -35,7 +36,7 @@ import org.eclipse.core.runtime.Platform;
  * Provides functionality to work with relevant Capra extension points.
  */
 public class ExtensionPointHelper {
-	
+
 	/**
 	 * Hide the default constructor.
 	 */
@@ -53,15 +54,15 @@ public class ExtensionPointHelper {
 	private static final String ARTIFACT_HANDLER_CONFIG = "class";
 	private static final String PRIORITY_HANDLER_ID = "org.eclipse.capra.configuration.priorityHandlers";
 	private static final String PRIORITY_HANDLER_CONFIG = "class";
+	private static final String META_DATA_ID = "org.eclipse.capra.configuration.traceMetadata";
+	private static final String META_DATA_CONFIG = "class";
 
 	/**
 	 * Gets all extensions from the extension point ID and attribute passed.
 	 *
-	 * @param id
-	 *            the ID of the extension point
+	 * @param id            the ID of the extension point
 	 *
-	 * @param attributeName
-	 *            the name of the attribute
+	 * @param attributeName the name of the attribute
 	 *
 	 * @return List of extensions
 	 */
@@ -80,17 +81,16 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Get the executable extension for the extension ID, extension point ID and property name.
+	 * Get the executable extension for the extension ID, extension point ID and
+	 * property name.
 	 *
-	 * @param extensionId
-	 *            the ID of the extension
-	 * @param extensionPointId
-	 *            the ID of the extension point
-	 * @param propertyName
-	 *            the name of the property
+	 * @param extensionId      the ID of the extension
+	 * @param extensionPointId the ID of the extension point
+	 * @param propertyName     the name of the property
 	 * @return extension
 	 */
-	public static Optional<IArtifactHandler<?>> getExtension(String extensionId, String extensionPointId, String propertyName) {
+	public static Optional<IArtifactHandler<?>> getExtension(String extensionId, String extensionPointId,
+			String propertyName) {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtension extension = registry.getExtension(extensionPointId, extensionId);
@@ -105,8 +105,8 @@ public class ExtensionPointHelper {
 	/**
 	 * Gets the configured {@link TraceMetaModelAdapter}.
 	 *
-	 * @return The configured {@code TraceMetaModelAdapter}. If none is
-	 *         configured, an empty instance of {@link Optional} is returned.
+	 * @return The configured {@code TraceMetaModelAdapter}. If none is configured,
+	 *         an empty instance of {@link Optional} is returned.
 	 */
 	public static Optional<TraceMetaModelAdapter> getTraceMetamodelAdapter() {
 		try {
@@ -151,25 +151,23 @@ public class ExtensionPointHelper {
 	 * Gets the available {@link ArtifactHandler} instances.
 	 *
 	 * @return A collection of all the artifact handlers available. This method
-	 *         collects all plugins that have an extension to the
-	 *         ArtifactHandler Extension point
+	 *         collects all plugins that have an extension to the ArtifactHandler
+	 *         Extension point
 	 */
-	// Change type to IArtifactHandler<?>, since IArtifactHandler<Object> means a handler which
+	// Change type to IArtifactHandler<?>, since IArtifactHandler<Object> means a
+	// handler which
 	// can handle ALL kinds of objects.
 	public static Collection<IArtifactHandler<?>> getArtifactHandlers() {
-			List<Object> extensions = getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG);
+		List<Object> extensions = getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG);
 
-			List<Object> illegalClasses = extensions.stream()
-				.filter(c -> !(c instanceof IArtifactHandler))
+		List<Object> illegalClasses = extensions.stream().filter(c -> !(c instanceof IArtifactHandler))
 				.collect(toList());
-			
-			if (!illegalClasses.isEmpty()) {
-				throw new IllegalStateException("Illegal classes at " + ARTIFACT_HANDLER_ID + ": "+ illegalClasses);
-			}
-			
-			return extensions.stream()
-				.map(IArtifactHandler.class::cast)
-				.collect(toList());
+
+		if (!illegalClasses.isEmpty()) {
+			throw new IllegalStateException("Illegal classes at " + ARTIFACT_HANDLER_ID + ": " + illegalClasses);
+		}
+
+		return extensions.stream().map(IArtifactHandler.class::cast).collect(toList());
 	}
 
 	/**
@@ -192,6 +190,21 @@ public class ExtensionPointHelper {
 		try {
 			Object extension = getExtensions(PRIORITY_HANDLER_ID, PRIORITY_HANDLER_CONFIG).get(0);
 			return Optional.of((PriorityHandler) extension);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Gets the configured {@link IMetadataAdapter}.
+	 *
+	 * @return The configured {@code TraceMetadataAdapter}. If none is configured,
+	 *         an empty instance of {@link Optional} is returned.
+	 */
+	public static Optional<IMetadataAdapter> getTraceMetadataAdapter() {
+		try {
+			Object extension = getExtensions(META_DATA_ID, META_DATA_CONFIG).get(0);
+			return Optional.of((IMetadataAdapter) extension);
 		} catch (Exception e) {
 			return Optional.empty();
 		}

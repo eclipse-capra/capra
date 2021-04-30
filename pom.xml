@@ -23,6 +23,7 @@
 		<module>bundles/org.eclipse.capra.generic.priority</module>
 		<module>bundles/org.eclipse.capra.generic.tracemodel</module>
 		<module>bundles/org.eclipse.capra.generic.artifactmodel</module>
+		<module>bundles/org.eclipse.capra.generic.metadatamodel</module>
 		<module>bundles/org.eclipse.capra.handler.app4mc</module>
 		<module>bundles/org.eclipse.capra.handler.cdt</module>
 		<module>bundles/org.eclipse.capra.handler.emf</module>

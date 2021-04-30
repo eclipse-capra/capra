@@ -1,0 +1,48 @@
+/*******************************************************************************
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v20.html
+ *  
+ * SPDX-License-Identifier: EPL-2.0
+ *  
+ * Contributors:
+ *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+ *      Chalmers | University of Gothenburg - additional features, updated API
+ *******************************************************************************/
+@Ecore(nsURI="http://www.eclipse.org/capra/metadata/0.9.0")
+package  org.eclipse.capra.generic.metadatamodel
+
+import org.eclipse.emf.ecore.EObject
+
+class MetadataContainer {
+	contains TraceMetadata [0..*] traceMetadata 
+	contains ArtifactMetadata [0..*] artifactMetadata
+}
+
+/*
+ * A simple datastructure to store information about a person.
+ */
+class Person {
+	String name
+	String email
+}
+
+/*
+ * Default metadata for a traceability link.
+ */
+class TraceMetadata {
+	Date creationDate
+	String comment
+	contains Person creationUser
+	refers EObject trace
+}
+
+/*
+ * Default metadata for an artifact.
+ */
+class ArtifactMetadata {
+	contains Person responsibleUser
+	refers EObject artifact
+}
