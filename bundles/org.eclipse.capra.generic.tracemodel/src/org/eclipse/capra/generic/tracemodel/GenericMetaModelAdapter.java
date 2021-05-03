@@ -227,8 +227,9 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 
 			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 					.orElseThrow();
-			persistenceAdapter.saveTracesAndArtifacts(tModel,
-					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()));
+			persistenceAdapter.saveModels(tModel,
+					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()),
+					persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
 		}
 	}
 

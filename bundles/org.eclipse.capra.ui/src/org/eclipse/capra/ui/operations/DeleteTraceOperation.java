@@ -89,8 +89,9 @@ public class DeleteTraceOperation extends AbstractOperation {
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		EObject metadataModel = persistenceAdapter.getMetadataContainer(resourceSet);
 		traceAdapter.deleteTrace(List.of(connection), traceModel);
-		persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+		persistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 	}
 
 }

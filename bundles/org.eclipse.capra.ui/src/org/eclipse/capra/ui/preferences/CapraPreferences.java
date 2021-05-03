@@ -44,6 +44,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 	private TracePersistenceAdapter persistenceAdapter;
 	private EObject traceModel;
 	private EObject artifactModel;
+	private EObject metadataModel;
 
 	@Override
 	public void init(IWorkbench workbench) {
@@ -57,6 +58,8 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 		this.traceModel = this.persistenceAdapter.getTraceModel(resourceSet);
 		// add artifact model to resource set
 		this.artifactModel = this.persistenceAdapter.getArtifactWrappers(resourceSet);
+		// add metadata model to resource set
+		this.metadataModel = this.persistenceAdapter.getMetadataContainer(resourceSet);
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 	@Override
 	public boolean performOk() {
 		boolean isOk = super.performOk();
-		this.persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+		this.persistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 		return isOk;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
  * This interface defines all functionality used to decide how and where the
  * trace model and all artifact wrappers are persisted.
  * 
- * @author Anthony Anjorin, Salome Maro
+ * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  *
  */
 public interface TracePersistenceAdapter {
@@ -48,6 +48,18 @@ public interface TracePersistenceAdapter {
 	EObject getArtifactWrappers(ResourceSet resourceSet);
 
 	/**
+	 * Load and return the container for all trace and artifact metadata in the
+	 * given resource set.
+	 * 
+	 * @param resourceSet the {@code ResourceSet} to load the metadata container
+	 *                    from
+	 * @return the container for all metadata stored in this {@code ResourceSet}.
+	 *         Can be empty to indicate that loading failed or was not possible
+	 *         (there is no meta-data model to load at the moment)
+	 */
+	EObject getMetadataContainer(ResourceSet resourceSet);
+
+	/**
 	 * Save the trace and artifact models. Implementations are expected to: (i) save
 	 * the trace model, (ii) check selectionForTraceCreation for artifact wrappers
 	 * that are not already contained in artifactWrappers, (iii) add these new
@@ -55,6 +67,8 @@ public interface TracePersistenceAdapter {
 	 * 
 	 * @param traceModel    The updated trace model to be saved
 	 * @param artifactModel The updated artifacts to be saved
+	 * @param metadataModel The updated metadata to be saved
 	 */
-	void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel);
+	void saveModels(EObject traceModel, EObject artifactModel, EObject metadataModel);
+
 }

@@ -8,6 +8,7 @@ Bundle-Version: 0.9.0.qualifier
 Require-Bundle: 
  org.eclipse.capra.core,
  org.eclipse.capra.generic.tracemodel,
+ org.eclipse.capra.generic.metadatamodel,
  org.eclipse.capra.handler.featureide,
  org.eclipse.capra.ui,
  org.eclipse.capra.testsupport,

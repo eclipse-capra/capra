@@ -54,7 +54,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
-
+		// TODO: Replace with using the new DeleteTraceOperation
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		List<Connection> toDelete = new ArrayList<>();
 		List<Connection> toRecreate = new ArrayList<>();
@@ -65,6 +65,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
+		EObject metadataModel = tracePersistenceAdapter.getMetadataContainer(resourceSet);
 
 		// get all artifacts
 		List<EObject> artifacts = artifactAdapter.getAllArtifacts(artifactModel);
@@ -103,7 +104,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 
 			// use the persistence adapter to save the trace model and artifact
 			// model
-			tracePersistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+			tracePersistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 
 			// delete Marker
 			try {

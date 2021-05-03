@@ -175,6 +175,8 @@ public class CreateTraceOperation extends AbstractOperation {
 		this.traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		// add artifact model to resource set
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		// add metadata model to the resource set
+		EObject metadataModel = persistenceAdapter.getMetadataContainer(resourceSet);
 
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		TraceHelper traceHelper = new TraceHelper(this.traceModel);
@@ -197,7 +199,7 @@ public class CreateTraceOperation extends AbstractOperation {
 				MessageDialog.openInformation(shell, CAPRA_INFORMATION, TRACE_LINK_EXISTS);
 			} else {
 				traceHelper.createTrace(originWrappers, targetWrappers, this.chosenType.get());
-				persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+				persistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 				traceHelper.annotateTrace(allWrappers);
 
 				// check from preferences if user wants to see the "trace

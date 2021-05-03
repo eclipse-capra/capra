@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -54,6 +55,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	private static String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
 	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
 	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers.xmi";
+	private static final String DEFAULT_METADATA_MODEL_NAME = "metadata.xmi";
 
 	private Optional<EObject> loadModel(ResourceSet resourceSet, String modelName) {
 
@@ -108,7 +110,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	}
 
 	@Override
-	public void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel) {
+	public void saveModels(EObject traceModel, EObject artifactModel, EObject metadataModel) {
 		try {
 			ensureProjectExists(this.getProjectNamePreference());
 			ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -117,6 +119,8 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 					true);
 			URI artifactURI = URI.createPlatformResourceURI(
 					getProjectNamePreference() + "/" + DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME, true);
+			URI metadataURI = URI
+					.createPlatformResourceURI(getProjectNamePreference() + "/" + DEFAULT_METADATA_MODEL_NAME, true);
 
 			Resource resourceForTraces = resourceSet.getResource(traceURI, false) != null
 					? resourceSet.getResource(traceURI, false)
@@ -126,7 +130,13 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 					? resourceSet.getResource(artifactURI, false)
 					: resourceSet.createResource(artifactURI);
 
-			if (resourceForTraces.getContents().isEmpty() || resourceForArtifacts.getContents().isEmpty()) {
+			Resource resourceForMetadata = resourceSet.getResource(metadataURI, false) != null
+					? resourceSet.getResource(metadataURI, false)
+					: resourceSet.createResource(metadataURI);
+
+			if (resourceForTraces.getContents().isEmpty() || resourceForTraces.getContents().isEmpty()
+					|| resourceForMetadata.getContents().isEmpty()) {
+
 				// The trace model or the artifact model have never been saved before and we
 				// need to add it to the resource set.
 				TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
@@ -140,6 +150,9 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 						if (resourceForArtifacts.getContents().isEmpty()) {
 							resourceForArtifacts.getContents().add(artifactModel);
 						}
+						if (resourceForMetadata.getContents().isEmpty()) {
+							resourceForMetadata.getContents().add(metadataModel);
+						}
 					}
 				};
 
@@ -152,6 +165,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 
 			resourceForArtifacts.save(null);
 			resourceForTraces.save(null);
+			resourceForMetadata.save(null);
 		} catch (Exception e) {
 			LOG.error("Unable to save trace model!", e);
 		}
@@ -161,6 +175,12 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	public EObject getArtifactWrappers(ResourceSet resourceSet) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
+	}
+
+	@Override
+	public EObject getMetadataContainer(ResourceSet resourceSet) {
+		IMetadataAdapter adapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
+		return loadModel(resourceSet, DEFAULT_METADATA_MODEL_NAME).orElse(adapter.createModel());
 	}
 
 	// get preference for project name

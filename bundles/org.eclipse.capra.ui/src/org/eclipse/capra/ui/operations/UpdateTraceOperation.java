@@ -150,9 +150,10 @@ public class UpdateTraceOperation extends AbstractOperation {
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		EObject metadataModel = persistenceAdapter.getMetadataContainer(resourceSet);
 
 		traceHelper.updateTrace(connection, featureName, value);
-		persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+		persistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 	}
 
 }
