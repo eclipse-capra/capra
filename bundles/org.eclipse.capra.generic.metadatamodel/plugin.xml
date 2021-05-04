@@ -19,9 +19,6 @@
 -->
 
 <plugin>
-
-
-
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated metadata -->
       <package
@@ -34,6 +31,12 @@
       <TraceMetadataAdapter
             class="org.eclipse.capra.generic.metadatamodel.GenericMetadataAdapter">
       </TraceMetadataAdapter>
+   </extension>
+   <extension
+         point="org.eclipse.capra.configuration.metadataPropertySourceProvider">
+      <MetadataPropertySourceProvider
+            class="org.eclipse.capra.generic.metadatamodel.properties.MetadataPropertiesProvider">
+      </MetadataPropertySourceProvider>
    </extension>
 
 </plugin>

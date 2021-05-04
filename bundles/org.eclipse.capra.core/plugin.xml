@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <!--
-    Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+    Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v2.0
     which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@
    <extension-point id="org.eclipse.capra.configuration.priorityHandlers" name="Priority Handlers for Artifact Handlers" schema="schema/org.eclipse.capra.configuration.priorityHandlers.exsd"/>
    <extension-point id="org.eclipse.capra.configuration.artifactMetaModel" name="Artifact Meta-Model" schema="schema/org.eclipse.capra.configuration.artifactMetaModel.exsd"/>
    <extension-point id="org.eclipse.capra.configuration.traceMetadata" name="Metadata provider for trace links" schema="schema/org.eclipse.capra.configuration.traceMetadata.exsd"/>
+   <extension-point id="org.eclipse.capra.configuration.metadataPropertySourceProvider" name="PropertySourceProvider for Metadata" schema="schema/org.eclipse.capra.configuration.metadataPropertySourceProvider.exsd"/>
    <extension point="org.eclipse.emf.transaction.editingDomains">
       <editingDomain
          id="org.eclipse.capra.core.EditingDomain"

@@ -382,6 +382,23 @@ public class TestHelper {
 	 * @return a trace between {@code origin} and {@code target} or {@code null}
 	 */
 	public static EObject getTraceBetween(Object origin, Object target) {
+		Connection conn = getConnectionBetween(origin, target);
+		if (conn != null) {
+			return conn.getTlink();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the first connection representing the trace between the two given
+	 * objects that can be found in the trace model. Returns {@code null} if no such
+	 * trace exists.
+	 * 
+	 * @param origin the origin of the trace
+	 * @param target the target of the trace
+	 * @return a trace between {@code origin} and {@code target} or {@code null}
+	 */
+	public static Connection getConnectionBetween(Object origin, Object target) {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -391,7 +408,7 @@ public class TestHelper {
 				traceModel);
 		for (Connection conn : connections) {
 			if (conn.getTargets().contains(artifactHelper.createWrapper(target))) {
-				return conn.getTlink();
+				return conn;
 			}
 		}
 		return null;

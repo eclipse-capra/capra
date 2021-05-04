@@ -14,7 +14,9 @@
 package org.eclipse.capra.ui.adapters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
@@ -32,6 +34,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -39,6 +42,12 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * An {@link IPropertySource} for trace links. It provides access to all
  * properties of the underlying {@link Connection}, i.e., all properties that
  * are defined in the traceability information model.
+ * <p>
+ * This implementation delegates to a metadata property source, if such a
+ * property source is defined using the corresponding extension point. That
+ * means that the properties will automatically include the metadata provided by
+ * such an extension and storing any changes will also be delegated to that
+ * extension.
  * 
  * @author Jan-Philipp Steghöfer
  *
@@ -52,8 +61,8 @@ public class ConnectionAdapter implements IPropertySource {
 	private static final String CATEGORY_NAME = "General";
 
 	private final Connection connection;
-
 	private final ArtifactHelper artifactHelper;
+	private final IPropertySource connectionMetadataPropertySource;
 
 	/**
 	 * Create a new instance based on the provided {@link Connection}.
@@ -65,6 +74,11 @@ public class ConnectionAdapter implements IPropertySource {
 		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		artifactHelper = new ArtifactHelper(artifactModel);
+		IPropertySourceProvider propSourceProvider = PropertySourceExtensionPointHelper
+				.getMetadataPropertySourceProvider().orElse(null);
+		// Get property source from extension point
+		this.connectionMetadataPropertySource = Optional.ofNullable(propSourceProvider)
+				.map(p -> p.getPropertySource(theItem)).orElse(null);
 	}
 
 	@Override
@@ -90,6 +104,10 @@ public class ConnectionAdapter implements IPropertySource {
 				.map(attribute -> new TextPropertyDescriptor(attribute.getName(), attribute.getName()))
 				.collect(Collectors.toList()));
 
+		if (this.connectionMetadataPropertySource != null) {
+			propertyDescriptors.addAll(Arrays.asList(this.connectionMetadataPropertySource.getPropertyDescriptors()));
+		}
+
 		IPropertyDescriptor[] dummyList = new IPropertyDescriptor[propertyDescriptors.size()];
 		return propertyDescriptors.toArray(dummyList);
 
@@ -104,35 +122,53 @@ public class ConnectionAdapter implements IPropertySource {
 			return connection.getTargets().stream().map(artifactHelper::getArtifactLabel).collect(Collectors.toList());
 		} else if (id.equals(DescriptorIDs.TYPE)) {
 			return connection.getTlink().eClass().getName();
+		} else if (this.connectionMetadataPropertySource != null
+				&& this.connectionMetadataPropertySource.getPropertyValue(id) != null) {
+			return this.connectionMetadataPropertySource.getPropertyValue(id);
 		} else {
-			EStructuralFeature a = connection.getTlink().eClass().getEStructuralFeature((String) id);
-			return connection.getTlink().eGet(a);
+			if (id instanceof String) {
+				EStructuralFeature a = connection.getTlink().eClass().getEStructuralFeature((String) id);
+				return connection.getTlink().eGet(a);
+			}
 		}
-
+		return null;
 	}
 
 	@Override
 	public boolean isPropertySet(Object id) {
+		if (this.connectionMetadataPropertySource != null
+				&& this.connectionMetadataPropertySource.getPropertyValue(id) != null) {
+			return this.connectionMetadataPropertySource.isPropertySet(id);
+		}
 		return false;
 	}
 
 	@Override
 	public void resetPropertyValue(Object id) {
-		// Deliberately do nothing
+		if (this.connectionMetadataPropertySource != null
+				&& this.connectionMetadataPropertySource.getPropertyValue(id) != null) {
+			this.connectionMetadataPropertySource.resetPropertyValue(id);
+		}
 	}
 
 	@Override
 	public void setPropertyValue(Object id, Object value) {
-		IAdaptable adapter = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart()
-				.getSite();
-		IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
-		UpdateTraceOperation updateTraceOperation = new UpdateTraceOperation("Update trace link", this.connection, id,
-				value);
-		updateTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
-		try {
-			operationHistory.execute(updateTraceOperation, null, adapter);
-		} catch (ExecutionException e) {
-			// Deliberately do nothing. Exceptions are caught by the operation.
+		if (this.connectionMetadataPropertySource != null
+				&& this.connectionMetadataPropertySource.getPropertyValue(id) != null) {
+			this.connectionMetadataPropertySource.setPropertyValue(id, value);
+			return;
+		} else if (id instanceof String) {
+			IAdaptable adapter = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart()
+					.getSite();
+			IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
+			UpdateTraceOperation updateTraceOperation = new UpdateTraceOperation("Update trace link", this.connection,
+					id, value);
+			updateTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
+			try {
+				operationHistory.execute(updateTraceOperation, null, adapter);
+			} catch (ExecutionException e) {
+				// Deliberately do nothing. Exceptions are caught by the operation.
+			}
 		}
 	}
 
