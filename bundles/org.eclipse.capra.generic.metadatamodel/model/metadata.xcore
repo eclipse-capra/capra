@@ -34,7 +34,7 @@ class Person {
  */
 class TraceMetadata {
 	Date creationDate
-	String comment
+	String comment = ""
 	contains Person creationUser
 	refers EObject trace
 }

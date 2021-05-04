@@ -54,12 +54,13 @@ public interface TraceMetadata extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Comment</b></em>' attribute.
+	 * The default value is <code>""</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Comment</em>' attribute.
 	 * @see #setComment(String)
 	 * @see org.eclipse.capra.generic.metadatamodel.MetadatamodelPackage#getTraceMetadata_Comment()
-	 * @model unique="false"
+	 * @model default="" unique="false"
 	 * @generated
 	 */
 	String getComment();

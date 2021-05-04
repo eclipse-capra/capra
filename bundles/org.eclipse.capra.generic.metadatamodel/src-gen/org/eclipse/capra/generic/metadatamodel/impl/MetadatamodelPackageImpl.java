@@ -332,7 +332,7 @@ public class MetadatamodelPackageImpl extends EPackageImpl implements Metadatamo
 
 		initEClass(traceMetadataEClass, TraceMetadata.class, "TraceMetadata", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTraceMetadata_CreationDate(), theEcorePackage.getEDate(), "creationDate", null, 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getTraceMetadata_Comment(), theEcorePackage.getEString(), "comment", null, 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTraceMetadata_Comment(), theEcorePackage.getEString(), "comment", "", 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTraceMetadata_CreationUser(), this.getPerson(), null, "creationUser", null, 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTraceMetadata_Trace(), theEcorePackage.getEObject(), null, "trace", null, 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
