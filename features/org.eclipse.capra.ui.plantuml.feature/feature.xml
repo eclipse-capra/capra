@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.capra.ui.plantuml.feature"
       label="%featureName"
-      version="0.8.2.qualifier"
+      version="0.8.2"
       provider-name="%providerName">
 
    <description url="%descriptionURL">

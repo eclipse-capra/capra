@@ -12,7 +12,7 @@
 
 	<groupId>org.eclipse.capra</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.8.2-SNAPSHOT</version>
+	<version>0.8.2</version>
 	<packaging>pom</packaging>
     <name>Capra</name>
 
@@ -165,7 +165,7 @@
 	 <scm>
        <connection>scm:git:https://git.eclipse.org/r/capra/org.eclipse.capra.git</connection>
        <developerConnection>scm:git:https://git.eclipse.org/r/capra/org.eclipse.capra.git</developerConnection>
-       <tag>0.7.0</tag>
+       <tag>0.8.2</tag>
 	</scm>
 
 	<build>
@@ -214,7 +214,7 @@
 						<artifact>
 							<groupId>org.eclipse.capra</groupId>
 							<artifactId>org.eclipse.capra.releng.target</artifactId>
-							<version>0.8.2-SNAPSHOT</version>
+							<version>0.8.2</version>
 						</artifact>
 					</target>
 					<environments>

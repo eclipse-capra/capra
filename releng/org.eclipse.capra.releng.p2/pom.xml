@@ -11,11 +11,11 @@
 		<relativePath>../../pom.xml</relativePath>
 		<groupId>org.eclipse.capra</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.8.2-SNAPSHOT</version>
+		<version>0.8.2</version>
 	</parent>
 	<groupId>org.eclipse.capra</groupId>
 	<artifactId>org.eclipse.capra.p2</artifactId>
-	<version>0.8.2-SNAPSHOT</version>
+	<version>0.8.2</version>
 	<packaging>eclipse-repository</packaging>
 	<name>Eclipse Capra Update Site</name>
 
