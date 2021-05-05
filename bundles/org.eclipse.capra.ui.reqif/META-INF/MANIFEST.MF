@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.ui.reqif;singleton:=true
-Bundle-Version: 0.8.2.qualifier
+Bundle-Version: 0.9.0.qualifier
 Require-Bundle: org.eclipse.jface,
  org.eclipse.ui.workbench,
  org.eclipse.equinox.preferences,
