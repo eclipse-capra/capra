@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.testsupport;singleton:=true
-Bundle-Version: 0.8.2.qualifier
+Bundle-Version: 0.9.0.qualifier
 Export-Package: org.eclipse.capra.testsupport,
  org.eclipse.capra.testsupport.extension
 Require-Bundle: org.junit,

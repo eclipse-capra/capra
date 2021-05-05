@@ -4,7 +4,7 @@ Bundle-Localization: plugin
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.capra.generic.priority;singleton:=true
-Bundle-Version: 0.8.2.qualifier
+Bundle-Version: 0.9.0.qualifier
 Require-Bundle: org.eclipse.capra.core
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.generic.priority
