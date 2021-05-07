@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
@@ -39,7 +39,7 @@ import org.eclipse.ui.IMarkerResolution;
  * @author Michael Warne
  */
 public class DeleteQuickFix implements IMarkerResolution {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+	IArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 	private String label;
 
@@ -59,7 +59,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 		List<Connection> toDelete = new ArrayList<>();
 		List<Connection> toRecreate = new ArrayList<>();
 		EObject artifactToDelete = null;
-		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
 				.orElseThrow();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);

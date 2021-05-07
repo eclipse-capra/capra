@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFolder;
@@ -115,7 +115,7 @@ public class TestUtil {
 
 	@Before
 	public static EObject setupModel() {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = new ResourceSetImpl();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		return artifactModel;
@@ -135,7 +135,7 @@ public class TestUtil {
 	}
 
 	public static EObject createWrapper(EObject artifactModel, String uri, String name) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().get();
 		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.jdt.JavaElementHandler", uri, name,uri);
 	}
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -51,11 +51,11 @@ import org.eclipse.jdt.core.JavaCore;
  * @author Dusan Kalanj
  */
 public class JavaElementChangeListener implements IElementChangedListener {
-	ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+	IArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
-		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
 				.orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		// get all artifacts

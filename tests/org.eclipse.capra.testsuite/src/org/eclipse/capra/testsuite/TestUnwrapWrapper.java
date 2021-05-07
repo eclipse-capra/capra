@@ -94,7 +94,7 @@ public class TestUnwrapWrapper {
 		assertTrue(thereIsATraceBetween(javaClass, cClass));
 
 		// check that the artifact wrappers have been created
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -135,7 +135,7 @@ public class TestUnwrapWrapper {
 		assertTrue(thereIsATraceBetween(fileA, fileB));
 
 		// check that the artifact wrappers have been created
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		assertTrue(String.format("Expected %d elements in artifact model, got %d", 2, artifactModel.eContents().size()),

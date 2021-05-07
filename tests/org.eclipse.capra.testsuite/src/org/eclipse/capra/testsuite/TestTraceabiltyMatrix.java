@@ -208,7 +208,7 @@ public class TestTraceabiltyMatrix {
 	}
 
 	private void removeTraceModel(ResourceSet rs) {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		EObject tm = persistenceAdapter.getTraceModel(rs);
 		rs.getResources().remove(tm.eResource());
 	}

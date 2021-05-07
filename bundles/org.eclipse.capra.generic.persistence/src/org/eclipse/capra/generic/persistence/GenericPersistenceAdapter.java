@@ -16,7 +16,7 @@ package org.eclipse.capra.generic.persistence;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
@@ -185,7 +185,7 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 
 	@Override
 	public EObject getArtifactWrappers(ResourceSet resourceSet) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
 	}
 

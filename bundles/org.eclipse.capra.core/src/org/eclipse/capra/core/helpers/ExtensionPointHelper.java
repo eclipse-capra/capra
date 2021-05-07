@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
@@ -123,7 +123,7 @@ public class ExtensionPointHelper {
 	 * @return The configured {@code TracePersistenceAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
-	public static Optional<IPersistenceAdapter> getTracePersistenceAdapter() {
+	public static Optional<IPersistenceAdapter> getPersistenceAdapter() {
 		try {
 			Object extension = getExtensions(PERSISTENCE_ID, PERSISTENCE_CONFIG).get(0);
 			return Optional.of((IPersistenceAdapter) extension);
@@ -133,15 +133,15 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Gets the configured {@link ArtifactMetaModelAdapter}.
+	 * Gets the configured {@link IArtifactMetaModelAdapter}.
 	 *
 	 * @return The configured {@code ArtifactMetaModelAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
-	public static Optional<ArtifactMetaModelAdapter> getArtifactWrapperMetaModelAdapter() {
+	public static Optional<IArtifactMetaModelAdapter> getArtifactMetaModelAdapter() {
 		try {
 			Object extension = getExtensions(ARTIFACT_ID, ARTIFACT_CONFIG).get(0);
-			return Optional.of((ArtifactMetaModelAdapter) extension);
+			return Optional.of((IArtifactMetaModelAdapter) extension);
 		} catch (Exception e) {
 			return Optional.empty();
 		}

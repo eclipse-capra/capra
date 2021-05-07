@@ -16,7 +16,7 @@ package org.eclipse.capra.handler.hudson;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -33,7 +33,7 @@ public class TestElementHandler extends AbstractArtifactHandler<TestElement> {
 
 	@Override
 	public EObject createWrapper(TestElement test, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(),
 				EcoreUtil.getURI(test).toPlatformString(false), test.getLabel(), test.getLabel());
 	}

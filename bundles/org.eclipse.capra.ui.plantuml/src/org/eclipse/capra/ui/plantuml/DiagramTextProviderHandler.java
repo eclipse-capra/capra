@@ -83,7 +83,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		List<EObject> selectedEObjects = new ArrayList<>();
 		EObject traceModel = null;
 
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		ITraceabilityInformationModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();

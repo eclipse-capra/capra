@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -37,7 +37,7 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 
 	@Override
 	public EObject createWrapper(ITask task, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(), task.getSummary(),
 				task.getUrl());
@@ -45,7 +45,7 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 
 	@Override
 	public ITask resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		TaskList taskList = (TaskList) TasksUiInternal.getTaskList();
 		Collection<AbstractTask> allTasks = taskList.getAllTasks();
 		Optional<AbstractTask> task = allTasks.stream().filter(t -> t.getUrl().equals(adapter.getArtifactUri(wrapper)))

@@ -16,7 +16,7 @@ package org.eclipse.capra.handler.php;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -29,14 +29,14 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 
 	@Override
 	public EObject createWrapper(IModelElement artifact, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), artifact.getHandleIdentifier(),
 				artifact.getElementName(), artifact.getPath().toString());
 	}
 
 	@Override
 	public IModelElement resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		String handleIdentifier = adapter.getArtifactUri(wrapper);
 		return DLTKCore.create(handleIdentifier);
 	}

@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * this artifact model is in turn described by an artifact meta-model. This
  * class provides access to the wrappers via the artifact model.
  */
-public interface ArtifactMetaModelAdapter {
+public interface IArtifactMetaModelAdapter {
 
 	/**
 	 * Create a new model for artifacts.

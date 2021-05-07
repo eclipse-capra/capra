@@ -143,7 +143,7 @@ public class TraceabilityMatrixView extends ViewPart {
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
 	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
-	private IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+	private IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
 	private TraceabilityMatrixSelectionProvider selectionProvider;

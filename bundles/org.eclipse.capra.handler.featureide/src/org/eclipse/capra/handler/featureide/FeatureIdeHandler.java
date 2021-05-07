@@ -17,7 +17,7 @@ import java.nio.file.FileSystems;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -45,7 +45,7 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 
 	@Override
 	public EObject createWrapper(IFeature feature, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 		final IPath path = Path.fromOSString(feature.getFeatureModel().getSourceFile().toString());
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -59,7 +59,7 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 
 	@Override
 	public IFeature resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		FileHandler<IFeatureModel> fileHandler = FeatureModelManager
 				.getFileHandler(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
 		return fileHandler.getObject().getFeature(adapter.getArtifactName(wrapper));

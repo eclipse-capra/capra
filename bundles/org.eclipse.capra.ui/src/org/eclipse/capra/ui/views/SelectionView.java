@@ -168,7 +168,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
 					.orElseThrow();
 			EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -328,7 +328,7 @@ public class SelectionView extends ViewPart {
 
 	private void refreshAvailableTraceTypes() {
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// add artifact model to resource set

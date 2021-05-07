@@ -49,7 +49,7 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 	 */
 	public ConnectionMetadataProperties(Connection connection) {
 		IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		this.metadata = metadataAdapter.getMetadataForTrace(connection.getTlink(),
 				persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
 	}

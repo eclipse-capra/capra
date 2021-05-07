@@ -125,7 +125,7 @@ public class TestCreateTraceOperation {
 			fail("Could not create trace: ExecutionException in operation");
 		}
 
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		TraceHelper traceHelper = new TraceHelper(
 				persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(_A.eResource().getResourceSet());

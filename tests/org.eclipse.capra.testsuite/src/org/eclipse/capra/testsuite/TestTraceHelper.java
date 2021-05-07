@@ -105,7 +105,7 @@ public class TestTraceHelper {
 
 		// create a list with wrappers of File A and B
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		List<Object> artifactsA_B = new ArrayList<Object>(Arrays.asList(fileA, fileB));

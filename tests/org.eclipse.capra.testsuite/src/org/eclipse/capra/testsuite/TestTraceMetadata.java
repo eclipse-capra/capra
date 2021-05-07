@@ -120,7 +120,7 @@ public class TestTraceMetadata {
 		Connection conn = TestHelper.getConnectionBetween(_A, _B);
 
 		// We're getting the metadata for the link and see if the defaults are set.
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
 		MetadataContainer metadataContainer = (MetadataContainer) persistenceAdapter
 				.getMetadataContainer(EditingDomainHelper.getResourceSet());

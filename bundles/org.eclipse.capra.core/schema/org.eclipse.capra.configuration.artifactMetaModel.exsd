@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter"/>
                </appinfo>
             </annotation>
          </attribute>

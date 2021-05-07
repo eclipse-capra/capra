@@ -70,7 +70,7 @@ public class ModelChangeListener extends EContentAdapter {
 	}
 
 	private void compareTracedItems(Resource changedResource) {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		// check that at least one trace link exists
 		if (traceModel != null && !traceModel.eContents().isEmpty()) {

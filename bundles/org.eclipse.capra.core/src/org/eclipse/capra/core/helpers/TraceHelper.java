@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.AnnotationException;
@@ -45,7 +45,7 @@ public class TraceHelper {
 
 	private EObject traceModel;
 	private ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
-	private ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
+	private IArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactMetaModelAdapter()
 			.orElseThrow();
 
 	/**
@@ -244,7 +244,7 @@ public class TraceHelper {
 	 */
 	public List<Connection> getTraces(List<EObject> origins, List<EObject> targets, EClass traceType) {
 		// create temporary trace model with a temporary trace link
-		EObject tempTraceModel = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow()
+		EObject tempTraceModel = ExtensionPointHelper.getPersistenceAdapter().orElseThrow()
 				.getTraceModel(new ResourceSetImpl());
 		EObject tempTlink = traceAdapter.createTrace(traceType, tempTraceModel, origins, targets);
 

@@ -118,7 +118,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		SelectionView.getOpenedView().clearSelection();
 
 		AbstractTraceabilityInformationModelAdapter genMod = new GenericTraceabilityInformationModelAdapter();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
 
@@ -227,7 +227,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		SelectionView.getOpenedView().clearSelection();
 
 		AbstractTraceabilityInformationModelAdapter genMod = new GenericTraceabilityInformationModelAdapter();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
 

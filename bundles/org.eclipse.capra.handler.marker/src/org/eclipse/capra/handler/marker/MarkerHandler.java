@@ -16,7 +16,7 @@ package org.eclipse.capra.handler.marker;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
@@ -36,7 +36,7 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 
 	@Override
 	public EObject createWrapper(IMarker artifact, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 		IResource resource = artifact.getResource();
 
@@ -46,7 +46,7 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 
 	@Override
 	public IMarker resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		IResource target = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(adapter.getArtifactPath(wrapper));
 		Long id = Long.getLong(adapter.getArtifactIdentifier(wrapper));

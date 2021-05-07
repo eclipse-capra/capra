@@ -116,7 +116,7 @@ public class TestTraceProjectRename {
 		assertTrue("Newly renamed project exists", project.exists());
 
 		// verify that resourceSet traceModel and artifactModel are not empty
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// get trace model of the resource set
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);

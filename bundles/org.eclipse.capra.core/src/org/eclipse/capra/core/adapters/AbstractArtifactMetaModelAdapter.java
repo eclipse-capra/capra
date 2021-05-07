@@ -18,11 +18,11 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * Base class for the definition of a custom {@link ArtifactMetaModelAdapter}.
+ * Base class for the definition of a custom {@link IArtifactMetaModelAdapter}.
  * Implements a simple strategy to retrieve artifact handlers through the
  * registered extensions.
  */
-public abstract class AbstractArtifactMetaModelAdapter implements ArtifactMetaModelAdapter {
+public abstract class AbstractArtifactMetaModelAdapter implements IArtifactMetaModelAdapter {
 
 	@Override
 	public IArtifactHandler<?> getArtifactHandlerInstance(EObject artifact) {

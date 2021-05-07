@@ -51,7 +51,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 		setDescription(PREFERENCE_PAGE_DESCRIPTION);
 		setPreferenceStore(getPreferenceStore());
 
-		this.persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		this.persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// add trace model to resource set

@@ -345,7 +345,7 @@ public class TestHelper {
 	 *         otherwise
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
 				.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -404,7 +404,7 @@ public class TestHelper {
 	 * @return a trace between {@code origin} and {@code target} or {@code null}
 	 */
 	public static Connection getConnectionBetween(Object origin, Object target) {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
 				.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -504,7 +504,7 @@ public class TestHelper {
 	 * artifact model.
 	 */
 	public static void purgeModels() {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 

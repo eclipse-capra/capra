@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.emf.ecore.EObject;
@@ -104,8 +104,8 @@ public class ArtifactHelper {
 	 */
 	public Object unwrapWrapper(Object wrapper) {
 		if (wrapper instanceof EObject) {
-			ArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
-					.getArtifactWrapperMetaModelAdapter().orElseThrow();
+			IArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
+					.getArtifactMetaModelAdapter().orElseThrow();
 			IArtifactHandler<?> handler = artifactMetaModelAdapter.getArtifactHandlerInstance((EObject) wrapper);
 			if (handler != null && handler.resolveWrapper((EObject) wrapper) != null) {
 				return handler.resolveWrapper((EObject) wrapper);
@@ -189,7 +189,7 @@ public class ArtifactHelper {
 	 */
 	public String getArtifactLocation(EObject object) {
 		String artifactLink = null;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
 		artifactLink = adapter.getArtifactUri(object);
 		if (artifactLink == null) {

@@ -16,7 +16,7 @@ package org.eclipse.capra.handler.cdt;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -72,7 +72,7 @@ public class TestUtil {
 	}
 
 	public static EObject setupModel() {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		return artifactModel;
@@ -100,7 +100,7 @@ public class TestUtil {
 	}
 
 	public static EObject createWrapper(EObject artifactModel, String uri, String name) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().get();
 		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.cdt.CDTHandler", uri, name, uri);
 	}
 

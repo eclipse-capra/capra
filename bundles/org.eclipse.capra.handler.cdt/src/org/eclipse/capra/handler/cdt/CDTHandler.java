@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
@@ -61,14 +61,14 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 		String uri = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
 				.setFragment(typePrefix + element.getElementName()).toString();
 
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, element.getHandleIdentifier(),
 				element.getElementName(), element.getPath().toString());
 	}
 
 	@Override
 	public ICElement resolveWrapper(EObject wrapper) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
+		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return CoreModel.create(adapter.getArtifactIdentifier(wrapper));
 	}
 

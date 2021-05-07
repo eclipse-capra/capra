@@ -192,7 +192,7 @@ public class TestDuplicateLinks {
 		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
 
 		// Test the trace exists method
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		TraceHelper traceHelper = new TraceHelper(
 				persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());

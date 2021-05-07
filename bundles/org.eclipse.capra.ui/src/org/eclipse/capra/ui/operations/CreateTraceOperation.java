@@ -168,7 +168,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	public void createTrace(Shell shell,
 			BiFunction<Collection<EClass>, TraceableObjects, Optional<EClass>> chooseTraceType) {
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// add trace model to resource set
@@ -249,7 +249,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	}
 
 	private String getSelectionDisplayName(EObject element) {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		IArtifactHandler<?> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(element)).orElseThrow();

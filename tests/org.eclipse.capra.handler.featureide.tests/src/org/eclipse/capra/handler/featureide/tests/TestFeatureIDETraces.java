@@ -99,7 +99,7 @@ public class TestFeatureIDETraces {
 		SelectionView.getOpenedView().clearSelection();
 
 		// Test if the resolved wrapper equals the feature
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resource = new ResourceSetImpl();
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
 		EObject featureWrapper = artifactHelper.createWrapper(feature);

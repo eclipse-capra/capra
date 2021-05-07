@@ -70,7 +70,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 		RelatedTo relatedToTrace = (RelatedTo) trace;
 		relatedToTrace.setOrigin(origins.get(0));
 		relatedToTrace.getTargets().addAll(targets);
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
@@ -225,7 +225,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				throw new IllegalStateException("Removing trace links was interrupted.", e);
 			}
 
-			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
 					.orElseThrow();
 			persistenceAdapter.saveModels(tModel,
 					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()),

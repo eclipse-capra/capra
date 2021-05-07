@@ -144,7 +144,7 @@ public class UpdateTraceOperation extends AbstractOperation {
 	 */
 	private void updateTrace(Connection connection, String featureName, Object value)
 			throws IllegalStateException, InterruptedException {
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);

@@ -71,7 +71,7 @@ public class ConnectionAdapter implements IPropertySource {
 	 */
 	public ConnectionAdapter(Connection theItem) {
 		this.connection = theItem;
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		artifactHelper = new ArtifactHelper(artifactModel);
 		IPropertySourceProvider propSourceProvider = PropertySourceExtensionPointHelper

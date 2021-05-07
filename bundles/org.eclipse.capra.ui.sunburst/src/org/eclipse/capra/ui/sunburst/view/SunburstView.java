@@ -92,7 +92,7 @@ public class SunburstView extends ViewPart {
 	private Action selectDepthAction;
 
 	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
-	private final IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+	private final IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
 			.orElseThrow();
 
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();

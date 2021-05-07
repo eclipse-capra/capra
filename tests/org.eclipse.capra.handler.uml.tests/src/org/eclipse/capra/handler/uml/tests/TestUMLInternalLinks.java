@@ -102,7 +102,7 @@ public class TestUMLInternalLinks {
 		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
 
 		// Create a trace via the selection view
-		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		assertFalse(traceAdapter.isThereATraceBetween(_A, _B, traceModel));
