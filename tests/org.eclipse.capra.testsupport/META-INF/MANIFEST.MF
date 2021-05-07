@@ -39,7 +39,8 @@ Require-Bundle: org.junit,
  org.eclipse.capra.ui,
  org.eclipse.capra.ui.notification,
  ch.qos.logback.slf4j;resolution:=optional,
- org.eclipse.emf.transaction
+ org.eclipse.emf.transaction,
+ org.eclipse.capra.generic.metadatamodel
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.swt.dnd,
  org.slf4j

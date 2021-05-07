@@ -25,14 +25,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
+import org.eclipse.capra.generic.metadatamodel.MetadataContainer;
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
@@ -80,12 +80,16 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A helper class for writing JUnit tests for the Capra tool.
  */
 @SuppressWarnings("restriction")
 public class TestHelper {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TestHelper.class);
 
 	/**
 	 * The package in which new Java classes will be created.
@@ -342,7 +346,8 @@ public class TestHelper {
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
@@ -400,7 +405,8 @@ public class TestHelper {
 	 */
 	public static Connection getConnectionBetween(Object origin, Object target) {
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
@@ -503,29 +509,52 @@ public class TestHelper {
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
 		// Purge traces
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
-		traceAdapter.deleteTrace(traceAdapter.getAllTraceLinks(traceModel), traceModel);
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
+		try {
+			traceAdapter.deleteTrace(traceAdapter.getAllTraceLinks(traceModel), traceModel);
+		} catch (RuntimeException ex) {
+			// Can occur if a trace was never stored. This throws an
+			// org.eclipse.emf.ecore.resource.Resource$IOWrappedException which we can't
+			// catch here.
+			LOG.info("Exception deleting a trace: {}", ex.getMessage());
+		}
 
 		// Purge artifacts
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
-		ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
-		ArtifactWrapperContainer container = (ArtifactWrapperContainer) artifactModel;
+		ArtifactWrapperContainer artifactContainer = (ArtifactWrapperContainer) artifactModel;
 		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
-		// We're saving the trace model and the artifact model in the same transaction
-		Command cmd = new RecordingCommand(editingDomain, "Purge artifacts") {
+		Command purgeArtifactsCmd = new RecordingCommand(editingDomain, "Purge artifacts") {
 			@Override
 			protected void doExecute() {
-				container.getArtifacts().removeAll(allArtifacts);
+				artifactContainer.getArtifacts().clear();
 			}
 		};
 
 		try {
-			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(purgeArtifactsCmd, null);
 		} catch (RollbackException e) {
-			throw new IllegalStateException("Adding a trace link was rolled back.", e);
+			throw new IllegalStateException("Removing artifacts was rolled back.", e);
 		} catch (InterruptedException e) {
-			throw new IllegalStateException("Adding a trace link was interrupted.", e);
+			throw new IllegalStateException("Removing artifacts was interrupted.", e);
+		}
+
+		// Purge metadata
+		MetadataContainer metadataContainer = (MetadataContainer) persistenceAdapter.getMetadataContainer(resourceSet);
+		Command cmd = new RecordingCommand(editingDomain, "Purge metadata") {
+			@Override
+			protected void doExecute() {
+				metadataContainer.getArtifactMetadata().clear();
+				metadataContainer.getTraceMetadata().clear();
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null);
+		} catch (RollbackException e) {
+			throw new IllegalStateException("Removing metadata was rolled back.", e);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException("Removing metadata was interrupted.", e);
 		}
 	}
 }
