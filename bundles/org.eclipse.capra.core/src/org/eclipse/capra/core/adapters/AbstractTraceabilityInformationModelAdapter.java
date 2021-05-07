@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -25,10 +25,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 
 /**
  * Implements standard functionality for the methods defined in the
- * {@link TraceMetaModelAdapter}, in particular to delegate retrieving internal
- * links to the respective handler.
+ * {@link ITraceabilityInformationModelAdapter}, in particular to delegate
+ * retrieving internal links to the respective handler.
  */
-public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter {
+public abstract class AbstractTraceabilityInformationModelAdapter implements ITraceabilityInformationModelAdapter {
 
 	private List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
 			List<Object> accumulator, List<String> selectedRelationshipTypes, int currentDepth, int maximumDepth,

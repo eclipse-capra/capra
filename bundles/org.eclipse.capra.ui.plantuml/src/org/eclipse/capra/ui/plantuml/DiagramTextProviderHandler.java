@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
@@ -84,7 +84,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		EObject traceModel = null;
 
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
-		TraceMetaModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
@@ -189,7 +189,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	 * @return
 	 */
 	protected List<Connection> getViewableTraceLinks(EObject selectedObject, EObject traceModel,
-			TraceMetaModelAdapter metamodelAdapter, List<String> selectedRelationshipTypes) {
+			ITraceabilityInformationModelAdapter metamodelAdapter, List<String> selectedRelationshipTypes) {
 		List<Connection> traces;
 		if (ToggleTransitivityHandler.isTraceViewTransitive()) {
 			int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());

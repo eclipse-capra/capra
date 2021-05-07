@@ -10,7 +10,7 @@ import org.eclipse.capra.core.helpers.ArtifactHelper
 
 class VisualizationHelper {
 	def static String createMatrix(EObject traceModel, EObject artifactModel, Collection<EObject> rows, Collection<EObject> columns, Boolean internalLinks){	
-	val traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get()
+	val traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get()
 	val artifactHelper = new ArtifactHelper(artifactModel)
 	'''
 	@startuml

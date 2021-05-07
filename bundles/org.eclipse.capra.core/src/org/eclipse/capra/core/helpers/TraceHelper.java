@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
@@ -44,7 +44,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 public class TraceHelper {
 
 	private EObject traceModel;
-	private TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+	private ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 	private ArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter()
 			.orElseThrow();
 

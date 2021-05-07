@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.preferences.CapraPreferences;
@@ -197,7 +197,7 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 
 	@Override
 	public EObject getTraceModel(ResourceSet resourceSet) {
-		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter adapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
 	}
 }

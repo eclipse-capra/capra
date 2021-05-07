@@ -3,7 +3,7 @@ package org.eclipse.capra.ui.operations;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -84,7 +84,7 @@ public class DeleteTraceOperation extends AbstractOperation {
 	 * Deletes the trace stored in the {@code connection} field.
 	 */
 	private void deleteTrace() {
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);

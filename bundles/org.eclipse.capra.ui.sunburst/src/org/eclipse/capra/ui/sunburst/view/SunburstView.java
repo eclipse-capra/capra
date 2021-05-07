@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
@@ -91,7 +91,7 @@ public class SunburstView extends ViewPart {
 	private Browser browser;
 	private Action selectDepthAction;
 
-	private final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 	private final IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 			.orElseThrow();
 

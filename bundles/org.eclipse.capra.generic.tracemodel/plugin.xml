@@ -18,9 +18,9 @@
 <plugin>
 
    <extension
-         point="org.eclipse.capra.configuration.traceabilityMetaModel">
+         point="org.eclipse.capra.configuration.traceabilityInformationModel">
       <TraceabilityMetaModelAdapter
-            class="org.eclipse.capra.generic.tracemodel.GenericMetaModelAdapter">
+            class="org.eclipse.capra.generic.tracemodel.GenericTraceabilityInformationModelAdapter">
       </TraceabilityMetaModelAdapter>
    </extension>
 

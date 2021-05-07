@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -63,7 +63,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 				.orElseThrow();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);
-		TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
 		EObject metadataModel = tracePersistenceAdapter.getMetadataContainer(resourceSet);
 
@@ -132,7 +132,7 @@ public class DeleteQuickFix implements IMarkerResolution {
 	}
 
 	private void recreateTrace(List<Connection> toRecreate, EObject traceModel) {
-		TraceMetaModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter traceMetaModelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 		// create a new trace link with the remaining items
 		for (Connection c : toRecreate) {
 			traceMetaModelAdapter.createTrace(c.getTlink().eClass(), traceModel, c.getOrigins(), c.getTargets());

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.emf.ecore.EClass;
@@ -57,7 +57,7 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 *                     traces
 	 */
 	public TraceabilityMatrixDataProvider(List<Connection> connections, EObject traceModel,
-			TraceMetaModelAdapter traceAdapter) {
+			ITraceabilityInformationModelAdapter traceAdapter) {
 		for (EObject element : TraceHelper.getTracedElements(connections)) {
 			EntryData colEntry = new EntryData(element);
 			colEntry.connections = traceAdapter.getConnectedElements(element, traceModel);

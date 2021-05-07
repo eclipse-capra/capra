@@ -3,7 +3,7 @@ package org.eclipse.capra.ui.plantuml;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
@@ -14,7 +14,7 @@ public class VisualizationHelper {
   public static String createMatrix(final EObject traceModel, final EObject artifactModel, final Collection<EObject> rows, final Collection<EObject> columns, final Boolean internalLinks) {
     String _xblockexpression = null;
     {
-      final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+      final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
       final ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("@startuml");

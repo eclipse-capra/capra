@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
@@ -142,7 +142,7 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
-	private final TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 	private IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;

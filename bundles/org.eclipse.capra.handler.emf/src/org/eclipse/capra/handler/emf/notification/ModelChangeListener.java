@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -77,7 +77,7 @@ public class ModelChangeListener extends EContentAdapter {
 			IPath path = new Path(EcoreUtil.getURI(traceModel).toPlatformString(false));
 			IFile traceContainer = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-			TraceMetaModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+			ITraceabilityInformationModelAdapter traceMetamodelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 
 			List<Connection> connections = traceMetamodelAdapter
 					.getAllTraceLinks(persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));

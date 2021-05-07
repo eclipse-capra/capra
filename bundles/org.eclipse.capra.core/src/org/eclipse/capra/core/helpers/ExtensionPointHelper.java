@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -44,7 +44,7 @@ public class ExtensionPointHelper {
 		super();
 	}
 
-	private static final String TRACE_ID = "org.eclipse.capra.configuration.traceabilityMetaModel";
+	private static final String TRACE_ID = "org.eclipse.capra.configuration.traceabilityInformationModel";
 	private static final String TRACE_CONFIG = "class";
 	private static final String PERSISTENCE_ID = "org.eclipse.capra.configuration.persistenceHandler";
 	private static final String PERSISTENCE_CONFIG = "class";
@@ -103,15 +103,15 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Gets the configured {@link TraceMetaModelAdapter}.
+	 * Gets the configured {@link ITraceabilityInformationModelAdapter}.
 	 *
 	 * @return The configured {@code TraceMetaModelAdapter}. If none is configured,
 	 *         an empty instance of {@link Optional} is returned.
 	 */
-	public static Optional<TraceMetaModelAdapter> getTraceMetamodelAdapter() {
+	public static Optional<ITraceabilityInformationModelAdapter> getTraceabilityInformationModelAdapter() {
 		try {
 			Object extension = getExtensions(TRACE_ID, TRACE_CONFIG).get(0);
-			return Optional.of((TraceMetaModelAdapter) extension);
+			return Optional.of((ITraceabilityInformationModelAdapter) extension);
 		} catch (Exception e) {
 			return Optional.empty();
 		}

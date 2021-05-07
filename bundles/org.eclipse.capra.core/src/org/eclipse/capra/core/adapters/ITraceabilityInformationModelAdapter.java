@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,8 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * This interface defines all functionality that must be implemented to support
- * a specific trace metamodel. This enables swapping the concept of what a
- * &quot;trace&quot; is, as long as these methods can be implemented.
+ * a specific traceability information model. This enables swapping the concept
+ * of what a &quot;trace&quot; is, as long as these methods can be implemented.
  * 
  * Important concepts:
  * <ul>
@@ -46,7 +46,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Anthony Anjorin, Salome Maro
  *
  */
-public interface TraceMetaModelAdapter {
+public interface ITraceabilityInformationModelAdapter {
 
 	/**
 	 * Create a new model for trace links.

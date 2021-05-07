@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
@@ -342,7 +342,7 @@ public class TestHelper {
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
@@ -400,7 +400,7 @@ public class TestHelper {
 	 */
 	public static Connection getConnectionBetween(Object origin, Object target) {
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
@@ -503,7 +503,7 @@ public class TestHelper {
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
 		// Purge traces
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
 		traceAdapter.deleteTrace(traceAdapter.getAllTraceLinks(traceModel), traceModel);
 
 		// Purge artifacts

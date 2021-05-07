@@ -29,7 +29,7 @@ public class TestExtensionPoints {
 
 	@Test
 	public void testExtensionPoints() {
-		assertTrue(ExtensionPointHelper.getTraceMetamodelAdapter().isPresent());
+		assertTrue(ExtensionPointHelper.getTraceabilityInformationModelAdapter().isPresent());
 		assertTrue(ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().isPresent());
 		assertTrue(ExtensionPointHelper.getPriorityHandler().isPresent());
 		assertTrue(ExtensionPointHelper.getTraceMetadataAdapter().isPresent());

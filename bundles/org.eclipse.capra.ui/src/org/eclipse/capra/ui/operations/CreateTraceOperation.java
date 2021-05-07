@@ -23,7 +23,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -167,7 +167,7 @@ public class CreateTraceOperation extends AbstractOperation {
 	 */
 	public void createTrace(Shell shell,
 			BiFunction<Collection<EClass>, TraceableObjects, Optional<EClass>> chooseTraceType) {
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();

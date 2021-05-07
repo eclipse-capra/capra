@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
+import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.tracemodel.GenericMetaModelAdapter;
+import org.eclipse.capra.generic.tracemodel.GenericTraceabilityInformationModelAdapter;
 import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
 import org.eclipse.capra.generic.tracemodel.RelatedTo;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
@@ -117,7 +117,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		SelectionView.getOpenedView().clearSelection();
 
-		AbstractMetaModelAdapter genMod = new GenericMetaModelAdapter();
+		AbstractTraceabilityInformationModelAdapter genMod = new GenericTraceabilityInformationModelAdapter();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
@@ -226,7 +226,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		SelectionView.getOpenedView().clearSelection();
 
-		AbstractMetaModelAdapter genMod = new GenericMetaModelAdapter();
+		AbstractTraceabilityInformationModelAdapter genMod = new GenericTraceabilityInformationModelAdapter();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);

@@ -18,9 +18,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
+import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
@@ -41,11 +41,11 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * relate any artifacts to each other. It is directed and has a single origin
  * artifacts and one or more target artifacts.
  */
-public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements TraceMetaModelAdapter {
+public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabilityInformationModelAdapter implements ITraceabilityInformationModelAdapter {
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
 
-	public GenericMetaModelAdapter() {
+	public GenericTraceabilityInformationModelAdapter() {
 		// TODO Auto-generated constructor stub
 	}
 
