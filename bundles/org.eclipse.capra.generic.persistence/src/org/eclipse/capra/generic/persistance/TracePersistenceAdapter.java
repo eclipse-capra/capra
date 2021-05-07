@@ -71,7 +71,7 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 			try {
 				resource.load(null);
 			} catch (IOException e) {
-				LOG.error("Could not load trace model", e);
+				LOG.warn("Could not load {}: {}", modelName, e.getMessage());
 				return Optional.empty();
 			}
 		}
