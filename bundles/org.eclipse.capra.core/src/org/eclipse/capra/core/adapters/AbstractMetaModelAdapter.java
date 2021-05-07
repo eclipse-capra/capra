@@ -84,7 +84,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 		}
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		for (Connection conn : directElements) {
@@ -130,7 +130,7 @@ public abstract class AbstractMetaModelAdapter implements TraceMetaModelAdapter 
 	@Override
 	public boolean isThereAnInternalTraceBetween(EObject first, EObject second) {
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 		IArtifactHandler<?> handlerFirstElement = artifactHelper.getHandler(first).orElseThrow();

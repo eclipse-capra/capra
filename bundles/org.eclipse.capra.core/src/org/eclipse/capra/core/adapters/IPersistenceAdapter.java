@@ -17,13 +17,13 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 /**
- * This interface defines all functionality used to decide how and where the
- * trace model and all artifact wrappers are persisted.
+ * This interface defines all functionality used to persist the trace model, the
+ * artifact wrappers, and the metadata.
  * 
  * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  *
  */
-public interface TracePersistenceAdapter {
+public interface IPersistenceAdapter {
 
 	/**
 	 * Load and return the trace model in the given resource set
@@ -60,15 +60,19 @@ public interface TracePersistenceAdapter {
 	EObject getMetadataContainer(ResourceSet resourceSet);
 
 	/**
-	 * Save the trace and artifact models. Implementations are expected to: (i) save
-	 * the trace model, (ii) check selectionForTraceCreation for artifact wrappers
-	 * that are not already contained in artifactWrappers, (iii) add these new
-	 * artifact wrappers to artifactWrappers before saving it as well
+	 * Save the trace model, the artifact wrappers, and the metadata.
 	 * 
 	 * @param traceModel    The updated trace model to be saved
 	 * @param artifactModel The updated artifacts to be saved
 	 * @param metadataModel The updated metadata to be saved
 	 */
 	void saveModels(EObject traceModel, EObject artifactModel, EObject metadataModel);
+
+	/**
+	 * Save the trace model, the artifact wrappers, and the metadata.
+	 * 
+	 * @param resourceSet the resource set that contains the models
+	 */
+	void saveModels(ResourceSet resourceSet);
 
 }

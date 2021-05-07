@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
-package org.eclipse.capra.generic.persistance;
+package org.eclipse.capra.generic.persistence;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -44,13 +44,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This generic implementation of
- * {@link org.eclipse.capra.core.adapters.TracePersistenceAdapter} creates a
- * special project in the workspace to house the trace link model and the
- * artifact model.
+ * {@link org.eclipse.capra.core.adapters.IPersistenceAdapter} creates a special
+ * project in the workspace to house the trace link model and the artifact
+ * model.
  */
-public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.TracePersistenceAdapter {
+public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapters.IPersistenceAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TracePersistenceAdapter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(GenericPersistenceAdapter.class);
 
 	private static String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
 	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
@@ -94,10 +94,14 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 		return Optional.empty();
 	}
 
-	@Override
-	public EObject getTraceModel(ResourceSet resourceSet) {
-		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
-		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
+	// get preference for project name
+	private String getProjectNamePreference() {
+		IEclipsePreferences pref = CapraPreferences.getPreferences();
+		String projectName = pref.get(CapraPreferences.CAPRA_PERSISTENCE_PROJECT_NAME, DEFAULT_PROJECT_NAME);
+		if (projectName.isBlank() || projectName.isEmpty()) {
+			projectName = DEFAULT_PROJECT_NAME;
+		}
+		return projectName;
 	}
 
 	private IProject ensureProjectExists(String defaultProjectName) throws CoreException {
@@ -172,6 +176,14 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	}
 
 	@Override
+	public void saveModels(ResourceSet resourceSet) {
+		EObject traceModel = this.getTraceModel(resourceSet);
+		EObject artifactModel = this.getArtifactWrappers(resourceSet);
+		EObject metadataModel = this.getMetadataContainer(resourceSet);
+		this.saveModels(traceModel, artifactModel, metadataModel);
+	}
+
+	@Override
 	public EObject getArtifactWrappers(ResourceSet resourceSet) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().orElseThrow();
 		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
@@ -183,13 +195,9 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 		return loadModel(resourceSet, DEFAULT_METADATA_MODEL_NAME).orElse(adapter.createModel());
 	}
 
-	// get preference for project name
-	private String getProjectNamePreference() {
-		IEclipsePreferences pref = CapraPreferences.getPreferences();
-		String projectName = pref.get(CapraPreferences.CAPRA_PERSISTENCE_PROJECT_NAME, DEFAULT_PROJECT_NAME);
-		if (projectName.isBlank() || projectName.isEmpty()) {
-			projectName = DEFAULT_PROJECT_NAME;
-		}
-		return projectName;
+	@Override
+	public EObject getTraceModel(ResourceSet resourceSet) {
+		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
+		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
 	}
 }

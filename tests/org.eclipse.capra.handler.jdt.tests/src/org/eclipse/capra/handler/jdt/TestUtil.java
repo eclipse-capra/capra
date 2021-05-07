@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -115,7 +115,7 @@ public class TestUtil {
 
 	@Before
 	public static EObject setupModel() {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = new ResourceSetImpl();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		return artifactModel;

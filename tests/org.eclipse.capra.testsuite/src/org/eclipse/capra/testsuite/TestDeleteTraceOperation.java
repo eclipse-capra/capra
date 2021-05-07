@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -122,7 +122,7 @@ public class TestDeleteTraceOperation {
 			fail("Could not create trace: ExecutionException in operation");
 		}
 
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		TraceHelper traceHelper = new TraceHelper(
 				persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet()));
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(_A.eResource().getResourceSet());

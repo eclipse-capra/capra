@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.notification.CapraNotificationHelper;
@@ -70,7 +70,7 @@ public class ModelChangeListener extends EContentAdapter {
 	}
 
 	private void compareTracedItems(Resource changedResource) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		// check that at least one trace link exists
 		if (traceModel != null && !traceModel.eContents().isEmpty()) {

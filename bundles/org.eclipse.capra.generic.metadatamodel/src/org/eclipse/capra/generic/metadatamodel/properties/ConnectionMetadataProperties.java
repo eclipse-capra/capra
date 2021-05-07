@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.metadatamodel.MetadatamodelPackage;
@@ -49,7 +49,7 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 	 */
 	public ConnectionMetadataProperties(Connection connection) {
 		IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		this.metadata = metadataAdapter.getMetadataForTrace(connection.getTlink(),
 				persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
 	}

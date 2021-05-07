@@ -18,7 +18,7 @@
    <extension
          point="org.eclipse.capra.configuration.persistenceHandler">
       <persistenceHandler
-            class="org.eclipse.capra.generic.persistance.TracePersistenceAdapter">
+            class="org.eclipse.capra.generic.persistence.GenericPersistenceAdapter">
       </persistenceHandler>
    </extension>
 </plugin>

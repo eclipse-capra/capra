@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.GenericMetaModelAdapter;
@@ -118,7 +118,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		SelectionView.getOpenedView().clearSelection();
 
 		AbstractMetaModelAdapter genMod = new GenericMetaModelAdapter();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
 
@@ -227,7 +227,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		SelectionView.getOpenedView().clearSelection();
 
 		AbstractMetaModelAdapter genMod = new GenericMetaModelAdapter();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
 

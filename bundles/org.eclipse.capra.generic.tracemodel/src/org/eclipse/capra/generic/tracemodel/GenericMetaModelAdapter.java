@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.AbstractMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
@@ -70,7 +70,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 		RelatedTo relatedToTrace = (RelatedTo) trace;
 		relatedToTrace.setOrigin(origins.get(0));
 		relatedToTrace.getTargets().addAll(targets);
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 
@@ -225,7 +225,7 @@ public class GenericMetaModelAdapter extends AbstractMetaModelAdapter implements
 				throw new IllegalStateException("Removing trace links was interrupted.", e);
 			}
 
-			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 					.orElseThrow();
 			persistenceAdapter.saveModels(tModel,
 					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()),

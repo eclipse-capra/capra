@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.emf,
  org.eclipse.capra.core,
  org.eclipse.emf.transaction
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Export-Package: org.eclipse.capra.generic.persistance
+Export-Package: org.eclipse.capra.generic.persistence
 Import-Package: org.slf4j
 Automatic-Module-Name: org.eclipse.capra.generic.persistence

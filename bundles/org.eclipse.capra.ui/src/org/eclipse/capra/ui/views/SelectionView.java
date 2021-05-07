@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -168,7 +168,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 					.orElseThrow();
 			EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
@@ -328,7 +328,7 @@ public class SelectionView extends ViewPart {
 
 	private void refreshAvailableTraceTypes() {
 		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().orElseThrow();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// add artifact model to resource set

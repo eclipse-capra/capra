@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
@@ -99,7 +99,7 @@ public class TestFeatureIDETraces {
 		SelectionView.getOpenedView().clearSelection();
 
 		// Test if the resolved wrapper equals the feature
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
 		ResourceSet resource = new ResourceSetImpl();
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resource));
 		EObject featureWrapper = artifactHelper.createWrapper(feature);

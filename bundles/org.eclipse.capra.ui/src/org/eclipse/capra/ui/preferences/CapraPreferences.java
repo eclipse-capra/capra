@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.preferences;
 
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.editors.StringIdentifierEditor;
@@ -41,7 +41,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 	public static final String CAPRA_PERSISTENCE_PROJECT_NAME_LABEL = "Input new project name for stored traces: ";
 	public static final String PROJECT_IDENTIFIER_PATTERN = "^([a-zA-Z_$][a-zA-Z\\d_$]*)$";
 
-	private TracePersistenceAdapter persistenceAdapter;
+	private IPersistenceAdapter persistenceAdapter;
 	private EObject traceModel;
 	private EObject artifactModel;
 	private EObject metadataModel;

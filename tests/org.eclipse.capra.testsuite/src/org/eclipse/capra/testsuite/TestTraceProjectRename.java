@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
@@ -116,7 +116,7 @@ public class TestTraceProjectRename {
 		assertTrue("Newly renamed project exists", project.exists());
 
 		// verify that resourceSet traceModel and artifactModel are not empty
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		// get trace model of the resource set
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);

@@ -36,7 +36,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.metadatamodel.MetadataContainer;
@@ -120,7 +120,7 @@ public class TestTraceMetadata {
 		Connection conn = TestHelper.getConnectionBetween(_A, _B);
 
 		// We're getting the metadata for the link and see if the defaults are set.
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().orElseThrow();
 		IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
 		MetadataContainer metadataContainer = (MetadataContainer) persistenceAdapter
 				.getMetadataContainer(EditingDomainHelper.getResourceSet());

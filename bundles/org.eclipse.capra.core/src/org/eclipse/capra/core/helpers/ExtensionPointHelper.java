@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -118,15 +118,15 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Gets the configured {@link TracePersistenceAdapter}.
+	 * Gets the configured {@link IPersistenceAdapter}.
 	 *
 	 * @return The configured {@code TracePersistenceAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
-	public static Optional<TracePersistenceAdapter> getTracePersistenceAdapter() {
+	public static Optional<IPersistenceAdapter> getTracePersistenceAdapter() {
 		try {
 			Object extension = getExtensions(PERSISTENCE_ID, PERSISTENCE_CONFIG).get(0);
-			return Optional.of((TracePersistenceAdapter) extension);
+			return Optional.of((IPersistenceAdapter) extension);
 		} catch (Exception e) {
 			return Optional.empty();
 		}

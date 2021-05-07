@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
@@ -57,7 +57,7 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
-		TracePersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter()
 				.orElseThrow();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
