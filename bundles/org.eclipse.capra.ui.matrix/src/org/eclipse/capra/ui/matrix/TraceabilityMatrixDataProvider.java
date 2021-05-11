@@ -52,7 +52,7 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * Creates a new data provider for the traceability matrix.
 	 * 
 	 * @param connections  the connections that should be visible in the matrix
-	 * @param traceModel   the trace model in wich the trace links are stored
+	 * @param traceModel   the trace model in which the trace links are stored
 	 * @param traceAdapter the trace meta-model adapter that provides data about the
 	 *                     traces
 	 */
@@ -141,7 +141,7 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 */
 	public Connection getCellConnection(int column, int row) {
 		EntryData colEntry = columns.get(column);
-		EntryData rowEntry = columns.get(row);
+		EntryData rowEntry = rows.get(row);
 		for (Connection connection : colEntry.connections) {
 			for (EObject target : connection.getTargets()) {
 				if (!EMFHelper.hasSameIdentifier(colEntry.artifact, target)
