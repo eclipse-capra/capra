@@ -13,8 +13,13 @@
  *******************************************************************************/
 package org.eclipse.capra.generic.persistence;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
@@ -22,6 +27,7 @@ import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.preferences.CapraPreferences;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +56,12 @@ import org.slf4j.LoggerFactory;
  */
 public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapters.IPersistenceAdapter {
 
+	private static final String NAMESPACE_VERSION_REGEX = "http://www.eclipse.org/.*(\\d.\\d.\\d)";
+	private static final String NEW_NAMESPACE_IN_TRACES_XCORE = "http://www.eclipse.org/capra/traces/0.7.0";
+	private static final String NEW_NAMESPACE_IN_ARTIFACTS_XCORE = "http://www.eclipse.org/capra/artifacts/0.7.0";
+	private static final String OLD_NAMESPACE_IN_TRACES_XCORE = "org.eclipse.capra.generic.tracemodel";
+	private static final String OLD_NAMESPACE_IN_ARTIFACTS_XCORE = "org.eclipse.capra.generic.artifactmodel";
+
 	private static final Logger LOG = LoggerFactory.getLogger(GenericPersistenceAdapter.class);
 
 	private static String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
@@ -57,17 +69,152 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers.xmi";
 	private static final String DEFAULT_METADATA_MODEL_NAME = "metadata.xmi";
 
-	private Optional<EObject> loadModel(ResourceSet resourceSet, String modelName) {
+	/**
+	 * Get the second matching group of the regex in a specific string
+	 */
+	private String getTargetString(String strOrigin, Pattern pattern) {
+		if (null == strOrigin || null == pattern)
+			return null;
 
+		Matcher matcher = pattern.matcher(strOrigin);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		return null;
+	}
+
+	private Optional<EObject> loadModel(ResourceSet resourceSet, String modelName) {
 		return this.loadModel(this.getProjectNamePreference(), resourceSet, modelName);
 	}
 
-	private Optional<EObject> loadModel(String projectName, ResourceSet resourceSet, String modelName) {
+	/**
+	 * Set a default version of 0.7.0 into an xmi file which has no version
+	 */
+	private void setDefaultVersion(IFile file, String modelName) throws IOException {
+		// BufferedReader bufferedReader;
+		try (BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(file.getContents(), file.getCharset()))) {
+			StringBuffer inputBuffer = new StringBuffer();
+			String line = null;
+			String strRegex = null;
+			String strReplace = null;
+
+			// Determine which string replace which string
+			switch (modelName) {
+			case DEFAULT_TRACE_MODEL_NAME:
+				strRegex = OLD_NAMESPACE_IN_TRACES_XCORE;
+				strReplace = NEW_NAMESPACE_IN_TRACES_XCORE;
+				break;
+			case DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME:
+				strRegex = OLD_NAMESPACE_IN_ARTIFACTS_XCORE;
+				strReplace = NEW_NAMESPACE_IN_ARTIFACTS_XCORE;
+			default:
+				break;
+			}
+
+			Pattern pattern = Pattern.compile(strRegex);
+			boolean bStopSearching = false;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				if (!bStopSearching) {
+					Matcher matcher = pattern.matcher(line);
+
+					// Find and replace old ns with a new ns contains version
+					if (matcher.find()) {
+						line = matcher.replaceAll(strReplace);
+						bStopSearching = true;
+					}
+				}
+
+				inputBuffer.append(line);
+				inputBuffer.append(System.lineSeparator());
+			}
+
+			// Write the new string into the same file
+			try (ByteArrayInputStream newContent = new ByteArrayInputStream(inputBuffer.toString().getBytes())) {
+				file.setContents(newContent, true, true, null);
+				LOG.debug("Updated namespace of file {}", modelName);
+			} catch (CoreException e) {
+				LOG.error("Failed to set contents for file {}", modelName, e);
+			}
+		} catch (CoreException e) {
+			LOG.error("Failed to get contents from file {}", modelName, e);
+		}
+	}
+
+	/**
+	 * Get the version string from the namespace in an xmi file
+	 */
+	private String getModelVersion(String projectName, String modelName) {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IFile file = project.getFile(modelName);
+		String strVersion = null;
+
+		try (BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(file.getContents(), file.getCharset()))) {
+			String line = null;
+			String namespaceRegexString = NAMESPACE_VERSION_REGEX;
+			Pattern pattern = Pattern.compile(namespaceRegexString);
+
+			// read the text of the .xmi file line by line
+			while ((line = bufferedReader.readLine()) != null) {
+				// get version string by using regular expression
+				strVersion = getTargetString(line, pattern);
+
+				// jump out of the loop if we get version string
+				if (null != strVersion && !strVersion.isEmpty()) {
+					LOG.debug("Got version {} in {}.", strVersion, modelName);
+					break;
+				}
+			}
+		} catch (IOException | CoreException e) {
+			LOG.warn("Failed to get contents from file {}", modelName, e);
+		}
+		return strVersion;
+	}
+
+	/**
+	 * Transform the model to the version adhere to current meta-model
+	 */
+	private void transformModel(String strVersion, String projectName, String modelName) {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IFile file = project.getFile(modelName);
+
+		if (null == strVersion || strVersion.isEmpty()) {
+			LOG.debug("Could not find version string in {}, thus assuming version 0.7.0.", modelName);
+
+			// If we failed to find version, write a namespace with a default version to the
+			// model
+			try {
+				setDefaultVersion(file, modelName);
+			} catch (IOException e) {
+				LOG.warn("Failed to set default version in XMI file.", e);
+			}
+		}
+
+		// TODO: transform the model to from version to current
+
+	}
+
+	/**
+	 * Load model
+	 */
+	private synchronized Optional<EObject> loadModel(String projectName, ResourceSet resourceSet, String modelName) {
 		URI uri = URI.createPlatformResourceURI(projectName + "/" + modelName, true);
 
 		Resource resource = resourceSet.getResource(uri, false) != null ? resourceSet.getResource(uri, false)
 				: resourceSet.createResource(uri);
+
 		if (!resource.isLoaded()) {
+			// 1. Get version of model (from .xmi file)
+			String strVersion = getModelVersion(projectName, modelName);
+
+			// 2. Transform model (if necessary)
+			transformModel(strVersion, projectName, modelName);
+
+			// 3. Load model that now corresponds to current meta-model
 			try {
 				resource.load(null);
 			} catch (IOException e) {
@@ -81,15 +228,17 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 		try {
 			contents = TransactionUtil.runExclusive(EditingDomainHelper.getEditingDomain(),
 					new RunnableWithResult.Impl<EList<EObject>>() {
+
 						@Override
 						public void run() {
 							setResult(resource.getContents());
 						}
 					});
 			return contents.isEmpty() ? Optional.empty() : Optional.of(contents.get(0));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (
+
+		InterruptedException e) {
+			LOG.error("Got interrupted when reading the model {}", modelName, e);
 		}
 		return Optional.empty();
 	}
@@ -197,7 +346,8 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 
 	@Override
 	public EObject getTraceModel(ResourceSet resourceSet) {
-		ITraceabilityInformationModelAdapter adapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter adapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter()
+				.orElseThrow();
 		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
 	}
 }

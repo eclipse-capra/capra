@@ -30,7 +30,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated artifact -->
       <package
-            uri="org.eclipse.capra.generic.artifactmodel"
+            uri="http://www.eclipse.org/capra/artifacts/0.7.0"
             class="org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage"
             genModel="model/artifact.xcore"/>
    </extension>

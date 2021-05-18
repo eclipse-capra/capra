@@ -38,7 +38,7 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "org.eclipse.capra.generic.artifactmodel";
+	String eNS_URI = "http://www.eclipse.org/capra/artifacts/0.7.0";
 
 	/**
 	 * The package namespace name.

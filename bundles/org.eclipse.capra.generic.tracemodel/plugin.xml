@@ -27,7 +27,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated generictrace -->
       <package
-            uri="org.eclipse.capra.generic.tracemodel"
+            uri="http://www.eclipse.org/capra/traces/0.7.0"
             class="org.eclipse.capra.generic.tracemodel.TracemodelPackage"
             genModel="model/generictrace.xcore"/>
    </extension>

@@ -38,7 +38,7 @@ public interface TracemodelPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "org.eclipse.capra.generic.tracemodel";
+	String eNS_URI = "http://www.eclipse.org/capra/traces/0.7.0";
 
 	/**
 	 * The package namespace name.
