@@ -588,6 +588,12 @@
     <choice
         value="eclipse-capra-e4.18"
         label="Capra for Eclipse 2020-12 - 4.18"/>
+    <choice
+        value="eclipse-capra-e4.19"
+        label="Capra for Eclipse 2021-03 - 4.19"/>
+    <choice
+        value="eclipse-capra-e4.20"
+        label="Capra for Eclipse 2021-06 - 4.20"/>
     <description>Choose the compatibility level of the target platform</description>
   </setupTask>
   <setupTask
