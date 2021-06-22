@@ -39,8 +39,7 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 	public EObject createWrapper(ITask task, EObject artifactModel) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 
-		return adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(), task.getSummary(),
-				task.getUrl());
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(), null, task.getSummary());
 	}
 
 	@Override

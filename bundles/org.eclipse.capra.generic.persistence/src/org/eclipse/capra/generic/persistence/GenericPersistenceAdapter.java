@@ -150,6 +150,7 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 	private String getModelVersion(String projectName, String modelName) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		IFile file = project.getFile(modelName);
+
 		String strVersion = null;
 
 		try (BufferedReader bufferedReader = new BufferedReader(

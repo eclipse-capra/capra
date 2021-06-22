@@ -16,8 +16,8 @@ package org.eclipse.capra.handler.php;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -31,7 +31,7 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 	public EObject createWrapper(IModelElement artifact, EObject artifactModel) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), artifact.getHandleIdentifier(),
-				artifact.getElementName(), artifact.getPath().toString());
+				artifact.getHandleIdentifier(), artifact.getElementName());
 	}
 
 	@Override

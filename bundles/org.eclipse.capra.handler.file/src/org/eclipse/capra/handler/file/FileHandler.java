@@ -16,8 +16,8 @@ package org.eclipse.capra.handler.file;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
@@ -36,12 +36,10 @@ public class FileHandler extends AbstractArtifactHandler<IFile> {
 	public EObject createWrapper(IFile file, EObject artifactModel) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
-		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, file.getName(),
-				file.getFullPath().toString());
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, null, file.getName());
 	}
 
 	@Override
-
 	public IFile resolveWrapper(EObject wrapper) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		String uri = adapter.getArtifactUri(wrapper);

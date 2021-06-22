@@ -104,22 +104,13 @@ public interface ArtifactmodelPackage extends EPackage {
 	int ARTIFACT_WRAPPER = 1;
 
 	/**
-	 * The feature id for the '<em><b>Path</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARTIFACT_WRAPPER__PATH = 0;
-
-	/**
 	 * The feature id for the '<em><b>Uri</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__URI = 1;
+	int ARTIFACT_WRAPPER__URI = 0;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -128,16 +119,7 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__NAME = 2;
-
-	/**
-	 * The feature id for the '<em><b>Identifier</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ARTIFACT_WRAPPER__IDENTIFIER = 3;
+	int ARTIFACT_WRAPPER__NAME = 1;
 
 	/**
 	 * The feature id for the '<em><b>Artifact Handler</b></em>' attribute.
@@ -146,7 +128,16 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 4;
+	int ARTIFACT_WRAPPER__ARTIFACT_HANDLER = 2;
+
+	/**
+	 * The feature id for the '<em><b>Internal Resolver</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARTIFACT_WRAPPER__INTERNAL_RESOLVER = 3;
 
 	/**
 	 * The number of structural features of the '<em>Artifact Wrapper</em>' class.
@@ -155,7 +146,7 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ARTIFACT_WRAPPER_FEATURE_COUNT = 5;
+	int ARTIFACT_WRAPPER_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Artifact Wrapper</em>' class.
@@ -199,17 +190,6 @@ public interface ArtifactmodelPackage extends EPackage {
 	EClass getArtifactWrapper();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Path</em>'.
-	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath()
-	 * @see #getArtifactWrapper()
-	 * @generated
-	 */
-	EAttribute getArtifactWrapper_Path();
-
-	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri <em>Uri</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -232,17 +212,6 @@ public interface ArtifactmodelPackage extends EPackage {
 	EAttribute getArtifactWrapper_Name();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier <em>Identifier</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Identifier</em>'.
-	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier()
-	 * @see #getArtifactWrapper()
-	 * @generated
-	 */
-	EAttribute getArtifactWrapper_Identifier();
-
-	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -252,6 +221,17 @@ public interface ArtifactmodelPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getArtifactWrapper_ArtifactHandler();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getInternalResolver <em>Internal Resolver</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Internal Resolver</em>'.
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getInternalResolver()
+	 * @see #getArtifactWrapper()
+	 * @generated
+	 */
+	EAttribute getArtifactWrapper_InternalResolver();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -305,14 +285,6 @@ public interface ArtifactmodelPackage extends EPackage {
 		EClass ARTIFACT_WRAPPER = eINSTANCE.getArtifactWrapper();
 
 		/**
-		 * The meta object literal for the '<em><b>Path</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ARTIFACT_WRAPPER__PATH = eINSTANCE.getArtifactWrapper_Path();
-
-		/**
 		 * The meta object literal for the '<em><b>Uri</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -329,20 +301,20 @@ public interface ArtifactmodelPackage extends EPackage {
 		EAttribute ARTIFACT_WRAPPER__NAME = eINSTANCE.getArtifactWrapper_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Identifier</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ARTIFACT_WRAPPER__IDENTIFIER = eINSTANCE.getArtifactWrapper_Identifier();
-
-		/**
 		 * The meta object literal for the '<em><b>Artifact Handler</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute ARTIFACT_WRAPPER__ARTIFACT_HANDLER = eINSTANCE.getArtifactWrapper_ArtifactHandler();
+
+		/**
+		 * The meta object literal for the '<em><b>Internal Resolver</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ARTIFACT_WRAPPER__INTERNAL_RESOLVER = eINSTANCE.getArtifactWrapper_InternalResolver();
 
 	}
 

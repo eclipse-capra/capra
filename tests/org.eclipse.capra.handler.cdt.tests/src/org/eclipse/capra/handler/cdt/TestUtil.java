@@ -101,7 +101,7 @@ public class TestUtil {
 
 	public static EObject createWrapper(EObject artifactModel, String uri, String name) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().get();
-		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.cdt.CDTHandler", uri, name, uri);
+		return adapter.createArtifact(artifactModel, "org.eclipse.capra.handler.cdt.CDTHandler", uri, uri, name);
 	}
 
 }

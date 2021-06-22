@@ -13,11 +13,10 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getUri <em>Uri</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier <em>Identifier</em>}</li>
  *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getArtifactHandler <em>Artifact Handler</em>}</li>
+ *   <li>{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getInternalResolver <em>Internal Resolver</em>}</li>
  * </ul>
  *
  * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper()
@@ -25,28 +24,6 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ArtifactWrapper extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Path</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Path</em>' attribute.
-	 * @see #setPath(String)
-	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_Path()
-	 * @model unique="false"
-	 * @generated
-	 */
-	String getPath();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getPath <em>Path</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Path</em>' attribute.
-	 * @see #getPath()
-	 * @generated
-	 */
-	void setPath(String value);
-
 	/**
 	 * Returns the value of the '<em><b>Uri</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -92,28 +69,6 @@ public interface ArtifactWrapper extends EObject {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Identifier</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Identifier</em>' attribute.
-	 * @see #setIdentifier(String)
-	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_Identifier()
-	 * @model unique="false"
-	 * @generated
-	 */
-	String getIdentifier();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getIdentifier <em>Identifier</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Identifier</em>' attribute.
-	 * @see #getIdentifier()
-	 * @generated
-	 */
-	void setIdentifier(String value);
-
-	/**
 	 * Returns the value of the '<em><b>Artifact Handler</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -134,5 +89,27 @@ public interface ArtifactWrapper extends EObject {
 	 * @generated
 	 */
 	void setArtifactHandler(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Internal Resolver</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Internal Resolver</em>' attribute.
+	 * @see #setInternalResolver(String)
+	 * @see org.eclipse.capra.generic.artifactmodel.ArtifactmodelPackage#getArtifactWrapper_InternalResolver()
+	 * @model unique="false"
+	 * @generated
+	 */
+	String getInternalResolver();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.capra.generic.artifactmodel.ArtifactWrapper#getInternalResolver <em>Internal Resolver</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Internal Resolver</em>' attribute.
+	 * @see #getInternalResolver()
+	 * @generated
+	 */
+	void setInternalResolver(String value);
 
 } // ArtifactWrapper

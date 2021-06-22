@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -78,13 +78,15 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 		String displayName = (type == null ? "" : (type.getElementName() + ".")) + element.getElementName();
 
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), uriBuilder.toString(),
-				element.getHandleIdentifier(), displayName, element.getPath().toString());
+				element.getHandleIdentifier(), displayName);
 	}
 
 	@Override
 	public IJavaElement resolveWrapper(EObject wrapper) {
+//		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
+//		return JavaCore.create(adapter.getArtifactIdentifier(wrapper));
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
-		return JavaCore.create(adapter.getArtifactIdentifier(wrapper));
+		return JavaCore.create(adapter.getArtifactInternalResolver(wrapper));
 	}
 
 	@Override

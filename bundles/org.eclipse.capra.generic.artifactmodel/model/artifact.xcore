@@ -6,9 +6,8 @@ class ArtifactWrapperContainer {
 }
 
 class ArtifactWrapper {
-	String path
 	String uri
 	String name
-	String identifier
 	String ArtifactHandler
+	String internalResolver
 }

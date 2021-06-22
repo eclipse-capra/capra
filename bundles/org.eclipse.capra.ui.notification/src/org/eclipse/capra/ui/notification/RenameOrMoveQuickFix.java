@@ -76,8 +76,8 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 				if (artifactAdapter.getArtifactUri(aw).equals(oldArtifactUri)) {
 					String newArtifactUri = marker.getAttribute(CapraNotificationHelper.NEW_URI, null);
 					artifactAdapter.createArtifact(artifactModel, artifactAdapter.getArtifactHandler(aw),
-							newArtifactUri, marker.getAttribute(CapraNotificationHelper.NEW_NAME, null),
-							newArtifactUri);
+							newArtifactUri, artifactAdapter.getArtifactInternalResolver(aw), 
+							marker.getAttribute(CapraNotificationHelper.NEW_NAME, null));
 					break;
 				}
 			}

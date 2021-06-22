@@ -114,7 +114,7 @@ public class CElementChangeListener implements IElementChangedListener {
 			String affectedElementUri = affectedElement.getHandleIdentifier();
 			if (affectedElementUri != null) {
 				for (EObject aw : cArtifacts) {
-					String artifactId = artifactAdapter.getArtifactIdentifier(aw);
+					String artifactId = artifactAdapter.getArtifactInternalResolver(aw);
 					// If the change type is "CHANGED", meaning that the element
 					// wasn't deleted, renamed, added or moved, only consider
 					// making a marker if the URI of the affected element is the
@@ -165,7 +165,7 @@ public class CElementChangeListener implements IElementChangedListener {
 		HashMap<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the C/C++ element in the wrapper (all elements)
-		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);
+		String oldArtifactUri = artifactAdapter.getArtifactInternalResolver(aw);
 		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected C/C++ element before the change.

@@ -16,7 +16,6 @@ package org.eclipse.capra.core.adapters;
 import java.util.List;
 
 import org.eclipse.capra.core.handlers.IArtifactHandler;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -48,40 +47,16 @@ public interface IArtifactMetaModelAdapter {
 	 * artifact with the same handler and URI. If found, the existing artifact is
 	 * returned, otherwise a new artifact is created.
 	 * 
-	 * TODO: The implementation of this method delegates to the other methods with
-	 * the same name. It exists to enable implementing objects to work with both the
-	 * old and the new API during a transition period. This implementation uses the
-	 * artifacts URI as its unique identifier.
-	 * 
-	 * @param artifactModel
-	 * @param artifactHandler
-	 * @param artifactUri
-	 * @param artifactId
-	 * @param artifactName
-	 * @param artifactFilePath
-	 * @return
-	 */
-	default EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
-			String artifactName, String artifactFilePath) {
-		return createArtifact(artifactModel, artifactHandler, artifactUri, artifactUri, artifactName, artifactFilePath);
-	}
-
-	/**
-	 * Create a new artifact. The list of artifacts is searched for an existing
-	 * artifact with the same handler and URI. If found, the existing artifact is
-	 * returned, otherwise a new artifact is created.
-	 * 
 	 * @param artifactModel    the artifact model to add the artifact to
 	 * @param artifactHandler  the handler responsible for dealing with the artifact
 	 * @param artifactUri      the URI of the artifact
-	 * @param artifactId       the unique identifier of the artifact
+	 * @param internalResolver the internal information for resolving artifacts
 	 * @param artifactName     the name of the artifact
-	 * @param artifactFilePath the file path to the artifact
 	 * @return a newly created artifact or an existing artifact with the same
 	 *         handler and URI
 	 */
-	EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactId,
-			String artifactName, String artifactFilePath);
+	EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String internalResolver,
+			String artifactName);
 
 	/**
 	 * Gets the artifact with the given handler and URI.
@@ -130,20 +105,10 @@ public interface IArtifactMetaModelAdapter {
 	String getArtifactUri(EObject artifact);
 
 	/**
-	 * @return An internal string that handlers use to locate and reconstruct the
-	 *         artifact.
+	 * @return A string contains internal information that handlers use to locate
+	 *         and reconstruct the artifact
 	 */
-	default String getArtifactIdentifier(EObject artifact) {
-		return getArtifactUri(artifact);
-	}
-
-	/**
-	 * Get the path of the given artifact.
-	 *
-	 * @param artifact
-	 * @return path of the file, referenced by the artifact
-	 */
-	IPath getArtifactPath(EObject artifact);
+	String getArtifactInternalResolver(EObject artifact);
 
 	/**
 	 * Get an instance of the artifact handler.

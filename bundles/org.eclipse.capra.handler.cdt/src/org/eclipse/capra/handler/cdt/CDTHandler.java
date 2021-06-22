@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -56,20 +56,19 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 		String typePrefix = type == null ? "" : type.getName() + "/";
 
 		// TODO: This does not take C++ function overloading on argument types
-		// into account when
-		// constructing the URI
+		// into account when constructing the URI
 		String uri = new URIBuilder().setScheme("platform").setPath("/resource" + element.getPath())
 				.setFragment(typePrefix + element.getElementName()).toString();
 
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, element.getHandleIdentifier(),
-				element.getElementName(), element.getPath().toString());
+				element.getElementName());
 	}
 
 	@Override
 	public ICElement resolveWrapper(EObject wrapper) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
-		return CoreModel.create(adapter.getArtifactIdentifier(wrapper));
+		return CoreModel.create(adapter.getArtifactInternalResolver(wrapper));
 	}
 
 	@Override

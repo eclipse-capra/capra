@@ -17,8 +17,8 @@ import java.nio.file.FileSystems;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
@@ -50,18 +49,15 @@ public class FeatureIdeHandler extends AbstractArtifactHandler<IFeature> {
 		final IPath path = Path.fromOSString(feature.getFeatureModel().getSourceFile().toString());
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IFile file = root.getFileForLocation(path);
-		String uri = URI.createPlatformResourceURI(file.getFullPath().toString(), true).toPlatformString(false);
-
-		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri,
-				Long.toString(feature.getInternalId()), feature.getName(),
-				feature.getFeatureModel().getSourceFile().toString());
+		String uri = feature.getFeatureModel().getSourceFile().toString();
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), uri, null, feature.getName());
 	}
 
 	@Override
 	public IFeature resolveWrapper(EObject wrapper) {
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		FileHandler<IFeatureModel> fileHandler = FeatureModelManager
-				.getFileHandler(FileSystems.getDefault().getPath(adapter.getArtifactPath(wrapper).toOSString()));
+				.getFileHandler(FileSystems.getDefault().getPath(adapter.getArtifactUri(wrapper)));
 		return fileHandler.getObject().getFeature(adapter.getArtifactName(wrapper));
 	}
 

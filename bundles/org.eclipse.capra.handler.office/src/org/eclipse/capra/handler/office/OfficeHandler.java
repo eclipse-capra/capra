@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.office.Activator;
@@ -43,8 +43,8 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
-		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri().toString(),
-				this.getDisplayName(officeObject), officeObject.getUri().toString());
+		return adapter.createArtifact(artifactModel, this.getClass().getName(), officeObject.getUri().toString(), null,
+				this.getDisplayName(officeObject));
 	}
 
 	@Override

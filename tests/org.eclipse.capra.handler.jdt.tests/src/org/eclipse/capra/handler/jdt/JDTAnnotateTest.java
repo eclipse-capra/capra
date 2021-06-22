@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.jdt;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.capra.handler.jdt.preferences.JDTPreferences;
 import org.eclipse.core.resources.IProject;
@@ -44,10 +44,10 @@ public class JDTAnnotateTest {
 
 	@Test
 	public void shouldAnnotateClass() throws Exception {
-		String source = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"};\n";
+		String source = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"};\n";
 
 		ICompilationUnit cu = TestUtil.createCompilationUnit(project, "bar.java", source);
 
@@ -56,24 +56,24 @@ public class JDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation");
 		String actual = cu.getSource();
 
-		String expected = "" +
-				"package jdt\n" +
-				"/**\n" +
-				" * @req annotation\n" +
-				" */\n" +
-				"public class bar {\n" +
-				"};\n";
+		String expected = "" + 
+						"package jdt\n" + 
+						"/**\n" + 
+						" * @req annotation\n" + 
+						" */\n" + 
+						"public class bar {\n" + 
+						"};\n";
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void shouldAnnotateMethod() throws Exception {
-		String source = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String source = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		ICompilationUnit cu = TestUtil.createCompilationUnit(project, "bar.java", source);
 
@@ -82,28 +82,28 @@ public class JDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation");
 		String actual = cu.getSource();
 
-		String expected = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"/**\n" +
-				" * @req annotation\n" +
-				" */\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String expected = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"/**\n" + 
+						" * @req annotation\n" + 
+						" */\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void shouldReplaceAnnotation() throws Exception {
-		String source = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"/**\n" +
-				" * @req annotation1\n" +
-				" */\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String source = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"/**\n" + 
+						" * @req annotation1\n" + 
+						" */\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		ICompilationUnit cu = TestUtil.createCompilationUnit(project, "bar.java", source);
 
@@ -112,28 +112,27 @@ public class JDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation2");
 		String actual = cu.getSource();
 
-		String expected = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"/**\n" +
-				" * @req annotation2\n" +
-				" */\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String expected = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"/**\n" + 
+						" * @req annotation2\n" + 
+						" */\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	public void shouldPreserveComments() throws Exception {
-		String source = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"/**\n" +
-				" * Comment\n" +
-				" */\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String source = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"/**\n" + " * Comment\n" + 
+						" */\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		ICompilationUnit cu = TestUtil.createCompilationUnit(project, "bar.java", source);
 
@@ -142,15 +141,15 @@ public class JDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation");
 		String actual = cu.getSource();
 
-		String expected = "" +
-				"package jdt\n" +
-				"public class bar {\n" +
-				"/**\n" +
-				" * Comment\n" +
-				" * @req annotation\n" +
-				" */\n" +
-				"int foo() { return 0; }\n" +
-				"};\n";
+		String expected = "" + 
+						"package jdt\n" + 
+						"public class bar {\n" + 
+						"/**\n" + 
+						" * Comment\n" + 
+						" * @req annotation\n" + 
+						" */\n" + 
+						"int foo() { return 0; }\n" + 
+						"};\n";
 
 		assertEquals(expected, actual);
 	}

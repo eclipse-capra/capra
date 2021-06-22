@@ -121,7 +121,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			String affectedElementUri = delta.getElement().getHandleIdentifier();
 			if (affectedElementUri != null) {
 				for (EObject aw : javaArtifacts) {
-					String artifactId = artifactAdapter.getArtifactIdentifier(aw);
+					String artifactId = artifactAdapter.getArtifactInternalResolver(aw);
 					// Only create a marker if a signature of a
 					// method/variable/class... has changed inside of a source
 					// file.
@@ -175,7 +175,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		HashMap<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the Java element in the wrapper (all elements)
-		String oldArtifactUri = artifactAdapter.getArtifactIdentifier(aw);
+		String oldArtifactUri = artifactAdapter.getArtifactInternalResolver(aw);
 		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected Java element with its former path

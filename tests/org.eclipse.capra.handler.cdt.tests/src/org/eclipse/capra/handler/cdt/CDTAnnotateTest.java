@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the annotate capability of the CDTHandler. 
+ * Tests the annotate capability of the CDTHandler.
  */
 public class CDTAnnotateTest {
 
@@ -52,13 +52,13 @@ public class CDTAnnotateTest {
 	}
 
 	/**
-	 * An annotation appears on a function without a previous comment. 
+	 * An annotation appears on a function without a previous comment.
 	 */
 	@Test
 	public void shouldAnnotateMethod() throws Exception {
-		String source = "" +
-				"int foo() { return 0; }" + NL +
-				"";
+		String source = "" + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar.c", source);
 
@@ -67,24 +67,24 @@ public class CDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation");
 		String actual = tu.getBuffer().getContents();
 
-		String expected = "" +
-				"/**" + NL +
-				" * @req annotation" + NL +
-				" */" + NL +
-				"int foo() { return 0; }" + NL +
-				"";
+		String expected = "" + 
+						"/**" + NL + 
+						" * @req annotation" + NL + 
+						" */" + NL + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	public void shouldReplaceAnnotation() throws Exception {
-		String source = "" +
-			"/**" + NL +
-			" * @req annotation1" + NL +
-			" */" + NL +
-			"int foo() { return 0; }" + NL +
-			"";
+		String source = "" + 
+						"/**" + NL + 
+						" * @req annotation1" + NL + 
+						" */" + NL + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar2.c", source);
 
@@ -93,12 +93,12 @@ public class CDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation2");
 		String actual = tu.getBuffer().getContents();
 
-		String expected = "" +
-				"/**" + NL +
-				" * @req annotation2" + NL +
-				" */" + NL +
-				"int foo() { return 0; }" + NL +
-				"";
+		String expected = "" + 
+						"/**" + NL + 
+						" * @req annotation2" + NL + 
+						" */" + NL + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		// Will fail, doesn't replace annotation
 		assertEquals(expected, actual);
@@ -106,12 +106,12 @@ public class CDTAnnotateTest {
 
 	@Test
 	public void shouldPreserveComments() throws Exception {
-		String source = "" +
-				"/**" + NL +
-				" * Comment" + NL +
-				" */" + NL +
-				"int foo() { return 0; }" + NL +
-				"";
+		String source = "" + 
+						"/**" + NL + 
+						" * Comment" + NL + 
+						" */" + NL + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		ITranslationUnit tu = TestUtil.createTranslationUnit(project.getProject(), "bar3.c", source);
 
@@ -120,13 +120,13 @@ public class CDTAnnotateTest {
 		handler.annotateArtifact(wrapper, "annotation");
 		String actual = tu.getBuffer().getContents();
 
-		String expected = "" +
-				"/**" + NL +
-				" * Comment" + NL +
-				" * @req annotation" + NL +
-				" */" + NL +
-				"int foo() { return 0; }" + NL +
-				"";
+		String expected = "" + 
+						"/**" + NL + 
+						" * Comment" + NL + 
+						" * @req annotation" + NL + 
+						" */" + NL + 
+						"int foo() { return 0; }" + NL + 
+						"";
 
 		assertEquals(expected, actual);
 	}

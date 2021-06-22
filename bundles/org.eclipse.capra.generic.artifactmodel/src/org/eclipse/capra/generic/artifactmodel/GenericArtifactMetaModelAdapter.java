@@ -1,4 +1,5 @@
 package org.eclipse.capra.generic.artifactmodel;
+
 /*******************************************************************************
  * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
@@ -17,8 +18,6 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractArtifactMetaModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -51,8 +50,8 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	}
 
 	@Override
-	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String artifactId,
-			String artifactName, String artifactPath) {
+	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
+			String internalResolver, String artifactName) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri);
 		if (existingWrapper != null)
@@ -62,8 +61,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		wrapper.setArtifactHandler(artifactHandler);
 		wrapper.setUri(artifactUri);
 		wrapper.setName(artifactName);
-		wrapper.setPath(artifactPath);
-		wrapper.setIdentifier(artifactId);
+		wrapper.setInternalResolver(internalResolver);
 
 		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
 		// We're saving the trace model and the artifact model in the same transaction
@@ -113,20 +111,12 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	}
 
 	@Override
-	public String getArtifactIdentifier(EObject artifact) {
+	public String getArtifactInternalResolver(EObject artifact) {
 		if (artifact instanceof ArtifactWrapper) {
 			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
-			return wrapper.getIdentifier();
+			return wrapper.getInternalResolver();
 		}
-		return null;
-	}
 
-	@Override
-	public IPath getArtifactPath(EObject artifact) {
-		if (artifact instanceof ArtifactWrapper) {
-			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
-			return new Path(wrapper.getPath());
-		}
 		return null;
 	}
 
