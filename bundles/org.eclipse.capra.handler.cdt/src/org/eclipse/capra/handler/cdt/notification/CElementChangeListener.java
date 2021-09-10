@@ -53,8 +53,7 @@ public class CElementChangeListener implements IElementChangedListener {
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
-		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
-				.orElseThrow();
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
 		List<EObject> cArtifacts = allArtifacts.stream()
@@ -119,7 +118,7 @@ public class CElementChangeListener implements IElementChangedListener {
 					// wasn't deleted, renamed, added or moved, only consider
 					// making a marker if the URI of the affected element is the
 					// same as the URI in the wrapper.
-					if (issueType == IssueType.CHANGED && !artifactId.equals(affectedElementUri))
+					if (issueType == IssueType.CHANGED && !affectedElementUri.equals(artifactId))
 						continue;
 					// Otherwise (the change is either "delete", "move" or
 					// "rename"), consider making the marker for the affected
