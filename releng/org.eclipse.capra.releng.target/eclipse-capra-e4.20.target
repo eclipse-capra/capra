@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.20" sequenceNumber="1622659110">
+<target name="eclipse-capra-e4.20" sequenceNumber="1632160197">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.cdt.sdk.feature.group" version="10.3.0.202105250135"/>
+      <unit id="org.eclipse.cdt.sdk.feature.group" version="10.3.0.202106080120"/>
       <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="10.3.0.202104042017"/>
       <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.14.202102231741"/>
       <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.18.0.v20210405-0628"/>
       <unit id="org.eclipse.emf.sdk.feature.group" version="2.26.0.v20210506-1425"/>
-      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="5.2.0.202105031159"/>
       <unit id="org.eclipse.php.feature.group" version="7.2.0.202005271851"/>
       <unit id="org.eclipse.xtext.sdk.feature.group" version="2.25.0.v20210301-1429"/>
       <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="2.16.1.v20200828-1618"/>
       <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.17.0.v20200730-1155"/>
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.25.0.v20210301-1429"/>
-      <unit id="org.eclipse.pde.source.feature.group" version="3.14.800.v20210519-1800"/>
+      <unit id="org.eclipse.pde.source.feature.group" version="3.14.800.v20210611-1636"/>
       <repository id="eclipse-2021-06" location="http://download.eclipse.org/releases/2021-06/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="5.1.0.202103181559"/>
+      <repository id="papyrus-2021-03" location="https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-03"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.poi.ooxml" version="4.1.1.v20200820-1148"/>
@@ -48,11 +51,11 @@
       <repository location="http://download.eclipse.org/rmf/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.25"/>
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.26"/>
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.7.0.202010141034"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.0.202108311440"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

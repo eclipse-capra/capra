@@ -5,8 +5,7 @@ location "http://download.eclipse.org/releases/2021-06/" eclipse-2021-06 {
 	org.eclipse.cdt.testsrunner.feature.feature.group
 	org.eclipse.emf.compare.ide.ui.feature.group
 	org.eclipse.emf.ecore.xcore.sdk.feature.group
-	org.eclipse.emf.sdk.feature.group
-	org.eclipse.papyrus.sdk.feature.feature.group
+	org.eclipse.emf.sdk.feature.group	
 	org.eclipse.php.feature.group
 	org.eclipse.xtext.sdk.feature.group
 	org.eclipse.mylyn.gerrit.feature.feature.group
@@ -14,6 +13,10 @@ location "http://download.eclipse.org/releases/2021-06/" eclipse-2021-06 {
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
+}
+
+location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-03" papyrus-2021-03 {
+	org.eclipse.papyrus.sdk.feature.feature.group
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository/" eclipse-orbit-2021-06 {
