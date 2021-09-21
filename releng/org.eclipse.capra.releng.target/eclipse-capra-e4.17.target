@@ -17,6 +17,7 @@
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.23.0.v20200831-0926"/>
       <unit id="org.eclipse.pde.source.feature.group" version="3.14.500.v20200902-1800"/>
+      <unit id="org.eclipse.m2m.qvt.oml.feature.group" version="3.10.2.v20200609-1812"/>
       <repository id="eclipse-2020-09" location="http://download.eclipse.org/releases/2020-09/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

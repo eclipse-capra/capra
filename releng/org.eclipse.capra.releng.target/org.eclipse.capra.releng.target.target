@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.10" sequenceNumber="1609852128">
+<target name="eclipse-capra-e4.10" sequenceNumber="1632212100">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="9.6.0.201812111211"/>
@@ -17,6 +17,7 @@
       <unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.16.0.v20181203-1555"/>
       <unit id="org.eclipse.pde.source.feature.group" version="3.13.300.v20181206-0815"/>
+      <unit id="org.eclipse.m2m.qvt.oml.feature.group" version="3.9.1.v20181210-1559"/>
       <repository id="eclipse-2018-12" location="http://download.eclipse.org/releases/2018-12/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -46,11 +47,11 @@
       <repository location="http://download.eclipse.org/rmf/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.24"/>
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.26"/>
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.7.0.202010141034"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.0.202108311440"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -62,7 +63,7 @@
       <unit id="org.eclipse.ease.ui.feature.feature.group" version="0.7.0.I201907161104"/>
       <repository id="EASE" location="http://download.eclipse.org/ease/release/0.7.0"/>
     </location>
-	<location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
     </location>

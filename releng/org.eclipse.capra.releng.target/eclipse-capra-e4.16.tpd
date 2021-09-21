@@ -14,6 +14,7 @@ location "http://download.eclipse.org/releases/2020-06/" eclipse-2020-06 {
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
+	org.eclipse.m2m.qvt.oml.feature.group
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20200529191137/repository/" eclipse-orbit-2020-06 {

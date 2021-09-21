@@ -13,7 +13,8 @@ location "http://download.eclipse.org/releases/2019-03/" eclipse-2019-03 {
 	org.eclipse.mylyn.hudson.feature.group
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
-	org.eclipse.pde.source.feature.group	
+	org.eclipse.pde.source.feature.group
+	org.eclipse.m2m.qvt.oml.feature.group
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository" eclipse-orbit-2019-03 {
