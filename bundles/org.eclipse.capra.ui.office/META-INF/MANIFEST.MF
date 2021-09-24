@@ -3,13 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
 Bundle-Version: 0.9.0.qualifier
-Bundle-ClassPath: .,
- lib/poi-3.10.1-20140818.jar,
- lib/poi-ooxml-schemas-3.10.1-20140818.jar,
- lib/xmlbeans-2.6.0.jar,
- lib/poi-ooxml-3.10.1-filtered.jar
+Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.equinox.registry,
  org.eclipse.swt,
@@ -19,10 +15,13 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.dom4j,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions,
- javax.xml.bind;bundle-version="2.2.0",
  org.apache.httpcomponents.httpclient,
  org.eclipse.core.resources,
- org.apache.httpcomponents.httpcore
+ org.apache.httpcomponents.httpcore,
+ org.apache.poi,
+ org.apache.poi.ooxml,
+ org.apache.poi.ooxml.schemas,
+ org.apache.xmlbeans
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office,
  org.eclipse.capra.ui.office.exceptions;x-internal:=true,
