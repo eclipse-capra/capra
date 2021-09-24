@@ -17,16 +17,21 @@ location "http://download.eclipse.org/releases/2020-09/" eclipse-2020-09 {
 }
 
 location "https://download.eclipse.org/tools/orbit/downloads/drops/R20200831200620/repository/" eclipse-orbit-2020-09 {
-	org.apache.poi.ooxml
-	org.apache.xmlbeans
 	com.google.guava
 	org.apache.commons.collections
-	org.apache.poi.ooxml.schemas
-	org.apache.poi
 	com.fasterxml.jackson.core.jackson-core
 	org.slf4j.api
 	ch.qos.logback.slf4j
 	org.dom4j
+}
+
+// The POI jars in the 2020-09 orbit produce an error when loading an office document. That's why we use the slightly
+// newer versions from 2020-12. Cf. https://stackoverflow.com/questions/66698849
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/repository/" eclipse-orbit-2020-12 {
+	org.apache.poi.ooxml
+	org.apache.xmlbeans
+	org.apache.poi.ooxml.schemas
+	org.apache.poi
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
