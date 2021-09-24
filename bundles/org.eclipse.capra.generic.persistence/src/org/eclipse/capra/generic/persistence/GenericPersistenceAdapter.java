@@ -93,7 +93,11 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 	 * Set a default version of 0.7.0 into an xmi file which has no version
 	 */
 	private void setDefaultVersion(IFile file, String modelName) throws IOException {
-		// BufferedReader bufferedReader;
+		// In case the file does not exist (e.g., during test execution),
+		// we don't have anything to do and return.
+		if (!file.exists()) {
+			return;
+		}
 		try (BufferedReader bufferedReader = new BufferedReader(
 				new InputStreamReader(file.getContents(), file.getCharset()))) {
 			StringBuffer inputBuffer = new StringBuffer();
@@ -153,25 +157,27 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 
 		String strVersion = null;
 
-		try (BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(file.getContents(), file.getCharset()))) {
-			String line = null;
-			String namespaceRegexString = NAMESPACE_VERSION_REGEX;
-			Pattern pattern = Pattern.compile(namespaceRegexString);
+		if (file.exists()) {
+			try (BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(file.getContents(), file.getCharset()))) {
+				String line = null;
+				String namespaceRegexString = NAMESPACE_VERSION_REGEX;
+				Pattern pattern = Pattern.compile(namespaceRegexString);
 
-			// read the text of the .xmi file line by line
-			while ((line = bufferedReader.readLine()) != null) {
-				// get version string by using regular expression
-				strVersion = getTargetString(line, pattern);
+				// read the text of the .xmi file line by line
+				while ((line = bufferedReader.readLine()) != null) {
+					// get version string by using regular expression
+					strVersion = getTargetString(line, pattern);
 
-				// jump out of the loop if we get version string
-				if (null != strVersion && !strVersion.isEmpty()) {
-					LOG.debug("Got version {} in {}.", strVersion, modelName);
-					break;
+					// jump out of the loop if we get version string
+					if (null != strVersion && !strVersion.isEmpty()) {
+						LOG.debug("Got version {} in {}.", strVersion, modelName);
+						break;
+					}
 				}
+			} catch (IOException | CoreException e) {
+				LOG.warn("Failed to get contents from file {}", modelName, e);
 			}
-		} catch (IOException | CoreException e) {
-			LOG.warn("Failed to get contents from file {}", modelName, e);
 		}
 		return strVersion;
 	}

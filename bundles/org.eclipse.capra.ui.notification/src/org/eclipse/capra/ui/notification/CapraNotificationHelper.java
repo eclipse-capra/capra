@@ -170,6 +170,11 @@ public class CapraNotificationHelper {
 	 * @param containingFile the file that contains the marker to be deleted
 	 */
 	public static void deleteCapraMarker(String uri, IssueType[] issues, IFile containingFile) {
+		// In case the file does not exist (e.g., during test execution),
+		// we don't have anything to do and return.
+		if (!containingFile.exists()) {
+			return;
+		}
 		try {
 			IMarker[] markers = containingFile.findMarkers(CAPRA_PROBLEM_MARKER_ID, true, 0);
 
