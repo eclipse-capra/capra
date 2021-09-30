@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated generictrace.070 -->
+      <package
+            uri="org.eclipse.capra.generic.tracemodel"
+            class="org.eclipse.capra.generic.tracemodel070.Tracemodel070Package"
+            genModel="model/generictrace.070.xcore"/>
+   </extension>
+
+</plugin>

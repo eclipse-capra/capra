@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated artifact.070 -->
+      <package
+            uri="http://www.eclipse.org/capra/artifacts/0.7.0"
+            class="org.eclipse.capra.generic.artifactmodel070.Artifactmodel070Package"
+            genModel="model/artifact.070.xcore"/>
+   </extension>
+
+</plugin>

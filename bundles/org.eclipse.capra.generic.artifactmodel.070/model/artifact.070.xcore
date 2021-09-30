@@ -1,0 +1,13 @@
+@Ecore(nsURI="http://www.eclipse.org/capra/artifacts/0.7.0")
+package  org.eclipse.capra.generic.artifactmodel070
+class ArtifactWrapperContainer {
+    contains ArtifactWrapper [0..*] artifacts 
+}
+
+class ArtifactWrapper {
+    String path
+    String uri
+    String name
+    String identifier
+    String ArtifactHandler
+}
