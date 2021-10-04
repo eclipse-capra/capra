@@ -20,12 +20,13 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.listeners.ITraceCreationListener;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -41,7 +42,8 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
  * relate any artifacts to each other. It is directed and has a single origin
  * artifacts and one or more target artifacts.
  */
-public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabilityInformationModelAdapter implements ITraceabilityInformationModelAdapter {
+public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabilityInformationModelAdapter
+		implements ITraceabilityInformationModelAdapter {
 
 	private static final int DEFAULT_INITIAL_TRANSITIVITY_DEPTH = 1;
 
@@ -104,6 +106,13 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 			throw new IllegalStateException("Adding a trace link was rolled back.", e);
 		} catch (InterruptedException e) {
 			throw new IllegalStateException("Adding a trace link was interrupted.", e);
+		}
+
+		// Inform all registered listeners
+		Connection conn = new Connection(origins, targets, relatedToTrace);
+		Collection<ITraceCreationListener> listeners = ExtensionPointHelper.getTraceCreationListeners();
+		for (ITraceCreationListener creationListener : listeners) {
+			creationListener.onTraceCreation(conn);
 		}
 
 		return relatedToTrace;
@@ -225,8 +234,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				throw new IllegalStateException("Removing trace links was interrupted.", e);
 			}
 
-			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
-					.orElseThrow();
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 			persistenceAdapter.saveModels(tModel,
 					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()),
 					persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));

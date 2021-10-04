@@ -66,6 +66,7 @@ public class GenericMetadataAdapter implements IMetadataAdapter {
 		if (metaData.equals(existingMetadata)) {
 			return;
 		}
+		// TODO: Check if the trace property is set and do so if necessary.
 		updateObjectInTransaction(metaData, existingMetadata);
 	}
 

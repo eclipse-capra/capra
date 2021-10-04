@@ -127,7 +127,13 @@ public class TestTraceMetadata {
 		TraceMetadata metadata = (TraceMetadata) metadataAdapter.getMetadataForTrace(conn.getTlink(),
 				metadataContainer);
 		assertNotNull(metadata);
+		// While the comment should be empty...
 		assertTrue(metadata.getComment().isEmpty());
+
+		// ...the date should be set by the trace creation listener.
+		assertNotNull(metadata.getCreationDate());
+		// There should also be a user set, but we can't be sure about the user name.
+		assertNotNull(metadata.getCreationUser());
 
 		// Now we're setting one of the values directly. That should not work since
 		// we're not in a transaction. We thus check that the exception is thrown. Funny

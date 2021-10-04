@@ -38,5 +38,10 @@
             class="org.eclipse.capra.generic.metadatamodel.properties.MetadataPropertiesProvider">
       </MetadataPropertySourceProvider>
    </extension>
-
+   <extension
+         point="org.eclipse.capra.configuration.traceCreationListeners">
+      <TraceMetadataAdapter
+            class="org.eclipse.capra.generic.metadatamodel.listeners.GenericTraceCreationListener">
+      </TraceMetadataAdapter>
+   </extension>
 </plugin>

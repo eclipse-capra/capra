@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
+import org.eclipse.capra.core.listeners.ITraceCreationListener;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -56,6 +57,8 @@ public class ExtensionPointHelper {
 	private static final String PRIORITY_HANDLER_CONFIG = "class";
 	private static final String META_DATA_ID = "org.eclipse.capra.configuration.traceMetadata";
 	private static final String META_DATA_CONFIG = "class";
+	private static final String TRACE_CREATION_LISTENERS_ID = "org.eclipse.capra.configuration.traceCreationListeners";
+	private static final String TRACE_CREATION_LISTENERS_CONFIG = "class";
 
 	/**
 	 * Gets all extensions from the extension point ID and attribute passed.
@@ -154,9 +157,6 @@ public class ExtensionPointHelper {
 	 *         collects all plugins that have an extension to the ArtifactHandler
 	 *         Extension point
 	 */
-	// Change type to IArtifactHandler<?>, since IArtifactHandler<Object> means a
-	// handler which
-	// can handle ALL kinds of objects.
 	public static Collection<IArtifactHandler<?>> getArtifactHandlers() {
 		List<Object> extensions = getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG);
 
@@ -208,5 +208,25 @@ public class ExtensionPointHelper {
 		} catch (Exception e) {
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Gets the available {@link ITraceCreationListener} instances, i.e., all
+	 * listeners that need to be informed when a new trace link has been created.
+	 *
+	 * @return A collection of all the trace creation listeners available.
+	 */
+	public static Collection<ITraceCreationListener> getTraceCreationListeners() {
+		List<Object> extensions = getExtensions(TRACE_CREATION_LISTENERS_ID, TRACE_CREATION_LISTENERS_CONFIG);
+
+		List<Object> illegalClasses = extensions.stream().filter(c -> !(c instanceof ITraceCreationListener))
+				.collect(toList());
+
+		if (!illegalClasses.isEmpty()) {
+			throw new IllegalStateException(
+					"Illegal classes at " + TRACE_CREATION_LISTENERS_ID + ": " + illegalClasses);
+		}
+
+		return extensions.stream().map(ITraceCreationListener.class::cast).collect(toList());
 	}
 }
