@@ -77,4 +77,18 @@ public interface IMetadataAdapter {
 	 *                          the artifact
 	 */
 	void setMetadataForArtifact(EObject wrapper, EObject metaData, EObject metadataContainer);
+
+	/**
+	 * Removes the metadata for the provided object from the metadata container.
+	 * This method does not persist the changes and should not be called by clients
+	 * directly. Instead, it should be called when a trace link or an artifact is
+	 * removed by the respective implementation of
+	 * {@link ITraceabilityInformationModelAdapter#deleteTrace(java.util.List, EObject)}.
+	 *
+	 * 
+	 * @param object            the object whose metadata should be removed
+	 * @param metadataContainer the container which contains the metadata to be
+	 *                          removed
+	 */
+	void removeMetadata(EObject object, EObject metadataContainer);
 }

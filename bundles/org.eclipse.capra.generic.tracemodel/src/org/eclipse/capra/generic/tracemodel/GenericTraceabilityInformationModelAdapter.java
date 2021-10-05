@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -206,6 +207,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 	@Override
 	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
 		List<Object> toRemove = new ArrayList<>();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel tModel = (GenericTraceModel) traceModel;
 			for (Connection c : toDelete) {
@@ -216,6 +218,16 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				}
 			}
 
+			// Remove the metadata information about the traces
+			IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
+			for (Object trace : toRemove) {
+				if (trace instanceof EObject) {
+					metadataAdapter.removeMetadata((EObject) trace,
+							persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
+				}
+			}
+
+			// Remove the traces from the trace model
 			TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
 			Command cmd = new RecordingCommand(editingDomain, "Remove traces") {
 				@Override
@@ -234,7 +246,6 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				throw new IllegalStateException("Removing trace links was interrupted.", e);
 			}
 
-			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 			persistenceAdapter.saveModels(tModel,
 					persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet()),
 					persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));

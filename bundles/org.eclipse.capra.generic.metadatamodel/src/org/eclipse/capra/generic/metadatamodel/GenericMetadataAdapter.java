@@ -71,6 +71,58 @@ public class GenericMetadataAdapter implements IMetadataAdapter {
 	}
 
 	@Override
+	public void removeMetadata(EObject object, EObject metadataContainer) {
+		MetadataContainer container = this.getContainer(metadataContainer);
+		// At this stage, we cannot distinguish between a trace and an
+		// artifact since all we get are EObjects. Therefore, we need to iterate
+		// through both types of metadata and see what we find.
+		// Go through the trace metadata first...
+		for (TraceMetadata metaData : container.getTraceMetadata()) {
+			if (EcoreUtil.equals(object, metaData.getTrace())) {
+				// Remove the metadata for trace from the trace metadata model
+				TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+				Command cmd = new RecordingCommand(editingDomain, "Remove trace metadata") {
+					@Override
+					protected void doExecute() {
+						container.getTraceMetadata().remove(metaData);
+					}
+				};
+
+				try {
+					((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+				} catch (RollbackException e) {
+					throw new IllegalStateException("Removing trace links was rolled back.", e);
+				} catch (InterruptedException e) {
+					throw new IllegalStateException("Removing trace links was interrupted.", e);
+				}
+				return;
+			}
+		}
+		// ...then go through the artifacts if we haven't found anything.
+		for (ArtifactMetadata metaData : container.getArtifactMetadata()) {
+			if (EcoreUtil.equals(object, metaData.getArtifact())) {
+				// Remove the metadata for trace from the trace metadata model
+				TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+				Command cmd = new RecordingCommand(editingDomain, "Remove artifact metadata") {
+					@Override
+					protected void doExecute() {
+						container.getArtifactMetadata().remove(metaData);
+					}
+				};
+
+				try {
+					((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+				} catch (RollbackException e) {
+					throw new IllegalStateException("Removing trace links was rolled back.", e);
+				} catch (InterruptedException e) {
+					throw new IllegalStateException("Removing trace links was interrupted.", e);
+				}
+				return;
+			}
+		}
+	}
+
+	@Override
 	public EObject getMetadataForArtifact(EObject wrapper, EObject metadataContainer) {
 		MetadataContainer container = this.getContainer(metadataContainer);
 		for (ArtifactMetadata metaData : container.getArtifactMetadata()) {
