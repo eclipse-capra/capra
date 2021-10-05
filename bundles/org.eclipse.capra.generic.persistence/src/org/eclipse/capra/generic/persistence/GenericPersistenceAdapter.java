@@ -189,7 +189,7 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		IFile file = project.getFile(modelName);
 
-		if (null == strVersion || strVersion.isEmpty()) {
+		if (file != null && file.exists() && (null == strVersion || strVersion.isEmpty())) {
 			LOG.debug("Could not find version string in {}, thus assuming version 0.7.0.", modelName);
 
 			// If we failed to find version, write a namespace with a default version to the
