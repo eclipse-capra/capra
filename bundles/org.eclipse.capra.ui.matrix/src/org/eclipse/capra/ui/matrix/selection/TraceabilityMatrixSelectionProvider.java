@@ -36,6 +36,21 @@ import org.eclipse.nebula.widgets.nattable.selection.event.RowSelectionEvent;
 
 public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, ILayerListener {
 
+	private enum SelectionType {
+		CELL, ROW, COLUMN;
+
+		public static SelectionType valueOf(ILayerEvent event) {
+			if (event instanceof CellSelectionEvent) {
+				return SelectionType.CELL;
+			} else if (event instanceof ColumnSelectionEvent) {
+				return SelectionType.COLUMN;
+			} else if (event instanceof RowSelectionEvent) {
+				return SelectionType.ROW;
+			}
+			return null;
+		}
+	}
+
 	private Set<ISelectionChangedListener> listeners = new HashSet<>();
 
 	/**
@@ -61,7 +76,7 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	public void handleLayerEvent(ILayerEvent event) {
 		if ((event instanceof CellSelectionEvent) || (event instanceof RowSelectionEvent)
 				|| (event instanceof ColumnSelectionEvent)) {
-			ISelection selection = getSelection();
+			ISelection selection = doGetSelection(SelectionType.valueOf(event));
 			if ((selection != null && !selection.equals(this.previousSelection))) {
 				try {
 					for (ISelectionChangedListener listener : this.listeners) {
@@ -83,25 +98,41 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 
 	@Override
 	public ISelection getSelection() {
-		if (selectionLayer.getFullySelectedRowPositions().length > 0) {
-			EObject selectedObject = dataProvider.getRow(selectionLayer.getFullySelectedRowPositions()[0]);
-			if (selectedObject != null) {
-				return new StructuredSelection(new ArtifactAdapter(selectedObject));
-			}
+		if (selectionLayer.getSelectedCellPositions().length > 0) {
+			doGetSelection(SelectionType.CELL);
+		} else if (selectionLayer.getFullySelectedRowPositions().length > 0) {
+			doGetSelection(SelectionType.ROW);
 		} else if (selectionLayer.getFullySelectedColumnPositions().length > 0) {
-			EObject selectedObject = dataProvider.getColumn(selectionLayer.getFullySelectedColumnPositions()[0]);
-			if (selectedObject != null) {
-				return new StructuredSelection(new ArtifactAdapter(selectedObject));
+			doGetSelection(SelectionType.COLUMN);
+		}
+		return null;
+	}
+
+	private ISelection doGetSelection(SelectionType type) {
+		switch (type) {
+		case ROW:
+			EObject selectedRow = dataProvider.getRow(selectionLayer.getFullySelectedRowPositions()[0]);
+			if (selectedRow != null) {
+				return new StructuredSelection(new ArtifactAdapter(selectedRow));
 			}
-		} else if (selectionLayer.getSelectedCellPositions().length > 0) {
+			break;
+		case COLUMN:
+			EObject selectedColumn = dataProvider.getColumn(selectionLayer.getFullySelectedColumnPositions()[0]);
+			if (selectedColumn != null) {
+				return new StructuredSelection(new ArtifactAdapter(selectedColumn));
+			}
+			break;
+		case CELL:
 			PositionCoordinate selectedCoordinate = selectionLayer.getSelectedCellPositions()[0];
 			Connection selectedObject = dataProvider.getCellConnection(selectedCoordinate.columnPosition,
 					selectedCoordinate.rowPosition);
 			if (selectedObject != null) {
 				return new StructuredSelection(new ConnectionAdapter(selectedObject));
 			}
+			break;
 		}
 		return null;
+
 	}
 
 	@Override
