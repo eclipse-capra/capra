@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.capra.generic.metadatamodel.properties;
 
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
+import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -25,7 +27,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * Abstract class for {@link IPropertySource} descendants that provide access to
- * metadata.
+ * metadata. Adds a method to update the metadata property within a transaction.
  * 
  * @author Jan-Philipp Steghöfer
  */
@@ -53,7 +55,7 @@ public abstract class MetadataPropertiesSource implements IPropertySource {
 	 */
 	protected void updateInTransaction(int featureId, Object value) {
 		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
-		// We're saving the trace model and the artifact model in the same transaction
+		// We need to update the value of the metadata property within a transaction
 		Command cmd = new RecordingCommand(editingDomain, "Update Trace Model") {
 			@Override
 			protected void doExecute() {
@@ -73,5 +75,8 @@ public abstract class MetadataPropertiesSource implements IPropertySource {
 		} catch (InterruptedException e) {
 			throw new IllegalStateException("Updating trace metadata was interrupted.", e);
 		}
+		// When the value is set, we store the models, including the metadata.
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
+		persistenceAdapter.saveModels(EditingDomainHelper.getResourceSet());
 	}
 }
