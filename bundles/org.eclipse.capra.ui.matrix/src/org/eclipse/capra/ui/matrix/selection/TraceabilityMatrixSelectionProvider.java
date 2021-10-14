@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.ui.adapters.ArtifactAdapter;
-import org.eclipse.capra.ui.adapters.ConnectionAdapter;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
@@ -127,7 +126,7 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 			Connection selectedObject = dataProvider.getCellConnection(selectedCoordinate.columnPosition,
 					selectedCoordinate.rowPosition);
 			if (selectedObject != null) {
-				return new StructuredSelection(new ConnectionAdapter(selectedObject));
+				return new StructuredSelection(selectedObject);
 			}
 			break;
 		}
