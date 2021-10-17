@@ -108,7 +108,7 @@ public class CapraOfficeObject {
 	 * format of the URI should always be fileId + DELIMITER + objectId.
 	 */
 	public File getFile() throws NoSuchFileException {
-		File officeFile = new File(uri);
+		File officeFile = new File(uri.getPath());
 		if (officeFile.exists()) {
 			return officeFile;
 		} else {

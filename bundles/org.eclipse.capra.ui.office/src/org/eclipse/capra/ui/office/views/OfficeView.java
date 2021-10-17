@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -37,29 +37,62 @@ import org.eclipse.capra.ui.office.model.CapraGoogleSheetsRow;
 import org.eclipse.capra.ui.office.model.CapraOfficeObject;
 import org.eclipse.capra.ui.office.model.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
+import org.eclipse.capra.ui.office.table.BodyLayerStack;
+import org.eclipse.capra.ui.office.table.ColumnHeaderLayerStack;
+import org.eclipse.capra.ui.office.table.OfficeSelectionProvider;
+import org.eclipse.capra.ui.office.table.OfficeTableColumnHeaderDataProvider;
+import org.eclipse.capra.ui.office.table.OfficeTableDataProvider;
+import org.eclipse.capra.ui.office.table.OfficeTableRowHeaderDataProvider;
+import org.eclipse.capra.ui.office.table.RowHeaderLayerStack;
 import org.eclipse.capra.ui.office.utils.CapraOfficeUtils;
+import org.eclipse.capra.ui.office.utils.CellPopupMenuAction;
 import org.eclipse.capra.ui.office.utils.OfficeSourceProvider;
 import org.eclipse.capra.ui.office.utils.OfficeTransferType;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.emf.edit.ui.dnd.ViewerDragAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
+import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
+import org.eclipse.nebula.widgets.nattable.data.convert.DefaultDisplayConverter;
+import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
+import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
+import org.eclipse.nebula.widgets.nattable.grid.layer.CornerLayer;
+import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
+import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.painter.cell.ICellPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
+import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
+import org.eclipse.nebula.widgets.nattable.reorder.RowReorderLayer;
+import org.eclipse.nebula.widgets.nattable.resize.action.ColumnResizeCursorAction;
+import org.eclipse.nebula.widgets.nattable.resize.event.ColumnResizeEventMatcher;
+import org.eclipse.nebula.widgets.nattable.resize.mode.ColumnResizeDragMode;
+import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
+import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
+import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
+import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
+import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.ui.NatEventData;
+import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
+import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
+import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -70,11 +103,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.slf4j.Logger;
@@ -87,7 +118,7 @@ import com.google.common.io.Files;
  * Word documents. The view displays the contents if the user drags an Excel or
  * a Word document into the surface.
  *
- * @author Dusan Kalanj
+ * @author Dusan Kalanj, Mihaela Grubii
  *
  */
 public class OfficeView extends ViewPart {
@@ -108,11 +139,6 @@ public class OfficeView extends ViewPart {
 	 * The URL for the Bugzilla Office handler page
 	 */
 	private static final String BUGZILLA_OFFICE_URL = "https://bugs.eclipse.org/bugs/show_bug.cgi?id=503313#add_comment";
-
-	/**
-	 * The actual view that contains the contents of the documents.
-	 */
-	private TableViewer viewer;
 
 	/**
 	 * The collection that contains the Excel/Word contents.
@@ -142,6 +168,34 @@ public class OfficeView extends ViewPart {
 	private String selectedFileId;
 
 	/**
+	 * The parent control represents the upper most view in which the table will be
+	 * displayed.
+	 */
+	private Composite parent;
+
+	/**
+	 * The NatTable table instance that is being manipulated(populated, redrawn,
+	 * cleared, re-sized) within the view.
+	 */
+	private NatTable officeTable;
+
+	/**
+	 * The data provider used to populate and transfer data for the office table.
+	 */
+	private OfficeTableDataProvider bodyDataProvider;
+
+	/**
+	 * The selection provider keeps truck of the currently selected layer.
+	 */
+	private OfficeSelectionProvider selectionProvider;
+
+	/**
+	 * The lowermost layer in the stack that is responsible for providing data to
+	 * the grid.
+	 */
+	private BodyLayerStack bodyLayer;
+
+	/**
 	 * Instance of OfficeSourceProvider (used for hiding context menu options)
 	 */
 	private OfficeSourceProvider provider = (OfficeSourceProvider) PlatformUI.getWorkbench()
@@ -158,7 +212,9 @@ public class OfficeView extends ViewPart {
 
 		@Override
 		public void dispose() {
-			// Nothing to dispose here.
+			officeTable.dispose();
+			officeTable = null;
+
 		}
 
 		@Override
@@ -200,19 +256,48 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Adapter used by the view to handle drop events.
+	 * The class that processes the drag and drop support.
 	 */
-	class SelectionDropAdapter extends ViewerDropAdapter {
+	class DragAndDropSupport implements DragSourceListener, DropTargetListener {
 
-		public SelectionDropAdapter(TableViewer viewer) {
-			super(viewer);
+		private final NatTable officeTable;
+		private final SelectionLayer selectionLayer;
+
+		public DragAndDropSupport(NatTable natTable, SelectionLayer selectionLayer, List<CapraOfficeObject> data) {
+			this.officeTable = natTable;
+			this.selectionLayer = selectionLayer;
 		}
 
 		@Override
-		public boolean performDrop(Object data) {
+		public void dragEnter(DropTargetEvent event) {
+			event.detail = DND.DROP_COPY;
+		}
+
+		@Override
+		public void dragLeave(DropTargetEvent event) {
+			// Deliberately do nothing
+		}
+
+		@Override
+		public void dragOperationChanged(DropTargetEvent event) {
+			// Deliberately do nothing
+		}
+
+		@Override
+		public void dragOver(DropTargetEvent event) {
+			String[] data = (String[]) event.data;
+			if (data != null) {
+				File file = new File(data[0]);
+				event.data = file;
+			}
+		}
+
+		@Override
+		public void drop(DropTargetEvent event) {
 			try {
-				if (data instanceof String[]) {
-					File file = new File(((String[]) data)[0]);
+				if (event.data instanceof String[]) {
+					String[] data = (String[]) event.data;
+					File file = new File(data[0]);
 					if (file.exists()) {
 						parseGenericFile(file);
 					}
@@ -220,67 +305,59 @@ public class OfficeView extends ViewPart {
 			} catch (CapraOfficeFileNotSupportedException e) {
 				LOG.debug("Capra does not support this file.", e);
 				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
-				return false;
 			}
-			return true;
+			try {
+				this.officeTable.refresh();
+			} catch (SWTException e) {
+				LOG.debug("Office table failed to refresh.", e);
+			}
+
 		}
 
 		@Override
-		public boolean validateDrop(Object target, int operation, TransferData transferType) {
-			return true;
+		public void dropAccept(DropTargetEvent event) {
+			// Deliberately do nothing
 		}
-	}
 
-	/**
-	 * Adapter used by the view to handle drag events.
-	 */
-	private static class SelectionDragAdapter extends ViewerDragAdapter {
-
-		private TableViewer tableViewer;
-
-		public SelectionDragAdapter(TableViewer viewer) {
-			super(viewer);
-			this.tableViewer = viewer;
+		@Override
+		public void dragStart(DragSourceEvent event) {
+			if (this.selectionLayer.getSelectedRowCount() == 0) {
+				event.doit = false;
+			} else if (!this.officeTable.getRegionLabelsByXY(event.x, event.y).hasLabel(GridRegion.BODY)) {
+				event.doit = false;
+			}
 		}
 
 		@Override
 		public void dragSetData(DragSourceEvent event) {
 
 			if (OfficeTransferType.getInstance().isSupportedType(event.dataType)) {
-				TableItem[] items = tableViewer.getTable().getSelection();
-				ArrayList<CapraOfficeObject> officeObjects = new ArrayList<>();
 
-				for (int i = 0; i < items.length; i++) {
-					officeObjects.add((CapraOfficeObject) items[i].getData());
-				}
-				event.data = officeObjects;
+				List<CapraOfficeObject> tr = new ArrayList<CapraOfficeObject>();
+				tr.add(bodyDataProvider.getAllEllements().get(selectionLayer.getFullySelectedRowPositions()[0]));
+				event.data = tr;
+
 			}
 		}
+
+		@Override
+		public void dragFinished(DragSourceEvent event) {
+			// Deliberately do nothing
+		}
+
 	}
 
 	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		this.officeTable.setFocus();
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 
-		viewer = new TableViewer(parent);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setInput(getViewSite());
+		this.parent = parent;
+		updateOfficeObject();
 
-		getSite().setSelectionProvider(viewer);
-		hookContextMenu();
-
-		int ops = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transfersIn = new Transfer[] { org.eclipse.swt.dnd.FileTransfer.getInstance() };
-		Transfer[] transfersOut = new Transfer[] { org.eclipse.capra.ui.office.utils.OfficeTransferType.getInstance() };
-
-		viewer.addDropSupport(ops, transfersIn, new SelectionDropAdapter(viewer));
-		viewer.addDragSupport(ops, transfersOut, new SelectionDragAdapter(viewer));
-		viewer.addDoubleClickListener(event -> showObjectDetails(event, parent.getShell()));
 	}
 
 	/**
@@ -292,11 +369,12 @@ public class OfficeView extends ViewPart {
 	 * @param data the object that was dragged into the view
 	 * @throws CapraOfficeFileNotSupportedException
 	 */
-	private void parseGenericFile(File file) throws CapraOfficeFileNotSupportedException {
+	public void parseGenericFile(File file) throws CapraOfficeFileNotSupportedException {
 		String fileExtension = Files.getFileExtension(file.getName());
 
 		if (fileExtension.equals(CapraOfficeObject.XLSX) || fileExtension.equals(CapraOfficeObject.XLS)) {
 			parseExcelDocument(file, null, null);
+			updateOfficeObject();
 		} else if (fileExtension.equals(CapraOfficeObject.DOCX)) {
 			parseWordDocument(file);
 		} else {
@@ -305,7 +383,9 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Extracts the data from the Excel document and adds it to the view.
+	 * Extracts the data from the Excel document and adds it to the view. Disposes
+	 * of the current table and creates a new one based on the updated data. The
+	 * method also layouts the parent to display the table correctly.
 	 *
 	 * @param officeFile        the File object pointing to the Excel document that
 	 *                          was dragged into the view
@@ -396,7 +476,134 @@ public class OfficeView extends ViewPart {
 		if (!selection.isEmpty()) {
 			provider.setResource(selection.get(0));
 		}
-		viewer.refresh();
+	}
+
+	/**
+	 * Responsible for updating office objects as well as configuring the NatTable
+	 * and its components.
+	 */
+	private void updateOfficeObject() {
+		// Creating data providers for body, column and row. The data provider for the
+		// body provides the data which will be shown in the cells. For columns and
+		// rows, the labels are created.
+
+		// get the bodyDataProvider
+		this.bodyDataProvider = new OfficeTableDataProvider(selection);
+		// Putting the data providers to their respective stacks, getting the first body
+		// layer
+		bodyLayer = new BodyLayerStack(bodyDataProvider);
+		// create a columnHeaderDataProvider
+		IDataProvider colHeaderDataProvider = new OfficeTableColumnHeaderDataProvider(bodyDataProvider.getColumns());
+		// create a rowHeaderDataProvider
+		IDataProvider rowHeaderDataProvider = new OfficeTableRowHeaderDataProvider(this.bodyDataProvider.getRows());
+		// create a cornerDataProvider
+		DefaultCornerDataProvider cornerDataProvider = new DefaultCornerDataProvider(colHeaderDataProvider,
+				rowHeaderDataProvider);
+
+		// create all the necessary layers for the NatTable
+		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider, this.bodyLayer);
+		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider, this.bodyLayer);
+		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
+		DataLayer bodyDataLayer = new DataLayer(this.bodyDataProvider);
+
+		RowReorderLayer rowReorderLayer = new RowReorderLayer(bodyDataLayer);
+		SelectionLayer selectionLayer = new SelectionLayer(rowReorderLayer);
+
+		// Putting all the layers to the grid.
+		GridLayer gridLayer = new GridLayer(bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
+
+		// Creating the NatTable
+		if (this.officeTable != null) {
+			this.officeTable.dispose();
+		}
+		this.officeTable = new NatTable(parent, gridLayer, false);
+
+		setStyleConfigiguration();
+
+		// adding right click ui binding
+		this.officeTable.addConfiguration(new AbstractUiBindingConfiguration() {
+
+			@Override
+			public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
+				uiBindingRegistry.registerMouseDownBinding(
+						new MouseEventMatcher(SWT.NONE, GridRegion.BODY, MouseEventMatcher.RIGHT_BUTTON),
+						new CellPopupMenuAction(hookContextMenu(), selectionLayer));
+				uiBindingRegistry.registerFirstMouseMoveBinding(
+						new ColumnResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 0), new ColumnResizeCursorAction());
+				uiBindingRegistry.registerFirstMouseDragMode(
+						new ColumnResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 1), new ColumnResizeDragMode());
+
+			}
+		});
+
+		this.officeTable.setLayer(gridLayer);
+		this.officeTable.refresh();
+		this.officeTable.getVerticalBar().setVisible(true);
+		this.officeTable.getHorizontalBar().setVisible(false);
+		this.officeTable.setRedraw(true);
+		this.officeTable.setVisible(true);
+
+		this.officeTable.addConfiguration(new AbstractUiBindingConfiguration() {
+			@Override
+			public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
+				if (!selection.isEmpty()) {
+					uiBindingRegistry.registerDoubleClickBinding(MouseEventMatcher.bodyLeftClick(0),
+							new DoubleClickEventAction());
+				}
+			}
+
+		});
+
+		// complete configuration
+		this.officeTable.configure();
+
+		// Fire command carrying the selected columns
+		this.officeTable.redraw();
+
+		// Attach the selection provider
+		if (this.selectionProvider == null) {
+			this.selectionProvider = new OfficeSelectionProvider(bodyLayer.getSelectionLayer(), this.bodyDataProvider);
+		} else {
+			this.selectionProvider.updateProvider(bodyLayer.getSelectionLayer(), this.bodyDataProvider);
+		}
+		getSite().setSelectionProvider(this.selectionProvider);
+
+		addDragSupport();
+
+		// Finally, make sure everything is in the right place.
+		parent.layout();
+	}
+
+	private void addDragSupport() {
+		DragAndDropSupport dndSupport = new DragAndDropSupport(officeTable, bodyLayer.getSelectionLayer(),
+				this.selection);
+		int ops = DND.DROP_COPY | DND.DROP_MOVE | DND.DragStart | DND.DragSetData | DND.DROP_LINK;
+		Transfer[] transfersIn = new Transfer[] { org.eclipse.swt.dnd.FileTransfer.getInstance() };
+		Transfer[] transfersOut = new Transfer[] { org.eclipse.capra.ui.office.utils.OfficeTransferType.getInstance() };
+		this.officeTable.addDropSupport(ops, transfersIn, dndSupport);
+		this.officeTable.addDragSupport(ops, transfersOut, dndSupport);
+	}
+
+	private void setStyleConfigiguration() {
+		this.officeTable.addConfiguration(new AbstractRegistryConfiguration() {
+
+			@Override
+			public void configureRegistry(IConfigRegistry configRegistry) {
+				Style columnHeaderStyle = new Style();
+				Style cellStyle = new Style();
+				HorizontalAlignmentEnum hAlign = HorizontalAlignmentEnum.LEFT;
+				ICellPainter cellPainter = new LineBorderDecorator(new TextPainter(false, true, 5, true));
+
+				columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, hAlign);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, columnHeaderStyle,
+						DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, cellPainter);
+				cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, hAlign);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.DISPLAY_CONVERTER,
+						new DefaultDisplayConverter());
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle);
+			}
+		});
 	}
 
 	/**
@@ -445,44 +652,19 @@ public class OfficeView extends ViewPart {
 			return;
 		}
 
-		viewer.refresh();
 	}
 
 	/**
-	 * Shows the details of the object in its native environment (MS Word, MS Excel
+	 * Shows the details of the currently selected object in its native environment (MS Word, MS Excel
 	 * or Google Drive (sheets)).
-	 * 
-	 * @param event       Should be of type DoubleClickEvent or ExecutionEvent, hold
-	 *                    the event that triggered the request for details.
-	 * @param parentShell Shell which will be the parent of the dialog window.
 	 */
-	public void showObjectDetails(Object event, Shell parentShell) {
-		CapraOfficeObject officeObject;
-		IStructuredSelection eventSelection;
-
-		if (event instanceof DoubleClickEvent) { // If called with double click
-			eventSelection = (IStructuredSelection) ((DoubleClickEvent) event).getSelection();
-			officeObject = (CapraOfficeObject) eventSelection.getFirstElement();
-
-		} else if (event instanceof ExecutionEvent) { // If called from menu
-			try {
-				eventSelection = (IStructuredSelection) HandlerUtil.getCurrentSelectionChecked((ExecutionEvent) event);
-				officeObject = (CapraOfficeObject) eventSelection.getFirstElement();
-			} catch (ExecutionException e) {
-				LOG.warn("Could not get office object.", e);
-				return;
-			}
-		} else {
-			return;
-		}
-
+	public void showObjectDetails() {
 		try {
-			officeObject.showOfficeObjectInNativeEnvironment();
+			selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();				
 		} catch (CapraOfficeObjectNotFound e) {
 			LOG.debug("Could not find office object.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
 		}
-
 	}
 
 	/**
@@ -490,12 +672,12 @@ public class OfficeView extends ViewPart {
 	 */
 	public void clearSelection() {
 		selection.clear();
-		viewer.refresh();
-		provider.setResource(null);
+		this.officeTable.dispose();
 		selectedSheetName = null;
 		selectedFile = null;
 		selectedFileId = null;
 		isSheetEmptyMap = null;
+		updateOfficeObject();
 	}
 
 	/**
@@ -587,30 +769,14 @@ public class OfficeView extends ViewPart {
 		}
 		if (selection.get(0) instanceof CapraExcelRow) {
 			parseExcelDocument(selectedFile, selectedFileId, selectedSheetName);
+			updateOfficeObject();
 		} else if (selection.get(0) instanceof CapraWordRequirement) {
 			parseWordDocument(selectedFile);
 		}
 	}
 
-	/**
-	 * Enable context menu for this view.
-	 */
-	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				// Nothing to do for us here.
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-	}
-
 	private void showErrorMessage(String caption, String message, String url) {
-		new HyperlinkDialog(new HyperlinkDialog.HyperlinkDialogParameter(viewer.getControl().getShell(), caption, null,
+		new HyperlinkDialog(new HyperlinkDialog.HyperlinkDialogParameter(this.officeTable.getShell(), caption, null,
 				MessageDialog.ERROR, new String[] { "OK" }, 0), message, url).open();
 	}
 
@@ -687,4 +853,39 @@ public class OfficeView extends ViewPart {
 			return link;
 		}
 	}
+
+	/**
+	 * Enable context menu for this view. Returning the menu that will be displayed.
+	 */
+	private Menu hookContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// No action performed.
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(this.officeTable.getParent());
+		this.officeTable.getParent().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, this.selectionProvider);
+		return menu;
+	}
+
+	/**
+	 * Adding double-click click UI binding.
+	 */
+	class DoubleClickEventAction implements IMouseAction {
+
+		@Override
+		public void run(NatTable natTable, MouseEvent event) {
+			try {
+				selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();				
+			} catch (CapraOfficeObjectNotFound e) {
+				LOG.debug("Could not find office object.", e);
+				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
+			}
+		}
+	}
+
 }

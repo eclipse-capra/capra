@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -115,7 +115,6 @@ public class CapraExcelRow extends CapraOfficeObject {
 		String rowId = getRowIdFromExcelRow(row);
 		StringBuilder rowBuilder = new StringBuilder();
 		rowBuilder.append("ID " + rowId + ": ");
-
 		// Gather the text from the whole Excel row into one StringBuilder
 		boolean firstCellSet = false;
 		for (int j = 1; j < row.getLastCellNum(); j++) {
@@ -304,9 +303,19 @@ public class CapraExcelRow extends CapraOfficeObject {
 	protected final String getRowIdFromExcelRow(Row row) {
 		String rowId = "";
 		if (idColumn.equals(OfficePreferences.EXCEL_COLUMN_VALUE_DEFAULT)) {
-			rowId = Integer.toString(row.getRowNum() + 1);
+			rowId = Integer.toString(row.getRowNum());
 		} else {
-			rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
+			if (idColumn.length() > 1) {
+				StringBuilder sId = new StringBuilder();
+				for (char id : idColumn.toCharArray()) {
+					sId.append(" ");
+					sId.append(FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(id + ""))));
+				}
+				rowId = sId.toString();
+
+			} else {
+				rowId = FORMATTER.formatCellValue(row.getCell(CellReference.convertColStringToIndex(idColumn)));
+			}
 		}
 		return rowId;
 	}

@@ -21,7 +21,9 @@ Require-Bundle: org.eclipse.emf.edit.ui,
  org.apache.poi,
  org.apache.poi.ooxml,
  org.apache.poi.ooxml.schemas,
- org.apache.xmlbeans
+ org.apache.xmlbeans,
+ org.eclipse.nebula.widgets.nattable.core,
+ org.eclipse.capra.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.ui.office,
  org.eclipse.capra.ui.office.exceptions;x-internal:=true,

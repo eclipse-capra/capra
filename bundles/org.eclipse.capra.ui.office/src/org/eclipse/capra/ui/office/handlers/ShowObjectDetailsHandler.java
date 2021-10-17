@@ -18,7 +18,6 @@ import org.eclipse.capra.ui.office.views.OfficeView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * A handler that shows the details of the selected row when the option is
@@ -31,7 +30,7 @@ public class ShowObjectDetailsHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		OfficeView.getOpenedView().showObjectDetails(event, HandlerUtil.getActiveWorkbenchWindow(event).getShell());
+		OfficeView.getOpenedView().showObjectDetails();
 		return null;
 	}
 }
