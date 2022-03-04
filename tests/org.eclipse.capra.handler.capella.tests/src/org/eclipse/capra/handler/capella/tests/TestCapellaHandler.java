@@ -1,31 +1,36 @@
 /*******************************************************************************
- * Copyright (c) 2016,2020 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- *   Contributors:
+ * http://www.eclipse.org/legal/epl-v20.html
+ *  
+ * SPDX-License-Identifier: EPL-2.0
+ *  
+ * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+ *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
 package org.eclipse.capra.handler.capella.tests;
 
-import static org.eclipse.capra.testsuite.TestHelper.clearWorkspace;
-import static org.eclipse.capra.testsuite.TestHelper.resetSelectionView;
+import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
+import static org.eclipse.capra.testsupport.TestHelper.resetSelectionView;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.List;
 
-import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.handler.capella.CapellaHandler;
-import org.eclipse.capra.testsuite.TestHelper;
+import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -107,19 +112,21 @@ public class TestCapellaHandler {
 				SelectionView.getOpenedView().dropToSelection(stateA);
 				SelectionView.getOpenedView().dropToSelection(aClass);
 				assertFalse("SelectionView is empty", SelectionView.getOpenedView().getSelection().isEmpty());
+				List<Object> selection = SelectionView.getOpenedView().getSelection();
 
 				// Create a trace via the selection view
-				TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-				TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-				ResourceSet rs = TestUtil.getHoldingResource().getResourceSet();
+				IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
+				ITraceabilityInformationModelAdapter timAdapter = ExtensionPointHelper
+						.getTraceabilityInformationModelAdapter().get();
+				ResourceSet rs = EditingDomainHelper.getResourceSet();
 				EObject traceModel = persistenceAdapter.getTraceModel(rs);
 				assertFalse("A trace between the state and the class already exists",
-						traceAdapter.isThereATraceBetween(stateA, aClass, traceModel));
+						timAdapter.isThereATraceBetween(stateA, aClass, traceModel));
 
 				TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 				EObject updatedTraceModel = persistenceAdapter.getTraceModel(rs);
 				assertTrue("There is no trace between the state and the class",
-						traceAdapter.isThereATraceBetween(stateA, aClass, updatedTraceModel));
+						timAdapter.isThereATraceBetween(stateA, aClass, updatedTraceModel));
 			}
 		});
 	}

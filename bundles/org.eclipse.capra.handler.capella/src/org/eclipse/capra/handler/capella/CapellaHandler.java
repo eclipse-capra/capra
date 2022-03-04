@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -50,12 +50,12 @@ public class CapellaHandler extends AbstractArtifactHandler<ModelElement> {
 	}
 
 	@Override
-	public List<Connection> addInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
 		List<Connection> internalLinks = new ArrayList<Connection>();
 		if (investigatedElement instanceof TraceableElement) {
 			EList<AbstractTrace> traces = ((TraceableElement) investigatedElement).getOutgoingTraces();
 			for (AbstractTrace trace : traces) {
-				Connection newConnection = new Connection(trace.getSourceElement(),
+				Connection newConnection = new Connection(Lists.mutable.of(trace.getSourceElement()),
 						Lists.mutable.of(trace.getTargetElement()), trace);
 				internalLinks.add(newConnection);
 			}
