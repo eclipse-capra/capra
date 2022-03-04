@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.20" sequenceNumber="1632988277">
+<target name="eclipse-capra-e4.20" sequenceNumber="1646435101">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.3.0.202106080120"/>
@@ -60,7 +60,7 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.0.202108311440"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.1.202111301629"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -75,6 +75,34 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.collections.feature.feature.group" version="10.4.0.v20200820-2049"/>
+      <repository id="eclipse-collections" location="https://download.eclipse.org/collections/10.4.0/repository/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.polarsys.kitalpha.ad.feature.feature.group" version="1.4.2.202010141424"/>
+      <repository id="KitAlpha" location="https://download.eclipse.org/kitalpha/updates/release/runtimecore/1.4.2/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.diffmerge" version="0.13.0.202010211615"/>
+      <repository id="DiffMerge" location="https://download.eclipse.org/diffmerge/releases/0.13.0/emf-diffmerge-site/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.polarsys.capella.core.feature.feature.group" version="5.1.0.202106150755"/>
+      <repository id="Capella" location="https://download.eclipse.org/capella/core/updates/releases/5.1.0-R20210615-075512/org.polarsys.capella.rcp.site/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.amalgam.explorer.activity.feature.group" version="1.12.0.202010201339"/>
+      <repository id="Amalgam" location="https://download.eclipse.org/modeling/amalgam/updates/stable/1.12.0-S20201020/capella/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sirius.common" version="6.4.2.202103091337"/>
+      <repository id="Sirius" location="http://download.eclipse.org/sirius/updates/releases/6.4.2/2020-09"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.nebula.widgets.richtext.feature.feature.group" version="1.3.0.201912241810"/>
+      <repository id="nebula" location="http://download.eclipse.org/nebula/releases/2.3.0/"/>
     </location>
   </locations>
 </target>
