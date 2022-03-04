@@ -25,6 +25,7 @@
 		<module>bundles/org.eclipse.capra.generic.artifactmodel</module>
 		<module>bundles/org.eclipse.capra.generic.metadatamodel</module>
 		<module>bundles/org.eclipse.capra.handler.app4mc</module>
+		<module>bundles/org.eclipse.capra.handler.capella</module>
 		<module>bundles/org.eclipse.capra.handler.cdt</module>
 		<module>bundles/org.eclipse.capra.handler.emf</module>
 		<module>bundles/org.eclipse.capra.handler.file</module>
@@ -55,6 +56,7 @@
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsupport</module>
 		<module>tests/org.eclipse.capra.testsuite</module>
+		<module>tests/org.eclipse.capra.handler.capella.tests</module>
 		<module>tests/org.eclipse.capra.handler.cdt.tests</module>
 		<module>tests/org.eclipse.capra.handler.jdt.tests</module>
 		<module>tests/org.eclipse.capra.handler.uml.tests</module>
@@ -68,6 +70,7 @@
 		<module>features/org.eclipse.capra.core.feature</module>
 		<module>features/org.eclipse.capra.generic.feature</module>
 		<module>features/org.eclipse.capra.handler.app4mc.feature</module>
+		<module>features/org.eclipse.capra.handler.capella.feature</module>
 		<module>features/org.eclipse.capra.handler.cdt.feature</module>
 		<module>features/org.eclipse.capra.handler.hudson.feature</module>
 		<module>features/org.eclipse.capra.handler.office.feature</module>
