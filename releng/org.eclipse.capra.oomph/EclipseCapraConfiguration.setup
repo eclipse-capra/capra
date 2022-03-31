@@ -25,7 +25,7 @@
     <setupTask
         xsi:type="setup:VariableTask"
         name="eclipse.target.platform"
-        value="eclipse-capra-e4.18"/>
+        value="eclipse-capra-e4.23"/>
     <stream
         href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']/@projects[name='capra']/@streams[name='develop']"/>
     <description>The Eclipse Capra Development Environment workspace contains all features and plugins from the Eclipse Capra Git repository.</description>

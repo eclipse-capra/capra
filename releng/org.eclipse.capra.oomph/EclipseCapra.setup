@@ -558,30 +558,9 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
-      defaultValue="eclipse-capra-e4.18"
+      defaultValue="eclipse-capra-e4.23"
       storageURI="scope://Workspace"
       label="Target Platform">
-    <choice
-        value="eclipse-capra-e4.10"
-        label="Capra for Eclipse 2018-12 - 4.10"/>
-    <choice
-        value="eclipse-capra-e4.11"
-        label="Capra for Eclipse 2019-03 - 4.11"/>
-    <choice
-        value="eclipse-capra-e4.12"
-        label="Capra for Eclipse 2019-06 - 4.12"/>
-    <choice
-        value="eclipse-capra-e4.13"
-        label="Capra for Eclipse 2019-09 - 4.13"/>
-    <choice
-        value="eclipse-capra-e4.14"
-        label="Capra for Eclipse 2019-12 - 4.14"/>
-    <choice
-        value="eclipse-capra-e4.15"
-        label="Capra for Eclipse 2020-03 - 4.15"/>
-    <choice
-        value="eclipse-capra-e4.16"
-        label="Capra for Eclipse 2020-06 - 4.16"/>
     <choice
         value="eclipse-capra-e4.17"
         label="Capra for Eclipse 2020-09 - 4.17"/>
@@ -597,7 +576,13 @@
     <choice
         value="eclipse-capra-e4.21"
         label="Capra for Eclipse 2021-09 - 4.21"/>
-    <description>Choose the compatibility level of the target platform</description>
+    <choice
+        value="eclipse-capra-e4.22"
+        label="Capra for Eclipse 2021-12- 4.22"/>
+    <choice
+        value="eclipse-capra-e4.23"
+        label="Capra for Eclipse 2022-03 - 4.23"/>
+    <description>Choose the Eclipse release as the basis of the target platform</description>
   </setupTask>
   <setupTask
       xsi:type="setup.p2:P2Task">
