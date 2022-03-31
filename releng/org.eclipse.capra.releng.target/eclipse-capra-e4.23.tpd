@@ -14,18 +14,19 @@ location "http://download.eclipse.org/releases/2022-03/" eclipse-2022-03 {
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
 	org.eclipse.m2m.qvt.oml.feature.group
-}
-
-// Needed since this is a Papyrus dependency and not included in 2021-09
-location "http://download.eclipse.org/releases/2021-03/" eclipse-2021-03 {
 	org.eclipse.xwt.feature.feature.group
 }
 
-location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-03" papyrus-2021-03 {
+location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03" papyrus-2022-03 {
 	org.eclipse.papyrus.sdk.feature.feature.group
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/" eclipse-orbit-2021-09 {
+// Needed because Sphinx requires org.eclipse.xtend.shared.ui which is not in 2022-03
+location "https://download.eclipse.org/releases/2021-12" eclipse-2021-12 {
+	org.eclipse.xpand
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository" eclipse-orbit-2022-03 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
@@ -74,4 +75,8 @@ location "http://download.eclipse.org/ease/release/0.7.0" EASE {
 
 location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 	ode.concept.deis.feature.feature.group
+}
+
+location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Nattable {
+	org.eclipse.nebula.widgets.nattable.core
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.23" sequenceNumber="1648633092">
+<target name="eclipse-capra-e4.23" sequenceNumber="1648748982">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.6.0.202203091838"/>
@@ -17,15 +17,16 @@
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.26.0.v20220228-0901"/>
       <unit id="org.eclipse.pde.source.feature.group" version="3.14.1100.v20220308-0310"/>
       <unit id="org.eclipse.m2m.qvt.oml.feature.group" version="3.10.6.v20220309-1013"/>
+      <unit id="org.eclipse.xwt.feature.feature.group" version="1.6.0.202105260718"/>
       <repository id="eclipse-2022-03" location="http://download.eclipse.org/releases/2022-03/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.xwt.feature.feature.group" version="1.6.0.202011091434"/>
-      <repository id="eclipse-2021-03" location="http://download.eclipse.org/releases/2021-03/"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="6.1.0.202203090938"/>
+      <repository id="papyrus-2022-03" location="https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="5.1.0.202103181559"/>
-      <repository id="papyrus-2021-03" location="https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-03"/>
+      <unit id="org.eclipse.xpand" version="2.2.0.v201605260315"/>
+      <repository id="eclipse-2021-12" location="https://download.eclipse.org/releases/2021-12"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.apache.poi.ooxml" version="4.1.1.v20200820-1148"/>
@@ -39,7 +40,7 @@
       <unit id="ch.qos.logback.slf4j" version="1.2.3.v20200428-2012"/>
       <unit id="org.dom4j" version="2.1.1.v20190321-1528"/>
       <unit id="com.sun.xml.bind" version="2.2.0.v20201118-1845"/>
-      <repository id="eclipse-orbit-2021-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/"/>
+      <repository id="eclipse-orbit-2022-03" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
@@ -75,6 +76,10 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.nebula.widgets.nattable.core" version="1.6.0.201909181823"/>
+      <repository id="Nattable" location="https://download.eclipse.org/nattable/releases/1.6.0/repository"/>
     </location>
   </locations>
 </target>

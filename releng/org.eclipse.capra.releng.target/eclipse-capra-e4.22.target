@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.22" sequenceNumber="1648634592">
+<target name="eclipse-capra-e4.22" sequenceNumber="1648738648">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.5.0.202112012329"/>
@@ -17,11 +17,8 @@
       <unit id="org.eclipse.xtend.sdk.feature.group" version="2.25.0.v20210301-1429"/>
       <unit id="org.eclipse.pde.source.feature.group" version="3.14.1000.v20211124-1800"/>
       <unit id="org.eclipse.m2m.qvt.oml.feature.group" version="3.10.5.v20211130-1509"/>
+      <unit id="org.eclipse.xwt.feature.feature.group" version="1.6.0.202105260718"/>
       <repository id="eclipse-2021-12" location="http://download.eclipse.org/releases/2021-12/"/>
-    </location>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.xwt.feature.feature.group" version="1.6.0.202011091434"/>
-      <repository id="eclipse-2021-03" location="http://download.eclipse.org/releases/2021-03/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="5.1.0.202103181559"/>
@@ -39,7 +36,7 @@
       <unit id="ch.qos.logback.slf4j" version="1.2.3.v20200428-2012"/>
       <unit id="org.dom4j" version="2.1.1.v20190321-1528"/>
       <unit id="com.sun.xml.bind" version="2.2.0.v20201118-1845"/>
-      <repository id="eclipse-orbit-2021-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/"/>
+      <repository id="eclipse-orbit-2021-12" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>

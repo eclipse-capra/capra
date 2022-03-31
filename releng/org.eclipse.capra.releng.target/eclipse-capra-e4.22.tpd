@@ -14,10 +14,6 @@ location "http://download.eclipse.org/releases/2021-12/" eclipse-2021-12 {
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
 	org.eclipse.m2m.qvt.oml.feature.group
-}
-
-// Needed since this is a Papyrus dependency and not included in 2021-09
-location "http://download.eclipse.org/releases/2021-03/" eclipse-2021-03 {
 	org.eclipse.xwt.feature.feature.group
 }
 
@@ -25,7 +21,7 @@ location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/202
 	org.eclipse.papyrus.sdk.feature.feature.group
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/" eclipse-orbit-2021-09 {
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/" eclipse-orbit-2021-12 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
