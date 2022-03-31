@@ -8,5 +8,6 @@ Bundle-Version: 0.9.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.handler.app4mc
 Require-Bundle: org.eclipse.capra.core,
- org.eclipse.app4mc.amalthea.model;bundle-version="0.9.5"
+ org.eclipse.app4mc.amalthea.model,
+ org.eclipse.core.resources
 Automatic-Module-Name: org.eclipse.capra.handler.app4mc
