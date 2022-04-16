@@ -345,6 +345,19 @@ public class TestHelper {
 	 *         otherwise
 	 */
 	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject) {
+		return thereIsATraceBetween(firstObject, secondObject, false);
+	}
+
+	/**
+	 * Checks if there is a trace between the provided {@link EObject} instances.
+	 *
+	 * @param firstObject     first {@code EObject}
+	 * @param secondObject    second {@code EObject}
+	 * @param ignoreDirection ignore the link direction
+	 * @return {@code true} if a trace exists between the two objects, {@code false}
+	 *         otherwise
+	 */
+	public static boolean thereIsATraceBetween(Object firstObject, Object secondObject, boolean ignoreDirection) {
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
 				.getTraceabilityInformationModelAdapter().get();
@@ -353,26 +366,28 @@ public class TestHelper {
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
 		if (firstObject instanceof EObject && secondObject instanceof EObject) {
 			if (traceModel != null) {
-				return traceAdapter.isThereATraceBetween((EObject) firstObject, (EObject) secondObject, traceModel);
+				return traceAdapter.isThereATraceBetween((EObject) firstObject, (EObject) secondObject, traceModel,
+						ignoreDirection);
 			}
 		}
 		if (firstObject instanceof EObject && !(secondObject instanceof EObject)) {
 			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
 			if (traceModel != null) {
-				return traceAdapter.isThereATraceBetween((EObject) firstObject, wrapper_b, traceModel);
+				return traceAdapter.isThereATraceBetween((EObject) firstObject, wrapper_b, traceModel, ignoreDirection);
 			}
 		}
 		if (!(firstObject instanceof EObject) && secondObject instanceof EObject) {
 			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
 			if (traceModel != null) {
-				return traceAdapter.isThereATraceBetween(wrapper_a, (EObject) secondObject, traceModel);
+				return traceAdapter.isThereATraceBetween(wrapper_a, (EObject) secondObject, traceModel,
+						ignoreDirection);
 			}
 		}
 		if (!(firstObject instanceof EObject) && !(secondObject instanceof EObject)) {
 			EObject wrapper_a = artifactHelper.createWrapper(firstObject);
 			EObject wrapper_b = artifactHelper.createWrapper(secondObject);
 			if (traceModel != null) {
-				return traceAdapter.isThereATraceBetween(wrapper_a, wrapper_b, traceModel);
+				return traceAdapter.isThereATraceBetween(wrapper_a, wrapper_b, traceModel, ignoreDirection);
 			}
 		}
 		return false;
@@ -418,6 +433,24 @@ public class TestHelper {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Gets all connections representing traces starting from the given object.
+	 * Returns an empty list if no such trace exists.
+	 * 
+	 * @param origin           the origin of the traces
+	 * @param reverseDirection reverse the direction of the trace links
+	 * @return a trace between {@code origin} and {@code target} or {@code null}
+	 */
+	public static List<Connection> getConnectionsFrom(Object origin, boolean reverseDirection) {
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
+		return traceAdapter.getConnectedElements(artifactHelper.createWrapper(origin), traceModel, reverseDirection);
 	}
 
 	/**

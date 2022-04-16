@@ -97,6 +97,30 @@ public interface ITraceabilityInformationModelAdapter {
 	boolean isThereATraceBetween(EObject origin, EObject target, EObject traceModel);
 
 	/**
+	 * Decide if two objects are connected according to the given trace model. This
+	 * means that all traces in the trace model are checked and {@code true} is
+	 * returned if and only if the trace model contains a trace link that connects
+	 * the {@code origin} to the {@code target}.
+	 * <p>
+	 * This version of the method can reverse the direction of the trace link.
+	 * Eclipse Capra stores <b>directional</b> trace links that always have an
+	 * origin and a target. A trace link X->Y connects artifacts X (as the origin)
+	 * and (Y) as the source. However, in some situations, it is useful to be able
+	 * to find trace links that are coming into Y and identify if X and Y are
+	 * connected regardless of link direction. This method would therefore return
+	 * {@code true} with Y as the origin and X as the target if
+	 * {@code reverseDirection} is set to {@code true}.
+	 * 
+	 * @param origin           first object
+	 * @param target           second object
+	 * @param traceModel       trace model to base decision on
+	 * @param reverseDirection reverse the direction of the links in the trace model
+	 * @return <code>true</code> if the artifacts are connected, <code>false</code>
+	 *         otherwise
+	 */
+	boolean isThereATraceBetween(EObject origin, EObject target, EObject traceModel, boolean reverseDirection);
+
+	/**
 	 * Determine a list of all objects connected to {@code element} according to the
 	 * given trace model.
 	 * 
@@ -119,6 +143,41 @@ public interface ITraceabilityInformationModelAdapter {
 
 	/**
 	 * Determine a list of all objects connected to {@code element} according to the
+	 * given trace model.
+	 * 
+	 * There are two ways {@code element} can be used:
+	 * <ol>
+	 * <li>If {@code element} is an arbitrary {@link EObject}, then the method
+	 * returns all trace links in which {@code element} is either on of the
+	 * <b>origins</b> (if (@code reverseDirection} is {@code false}) or one of the
+	 * <b>targets</b>. (if (@code reverseDirection} is {@code true}).</li>
+	 * <li>If {@code element} is a trace link, then the method returns a
+	 * representation of the trace link itself. The {@code reverseDirection}
+	 * parameter is then ignored.</li>
+	 * </ol>
+	 * <p>
+	 * This version of the method can reverse the direction of the trace link.
+	 * Eclipse Capra stores <b>directional</b> trace links that always have an
+	 * origin and a target. A trace link X->Y connects artifacts X (as the origin)
+	 * and (Y) as the source. However, in some situations, it is useful to be able
+	 * to find trace links that are coming into Y and identify if X and Y are
+	 * connected regardless of link direction. Calling this method with {@code Y} as
+	 * the element and {@code reverseDirection} is set to {@code true} would
+	 * therefore return all connections for which {@code Y} is the target.
+	 * 
+	 * @param element          the element used to determine the list of connected
+	 *                         objects.
+	 * @param traceModel       the trace model to base calculation on
+	 * @param reverseDirection reverses the direction of the links in the trace
+	 *                         model
+	 * @return a list of {@link Connection}s from the provided {@code traceModel}
+	 *         that contain {@code element} as one of their origins or a
+	 *         representation of {@code element} if {@code element} is a trace link
+	 */
+	List<Connection> getConnectedElements(EObject element, EObject traceModel, boolean reverseDirection);
+
+	/**
+	 * Determine a list of all objects connected to {@code element} according to the
 	 * given trace model based on the provided list of trace link types. If
 	 * {@code selectedRelationshipTypes} is empty or {@code null}, this method
 	 * behaves exactly like {@link #getConnectedElements(EObject, EObject)}.
@@ -133,6 +192,46 @@ public interface ITraceabilityInformationModelAdapter {
 	 *         representation of {@code element} if {@code element} is a trace link
 	 */
 	List<Connection> getConnectedElements(EObject element, EObject traceModel, List<String> traceLinkTypes);
+
+	/**
+	 * Determine a list of all objects connected to {@code element} according to the
+	 * given trace model. If {@code selectedRelationshipTypes} is empty or
+	 * {@code null}, this method behaves exactly like
+	 * {@link #getConnectedElements(EObject, EObject, boolean)}.
+	 * 
+	 * There are two ways {@code element} can be used:
+	 * <ol>
+	 * <li>If {@code element} is an arbitrary {@link EObject}, then the method
+	 * returns all trace links in which {@code element} is either on of the
+	 * <b>origins</b> (if (@code reverseDirection} is {@code false}) or one of the
+	 * <b>targets</b>. (if (@code reverseDirection} is {@code true}).</li>
+	 * <li>If {@code element} is a trace link, then the method returns a
+	 * representation of the trace link itself. The {@code reverseDirection}
+	 * parameter is then ignored.</li>
+	 * </ol>
+	 * <p>
+	 * This version of the method can reverse the direction of the trace link.
+	 * Eclipse Capra stores <b>directional</b> trace links that always have an
+	 * origin and a target. A trace link X->Y connects artifacts X (as the origin)
+	 * and (Y) as the source. However, in some situations, it is useful to be able
+	 * to find trace links that are coming into Y and identify if X and Y are
+	 * connected regardless of link direction. Calling this method with {@code Y} as
+	 * the element and {@code reverseDirection} is set to {@code true} would
+	 * therefore return all connections for which {@code Y} is the target.
+	 * 
+	 * @param element          the element used to determine the list of connected
+	 *                         objects.
+	 * @param traceModel       the trace model to base calculation on
+	 * @param traceLinkTypes   a list of permissible trace link types (may be
+	 *                         {@code null} or empty)
+	 * @param reverseDirection reverses the direction of the links in the trace
+	 *                         model
+	 * @return a list of {@link Connection}s from the provided {@code traceModel}
+	 *         that contain {@code element} as one of their origins or a
+	 *         representation of {@code element} if {@code element} is a trace link
+	 */
+	List<Connection> getConnectedElements(EObject element, EObject traceModel, List<String> selectedRelationshipTypes,
+			boolean reverseDirection);
 
 	/**
 	 * Determine a list of all objects transitively connected to {@code element}
