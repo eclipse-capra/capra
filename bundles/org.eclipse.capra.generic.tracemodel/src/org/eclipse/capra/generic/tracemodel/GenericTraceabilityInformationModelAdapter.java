@@ -121,20 +121,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 
 	@Override
 	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
-		if (traceModel == null || firstElement == null || secondElement == null) {
-			return false;
-		}
-		GenericTraceModel root = (GenericTraceModel) traceModel;
-		List<RelatedTo> relevantLinks = new ArrayList<>();
-		List<RelatedTo> allTraces = root.getTraces();
-
-		for (RelatedTo trace : allTraces) {
-			if (!firstElement.equals(secondElement) && EMFHelper.hasSameIdentifier(firstElement, trace.getOrigin())
-					&& EMFHelper.isElementInList(trace.getTargets(), secondElement)) {
-				relevantLinks.add(trace);
-			}
-		}
-		return !relevantLinks.isEmpty();
+		return this.isThereATraceBetween(firstElement, secondElement, traceModel, false);
 	}
 
 	@Override
@@ -143,12 +130,16 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 	}
 
 	@Override
-	public List<Connection> getConnectedElements(EObject element, EObject tracemodel,
-			List<String> selectedRelationshipTypes) {
-		GenericTraceModel root = (GenericTraceModel) tracemodel;
+	public List<Connection> getConnectedElements(EObject element, EObject traceModel, boolean reverseDirection) {
+		return getConnectedElements(element, traceModel, new ArrayList<String>(), reverseDirection);
+	}
+
+	@Override
+	public List<Connection> getConnectedElements(EObject element, EObject traceModel,
+			List<String> selectedRelationshipTypes, boolean reverseDirection) {
+		GenericTraceModel root = (GenericTraceModel) traceModel;
 		List<Connection> connections = new ArrayList<>();
 		List<RelatedTo> traces = root.getTraces();
-
 		if (selectedRelationshipTypes.isEmpty()
 				|| selectedRelationshipTypes.contains(TracemodelPackage.eINSTANCE.getRelatedTo().getName())) {
 			if (element instanceof RelatedTo) {
@@ -156,13 +147,22 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
 			} else {
 				for (RelatedTo trace : traces) {
-					if (EcoreUtil.equals(element, trace.getOrigin())) {
+					if (!reverseDirection && EcoreUtil.equals(element, trace.getOrigin())) {
 						connections.add(new Connection(Arrays.asList(element), trace.getTargets(), trace));
+					} else if (reverseDirection && EMFHelper.isElementInList(trace.getTargets(), element)) {
+						connections
+								.add(new Connection(Arrays.asList(trace.getOrigin()), Arrays.asList(element), trace));
 					}
 				}
 			}
 		}
 		return connections;
+	}
+
+	@Override
+	public List<Connection> getConnectedElements(EObject element, EObject tracemodel,
+			List<String> selectedRelationshipTypes) {
+		return getConnectedElements(element, tracemodel, selectedRelationshipTypes, false);
 	}
 
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
@@ -280,4 +280,33 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 
 		return allElements;
 	}
+
+	@Override
+	public boolean isThereATraceBetween(EObject origin, EObject target, EObject traceModel, boolean reverseDirection) {
+		if (traceModel == null || origin == null || target == null) {
+			return false;
+		}
+		EObject firstElement;
+		EObject secondElement;
+
+		if (!reverseDirection) {
+			firstElement = origin;
+			secondElement = target;
+		} else {
+			firstElement = target;
+			secondElement = origin;
+		}
+		GenericTraceModel root = (GenericTraceModel) traceModel;
+		List<RelatedTo> relevantLinks = new ArrayList<>();
+		List<RelatedTo> allTraces = root.getTraces();
+
+		for (RelatedTo trace : allTraces) {
+			if (!firstElement.equals(secondElement) && EMFHelper.hasSameUriOrIdentifier(firstElement, trace.getOrigin())
+					&& EMFHelper.isElementInList(trace.getTargets(), secondElement)) {
+				relevantLinks.add(trace);
+			}
+		}
+		return !relevantLinks.isEmpty();
+	}
+
 }
