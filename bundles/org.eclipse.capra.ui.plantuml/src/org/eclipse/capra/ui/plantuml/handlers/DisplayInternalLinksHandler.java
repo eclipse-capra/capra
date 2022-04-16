@@ -11,58 +11,47 @@
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
-package org.eclipse.capra.ui.plantuml;
+package org.eclipse.capra.ui.plantuml.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.window.Window;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Toggles between showing transitive and direct links
+ * Toggles between showing (DSL) internal links or not
  * 
- * @author Anthony Anjorin, Salome Maro
+ * @author Dominik Einkemmer
  */
-public class TransitivityDepthHandler extends AbstractHandler {
+public class DisplayInternalLinksHandler extends AbstractHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TransitivityDepthHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DisplayInternalLinksHandler.class);
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		String initialValue = getTransitivityDepth();
-		InputDialog depthInput = new InputDialog(window.getShell(), "Transitivity depth",
-				"Input the desired depth limit for transitivity. Enter 0 if no limit is desired.", initialValue, null);
-		if (depthInput.open() == Window.OK) {
-			String depth = depthInput.getValue();
-			setTransitivityDepth(depth);
-		}
-
+		showInternalLinks(!areInternalLinksShown());
 		return null;
 	}
 
 	/**
-	 * Gets the depth that was set by the user for transitivity returns 0 in case no
-	 * depth was set or no depth limit is wanted
+	 * Checks whether the trace view is set to show transitive traces.
 	 * 
-	 * @return
+	 * @return {@code true} if transitive traces are enabled, {@code false}
+	 *         otherwise
 	 */
-	public static String getTransitivityDepth() {
-		Preferences transitivity = getPreference();
-		return transitivity.get("option", "0");
+	public static boolean areInternalLinksShown() {
+		Preferences internalLinks = getPreference();
+
+		return internalLinks.get("option", "turnedOff").equals("shown");
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.transitivityDepth");
-		return preferences.node("transitivityDepth");
+		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.toggleInternalLinks");
+		return preferences.node("internalLinks");
 	}
 
 	/**
@@ -70,16 +59,16 @@ public class TransitivityDepthHandler extends AbstractHandler {
 	 * 
 	 * @param value indicates whether transitive traces should be shown
 	 */
-	public static void setTransitivityDepth(String depth) {
-		Preferences transitivity = getPreference();
+	public static void showInternalLinks(boolean value) {
+		Preferences internalLinks = getPreference();
 
-		transitivity.put("option", depth);
+		internalLinks.put("option", value ? "shown" : "turnedOff");
 
 		try {
 			// forces the application to save the preferences
-			transitivity.flush();
+			internalLinks.flush();
 		} catch (BackingStoreException e) {
-			LOG.warn("Could not save transitivity depth preferences!", e);
+			LOG.warn("Could not save internal links preferences!", e);
 		}
 	}
 }

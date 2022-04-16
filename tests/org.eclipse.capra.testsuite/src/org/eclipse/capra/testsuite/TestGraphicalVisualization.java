@@ -41,8 +41,8 @@ import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
-import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
-import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.CapraDiagramTextProvider;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.ITranslationUnit;
@@ -184,7 +184,7 @@ public class TestGraphicalVisualization {
 
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
-		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
 		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS, directlyConnectedElements);
 
@@ -226,7 +226,7 @@ public class TestGraphicalVisualization {
 
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
-		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
 		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_GOTO_LINKS, directlyConnectedElements);
 
@@ -284,7 +284,7 @@ public class TestGraphicalVisualization {
 
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(true);
-		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
 		String allConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_COMPLEX_TRANSITIVE_CONNECTIONS, allConnectedElements);
 

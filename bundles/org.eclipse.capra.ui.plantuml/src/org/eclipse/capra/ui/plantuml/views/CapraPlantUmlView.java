@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.plantuml.views;
 
-import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
-import org.eclipse.capra.ui.plantuml.ToggleLockDiagramHandler;
-import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleLockDiagramHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.core.commands.Command;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.commands.ICommandService;

@@ -11,64 +11,69 @@
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
-package org.eclipse.capra.ui.plantuml;
+package org.eclipse.capra.ui.plantuml.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Toggles between showing (DSL) internal links or not
+ * Toggles between showing displaying a graph and a matrix if several model
+ * elements are selected.
  * 
- * @author Dominik Einkemmer
+ * @author Jan-Philipp Steghöfer
  */
-public class DisplayInternalLinksHandler extends AbstractHandler {
+public class ToggleDisplayGraphHandler extends AbstractHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DisplayInternalLinksHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ToggleDisplayGraphHandler.class);
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		showInternalLinks(!areInternalLinksShown());
+		Command command = event.getCommand();
+		boolean oldValue = HandlerUtil.toggleCommandState(command);
+		setDisplayGraph(!oldValue);
 		return null;
 	}
 
 	/**
-	 * Checks whether the trace view is set to show transitive traces.
+	 * Checks whether the trace view is set to show a graph.
 	 * 
-	 * @return {@code true} if transitive traces are enabled, {@code false}
-	 *         otherwise
+	 * @return {@code true} if the graph view is enabled, {@code false} otherwise
 	 */
-	public static boolean areInternalLinksShown() {
-		Preferences internalLinks = getPreference();
-
-		return internalLinks.get("option", "turnedOff").equals("shown");
+	public static boolean isDisplayGraph() {
+		Preferences graphDisplay = getPreference();
+		return graphDisplay.get("option", "matrix").equals("graph");
 	}
 
 	private static Preferences getPreference() {
-		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.toggleInternalLinks");
-		return preferences.node("internalLinks");
+		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.displayGraph");
+		return preferences.node("displayGraph");
 	}
 
 	/**
-	 * Sets whether the trace view is set to show transitive traces.
+	 * Sets whether the trace view is set to show a graph or a matrix.
 	 * 
-	 * @param value indicates whether transitive traces should be shown
+	 * @param value {@code true} if the graph view is enabled, {@code false}
+	 *              otherwise
+	 * 
 	 */
-	public static void showInternalLinks(boolean value) {
-		Preferences internalLinks = getPreference();
+	public static void setDisplayGraph(boolean value) {
+		Preferences transitivity = getPreference();
 
-		internalLinks.put("option", value ? "shown" : "turnedOff");
+		transitivity.put("option", value ? "graph" : "matrix");
 
 		try {
 			// forces the application to save the preferences
-			internalLinks.flush();
+			transitivity.flush();
 		} catch (BackingStoreException e) {
-			LOG.warn("Could not save internal links preferences!", e);
+			LOG.warn("Could not save display graph preferences!", e);
 		}
 	}
 }

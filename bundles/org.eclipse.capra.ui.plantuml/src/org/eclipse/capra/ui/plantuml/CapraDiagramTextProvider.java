@@ -28,6 +28,11 @@ import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
+import org.eclipse.capra.ui.plantuml.handlers.DisplayInternalLinksHandler;
+import org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipsHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.handlers.TransitivityDepthHandler;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -46,7 +51,7 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  *
  * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  */
-public class DiagramTextProviderHandler implements DiagramTextProvider {
+public class CapraDiagramTextProvider implements DiagramTextProvider {
 	private EObject artifactModel = null;
 
 	private boolean isLockDiagram() {

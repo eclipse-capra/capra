@@ -11,7 +11,7 @@
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
  *******************************************************************************/
-package org.eclipse.capra.ui.plantuml;
+package org.eclipse.capra.ui.plantuml.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.Command;

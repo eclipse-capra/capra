@@ -34,7 +34,7 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.artifactmodel.ArtifactWrapperContainer;
 import org.eclipse.capra.generic.metadatamodel.MetadataContainer;
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
-import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.CProjectNature;

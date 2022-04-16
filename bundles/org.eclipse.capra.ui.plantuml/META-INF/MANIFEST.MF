@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  net.sourceforge.plantuml.eclipse.imagecontrol;bundle-version="1.1.24"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.ui.plantuml,
- org.eclipse.capra.ui.plantuml.views
+ org.eclipse.capra.ui.plantuml.views,
+ org.eclipse.capra.ui.plantuml.handlers
 Import-Package: org.slf4j
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.capra.ui.plantuml

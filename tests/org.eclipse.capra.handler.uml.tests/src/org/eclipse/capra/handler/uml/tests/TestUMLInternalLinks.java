@@ -27,9 +27,9 @@ import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
-import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
-import org.eclipse.capra.ui.plantuml.DisplayInternalLinksHandler;
-import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.CapraDiagramTextProvider;
+import org.eclipse.capra.ui.plantuml.handlers.DisplayInternalLinksHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -121,7 +121,7 @@ public class TestUMLInternalLinks {
 		// test that internal links show for direct elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		DisplayInternalLinksHandler.showInternalLinks(true);
-		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
 		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_INTERNAL_LINKS, directlyConnectedElements);
 

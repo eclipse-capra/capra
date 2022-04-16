@@ -38,9 +38,9 @@ import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
-import org.eclipse.capra.ui.plantuml.DiagramTextProviderHandler;
-import org.eclipse.capra.ui.plantuml.ToggleDisplayGraphHandler;
-import org.eclipse.capra.ui.plantuml.ToggleTransitivityHandler;
+import org.eclipse.capra.ui.plantuml.CapraDiagramTextProvider;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -184,7 +184,7 @@ public class TestTraceabiltyMatrix {
 		// Test directly connected Elements
 		ToggleTransitivityHandler.setTraceViewTransitive(false);
 		ToggleDisplayGraphHandler.setDisplayGraph(false);
-		DiagramTextProviderHandler provider = new DiagramTextProviderHandler();
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
 		String plantUMLTextForSelectedPackages_Direct = provider.getDiagramText(selectedPackages,
 				Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_SELECTED_PACKAGES_DIRECT, plantUMLTextForSelectedPackages_Direct);
