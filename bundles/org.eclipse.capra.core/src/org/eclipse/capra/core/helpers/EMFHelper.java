@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -34,10 +34,10 @@ public class EMFHelper {
 	 * with
 	 * <ul>
 	 * <li>the attribute of the EObject as a String, if the EObject does only have
-	 * one attribute.</li>
+	 * one attribute;</li>
 	 * <li>the attribute called 'name' of the EObject, if it has such an
-	 * attribute</li>
-	 * <li>any attribute of the EObject, but String attributes are preferred</li>
+	 * attribute;</li>
+	 * <li>any attribute of the EObject, but String attributes are preferred.</li>
 	 * </ul>
 	 * The identifier ends with " : " followed by the type of the EObject. <br>
 	 * Example: A Node with the name "foo" will result in "foo : Node" <br>
@@ -61,6 +61,58 @@ public class EMFHelper {
 
 		// We didn't find a name. Try finding something else that we can use.
 		if (!success) {
+			success = tryGetAnyAttribute(eObject, attributes, identifier);
+		}
+
+		if (success) {
+			identifier.append(" : ");
+		}
+
+		identifier.append(eObject.eClass().getName());
+
+		return identifier.toString();
+	}
+
+	/**
+	 * Builds an identifier String for the given EObject, preferring the URI
+	 * attribute as an identifier if it is present. The method looks for the
+	 * following attributes in this order to find an identifier:
+	 * <ul>
+	 * <li>the attribute of the EObject as a String, if the EObject does only have
+	 * one attribute;</li>
+	 * <li>the 'uri' attribute of the EObject as a String, if it has such an
+	 * attribute;</li>
+	 * <li>the attribute called 'name' of the EObject, if it has such an
+	 * attribute;</li>
+	 * <li>any attribute of the EObject, but String attributes are preferred.</li>
+	 * </ul>
+	 * The identifier ends with " : " followed by the type of the EObject. <br>
+	 * Example: A Node with the name "foo" will result in "foo : Node" <br>
+	 * If the EObject does not have any attributes or all attributes have the value
+	 * null, this function will only return the type of the EObject.
+	 */
+	public static String getUriOrIdentifier(final EObject eObject) {
+		if (eObject == null) {
+			return "<null>";
+		}
+		if (eObject.eClass() == null) {
+			return eObject.toString();
+		}
+
+		boolean success = false;
+
+		StringBuilder identifier = new StringBuilder();
+
+		success = tryGetUriAttribute(eObject, identifier);
+
+		// We didn't find a uri. Try finding something else that we can use.
+		if (!success) {
+			success = tryGetNameAttribute(eObject, identifier);
+		}
+
+		// We didn't find a name. Try finding something else that we can use.
+		if (!success) {
+			List<EAttribute> attributes = eObject.eClass().getEAllAttributes();
 			success = tryGetAnyAttribute(eObject, attributes, identifier);
 		}
 
@@ -122,6 +174,28 @@ public class EMFHelper {
 		boolean success = false;
 		for (EAttribute attribute : eObject.eClass().getEAllAttributes()) {
 			if (attribute.getName().equals("name")) {
+				success = tryGetAttribute(eObject, attribute, builder);
+			}
+		}
+		return success;
+	}
+
+	/**
+	 * Tries to retrieve a String representation of the attribute "uri" from the
+	 * provided {@code EObject}.
+	 * 
+	 * @param builder {@code StringBuilder} to construct the String representation
+	 *                of the {@code EObject}'s "uri" attribute. If this function
+	 *                returns {@code true}, this parameter has been filled, if it
+	 *                returns {@code false}, the {@code StringBuilder} is unaltered.
+	 * @return indicates the success of this function and if the
+	 *         {@code StringBuilder} contains output.
+	 * @see #tryGetAttribute(EObject, EAttribute, StringBuilder)
+	 */
+	public static boolean tryGetUriAttribute(final EObject eObject, final StringBuilder builder) {
+		boolean success = false;
+		for (EAttribute attribute : eObject.eClass().getEAllAttributes()) {
+			if (attribute.getName().equals("uri")) {
 				success = tryGetAttribute(eObject, attribute, builder);
 			}
 		}
@@ -208,8 +282,21 @@ public class EMFHelper {
 	}
 
 	/**
+	 * Compares to {@link EObject} instances based on their URI or identifier using
+	 * {@link EMFHelper#getUriOrIdentifier(EObject)}.
+	 * 
+	 * @param first  the first {@code EObject} to compare
+	 * @param second the second {@code EObject} to compare
+	 * @return {@code true} if the URIs or identifiers of the two instances are
+	 *         equal, {@code false} otherwise
+	 */
+	public static boolean hasSameUriOrIdentifier(EObject first, EObject second) {
+		return EMFHelper.getUriOrIdentifier(first).equals(EMFHelper.getUriOrIdentifier(second));
+	}
+
+	/**
 	 * Checks if the given {@link EObject} is in the list of {@code EObject}s using
-	 * {@link #hasSameIdentifier(EObject, EObject)}.
+	 * {@link #hasSameUriOrIdentifier(EObject, EObject)}.
 	 * 
 	 * @param list the list to check
 	 * @param obj  the object to check for
@@ -218,7 +305,7 @@ public class EMFHelper {
 	 */
 	public static boolean isElementInList(List<EObject> list, EObject obj) {
 		for (EObject next : list) {
-			if (EMFHelper.hasSameIdentifier(obj, next)) {
+			if (EMFHelper.hasSameUriOrIdentifier(obj, next)) {
 				return true;
 			}
 		}
