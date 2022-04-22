@@ -78,6 +78,14 @@
                id="org.eclipse.ui.commands.toggleState">
          </state>
       </command>
+      <command
+            id="org.eclipse.capra.ui.plantuml.reverseLinkDirection"
+            name="%command.name.reverseLinkDirection">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -104,6 +112,10 @@
       <handler
             class="org.eclipse.capra.ui.plantuml.handlers.ToggleLockDiagramHandler"
             commandId="org.eclipse.capra.ui.plantuml.lockDiagram">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.plantuml.handlers.ReverseLinkDirectionHandler"
+            commandId="org.eclipse.capra.ui.plantuml.reverseLinkDirection">
       </handler>
    </extension>
 	<extension
@@ -141,6 +153,11 @@
      	 <command
                commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks"
                label="%command.label.internalLinks"
+               style="toggle">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.reverseLinkDirection"
+               label="%command.name.reverseLinkDirection"
                style="toggle">
          </command>
       </menuContribution>
