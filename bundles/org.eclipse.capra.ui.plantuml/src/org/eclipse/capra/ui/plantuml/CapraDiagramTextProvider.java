@@ -19,8 +19,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -29,6 +29,7 @@ import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.plantuml.handlers.DisplayInternalLinksHandler;
+import org.eclipse.capra.ui.plantuml.handlers.ReverseLinkDirectionHandler;
 import org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipsHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
@@ -89,7 +90,8 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 		EObject traceModel = null;
 
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
-		ITraceabilityInformationModelAdapter metamodelAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter metamodelAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
@@ -201,7 +203,8 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 			traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel,
 					selectedRelationshipTypes, transitivityDepth);
 		} else {
-			traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel, selectedRelationshipTypes);
+			traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel, selectedRelationshipTypes,
+					ReverseLinkDirectionHandler.isReverseLinkDirection());
 		}
 		if (DisplayInternalLinksHandler.areInternalLinksShown() && ToggleTransitivityHandler.isTraceViewTransitive()) {
 			EObject previousElement = SelectRelationshipsHandler.getPreviousElement();

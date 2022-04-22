@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016, 2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.plantuml.views;
 
+import org.eclipse.capra.ui.plantuml.handlers.ReverseLinkDirectionHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleLockDiagramHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
@@ -41,13 +42,16 @@ public class CapraPlantUmlView extends PlantUmlView {
 		}
 		Command displayGraph = cmdService.getCommand("org.eclipse.capra.ui.plantuml.displayGraph");
 		if (displayGraph != null) {
-			displayGraph.getState(COMMANDS_TOGGLE_STATE)
-					.setValue(ToggleDisplayGraphHandler.isDisplayGraph());
+			displayGraph.getState(COMMANDS_TOGGLE_STATE).setValue(ToggleDisplayGraphHandler.isDisplayGraph());
 		}
 		Command lockDiagram = cmdService.getCommand("org.eclipse.capra.ui.plantuml.lockDiagram");
 		if (lockDiagram != null) {
-			lockDiagram.getState(COMMANDS_TOGGLE_STATE)
-					.setValue(ToggleLockDiagramHandler.isLockDiagram());
+			lockDiagram.getState(COMMANDS_TOGGLE_STATE).setValue(ToggleLockDiagramHandler.isLockDiagram());
+		}
+		Command reverseLinkDirection = cmdService.getCommand("org.eclipse.capra.ui.plantuml.reverseLinkDirection");
+		if (reverseLinkDirection != null) {
+			reverseLinkDirection.getState(COMMANDS_TOGGLE_STATE)
+					.setValue(ReverseLinkDirectionHandler.isReverseLinkDirection());
 		}
 
 	}
