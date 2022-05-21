@@ -334,7 +334,8 @@ public class OfficeView extends ViewPart {
 			if (OfficeTransferType.getInstance().isSupportedType(event.dataType)) {
 
 				List<CapraOfficeObject> tr = new ArrayList<CapraOfficeObject>();
-				tr.add(bodyDataProvider.getAllEllements().get(selectionLayer.getFullySelectedRowPositions()[0]));
+				// Add one to the row position to account for the header row.
+				tr.add(bodyDataProvider.getAllEllements().get(selectionLayer.getFullySelectedRowPositions()[0]+1));
 				event.data = tr;
 
 			}

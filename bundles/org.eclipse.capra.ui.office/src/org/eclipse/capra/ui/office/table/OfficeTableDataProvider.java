@@ -138,8 +138,8 @@ public class OfficeTableDataProvider implements IDataProvider {
 	/**
 	 * Get the office Object Value displayed in a specific row.
 	 * 
-	 * @param index the index of the column whose artifact should be returned
-	 * @return the office Object Value displayed in the column with the given index
+	 * @param index the index of the row whose artifact should be returned
+	 * @return the office Object Value displayed in the row with the given index
 	 */
 	public CapraOfficeObject getRowHighlight(int index) {
 		return mappedObjects.get(index);

@@ -87,8 +87,9 @@ public class OfficeSelectionProvider implements ISelectionProvider, ILayerListen
 	@Override
 	public ISelection getSelection() {
 		if (selectionLayer.getFullySelectedRowPositions().length > 0) {
+			// We need to add 1 to the selected row since we ignore the header row
 			CapraOfficeObject selectedObject = dataProvider
-					.getRowHighlight(selectionLayer.getFullySelectedRowPositions()[0]);
+					.getRowHighlight(selectionLayer.getFullySelectedRowPositions()[0]+1);
 			if (selectedObject != null) {
 				this.selectedObject = selectedObject;
 				return new StructuredSelection(selectedObject);
