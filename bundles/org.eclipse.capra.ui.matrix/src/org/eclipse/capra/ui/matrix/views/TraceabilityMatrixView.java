@@ -191,27 +191,33 @@ public class TraceabilityMatrixView extends ViewPart {
 	private AbstractRegistryConfiguration capraNatTableStyleConfiguration = new AbstractRegistryConfiguration() {
 		@Override
 		public void configureRegistry(IConfigRegistry configRegistry) {
-			// Black background for cells where there should not be any links
-			Style cellStyle = new Style();
-			cellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_BLACK);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.NORMAL,
+			// Set standard cell style
+			Style standardCellStyle = new Style();
+			standardCellStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_LIST_FOREGROUND);
+			standardCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_LIST_BACKGROUND);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, standardCellStyle);
+			
+			// Black background for cells which are on the diagonal
+			Style diagonalCellStyle = new Style();
+			diagonalCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_BLACK);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, diagonalCellStyle, DisplayMode.NORMAL,
 					SAME_LABEL);
 
 			// Green background for cells where there is a link.
-			cellStyle = new Style();
-			cellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.NORMAL,
+			Style linkCellStyle = new Style();
+			linkCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, linkCellStyle, DisplayMode.NORMAL,
 					LINK_LABEL);
 
 			// Style that is applied when cells are hovered
-			Style style = new Style();
-			style.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, style, DisplayMode.HOVER);
+			Style hoveredCellStyle = new Style();
+			hoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, hoveredCellStyle, DisplayMode.HOVER);
 
 			// Style that is applied when selected cells are hovered
-			style = new Style();
-			style.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, style, DisplayMode.SELECT_HOVER);
+			Style selectedHoveredCellStyle = new Style();
+			selectedHoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectedHoveredCellStyle, DisplayMode.SELECT_HOVER);			
 		}
 	};
 

@@ -53,6 +53,8 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  */
 public class CapraDiagramTextProvider implements DiagramTextProvider {
 	private EObject artifactModel = null;
+	
+	private String currentDiagramText = null;
 
 	private boolean isLockDiagram() {
 		Preferences preferences = InstanceScope.INSTANCE.getNode("org.eclipse.capra.ui.plantuml.lockDiagram");
@@ -80,8 +82,14 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 
 	@SuppressWarnings("unchecked")
 	public String getDiagramText(List<Object> selectedModels, Optional<IWorkbenchPart> part) {
-		if (selectedModels == null || selectedModels.isEmpty()) {
-			return VisualizationHelper.createMatrix(null, artifactModel, null, null, true);
+		if (isLockDiagram()) {
+			return currentDiagramText;
+		}
+		if (selectedModels == null || selectedModels.isEmpty() && currentDiagramText == null) {
+			currentDiagramText =  VisualizationHelper.createMatrix(null, artifactModel, null, null, true);
+			return currentDiagramText;
+		} else if (selectedModels == null || selectedModels.isEmpty()) {
+			return currentDiagramText;
 		}
 
 		List<Connection> traces = new ArrayList<>();
@@ -129,13 +137,15 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 				}
 
 				if (selectedModels.size() == 1) {
-					return VisualizationHelper.createNeighboursView(traces, EMFHelper.linearize(selectedObject),
+					currentDiagramText =  VisualizationHelper.createNeighboursView(traces, EMFHelper.linearize(selectedObject),
 							artifactModel);
+					return currentDiagramText;
 
 				} else {
 					// User selected to display a graph with only the selected elements
 					if (ToggleDisplayGraphHandler.isDisplayGraph()) {
-						return renderMultiSelectionGraph(traces, selectedEObjects, artifactHelper);
+						currentDiagramText =  renderMultiSelectionGraph(traces, selectedEObjects, artifactHelper);
+						return currentDiagramText;
 					}
 				}
 
@@ -144,8 +154,9 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 
 		// Standard case is to render a traceability matrix, potentially showing a
 		// message instructing the user to select elements.
-		return VisualizationHelper.createMatrix(traceModel, artifactModel, selectedEObjects, selectedEObjects,
+		currentDiagramText = VisualizationHelper.createMatrix(traceModel, artifactModel, selectedEObjects, selectedEObjects,
 				DisplayInternalLinksHandler.areInternalLinksShown());
+		return currentDiagramText;
 
 	}
 
