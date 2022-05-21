@@ -39,6 +39,7 @@ import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.preferences.CapraPreferences;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.ui.plantuml.CapraDiagramTextProvider;
@@ -82,10 +83,15 @@ public class TestGraphicalVisualization {
 	private static final String TEST_C_CLASS = "CClass.c";
 
 	private static final String LINE_SEPARATOR = System.lineSeparator();
+	private static final String SHOW_FULL_TRACE_INFORMATION = "org.eclipse.capra.preferences.showFullTraceInformation";
 
 	private static final String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS = "@startuml" + LINE_SEPARATOR
 			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
 			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "o0--o1: A : EClass B : EClass : RelatedTo"
+			+ LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
+	private static final String EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS_SIMPLE_LABEL = "@startuml" + LINE_SEPARATOR
+			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
+			+ "object \"B : EClass\" as o1" + LINE_SEPARATOR + "o0--o1: RelatedTo"
 			+ LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 	private static final String EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
 			+ "left to right direction" + LINE_SEPARATOR + "object \"A : EClass\" as o0 #pink" + LINE_SEPARATOR
@@ -120,6 +126,8 @@ public class TestGraphicalVisualization {
 		clearWorkspace();
 		resetSelectionView();
 		purgeModels();
+		// Make sure we're looking at the full labels by default
+		CapraPreferences.getPreferences().putBoolean(SHOW_FULL_TRACE_INFORMATION, true);
 	}
 
 	@Test
@@ -193,6 +201,58 @@ public class TestGraphicalVisualization {
 		String transitivelysConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
 		assertEquals(EXPECTED_TEXT_FOR_TRANSITIVE_CONNECTIONS, transitivelysConnectedElements);
 
+	}
+
+	@Test
+	public void testSimplifiedArrowLabels() throws CoreException, IOException, InterruptedException {
+		// Create a project
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
+
+		// Create two models each with two classes and persist them
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
+		save(testProject, a);
+
+		EPackage b = createEcoreModel(MODEL_B_NAME);
+		createEClassInEPackage(b, CLASS_B_NAME);
+		save(testProject, b);
+
+		// Load them and choose the four classes
+		ResourceSet rs = new ResourceSetImpl();
+
+		EPackage _a = load(testProject, MODEL_A_FILENAME, rs);
+		assertEquals(_a.getName(), MODEL_A_NAME);
+		EClass _A = (EClass) _a.getEClassifier(CLASS_A_NAME);
+
+		EPackage _b = load(testProject, MODEL_B_FILENAME, rs);
+		assertEquals(_b.getName(), MODEL_B_NAME);
+		EClass _B = (EClass) _b.getEClassifier(CLASS_B_NAME);
+
+		// Add A and B to the selection view
+		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
+		SelectionView.getOpenedView().dropToSelection(_A);
+		SelectionView.getOpenedView().dropToSelection(_B);
+		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
+
+		// Create a trace via the selection view
+		assertFalse(thereIsATraceBetween(_A, _B));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(_A, _B));
+
+		// create a selection with class A
+		List<Object> selection = new ArrayList<>();
+		selection.add(_A);
+
+		// Make sure we're looking at the simplified labels
+		CapraPreferences.getPreferences().putBoolean(SHOW_FULL_TRACE_INFORMATION, false);
+
+		// Test directly connected Elements
+		ToggleTransitivityHandler.setTraceViewTransitive(false);
+		CapraDiagramTextProvider provider = new CapraDiagramTextProvider();
+		String directlyConnectedElements = provider.getDiagramText(selection, Optional.<IWorkbenchPart>empty());
+		assertEquals(EXPECTED_TEXT_FOR_DIRECT_CONNECTIONS_SIMPLE_LABEL, directlyConnectedElements);
 	}
 
 	@Test

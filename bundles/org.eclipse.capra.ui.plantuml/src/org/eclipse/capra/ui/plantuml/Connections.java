@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.preferences.CapraPreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.base.Strings;
@@ -37,6 +39,8 @@ import com.google.common.base.Strings;
  * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  */
 public class Connections {
+	
+	private static final String SHOW_FULL_TRACE_INFORMATION = "org.eclipse.capra.preferences.showFullTraceInformation";
 
 	private static final String QUOTE_CHARACTERS = "[\"\']";
 	private static final String NEWLINE_CHARACTERS = "[\r\n]+";
@@ -125,12 +129,20 @@ public class Connections {
 				c.getTargets().forEach(trg -> {
 					arrows.add(object2Id.get(EMFHelper.getIdentifier(org)) + "--"
 							+ object2Id.get(EMFHelper.getIdentifier(trg)) + ": "
-							+ EMFHelper.getIdentifier(c.getTlink()));
+							+ getConnectionLabel(c));
 				});
 			});
 		});
 
 		return arrows.stream().collect(Collectors.toList());
+	}
+
+	private String getConnectionLabel(Connection c) {
+		IEclipsePreferences store = CapraPreferences.getPreferences();
+		if (store.getBoolean(SHOW_FULL_TRACE_INFORMATION, false)) {
+			return EMFHelper.getIdentifier(c.getTlink());
+		}
+		return c.getTlink().eClass().getName();
 	}
 
 }

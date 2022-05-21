@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 
 	public static final String SHOW_TRACE_CREATED_CONFIRMATION_DIALOG = "org.eclipse.capra.preferences.showTraceCreatedConfirmationDialog";
 	public static final String SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL = "Show confirmation after a trace link has been created";
+	public static final String SHOW_FULL_TRACE_INFORMATION = "org.eclipse.capra.preferences.showFullTraceInformation";
+	public static final String SHOW_FULL_TRACE_INFORMATION_LABEL = "Show the full trace information (including source, targets, and trace type) on the arrows in the PlantUML view";
 	private static final String PREFERENCE_PAGE_DESCRIPTION = "Eclipse Capra UI Preferences";
 	public static final String CAPRA_PERSISTENCE_PROJECT_NAME_LABEL = "Input new project name for stored traces: ";
 	public static final String PROJECT_IDENTIFIER_PATTERN = "^([a-zA-Z_$][a-zA-Z\\d_$]*)$";
@@ -49,7 +51,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 	@Override
 	public void init(IWorkbench workbench) {
 		setDescription(PREFERENCE_PAGE_DESCRIPTION);
-		setPreferenceStore(getPreferenceStore());
+		setPreferenceStore(getPreferences());
 
 		this.persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
@@ -64,12 +66,15 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 
 	@Override
 	protected void createFieldEditors() {
-		BooleanFieldEditor booleanEditor = new BooleanFieldEditor(SHOW_TRACE_CREATED_CONFIRMATION_DIALOG,
+		BooleanFieldEditor showTraceCreatedDialogEditor = new BooleanFieldEditor(SHOW_TRACE_CREATED_CONFIRMATION_DIALOG,
 				SHOW_TRACE_CREATED_CONFIRMATION_DIALOG_LABEL, getFieldEditorParent());
+		BooleanFieldEditor showFullTraceInformationEditor = new BooleanFieldEditor(SHOW_FULL_TRACE_INFORMATION,
+				SHOW_FULL_TRACE_INFORMATION_LABEL, getFieldEditorParent());
 		StringIdentifierEditor stringEditor = new StringIdentifierEditor(
 				org.eclipse.capra.core.preferences.CapraPreferences.CAPRA_PERSISTENCE_PROJECT_NAME,
 				CAPRA_PERSISTENCE_PROJECT_NAME_LABEL, 20, getFieldEditorParent(), PROJECT_IDENTIFIER_PATTERN, true);
-		addField(booleanEditor);
+		addField(showTraceCreatedDialogEditor);
+		addField(showFullTraceInformationEditor);
 		addField(stringEditor);
 	}
 
@@ -82,7 +87,7 @@ public class CapraPreferences extends FieldEditorPreferencePage implements IWork
 
 	/**
 	 * Provides access to the preferences store. All clients should use
-	 * {@link org.eclipse.capra.core.CapraPreferences} instead.
+	 * {@link org.eclipse.capra.core.preferences.CapraPreferences} instead.
 	 * 
 	 * @return the preference store used by Eclipse Capra
 	 */
