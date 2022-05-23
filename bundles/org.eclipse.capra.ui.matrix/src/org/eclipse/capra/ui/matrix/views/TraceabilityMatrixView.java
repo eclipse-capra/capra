@@ -17,12 +17,13 @@ package org.eclipse.capra.ui.matrix.views;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.IArtifactUnpacker;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -38,6 +39,7 @@ import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.selection.TraceabilityMatrixSelectionProvider;
+import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.operations.DeleteTraceOperation;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
@@ -61,6 +63,7 @@ import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
+import org.eclipse.nebula.widgets.nattable.coordinate.PositionCoordinate;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.export.command.ExportCommand;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
@@ -136,6 +139,7 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	private NatTable traceMatrixTable;
 	private Action deleteLinkAction;
+	private Action createLinkAction;
 	private Action refreshAction;
 	private Action showAllAction;
 	private Action exportExcelAction;
@@ -449,6 +453,7 @@ public class TraceabilityMatrixView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
+		manager.add(createLinkAction);
 		manager.add(deleteLinkAction);
 		manager.add(new Separator());
 		manager.add(refreshAction);
@@ -458,12 +463,42 @@ public class TraceabilityMatrixView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
+		manager.add(createLinkAction);
 		manager.add(deleteLinkAction);
 		manager.add(refreshAction);
 		manager.add(showAllAction);
 	}
 
-	private void makeActions() {
+	private void makeActions() {		
+		createLinkAction = new Action() {
+			@Override
+			public void run() {
+				if (getConnectionFromSelection() != null) {
+					// If there is already a link in the selected cell, we do not want to create another one.
+					return;
+				}
+				PositionCoordinate selectedCellCoords = selectionProvider.getSelectedCellPosition();
+				if (selectedCellCoords != null) {
+					EObject source = bodyDataProvider.getRow(selectedCellCoords.rowPosition);
+					EObject target = bodyDataProvider.getColumn(selectedCellCoords.columnPosition);
+					
+					CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create new traceability link", Arrays.asList(source), Arrays.asList(target));
+					createTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
+					
+					IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
+					try {
+						operationHistory.execute(createTraceOperation, null, TraceabilityMatrixView.this.getSite());
+					} catch (ExecutionException e) {
+						// Deliberately do nothing. Errors should be caught by the operation.
+					}
+					showAllAction.run();
+				}
+			}
+		};
+		createLinkAction.setText("Create Link");
+		createLinkAction.setToolTipText("Create a new traceability link with the artifact in the row of the selected cell"
+				+ " as the source and the artifact in the column of the selected cell as the target");
+		
 		deleteLinkAction = new Action() {
 			@Override
 			public void run() {
@@ -490,6 +525,8 @@ public class TraceabilityMatrixView extends ViewPart {
 		};
 		deleteLinkAction.setText("Delete Link");
 		deleteLinkAction.setToolTipText("Delete Link");
+		
+		
 		refreshAction = new Action() {
 			@Override
 			public void run() {
