@@ -98,11 +98,11 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	@Override
 	public ISelection getSelection() {
 		if (selectionLayer.getSelectedCellPositions().length > 0) {
-			doGetSelection(SelectionType.CELL);
+			return doGetSelection(SelectionType.CELL);
 		} else if (selectionLayer.getFullySelectedRowPositions().length > 0) {
-			doGetSelection(SelectionType.ROW);
+			return doGetSelection(SelectionType.ROW);
 		} else if (selectionLayer.getFullySelectedColumnPositions().length > 0) {
-			doGetSelection(SelectionType.COLUMN);
+			return doGetSelection(SelectionType.COLUMN);
 		}
 		return null;
 	}
@@ -143,6 +143,17 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	@Override
 	public void setSelection(ISelection selection) {
 		// Deliberately do nothing
+	}
+	
+	/**
+	 * Returns the coordinate of the first selected cell.
+	 * @return the coordinate of the first selected cell or {@code null} if no cell is selected
+	 */
+	public PositionCoordinate getSelectedCellPosition() {
+		if (selectionLayer.getSelectedCellPositions() != null && selectionLayer.getSelectedCellPositions().length>0) 
+			return selectionLayer.getSelectedCellPositions()[0];
+		else
+			return null;
 	}
 
 	/**

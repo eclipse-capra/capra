@@ -54,6 +54,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
@@ -466,13 +467,11 @@ public class TraceabilityMatrixView extends ViewPart {
 		deleteLinkAction = new Action() {
 			@Override
 			public void run() {
-				if (selectedModels != null && !selectedModels.isEmpty()
-						&& selectedModels.get(0) instanceof ConnectionAdapter) {
+				if (getConnectionFromSelection() != null){
 					Shell shell = TraceabilityMatrixView.this.getSite().getShell();
 					if (MessageDialog.open(MessageDialog.QUESTION, shell, CONFIRM_DELETION_TITLE,
 							CONFIRM_DELETION_QUESTION, SWT.NONE)) {
-						ConnectionAdapter adapter = (ConnectionAdapter) selectedModels.get(0);
-						Connection connection = adapter.getConnection();
+						Connection connection = getConnectionFromSelection();
 
 						DeleteTraceOperation deleteTraceOperation = new DeleteTraceOperation(CONFIRM_DELETION_TITLE,
 								connection);
@@ -521,6 +520,14 @@ public class TraceabilityMatrixView extends ViewPart {
 		exportExcelAction.setText("Export to Excel...");
 		exportExcelAction.setToolTipText("Exports the currently shown traceability matrix as an Excel file.");
 
+	}
+
+	private Connection getConnectionFromSelection() {
+		if ((selectionProvider.getSelection() instanceof StructuredSelection) && 
+				((StructuredSelection)selectionProvider.getSelection()).getFirstElement() instanceof Connection) {
+			return (Connection)((StructuredSelection)selectionProvider.getSelection()).getFirstElement();
+		}
+		return null;
 	}
 
 	/**
