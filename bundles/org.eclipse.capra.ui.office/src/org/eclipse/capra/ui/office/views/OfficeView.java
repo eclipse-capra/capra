@@ -79,8 +79,8 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
-import org.eclipse.nebula.widgets.nattable.style.Style;
-import org.eclipse.nebula.widgets.nattable.ui.NatEventData;
+import org.eclipse.nebula.widgets.nattable.style.IStyle;
+import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
 import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
@@ -519,7 +519,7 @@ public class OfficeView extends ViewPart {
 		}
 		this.officeTable = new NatTable(parent, gridLayer, false);
 
-		setStyleConfigiguration();
+		setStyleConfiguration();
 
 		// adding right click ui binding
 		this.officeTable.addConfiguration(new AbstractUiBindingConfiguration() {
@@ -585,24 +585,32 @@ public class OfficeView extends ViewPart {
 		this.officeTable.addDragSupport(ops, transfersOut, dndSupport);
 	}
 
-	private void setStyleConfigiguration() {
+	private void setStyleConfiguration() {
+		this.officeTable.addConfiguration(new ModernNatTableThemeConfiguration());
 		this.officeTable.addConfiguration(new AbstractRegistryConfiguration() {
+			
+			private final HorizontalAlignmentEnum ALIGNMENT = HorizontalAlignmentEnum.LEFT;
 
 			@Override
 			public void configureRegistry(IConfigRegistry configRegistry) {
-				Style columnHeaderStyle = new Style();
-				Style cellStyle = new Style();
-				HorizontalAlignmentEnum hAlign = HorizontalAlignmentEnum.LEFT;
-				ICellPainter cellPainter = new LineBorderDecorator(new TextPainter(false, true, 5, true));
-
-				columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, hAlign);
+				IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+				columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, columnHeaderStyle,
 						DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+
+				IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.ROW_HEADER);
+				rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle,
+						DisplayMode.NORMAL, GridRegion.ROW_HEADER);
+
+				IStyle cellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+				cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle);
+
+				ICellPainter cellPainter = new LineBorderDecorator(new TextPainter(false, true, 5, true));
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, cellPainter);
-				cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, hAlign);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.DISPLAY_CONVERTER,
 						new DefaultDisplayConverter());
-				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle);
 			}
 		});
 	}

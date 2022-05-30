@@ -31,7 +31,6 @@ import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
-import org.eclipse.capra.ui.adapters.ConnectionAdapter;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixBodyToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
@@ -61,7 +60,6 @@ import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
-import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.coordinate.PositionCoordinate;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
@@ -86,7 +84,9 @@ import org.eclipse.nebula.widgets.nattable.resize.mode.RowResizeDragMode;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
-import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
+import org.eclipse.nebula.widgets.nattable.style.IStyle;
+import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
 import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
@@ -194,35 +194,41 @@ public class TraceabilityMatrixView extends ViewPart {
 	 * After that is the coloring for hovering.
 	 */
 	private AbstractRegistryConfiguration capraNatTableStyleConfiguration = new AbstractRegistryConfiguration() {
+		private final HorizontalAlignmentEnum ALIGNMENT = HorizontalAlignmentEnum.LEFT;
+		
 		@Override
 		public void configureRegistry(IConfigRegistry configRegistry) {
-			// Set standard cell style
-			Style standardCellStyle = new Style();
-			standardCellStyle.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR, GUIHelper.COLOR_LIST_FOREGROUND);
-			standardCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_LIST_BACKGROUND);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, standardCellStyle);
-			
 			// Black background for cells which are on the diagonal
-			Style diagonalCellStyle = new Style();
+			IStyle diagonalCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
 			diagonalCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_BLACK);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, diagonalCellStyle, DisplayMode.NORMAL,
 					SAME_LABEL);
 
 			// Green background for cells where there is a link.
-			Style linkCellStyle = new Style();
+			IStyle linkCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
 			linkCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, linkCellStyle, DisplayMode.NORMAL,
 					LINK_LABEL);
 
 			// Style that is applied when cells are hovered
-			Style hoveredCellStyle = new Style();
+			IStyle hoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
 			hoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, hoveredCellStyle, DisplayMode.HOVER);
 
 			// Style that is applied when selected cells are hovered
-			Style selectedHoveredCellStyle = new Style();
+			IStyle selectedHoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
 			selectedHoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectedHoveredCellStyle, DisplayMode.SELECT_HOVER);			
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectedHoveredCellStyle, DisplayMode.SELECT_HOVER);
+			
+			IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+			columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, columnHeaderStyle,
+					DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+			
+			IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.ROW_HEADER);
+			rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle,
+					DisplayMode.NORMAL, GridRegion.ROW_HEADER);
 		}
 	};
 
@@ -379,7 +385,7 @@ public class TraceabilityMatrixView extends ViewPart {
 			traceMatrixTable = new NatTable(parent, gridLayer, false);
 
 			// Adding Configuration to the table
-			traceMatrixTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+			traceMatrixTable.addConfiguration(new ModernNatTableThemeConfiguration());
 			traceMatrixTable.addConfiguration(this.capraNatTableStyleConfiguration);
 			traceMatrixTable.configure();
 
