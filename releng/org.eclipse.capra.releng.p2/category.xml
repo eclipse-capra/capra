@@ -60,4 +60,9 @@
          Features to visualise traceability links and perform change impact analysis.
       </description>
    </category-def>
+   <repository-reference location="http://hallvard.github.io/plantuml/" enabled="true" />
+   <repository-reference location="http://featureide.cs.ovgu.de/update/v3/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/sphinx/releases/0.9.x" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/rmf/updates/releases/0.13.0/" enabled="true" />
+   <repository-reference location="https://digital-dependability-identities.github.io/ODE_Editor/" enabled="true" />
 </site>
