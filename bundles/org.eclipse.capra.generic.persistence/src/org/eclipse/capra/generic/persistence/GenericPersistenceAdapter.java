@@ -27,6 +27,7 @@ import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.preferences.CapraPreferences;
+import org.eclipse.capra.core.resources.CapraResource;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -65,9 +66,9 @@ public class GenericPersistenceAdapter implements org.eclipse.capra.core.adapter
 	private static final Logger LOG = LoggerFactory.getLogger(GenericPersistenceAdapter.class);
 
 	private static String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
-	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
-	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers.xmi";
-	private static final String DEFAULT_METADATA_MODEL_NAME = "metadata.xmi";
+	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel." + CapraResource.DEFAULT_CAPRA_FILE_EXTENSION;
+	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers." + CapraResource.DEFAULT_CAPRA_FILE_EXTENSION;
+	private static final String DEFAULT_METADATA_MODEL_NAME = "metadata." + CapraResource.DEFAULT_CAPRA_FILE_EXTENSION;
 
 	/**
 	 * Get the second matching group of the regex in a specific string

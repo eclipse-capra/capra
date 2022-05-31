@@ -130,8 +130,8 @@ public class TestTraceProjectRename {
 		assertFalse("Artifact model contents is not an empty list", traceModelArtifactList.isEmpty());
 
 		// verify expected files exist
-		assertTrue(project.getFile("traceModel.xmi").exists());
-		assertTrue(project.getFile("artifactWrappers.xmi").exists());
+		assertTrue(project.getFile("traceModel.capra").exists());
+		assertTrue(project.getFile("artifactWrappers.capra").exists());
 
 		// clear selection
 		SelectionView.getOpenedView().clearSelection();
@@ -189,8 +189,8 @@ public class TestTraceProjectRename {
 		assertTrue(traceModelArtifactList_New2.containsAll(traceModelArtifactList));
 
 		// verify expected files exist
-		assertTrue(projectNew.getFile("traceModel.xmi").exists());
-		assertTrue(projectNew.getFile("artifactWrappers.xmi").exists());
+		assertTrue(projectNew.getFile("traceModel.capra").exists());
+		assertTrue(projectNew.getFile("artifactWrappers.capra").exists());
 	}
 
 }

@@ -15,6 +15,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.capra.core.adapters,
  org.eclipse.capra.core.handlers,
  org.eclipse.capra.core.helpers,
+ org.eclipse.capra.core.listeners,
  org.eclipse.capra.core.preferences,
- org.eclipse.capra.core.listeners
+ org.eclipse.capra.core.resources
 Automatic-Module-Name: org.eclipse.capra.core

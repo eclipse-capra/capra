@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
+import org.eclipse.capra.core.resources.CapraResource;
 import org.eclipse.capra.core.resources.CapraResourceFactory;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
@@ -35,7 +35,7 @@ public class EditingDomainHelper {
 		capraEditingDomain = TransactionalEditingDomain.Registry.INSTANCE
 				.getEditingDomain("org.eclipse.capra.core.EditingDomain");
 		capraEditingDomain.getResourceSet().getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new CapraResourceFactory());
+				.put(CapraResource.DEFAULT_CAPRA_FILE_EXTENSION, new CapraResourceFactory());
 
 	}
 

@@ -106,7 +106,7 @@ public class TestGraphicalVisualization {
 			+ LINE_SEPARATOR + "o0--o1: TestClass CClass.c : RelatedTo" + LINE_SEPARATOR + "@enduml" + LINE_SEPARATOR;
 	private static final String EXPECTED_TEXT_FOR_COMPLEX_TRANSITIVE_CONNECTIONS = "@startuml" + LINE_SEPARATOR
 			+ "left to right direction" + LINE_SEPARATOR
-			+ "object \"A B C : RelatedTo [[platform:/resource/__WorkspaceTraceModels/traceModel.xmi (Go to)]]\" as o0 #pink"
+			+ "object \"A B C : RelatedTo [[platform:/resource/__WorkspaceTraceModels/traceModel.capra (Go to)]]\" as o0 #pink"
 			+ LINE_SEPARATOR
 			+ "object \"B [[platform:/resource/TestProject_java/src/org/eclipse/capra/test/B.java#org.eclipse.capra.test.B (Go to)]]\" as o1"
 			+ LINE_SEPARATOR

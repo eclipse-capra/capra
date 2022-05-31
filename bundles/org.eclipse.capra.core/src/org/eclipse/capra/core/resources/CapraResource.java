@@ -20,9 +20,17 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
  * An extension of {@link XMIResourceImpl} that enables the use of UUIDs to
  * reference other EObjects.
  * 
+ * TODO: This is an EMF-specific feature and should therefore be in the
+ *       generic persistence adapter.
+ * 
  * @author Jan-Philipp Steghöfer
  */
 public class CapraResource extends XMIResourceImpl {
+	
+	/**
+	 * The default file extension used for all files associated with Eclipse Capra.
+	 */
+	public static final String DEFAULT_CAPRA_FILE_EXTENSION = "capra";
 
 	/**
 	 * Constructs a new Capra resource.
