@@ -14,8 +14,10 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.matrix.views;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,6 +56,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
@@ -511,6 +514,13 @@ public class TraceabilityMatrixView extends ViewPart {
 		createLinkAction.setText("Create Link");
 		createLinkAction.setToolTipText("Create a new traceability link with the artifact in the row of the selected cell"
 				+ " as the source and the artifact in the column of the selected cell as the target");
+		try {
+			URL createLinkImageUrl = new URL("platform:/plugin/org.eclipse.ui/icons/full/obj16/add_obj.png");
+			ImageDescriptor createLinkImage = ImageDescriptor.createFromURL(createLinkImageUrl);
+			createLinkAction.setImageDescriptor(createLinkImage);
+		} catch (MalformedURLException ex) {
+			// Swallow this exception since we will just use the default behaviour of showing text
+		}
 		
 		deleteLinkAction = new Action() {
 			@Override
@@ -538,6 +548,13 @@ public class TraceabilityMatrixView extends ViewPart {
 		};
 		deleteLinkAction.setText("Delete Link");
 		deleteLinkAction.setToolTipText("Delete Link");
+		try {
+			URL deleteLinkImageUrl = new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/delete.png");
+			ImageDescriptor deleteLinkImage = ImageDescriptor.createFromURL(deleteLinkImageUrl);
+			deleteLinkAction.setImageDescriptor(deleteLinkImage);
+		} catch (MalformedURLException ex) {
+			// Swallow this exception since we will just use the default behaviour of showing text
+		}
 		
 		
 		refreshAction = new Action() {
@@ -548,6 +565,13 @@ public class TraceabilityMatrixView extends ViewPart {
 		};
 		refreshAction.setText("Refresh");
 		refreshAction.setToolTipText("Refresh");
+		try {
+			URL refreshImageUrl = new URL("platform:/plugin/org.eclipse.search/icons/full/elcl16/refresh.png");
+			ImageDescriptor refreshImage = ImageDescriptor.createFromURL(refreshImageUrl);
+			refreshAction.setImageDescriptor(refreshImage);
+		} catch (MalformedURLException ex) {
+			// Swallow this exception since we will just use the default behaviour of showing text
+		}
 
 		showAllAction = new Action() {
 			@Override
