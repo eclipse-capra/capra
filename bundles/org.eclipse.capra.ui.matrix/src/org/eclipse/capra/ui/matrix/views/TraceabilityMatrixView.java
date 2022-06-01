@@ -256,6 +256,13 @@ public class TraceabilityMatrixView extends ViewPart {
 					new RowResizeCursorAction());
 			uiBindingRegistry.registerFirstMouseDragMode(new RowResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 1),
 					new RowResizeDragMode());
+			uiBindingRegistry.registerDoubleClickBinding(MouseEventMatcher.bodyLeftClick(0),
+					new IMouseAction() {
+						@Override
+						public void run(NatTable natTable, MouseEvent event) {
+							createLinkAction.run();
+						}
+					});
 		}
 	};
 
