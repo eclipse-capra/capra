@@ -110,34 +110,37 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.capra.ui.plantuml.views.CapraPlantUmlView?after=additions">
-         <command
-               commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
-               label="%command.label.transitivity"
-               style="toggle">
-         </command>
-         <command
-               commandId="org.eclipse.capra.ui.plantuml.displayGraph"
-               label="%command.label.graph"
-               style="toggle">
-         </command>
-     	<command
-               commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks"
-               label="%command.label.internalLinks"
-               style="toggle">
-         </command>
+         <separator name="group.tracegraph" visible="true" />
          <command
                commandId="org.eclipse.capra.ui.plantuml.selectRelationships"
                label="%command.label.relationshipTypes"
                style="push">
          </command>
          <command
-               commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth"
-               label="%command.label.depth"
-               style="push">
+               commandId="org.eclipse.capra.ui.plantuml.displayGraph"
+               label="%command.label.graph"
+               style="toggle">
          </command>
          <command
                commandId="org.eclipse.capra.ui.plantuml.lockDiagram"
                label="%command.name.lock"
+               style="toggle">
+         </command>
+         <separator name="group.transitivity" visible="true" />
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.toggleTransitivity"
+               label="%command.label.transitivity"
+               style="toggle">
+         </command>
+         <command
+               commandId="org.eclipse.capra.ui.plantuml.transitivtyDepth"
+               label="%command.label.depth"
+               style="push">
+         </command>
+         <separator name="internalLinks" visible="true" />
+     	 <command
+               commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks"
+               label="%command.label.internalLinks"
                style="toggle">
          </command>
       </menuContribution>
