@@ -25,6 +25,8 @@ import org.eclipse.emf.transaction.RollbackException;
 import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
+import com.google.common.base.Objects;
+
 /**
  * Provides generic functionality to deal with artifact meta models.
  */
@@ -40,11 +42,14 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	}
 
 	@Override
-	public EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri) {
+	public EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
+			String internalResolver) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		for (ArtifactWrapper artifact : container.getArtifacts()) {
-			if (getArtifactHandler(artifact).equals(artifactHandler) && getArtifactUri(artifact).equals(artifactUri))
-				return artifact;
+			if (getArtifactHandler(artifact).equals(artifactHandler) && getArtifactUri(artifact).equals(artifactUri)) {
+				if (Objects.equal(getArtifactInternalResolver(artifact), internalResolver))
+					return artifact;
+			}
 		}
 		return null;
 	}
@@ -53,7 +58,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
 			String internalResolver, String artifactName) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
-		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri);
+		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri, internalResolver);
 		if (existingWrapper != null)
 			return existingWrapper;
 

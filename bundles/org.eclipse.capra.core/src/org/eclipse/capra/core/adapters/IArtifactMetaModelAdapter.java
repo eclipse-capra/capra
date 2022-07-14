@@ -59,13 +59,14 @@ public interface IArtifactMetaModelAdapter {
 			String artifactName);
 
 	/**
-	 * Gets the artifact with the given handler and URI.
+	 * Gets the artifact with the given handler, URI, and internal resolver.
 	 *
-	 * @param artifactHandler Handler of artifact
-	 * @param artifactUri     URI of artifact
+	 * @param artifactHandler  Handler of artifact
+	 * @param artifactUri      URI of artifact
+	 * @param internalResolver the internal information for resolving artifacts
 	 * @return artifact if found, null otherwise
 	 */
-	EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri);
+	EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri, String internalResolver);
 
 	/**
 	 * Get a handler for the given artifact
