@@ -1,0 +1,87 @@
+target "eclipse-capra-e4.24" with source requirements
+
+location "http://download.eclipse.org/releases/2022-06/" eclipse-2022-06 {
+	org.eclipse.cdt.sdk.feature.group
+	org.eclipse.cdt.testsrunner.feature.feature.group
+	org.eclipse.emf.compare.ide.ui.feature.group
+	org.eclipse.emf.ecore.xcore.sdk.feature.group
+	org.eclipse.emf.sdk.feature.group	
+	org.eclipse.php.feature.group
+	org.eclipse.xtext.sdk.feature.group
+	org.eclipse.gef.sdk.feature.group
+	org.eclipse.xtend.sdk.feature.group
+	org.eclipse.pde.source.feature.group
+	org.eclipse.m2m.qvt.oml.feature.group
+	org.eclipse.xwt.feature.feature.group
+	org.eclipse.papyrus.sdk.feature.feature.group
+}
+
+// Mylyn was removed in 22-06
+location "https://download.eclipse.org/mylyn/releases/latest/" mylyn {
+	org.eclipse.mylyn.gerrit.feature.feature.group
+	org.eclipse.mylyn.hudson.feature.group
+}
+
+// Needed because Sphinx requires org.eclipse.xtend.shared.ui which is not in 2022-06
+location "https://download.eclipse.org/releases/2021-12" eclipse-2021-12 {
+	org.eclipse.xpand
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220531185310/repository" eclipse-orbit-2022-06 {
+	org.apache.poi.ooxml
+	org.apache.xmlbeans
+	com.google.guava
+	org.apache.commons.collections
+	org.apache.poi.ooxml.schemas
+	org.apache.poi
+	com.fasterxml.jackson.core.jackson-core
+	org.slf4j.api
+	ch.qos.logback.slf4j
+	org.dom4j
+	// Introduced to resolve problems with the javax.xml.bind dependency chain
+	// https://www.eclipse.org/forums/index.php/t/1106342/
+	com.sun.xml.bind [2.2.0.v20201118-1845,2.2.0.v20201118-1845]
+}
+
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
+	org.mortbay.jetty.util
+	org.mortbay.jetty.server
+}
+
+location "http://download.eclipse.org/sphinx/releases/0.9.x" {
+	org.eclipse.sphinx.sdk.feature.group
+}
+
+location "http://download.eclipse.org/rmf/updates/releases" {
+	org.eclipse.rmf.reqif10.sdk.feature.feature.group
+	org.eclipse.rmf.reqif10.pror.sdk.feature.feature.group
+}
+
+location "http://hallvard.github.io/plantuml/" plantuml {
+	net.sourceforge.plantuml.feature.feature.group 1.1.24
+}
+
+location "http://featureide.cs.ovgu.de/update/v3/" feature-ide {
+	de.ovgu.featureide.featuremodeling.feature.group
+}
+
+location "http://download.eclipse.org/app4mc/updatesites/releases/1.0.0" APP4MC {
+	org.eclipse.app4mc.platform.sdk.feature.group
+}
+
+location "http://download.eclipse.org/ease/release/0.7.0" EASE {
+	org.eclipse.ease.feature.feature.group
+	org.eclipse.ease.ui.feature.feature.group
+}
+
+location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
+	ode.concept.deis.feature.feature.group
+}
+
+location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Nattable {
+	org.eclipse.nebula.widgets.nattable.core
+}
+
+location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
+	de.jcup.asciidoctoreditor.feature.group
+}
