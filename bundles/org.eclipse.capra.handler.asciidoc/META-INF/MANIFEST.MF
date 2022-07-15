@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Asciidoctor support for Eclipse Capra - Handler
+Bundle-SymbolicName: org.eclipse.capra.handler.asciidoc;singleton:=true
+Bundle-Version: 0.9.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.eclipse.capra.handler.asciidoc
+Require-Bundle: org.eclipse.capra.core,
+ org.eclipse.core.resources,
+ de.jcup.asciidoctoreditor,
+ org.eclipse.capra.ui.asciidoc
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.capra.handler.asciidoc
+Import-Package: org.slf4j
+Bundle-Vendor: Eclipse Capra

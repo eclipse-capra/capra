@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.20" sequenceNumber="1632988277">
+<target name="eclipse-capra-e4.20" sequenceNumber="1657884325">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.3.0.202106080120"/>
@@ -60,7 +60,7 @@
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.0.202108311440"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.3.202206011926"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -75,6 +75,10 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.5.1"/>
+      <repository id="asciidoctor-editor" location="https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/"/>
     </location>
   </locations>
 </target>

@@ -25,6 +25,7 @@
 		<module>bundles/org.eclipse.capra.generic.artifactmodel</module>
 		<module>bundles/org.eclipse.capra.generic.metadatamodel</module>
 		<module>bundles/org.eclipse.capra.handler.app4mc</module>
+		<module>bundles/org.eclipse.capra.handler.asciidoc</module>
 		<module>bundles/org.eclipse.capra.handler.cdt</module>
 		<module>bundles/org.eclipse.capra.handler.emf</module>
 		<module>bundles/org.eclipse.capra.handler.file</module>
@@ -41,6 +42,7 @@
 		<module>bundles/org.eclipse.capra.handler.featureide</module>
 		<module>bundles/org.eclipse.capra.handler.ode</module>
 		<module>bundles/org.eclipse.capra.ui</module>
+		<module>bundles/org.eclipse.capra.ui.asciidoc</module>
 		<module>bundles/org.eclipse.capra.ui.notification</module>
 		<module>bundles/org.eclipse.capra.ui.plantuml</module>
 		<module>bundles/org.eclipse.capra.ui.cdt</module>

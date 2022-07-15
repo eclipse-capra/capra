@@ -80,3 +80,7 @@ location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Nattable {
 	org.eclipse.nebula.widgets.nattable.core
 }
+
+location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
+	de.jcup.asciidoctoreditor.feature.group
+}

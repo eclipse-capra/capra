@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Asciidoctor support for Eclipse Capra - UI elements
+Bundle-SymbolicName: org.eclipse.capra.ui.asciidoc;singleton:=true
+Bundle-Version: 0.9.0.qualifier
+Bundle-Vendor: Eclipse Capra
+Automatic-Module-Name: org.eclipse.capra.ui.asciidoctor
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.eclipse.capra.ui,
+ de.jcup.asciidoctoreditor,
+ org.apache.httpcomponents.httpclient,
+ org.eclipse.ui.ide
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.jface.viewers,
+ org.eclipse.ui,
+ org.eclipse.ui.editors.text,
+ org.eclipse.ui.views.contentoutline,
+ org.slf4j
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.capra.ui.asciidoc
+ 

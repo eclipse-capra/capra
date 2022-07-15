@@ -71,3 +71,7 @@ location "http://download.eclipse.org/ease/release/0.7.0" EASE {
 location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 	ode.concept.deis.feature.feature.group
 }
+
+location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
+	de.jcup.asciidoctoreditor.feature.group
+}
