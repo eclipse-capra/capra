@@ -39,7 +39,7 @@ import com.google.common.base.Strings;
  * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  */
 public class Connections {
-	
+
 	private static final String SHOW_FULL_TRACE_INFORMATION = "org.eclipse.capra.preferences.showFullTraceInformation";
 
 	private static final String QUOTE_CHARACTERS = "[\"\']";
@@ -65,7 +65,10 @@ public class Connections {
 
 		allObjects = new LinkedHashSet<>();
 		allObjects.addAll(selectedObjects);
-		connections.forEach(c -> allObjects.addAll(c.getTargets()));
+		connections.forEach(c -> {
+			allObjects.addAll(c.getOrigins());
+			allObjects.addAll(c.getTargets());
+		});
 
 		object2Id = new LinkedHashMap<>();
 		int i = 0;
@@ -128,8 +131,7 @@ public class Connections {
 			c.getOrigins().forEach(org -> {
 				c.getTargets().forEach(trg -> {
 					arrows.add(object2Id.get(EMFHelper.getIdentifier(org)) + "--"
-							+ object2Id.get(EMFHelper.getIdentifier(trg)) + ": "
-							+ getConnectionLabel(c));
+							+ object2Id.get(EMFHelper.getIdentifier(trg)) + ": " + getConnectionLabel(c));
 				});
 			});
 		});
