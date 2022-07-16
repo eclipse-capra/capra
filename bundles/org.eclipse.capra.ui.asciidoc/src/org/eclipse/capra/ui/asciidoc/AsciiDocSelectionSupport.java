@@ -97,9 +97,11 @@ public class AsciiDocSelectionSupport implements ISelectionSupport {
 			URI uri;
 			try {
 				if (file != null) {
-					uri = new URIBuilder().setScheme("platform").setPath("/resource" + file.getFullPath()).build();
+					uri = new URIBuilder().setScheme("platform").setPath("/resource" + file.getFullPath())
+							.setFragment(Integer.toString(selectedElement.getOffset())).build();
 				} else {
-					uri = new URIBuilder().setScheme("file").setPath(editorFile.getAbsolutePath()).build();
+					uri = new URIBuilder().setScheme("file").setPath(editorFile.getAbsolutePath())
+							.setFragment(Integer.toString(selectedElement.getOffset())).build();
 				}
 				AsciiDocArtifact artifact = new AsciiDocArtifact(uri.toString(), selectedElement);
 				return Collections.singletonList(artifact);
