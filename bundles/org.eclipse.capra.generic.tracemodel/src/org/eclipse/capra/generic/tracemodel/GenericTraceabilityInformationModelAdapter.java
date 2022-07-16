@@ -224,29 +224,31 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 			List<String> traceLinkTypes, int maximumDepth) {
 		List<Object> accumulator = new ArrayList<>();
 		return getTransitivelyConnectedElements(element, traceModel, accumulator, traceLinkTypes,
-				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
+				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth, false);
 	}
 
 	@Override
 	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int maximumDepth) {
 		List<Object> accumulator = new ArrayList<>();
 		return getTransitivelyConnectedElements(element, traceModel, accumulator, new ArrayList<>(),
-				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
+				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth, false);
 	}
 
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<Object> accumulator, List<String> traceLinkTypes, int currentDepth, int maximumDepth) {
-		List<Connection> directElements = getConnectedElements(element, traceModel, traceLinkTypes);
+			List<Object> accumulator, List<String> traceLinkTypes, int currentDepth, int maximumDepth,
+			boolean reverseDirection) {
+		List<Connection> directElements = getConnectedElements(element, traceModel, traceLinkTypes, reverseDirection);
 		List<Connection> allElements = new ArrayList<>();
 		int currDepth = currentDepth + 1;
 		for (Connection connection : directElements) {
 			if (!accumulator.contains(connection.getTlink())) {
 				allElements.add(connection);
 				accumulator.add(connection.getTlink());
-				for (EObject e : connection.getTargets()) {
+				List<EObject> relevantElements = reverseDirection ? connection.getOrigins() : connection.getTargets();
+				for (EObject e : relevantElements) {
 					if (maximumDepth == 0 || currDepth <= maximumDepth) {
 						allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator, traceLinkTypes,
-								currDepth, maximumDepth));
+								currDepth, maximumDepth, reverseDirection));
 					}
 				}
 			}
@@ -290,8 +292,10 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 					query.getSelectedRelationshipTypes(), query.getTransitivityDepth());
 		}
 		if (query.isTraverseTransitiveLinks()) {
-			return this.getTransitivelyConnectedElements(query.getElement(), query.getTraceModel(),
-					query.getSelectedRelationshipTypes(), query.getTransitivityDepth());
+			List<Object> accumulator = new ArrayList<>();
+			return this.getTransitivelyConnectedElements(query.getElement(), query.getTraceModel(), accumulator,
+					query.getSelectedRelationshipTypes(), DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
+					query.getTransitivityDepth(), query.isReverseDirection());
 		}
 		if (query.isIncludeInternalLinks()) {
 			return this.getInternalElements(query.getElement(), query.getTraceModel(),

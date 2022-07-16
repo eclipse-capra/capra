@@ -24,6 +24,7 @@ import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapt
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
@@ -276,4 +277,105 @@ public class TestTransitiveElementsInternalAndConnected {
 
 	}
 
+	@Test
+	public void testReverseDirectionForTransitiveElements() throws CoreException, IOException {
+
+		// Create a project
+		createSimpleProject(TEST_PROJECT_NAME);
+		assertTrue(projectExists(TEST_PROJECT_NAME));
+
+		// Create 3 models and persist them
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
+		createEClassInEPackage(a, CLASS_F_NAME);
+		save(testProject, a);
+
+		EPackage b = createEcoreModel(MODEL_B_NAME);
+		createEClassInEPackage(b, CLASS_B_NAME);
+		createEClassInEPackage(b, CLASS_C_NAME);
+		save(testProject, b);
+
+		EPackage c = createEcoreModel(MODEL_C_NAME);
+		createEClassInEPackage(c, CLASS_D_NAME);
+		createEClassInEPackage(c, CLASS_E_NAME);
+		save(testProject, c);
+
+		// Load the models and select the classes
+		ResourceSet rs = new ResourceSetImpl();
+
+		EPackage _a = load(testProject, MODEL_A_FILENAME, rs);
+		assertEquals(_a.getName(), MODEL_A_NAME);
+		EClass _A = (EClass) _a.getEClassifier(CLASS_A_NAME);
+
+		EPackage _b = load(testProject, MODEL_B_FILENAME, rs);
+		assertEquals(_b.getName(), MODEL_B_NAME);
+		EClass _B = (EClass) _b.getEClassifier(CLASS_B_NAME);
+		EClass _C = (EClass) _b.getEClassifier(CLASS_C_NAME);
+
+		EPackage _c = load(testProject, MODEL_C_FILENAME, rs);
+		assertEquals(_c.getName(), MODEL_C_NAME);
+		EClass _D = (EClass) _c.getEClassifier(CLASS_D_NAME);
+		EClass _E = (EClass) _c.getEClassifier(CLASS_E_NAME);
+
+		// Verify connected getConnectedElements for trace parameter
+		List<String> traceLinks = Arrays.asList(TracemodelPackage.eINSTANCE.getRelatedTo().getName());
+
+		// create direct trace from A to B, B to E, D to E
+		SelectionView.getOpenedView().dropToSelection(_A);
+		SelectionView.getOpenedView().dropToSelection(_B);
+		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		SelectionView.getOpenedView().clearSelection();
+
+		SelectionView.getOpenedView().dropToSelection(_B);
+		SelectionView.getOpenedView().dropToSelection(_E);
+		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		SelectionView.getOpenedView().clearSelection();
+
+		SelectionView.getOpenedView().dropToSelection(_D);
+		SelectionView.getOpenedView().dropToSelection(_E);
+		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		SelectionView.getOpenedView().clearSelection();
+
+		// adding direct trace from A to C
+		SelectionView.getOpenedView().dropToSelection(_A);
+		SelectionView.getOpenedView().dropToSelection(_C);
+		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		SelectionView.getOpenedView().clearSelection();
+
+		// adding direct trace from C to E
+		SelectionView.getOpenedView().dropToSelection(_C);
+		SelectionView.getOpenedView().dropToSelection(_E);
+		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		SelectionView.getOpenedView().clearSelection();
+
+		ITraceabilityInformationModelAdapter genMod = new GenericTraceabilityInformationModelAdapter();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
+
+		// Check that the forward query produces the right results.
+		ConnectionQuery query1 = new ConnectionQuery.Builder(traceModel, _A).setTraverseTransitiveLinks(true)
+				.setTransitivityDepth(3).setSelectedRelationshipTypes(traceLinks).build();
+		List<Connection> con1 = genMod.getConnections(query1);
+		// Should contain A-B, B-E, A-C, C-E
+		assertTrue(con1.size() == 4);
+
+		// Now we go the reverse direction
+		ConnectionQuery query2 = new ConnectionQuery.Builder(traceModel, _E).setTraverseTransitiveLinks(true)
+				.setTransitivityDepth(3).setSelectedRelationshipTypes(traceLinks).setReverseDirection(true).build();
+		List<Connection> con2 = genMod.getConnections(query2);
+		// Should contain all connection from con1 plus D-E
+		assertTrue(con2.size() == 5);
+		assertTrue(con2.containsAll(con1));
+
+		// Finally, test that the transitivity depth is honored
+		// Now we go the reverse direction
+		ConnectionQuery query3 = new ConnectionQuery.Builder(traceModel, _E).setTraverseTransitiveLinks(true)
+				.setTransitivityDepth(1).setSelectedRelationshipTypes(traceLinks).setReverseDirection(true).build();
+		List<Connection> con3 = genMod.getConnections(query3);
+		// Should contain B-E, C-E, and D-E
+		assertTrue(con3.size() == 3);
+		assertTrue(con2.containsAll(con3));
+	}
 }
