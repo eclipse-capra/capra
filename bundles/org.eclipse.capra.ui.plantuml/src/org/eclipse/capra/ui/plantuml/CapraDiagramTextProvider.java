@@ -211,7 +211,7 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 			ITraceabilityInformationModelAdapter metamodelAdapter, List<String> selectedRelationshipTypes) {
 		List<Connection> traces;
 
-		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, selectedObject)
+		ConnectionQuery query = ConnectionQuery.of(traceModel, selectedObject)
 				.setReverseDirection(ReverseLinkDirectionHandler.isReverseLinkDirection())
 				.setSelectedRelationshipTypes(selectedRelationshipTypes)
 				.setTraverseTransitiveLinks(ToggleTransitivityHandler.isTraceViewTransitive())

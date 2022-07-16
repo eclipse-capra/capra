@@ -451,7 +451,7 @@ public class TestHelper {
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
-		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, artifactHelper.createWrapper(origin))
+		ConnectionQuery query = ConnectionQuery.of(traceModel, artifactHelper.createWrapper(origin))
 				.setReverseDirection(reverseDirection).build();
 		return traceAdapter.getConnections(query);
 	}

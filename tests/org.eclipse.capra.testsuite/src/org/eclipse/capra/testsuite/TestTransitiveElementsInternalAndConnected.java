@@ -168,7 +168,7 @@ public class TestTransitiveElementsInternalAndConnected {
 		assertEquals(con1, con2);
 
 		// Verify that the query builder works as expected
-		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, traces.get(0)).build();
+		ConnectionQuery query = ConnectionQuery.of(traceModel, traces.get(0)).build();
 		con1 = genMod.getConnections(query);
 		assertEquals(con1, con2);
 	}
@@ -265,12 +265,12 @@ public class TestTransitiveElementsInternalAndConnected {
 		assertEquals(con2.size(), con3.size());
 
 		// Check that builder method returns the same results;
-		ConnectionQuery query2a = new ConnectionQuery.Builder(traceModel, _B).setSelectedRelationshipTypes(traceLinks)
+		ConnectionQuery query2a = ConnectionQuery.of(traceModel, _B).setSelectedRelationshipTypes(traceLinks)
 				.setTransitivityDepth(0).build();
 		List<Connection> con2a = genMod.getConnections(query2a);
 		assertEquals(con2, con2a);
 
-		ConnectionQuery query3a = new ConnectionQuery.Builder(traceModel, _C).setSelectedRelationshipTypes(traceLinks)
+		ConnectionQuery query3a = ConnectionQuery.of(traceModel, _C).setSelectedRelationshipTypes(traceLinks)
 				.setTransitivityDepth(0).build();
 		List<Connection> con3a = genMod.getConnections(query3a);
 		assertEquals(con3, con3a);
@@ -355,14 +355,14 @@ public class TestTransitiveElementsInternalAndConnected {
 		GenericTraceModel traceModel = (GenericTraceModel) persistenceAdapter.getTraceModel(resourceSet);
 
 		// Check that the forward query produces the right results.
-		ConnectionQuery query1 = new ConnectionQuery.Builder(traceModel, _A).setTraverseTransitiveLinks(true)
+		ConnectionQuery query1 = ConnectionQuery.of(traceModel, _A).setTraverseTransitiveLinks(true)
 				.setTransitivityDepth(3).setSelectedRelationshipTypes(traceLinks).build();
 		List<Connection> con1 = genMod.getConnections(query1);
 		// Should contain A-B, B-E, A-C, C-E
 		assertTrue(con1.size() == 4);
 
 		// Now we go the reverse direction
-		ConnectionQuery query2 = new ConnectionQuery.Builder(traceModel, _E).setTraverseTransitiveLinks(true)
+		ConnectionQuery query2 = ConnectionQuery.of(traceModel, _E).setTraverseTransitiveLinks(true)
 				.setTransitivityDepth(3).setSelectedRelationshipTypes(traceLinks).setReverseDirection(true).build();
 		List<Connection> con2 = genMod.getConnections(query2);
 		// Should contain all connection from con1 plus D-E
@@ -371,7 +371,7 @@ public class TestTransitiveElementsInternalAndConnected {
 
 		// Finally, test that the transitivity depth is honored
 		// Now we go the reverse direction
-		ConnectionQuery query3 = new ConnectionQuery.Builder(traceModel, _E).setTraverseTransitiveLinks(true)
+		ConnectionQuery query3 = ConnectionQuery.of(traceModel, _E).setTraverseTransitiveLinks(true)
 				.setTransitivityDepth(1).setSelectedRelationshipTypes(traceLinks).setReverseDirection(true).build();
 		List<Connection> con3 = genMod.getConnections(query3);
 		// Should contain B-E, C-E, and D-E

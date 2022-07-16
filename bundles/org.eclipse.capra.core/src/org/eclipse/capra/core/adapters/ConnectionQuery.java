@@ -51,6 +51,19 @@ public class ConnectionQuery {
 	}
 
 	/**
+	 * Creates a new {@link ConnectionQuery} {@link Builder} using the provided
+	 * trace model and origin or target element.
+	 *
+	 * @param traceModel the trace model from which to retrieve the connections
+	 * @param element    the element which should be the start or end point of all
+	 *                   relevant connections.
+	 * @return a new {@link Builder} instance
+	 */
+	public static Builder of(EObject traceModel, EObject element) {
+		return new Builder(traceModel, element);
+	}
+
+	/**
 	 * The element used as a starting or end point to determine the list of
 	 * connected objects. Note that this element could be a trace in the trace
 	 * model.
@@ -190,7 +203,7 @@ public class ConnectionQuery {
 		 *                   relevant connections.
 		 * 
 		 */
-		public Builder(EObject traceModel, EObject element) {
+		private Builder(EObject traceModel, EObject element) {
 			this.element = element;
 			this.traceModel = traceModel;
 		}
