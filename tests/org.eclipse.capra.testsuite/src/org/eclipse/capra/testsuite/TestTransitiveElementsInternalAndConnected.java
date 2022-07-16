@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.generic.tracemodel.GenericTraceabilityInformationModelAdapter;
 import org.eclipse.capra.generic.tracemodel.GenericTraceModel;
+import org.eclipse.capra.generic.tracemodel.GenericTraceabilityInformationModelAdapter;
 import org.eclipse.capra.generic.tracemodel.RelatedTo;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
@@ -164,6 +165,11 @@ public class TestTransitiveElementsInternalAndConnected {
 		assertEquals(con1, con2);
 		con1 = genMod.getConnectedElements(traces.get(0), traceModel, traceLinks);
 		assertEquals(con1, con2);
+
+		// Verify that the query builder works as expected
+		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, traces.get(0)).build();
+		con1 = genMod.getConnections(query);
+		assertEquals(con1, con2);
 	}
 
 	@Test
@@ -250,12 +256,23 @@ public class TestTransitiveElementsInternalAndConnected {
 		TestHelper.createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
 		SelectionView.getOpenedView().clearSelection();
 
-		con3 = genMod.getInternalElementsTransitive(_C, traceModel, traceLinks, 0);
 		con2 = genMod.getInternalElementsTransitive(_B, traceModel, traceLinks, 0);
+		con3 = genMod.getInternalElementsTransitive(_C, traceModel, traceLinks, 0);
 
 		// Checking that after additional trace link classes have the same internal
 		// links connected
 		assertEquals(con2.size(), con3.size());
+
+		// Check that builder method returns the same results;
+		ConnectionQuery query2a = new ConnectionQuery.Builder(traceModel, _B).setSelectedRelationshipTypes(traceLinks)
+				.setTransitivityDepth(0).build();
+		List<Connection> con2a = genMod.getConnections(query2a);
+		assertEquals(con2, con2a);
+
+		ConnectionQuery query3a = new ConnectionQuery.Builder(traceModel, _C).setSelectedRelationshipTypes(traceLinks)
+				.setTransitivityDepth(0).build();
+		List<Connection> con3a = genMod.getConnections(query3a);
+		assertEquals(con3, con3a);
 
 	}
 

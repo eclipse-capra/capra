@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ import org.eclipse.emf.ecore.EObject;
  * Capra in this way is determined by the respective handler.
  * </ul>
  * 
- * @author Anthony Anjorin, Salome Maro
+ * @author Anthony Anjorin, Salome Maro, Jan-Philipp Steghöfer
  *
  */
 public interface ITraceabilityInformationModelAdapter {
@@ -219,13 +219,13 @@ public interface ITraceabilityInformationModelAdapter {
 	 * the element and {@code reverseDirection} is set to {@code true} would
 	 * therefore return all connections for which {@code Y} is the target.
 	 * 
-	 * @param element          the element used to determine the list of connected
-	 *                         objects.
-	 * @param traceModel       the trace model to base calculation on
-	 * @param traceLinkTypes   a list of permissible trace link types (may be
-	 *                         {@code null} or empty)
-	 * @param reverseDirection reverses the direction of the links in the trace
-	 *                         model
+	 * @param element                   the element used to determine the list of
+	 *                                  connected objects.
+	 * @param traceModel                the trace model to base calculation on
+	 * @param selectedRelationshipTypes a list of permissible trace link types (may
+	 *                                  be {@code null} or empty)
+	 * @param reverseDirection          reverses the direction of the links in the
+	 *                                  trace model
 	 * @return a list of {@link Connection}s from the provided {@code traceModel}
 	 *         that contain {@code element} as one of their origins or a
 	 *         representation of {@code element} if {@code element} is a trace link
@@ -285,6 +285,17 @@ public interface ITraceabilityInformationModelAdapter {
 	 * @return a list of all connections in the trace model
 	 */
 	List<Connection> getAllTraceLinks(EObject traceModel);
+
+	/**
+	 * Determines the list of trace links that correspond to the parameters of the
+	 * provided {@link ConnectionQuery} instance.
+	 * 
+	 * @param query the parameters for which connections should be found, including
+	 *              the trace model
+	 * @return a list of trace links that correspond to the parameters of the
+	 *         provided query
+	 */
+	List<Connection> getConnections(ConnectionQuery query);
 
 	/**
 	 * Deletes specific trace links from a given trace model. This is useful for

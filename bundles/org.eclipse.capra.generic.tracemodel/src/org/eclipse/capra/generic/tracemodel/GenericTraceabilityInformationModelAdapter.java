@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.capra.core.adapters.AbstractTraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
@@ -165,34 +166,6 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 		return getConnectedElements(element, tracemodel, selectedRelationshipTypes, false);
 	}
 
-	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<Object> accumulator, int currentDepth, int maximumDepth) {
-		List<Connection> directElements = getConnectedElements(element, traceModel);
-		List<Connection> allElements = new ArrayList<>();
-
-		int currDepth = currentDepth + 1;
-		for (Connection connection : directElements) {
-			if (!accumulator.contains(connection.getTlink())) {
-				allElements.add(connection);
-				accumulator.add(connection.getTlink());
-				for (EObject e : connection.getTargets()) {
-					if (maximumDepth == 0 || currDepth <= maximumDepth) {
-						allElements.addAll(
-								getTransitivelyConnectedElements(e, traceModel, accumulator, currDepth, maximumDepth));
-					}
-				}
-			}
-		}
-		return allElements;
-	}
-
-	@Override
-	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int maximumDepth) {
-		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator, DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
-				maximumDepth);
-	}
-
 	@Override
 	public List<Connection> getAllTraceLinks(EObject traceModel) {
 		GenericTraceModel model = (GenericTraceModel) traceModel;
@@ -260,6 +233,13 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
 	}
 
+	@Override
+	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int maximumDepth) {
+		List<Object> accumulator = new ArrayList<>();
+		return getTransitivelyConnectedElements(element, traceModel, accumulator, new ArrayList<>(),
+				DEFAULT_INITIAL_TRANSITIVITY_DEPTH, maximumDepth);
+	}
+
 	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
 			List<Object> accumulator, List<String> traceLinkTypes, int currentDepth, int maximumDepth) {
 		List<Connection> directElements = getConnectedElements(element, traceModel, traceLinkTypes);
@@ -307,6 +287,24 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 			}
 		}
 		return !relevantLinks.isEmpty();
+	}
+
+	@Override
+	public List<Connection> getConnections(ConnectionQuery query) {
+		if (query.isTraverseTransitiveLinks() && query.isIncludeInternalLinks()) {
+			return this.getInternalElementsTransitive(query.getElement(), query.getTraceModel(),
+					query.getSelectedRelationshipTypes(), query.getTransitivityDepth());
+		}
+		if (query.isTraverseTransitiveLinks()) {
+			return this.getTransitivelyConnectedElements(query.getElement(), query.getTraceModel(),
+					query.getSelectedRelationshipTypes(), query.getTransitivityDepth());
+		}
+		if (query.isIncludeInternalLinks()) {
+			return this.getInternalElements(query.getElement(), query.getTraceModel(),
+					query.getSelectedRelationshipTypes());
+		}
+		return this.getConnectedElements(query.getElement(), query.getTraceModel(),
+				query.getSelectedRelationshipTypes(), query.isReverseDirection());
 	}
 
 }

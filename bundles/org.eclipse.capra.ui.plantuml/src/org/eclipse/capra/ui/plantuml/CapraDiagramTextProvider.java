@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
@@ -54,7 +55,7 @@ import net.sourceforge.plantuml.eclipse.views.PlantUmlView;
  */
 public class CapraDiagramTextProvider implements DiagramTextProvider {
 	private EObject artifactModel = null;
-	
+
 	private String currentDiagramText = null;
 
 	private boolean isLockDiagram() {
@@ -87,7 +88,7 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 			return currentDiagramText;
 		}
 		if (selectedModels == null || selectedModels.isEmpty() && currentDiagramText == null) {
-			currentDiagramText =  VisualizationHelper.createMatrix(null, artifactModel, null, null, true);
+			currentDiagramText = VisualizationHelper.createMatrix(null, artifactModel, null, null, true);
 			return currentDiagramText;
 		} else if (selectedModels == null || selectedModels.isEmpty()) {
 			return currentDiagramText;
@@ -139,14 +140,14 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 				}
 
 				if (selectedModels.size() == 1) {
-					currentDiagramText =  VisualizationHelper.createNeighboursView(traces, EMFHelper.linearize(selectedObject),
-							artifactModel);
+					currentDiagramText = VisualizationHelper.createNeighboursView(traces,
+							EMFHelper.linearize(selectedObject), artifactModel);
 					return currentDiagramText;
 
 				} else {
 					// User selected to display a graph with only the selected elements
 					if (ToggleDisplayGraphHandler.isDisplayGraph()) {
-						currentDiagramText =  renderMultiSelectionGraph(traces, selectedEObjects, artifactHelper);
+						currentDiagramText = renderMultiSelectionGraph(traces, selectedEObjects, artifactHelper);
 						return currentDiagramText;
 					}
 				}
@@ -156,8 +157,8 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 
 		// Standard case is to render a traceability matrix, potentially showing a
 		// message instructing the user to select elements.
-		currentDiagramText = VisualizationHelper.createMatrix(traceModel, artifactModel, selectedEObjects, selectedEObjects,
-				DisplayInternalLinksHandler.areInternalLinksShown());
+		currentDiagramText = VisualizationHelper.createMatrix(traceModel, artifactModel, selectedEObjects,
+				selectedEObjects, DisplayInternalLinksHandler.areInternalLinksShown());
 		return currentDiagramText;
 
 	}
@@ -209,14 +210,14 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 	protected List<Connection> getViewableTraceLinks(EObject selectedObject, EObject traceModel,
 			ITraceabilityInformationModelAdapter metamodelAdapter, List<String> selectedRelationshipTypes) {
 		List<Connection> traces;
-		if (ToggleTransitivityHandler.isTraceViewTransitive()) {
-			int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());
-			traces = metamodelAdapter.getTransitivelyConnectedElements(selectedObject, traceModel,
-					selectedRelationshipTypes, transitivityDepth);
-		} else {
-			traces = metamodelAdapter.getConnectedElements(selectedObject, traceModel, selectedRelationshipTypes,
-					ReverseLinkDirectionHandler.isReverseLinkDirection());
-		}
+
+		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, selectedObject)
+				.setReverseDirection(ReverseLinkDirectionHandler.isReverseLinkDirection())
+				.setSelectedRelationshipTypes(selectedRelationshipTypes)
+				.setTraverseTransitiveLinks(ToggleTransitivityHandler.isTraceViewTransitive())
+				.setTransitivityDepth(Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth())).build();
+		traces = metamodelAdapter.getConnections(query);
+
 		if (DisplayInternalLinksHandler.areInternalLinksShown() && ToggleTransitivityHandler.isTraceViewTransitive()) {
 			EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
 			int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());

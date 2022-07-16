@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -450,7 +451,9 @@ public class TestHelper {
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
-		return traceAdapter.getConnectedElements(artifactHelper.createWrapper(origin), traceModel, reverseDirection);
+		ConnectionQuery query = new ConnectionQuery.Builder(traceModel, artifactHelper.createWrapper(origin))
+				.setReverseDirection(reverseDirection).build();
+		return traceAdapter.getConnections(query);
 	}
 
 	/**
