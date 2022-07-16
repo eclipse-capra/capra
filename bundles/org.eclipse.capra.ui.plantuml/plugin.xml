@@ -102,7 +102,7 @@
             commandId="org.eclipse.capra.ui.plantuml.toggleInternalLinks">
       </handler>
       <handler
-            class="org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipsHandler"
+            class="org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipTypesHandler"
             commandId="org.eclipse.capra.ui.plantuml.selectRelationships">
       </handler>
       <handler

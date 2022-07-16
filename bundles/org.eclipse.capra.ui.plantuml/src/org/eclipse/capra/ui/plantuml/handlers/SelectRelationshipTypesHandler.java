@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -28,14 +28,15 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Toggles between showing (DSL) internal links or not
+ * Allows selecting the traceability link types that should be shown in the
+ * PlantUML view.
  * 
- * @author Dominik Einkemmer
+ * @author Dominik Einkemmer, Jan-Philipp Steghöfer
  */
-public class SelectRelationshipsHandler extends AbstractHandler {
+public class SelectRelationshipTypesHandler extends AbstractHandler {
 	protected static List<String> selectedRelationshipTypes = new ArrayList<>();
 	protected static List<String> possibleRelationshipTypes = new ArrayList<>();
-	protected static EObject previousElement = null;
+	protected static EObject currentElement = null;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -63,12 +64,6 @@ public class SelectRelationshipsHandler extends AbstractHandler {
 		return null;
 	}
 
-	public static void addToPossibleRelationsForSelection(String className) {
-		if (!possibleRelationshipTypes.contains(className)) {
-			possibleRelationshipTypes.add(className);
-		}
-	}
-
 	public static void addToPossibleRelationsForSelection(List<EObject> objects) {
 		for (EObject obj : objects) {
 			String className = obj.eClass().getName();
@@ -90,11 +85,23 @@ public class SelectRelationshipsHandler extends AbstractHandler {
 		selectedRelationshipTypes.clear();
 	}
 
-	public static EObject getPreviousElement() {
-		return previousElement;
+	/**
+	 * Retrieves the element that was selected when the relationship types were last
+	 * updated.
+	 * 
+	 * @return
+	 */
+	public static EObject getCurrentElement() {
+		return currentElement;
 	}
 
-	public static void setPreviousElement(EObject prevElement) {
-		previousElement = prevElement;
+	/**
+	 * Sets the element that was selected when the relationship types were last
+	 * updated.
+	 * 
+	 * @param currElement
+	 */
+	public static void setCurrentElement(EObject currElement) {
+		currentElement = currElement;
 	}
 }

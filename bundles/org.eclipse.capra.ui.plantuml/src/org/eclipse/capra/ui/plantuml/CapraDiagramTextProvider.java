@@ -31,7 +31,7 @@ import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.capra.ui.plantuml.handlers.DisplayInternalLinksHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ReverseLinkDirectionHandler;
-import org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipsHandler;
+import org.eclipse.capra.ui.plantuml.handlers.SelectRelationshipTypesHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleDisplayGraphHandler;
 import org.eclipse.capra.ui.plantuml.handlers.ToggleTransitivityHandler;
 import org.eclipse.capra.ui.plantuml.handlers.TransitivityDepthHandler;
@@ -134,7 +134,7 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 			if (selectedObject != null && selectedObject.eResource() != null) {
 				traceModel = persistenceAdapter.getTraceModel(resourceSet);
 
-				List<String> selectedRelationshipTypes = SelectRelationshipsHandler.getSelectedRelationshipTypes();
+				List<String> selectedRelationshipTypes = SelectRelationshipTypesHandler.getSelectedRelationshipTypes();
 				for (EObject obj : selectedEObjects) {
 					traces.addAll(getViewableTraceLinks(obj, traceModel, metamodelAdapter, selectedRelationshipTypes));
 				}
@@ -215,43 +215,27 @@ public class CapraDiagramTextProvider implements DiagramTextProvider {
 				.setReverseDirection(ReverseLinkDirectionHandler.isReverseLinkDirection())
 				.setSelectedRelationshipTypes(selectedRelationshipTypes)
 				.setTraverseTransitiveLinks(ToggleTransitivityHandler.isTraceViewTransitive())
-				.setTransitivityDepth(Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth())).build();
+				.setTransitivityDepth(Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth()))
+				.setIncludeInternalLinks(DisplayInternalLinksHandler.areInternalLinksShown()).build();
 		traces = metamodelAdapter.getConnections(query);
 
-		if (DisplayInternalLinksHandler.areInternalLinksShown() && ToggleTransitivityHandler.isTraceViewTransitive()) {
-			EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
-			int transitivityDepth = Integer.parseInt(TransitivityDepthHandler.getTransitivityDepth());
-			if (previousElement != null) {
-				String previousElementName = EMFHelper.getNameAttribute(previousElement);
-				String currentElementName = EMFHelper.getNameAttribute(selectedObject);
-				if (!previousElementName.equals(currentElementName)) {
-					SelectRelationshipsHandler.clearPossibleRelationsForSelection();
-					SelectRelationshipsHandler.emptySelectedRelationshipTypes();
-					SelectRelationshipsHandler.setPreviousElement(selectedObject);
-				}
-			} else {
-				SelectRelationshipsHandler.setPreviousElement(selectedObject);
-			}
-			traces.addAll(metamodelAdapter.getInternalElementsTransitive(selectedObject, traceModel,
-					selectedRelationshipTypes, transitivityDepth));
-		} else if (DisplayInternalLinksHandler.areInternalLinksShown()) {
-			EObject previousElement = SelectRelationshipsHandler.getPreviousElement();
-			if (previousElement != null) {
-				String previousElementName = EMFHelper.getNameAttribute(previousElement);
-				String currentElementName = EMFHelper.getNameAttribute(selectedObject);
-				if (!previousElementName.equals(currentElementName)) {
-					SelectRelationshipsHandler.clearPossibleRelationsForSelection();
-					SelectRelationshipsHandler.emptySelectedRelationshipTypes();
-					SelectRelationshipsHandler.setPreviousElement(selectedObject);
-				}
-			} else {
-				SelectRelationshipsHandler.setPreviousElement(selectedObject);
-			}
-			traces.addAll(metamodelAdapter.getInternalElements(selectedObject, traceModel, selectedRelationshipTypes));
-		}
-		List<EObject> links = extractLinksFromTraces(traces);
-		SelectRelationshipsHandler.addToPossibleRelationsForSelection(links);
+		updateSelectableRelationshipTypes(selectedObject, traces);
 		return traces;
+	}
+
+	private void updateSelectableRelationshipTypes(EObject selectedObject, List<Connection> traces) {
+		List<EObject> links = extractLinksFromTraces(traces);
+		EObject previousElement = SelectRelationshipTypesHandler.getCurrentElement();
+		if (previousElement != null) {
+			String previousElementName = EMFHelper.getNameAttribute(previousElement);
+			String currentElementName = EMFHelper.getNameAttribute(selectedObject);
+			if (!previousElementName.equals(currentElementName)) {
+				SelectRelationshipTypesHandler.clearPossibleRelationsForSelection();
+				SelectRelationshipTypesHandler.emptySelectedRelationshipTypes();
+			}
+		}
+		SelectRelationshipTypesHandler.setCurrentElement(selectedObject);
+		SelectRelationshipTypesHandler.addToPossibleRelationsForSelection(links);
 	}
 
 	@Override
