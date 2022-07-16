@@ -130,13 +130,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 		return this.getConnectedElements(element, tracemodel, new ArrayList<String>());
 	}
 
-	@Override
-	public List<Connection> getConnectedElements(EObject element, EObject traceModel, boolean reverseDirection) {
-		return getConnectedElements(element, traceModel, new ArrayList<String>(), reverseDirection);
-	}
-
-	@Override
-	public List<Connection> getConnectedElements(EObject element, EObject traceModel,
+	private List<Connection> getConnectedElements(EObject element, EObject traceModel,
 			List<String> selectedRelationshipTypes, boolean reverseDirection) {
 		GenericTraceModel root = (GenericTraceModel) traceModel;
 		List<Connection> connections = new ArrayList<>();

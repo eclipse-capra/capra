@@ -143,41 +143,6 @@ public interface ITraceabilityInformationModelAdapter {
 
 	/**
 	 * Determine a list of all objects connected to {@code element} according to the
-	 * given trace model.
-	 * 
-	 * There are two ways {@code element} can be used:
-	 * <ol>
-	 * <li>If {@code element} is an arbitrary {@link EObject}, then the method
-	 * returns all trace links in which {@code element} is either on of the
-	 * <b>origins</b> (if (@code reverseDirection} is {@code false}) or one of the
-	 * <b>targets</b>. (if (@code reverseDirection} is {@code true}).</li>
-	 * <li>If {@code element} is a trace link, then the method returns a
-	 * representation of the trace link itself. The {@code reverseDirection}
-	 * parameter is then ignored.</li>
-	 * </ol>
-	 * <p>
-	 * This version of the method can reverse the direction of the trace link.
-	 * Eclipse Capra stores <b>directional</b> trace links that always have an
-	 * origin and a target. A trace link X->Y connects artifacts X (as the origin)
-	 * and (Y) as the source. However, in some situations, it is useful to be able
-	 * to find trace links that are coming into Y and identify if X and Y are
-	 * connected regardless of link direction. Calling this method with {@code Y} as
-	 * the element and {@code reverseDirection} is set to {@code true} would
-	 * therefore return all connections for which {@code Y} is the target.
-	 * 
-	 * @param element          the element used to determine the list of connected
-	 *                         objects.
-	 * @param traceModel       the trace model to base calculation on
-	 * @param reverseDirection reverses the direction of the links in the trace
-	 *                         model
-	 * @return a list of {@link Connection}s from the provided {@code traceModel}
-	 *         that contain {@code element} as one of their origins or a
-	 *         representation of {@code element} if {@code element} is a trace link
-	 */
-	List<Connection> getConnectedElements(EObject element, EObject traceModel, boolean reverseDirection);
-
-	/**
-	 * Determine a list of all objects connected to {@code element} according to the
 	 * given trace model based on the provided list of trace link types. If
 	 * {@code selectedRelationshipTypes} is empty or {@code null}, this method
 	 * behaves exactly like {@link #getConnectedElements(EObject, EObject)}.
@@ -189,49 +154,12 @@ public interface ITraceabilityInformationModelAdapter {
 	 *                       {@code null} or empty)
 	 * @return a list of {@link Connection}s from the provided {@code traceModel}
 	 *         that contain {@code element} as one of their origins or a
-	 *         representation of {@code element} if {@code element} is a trace link
+	 *         representation of {@code element} if {@code element} is a trace link\
+	 * @deprecated as of Eclipse Capra 0.9.0, use
+	 *             {@link this#getConnections(ConnectionQuery)} instead
 	 */
+	@Deprecated
 	List<Connection> getConnectedElements(EObject element, EObject traceModel, List<String> traceLinkTypes);
-
-	/**
-	 * Determine a list of all objects connected to {@code element} according to the
-	 * given trace model. If {@code selectedRelationshipTypes} is empty or
-	 * {@code null}, this method behaves exactly like
-	 * {@link #getConnectedElements(EObject, EObject, boolean)}.
-	 * 
-	 * There are two ways {@code element} can be used:
-	 * <ol>
-	 * <li>If {@code element} is an arbitrary {@link EObject}, then the method
-	 * returns all trace links in which {@code element} is either on of the
-	 * <b>origins</b> (if (@code reverseDirection} is {@code false}) or one of the
-	 * <b>targets</b>. (if (@code reverseDirection} is {@code true}).</li>
-	 * <li>If {@code element} is a trace link, then the method returns a
-	 * representation of the trace link itself. The {@code reverseDirection}
-	 * parameter is then ignored.</li>
-	 * </ol>
-	 * <p>
-	 * This version of the method can reverse the direction of the trace link.
-	 * Eclipse Capra stores <b>directional</b> trace links that always have an
-	 * origin and a target. A trace link X->Y connects artifacts X (as the origin)
-	 * and (Y) as the source. However, in some situations, it is useful to be able
-	 * to find trace links that are coming into Y and identify if X and Y are
-	 * connected regardless of link direction. Calling this method with {@code Y} as
-	 * the element and {@code reverseDirection} is set to {@code true} would
-	 * therefore return all connections for which {@code Y} is the target.
-	 * 
-	 * @param element                   the element used to determine the list of
-	 *                                  connected objects.
-	 * @param traceModel                the trace model to base calculation on
-	 * @param selectedRelationshipTypes a list of permissible trace link types (may
-	 *                                  be {@code null} or empty)
-	 * @param reverseDirection          reverses the direction of the links in the
-	 *                                  trace model
-	 * @return a list of {@link Connection}s from the provided {@code traceModel}
-	 *         that contain {@code element} as one of their origins or a
-	 *         representation of {@code element} if {@code element} is a trace link
-	 */
-	List<Connection> getConnectedElements(EObject element, EObject traceModel, List<String> selectedRelationshipTypes,
-			boolean reverseDirection);
 
 	/**
 	 * Determine a list of all objects transitively connected to {@code element}
@@ -253,7 +181,10 @@ public interface ITraceabilityInformationModelAdapter {
 	 * @return a list of {@link Connection}s from the provided {@code traceModel}
 	 *         that contain {@code element} as one of their origins or a
 	 *         representation of {@code element} if {@code element} is a trace link
+	 * @deprecated as of Eclipse Capra 0.9.0, use
+	 *             {@link this#getConnections(ConnectionQuery)} instead
 	 */
+	@Deprecated
 	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, int transitivityDepth);
 
 	/**
@@ -273,7 +204,10 @@ public interface ITraceabilityInformationModelAdapter {
 	 * @return a list of {@link Connection}s from the provided {@code traceModel}
 	 *         that contain {@code element} as one of their origins or a
 	 *         representation of {@code element} if {@code element} is a trace link
+	 * @deprecated as of Eclipse Capra 0.9.0, use
+	 *             {@link this#getConnections(ConnectionQuery)} instead
 	 */
+	@Deprecated
 	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel, List<String> traceLinkTypes,
 			int transitivityDepth);
 
@@ -285,17 +219,6 @@ public interface ITraceabilityInformationModelAdapter {
 	 * @return a list of all connections in the trace model
 	 */
 	List<Connection> getAllTraceLinks(EObject traceModel);
-
-	/**
-	 * Determines the list of trace links that correspond to the parameters of the
-	 * provided {@link ConnectionQuery} instance.
-	 * 
-	 * @param query the parameters for which connections should be found, including
-	 *              the trace model
-	 * @return a list of trace links that correspond to the parameters of the
-	 *         provided query
-	 */
-	List<Connection> getConnections(ConnectionQuery query);
 
 	/**
 	 * Deletes specific trace links from a given trace model. This is useful for
@@ -328,7 +251,10 @@ public interface ITraceabilityInformationModelAdapter {
 	 * @return a list of {@link Connection}s that represent trace links as well as
 	 *         relationships within the model in the DSL in which {@code element} is
 	 *         formulated.
+	 * @deprecated as of Eclipse Capra 0.9.0, use
+	 *             {@link this#getConnections(ConnectionQuery)} instead
 	 */
+	@Deprecated
 	List<Connection> getInternalElements(EObject element, EObject traceModel, List<String> traceLinkTypes);
 
 	/**
@@ -355,7 +281,10 @@ public interface ITraceabilityInformationModelAdapter {
 	 *                          transitively. 0 indicates no limit.
 	 * @return a list of {@link Connection}s that represent relationships within the
 	 *         model in the DSL in which {@code element} is formulated.
+	 * @deprecated as of Eclipse Capra 0.9.0, use
+	 *             {@link this#getConnections(ConnectionQuery)} instead
 	 */
+	@Deprecated
 	List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel, List<String> traceLinkTypes,
 			int transitivityDepth);
 
@@ -371,4 +300,15 @@ public interface ITraceabilityInformationModelAdapter {
 	 *         <code>false</code> otherwise
 	 */
 	boolean isThereAnInternalTraceBetween(EObject first, EObject second);
+
+	/**
+	 * Determines the list of trace links that correspond to the parameters of the
+	 * provided {@link ConnectionQuery} instance.
+	 * 
+	 * @param query the parameters for which connections should be found, including
+	 *              the trace model
+	 * @return a list of trace links that correspond to the parameters of the
+	 *         provided query
+	 */
+	List<Connection> getConnections(ConnectionQuery query);
 }
