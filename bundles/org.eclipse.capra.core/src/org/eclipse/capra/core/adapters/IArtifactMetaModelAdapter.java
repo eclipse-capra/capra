@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * This interface defines the functionality necessary to deal with meta models
  * that describe the artifacts to and from which trace links are created.
- * 
+ * <p>
  * An artifact model is used to capture all wrappers, i.e., {@link EObject}
  * instances that describe artifacts that are not themselves {@code EObject}
  * instances. Since Eclipse Capra uses EMF internally to represent links,
@@ -30,8 +30,18 @@ import org.eclipse.emf.ecore.EObject;
  * artifacts for which this is not true need to have a &quot;wrapper&quot; that
  * contains the relevant information about these artifacts such as their names
  * and URIs. These wrappers are stored in an artifact model and the structure of
- * this artifact model is in turn described by an artifact meta-model. This
- * class provides access to the wrappers via the artifact model.
+ * this artifact model is in turn described by an artifact meta-model.
+ * Descendents of this class provides access to the wrappers via the artifact
+ * model.
+ * <p>
+ * In general, artifacts should always be uniquely identifiable via their URI.
+ * It is the responsibility of the code that calls
+ * {@link #createArtifact(EObject, String, String, String, String)} to ensure
+ * that the URI is indeed unique. That is especially important if several
+ * artifacts reside in the same file (e.g., different methods in the same Java
+ * class). However, to allow handlers to store additional information about the
+ * retrieval of the artifact, an addition {@code internalResolver} can be stored
+ * with each artifact.
  */
 public interface IArtifactMetaModelAdapter {
 
@@ -92,22 +102,40 @@ public interface IArtifactMetaModelAdapter {
 	 * page.
 	 * <p/>
 	 * The fragment part should (if necessary) uniquely identify the artifact within
-	 * the resource. It can consists of a sequence of sub-parts separated '/'. In
-	 * that way tools that work with artifacts can used the sub-parts of the
+	 * the resource. It can, e.g., consist of a sequence of sub-parts separated by
+	 * '/'. Alternatively, it is possible to use parameters to identify elements as
+	 * well. In that way tools that work with artifacts can use the sub-parts of the
 	 * fragment for their own purposes.
 	 * <p/>
-	 * Example: The JDT artifact handler uses the following encoding scheme for
-	 * artifact URI:s:
+	 * Examples:
+	 * <p/>
+	 * The JDT artifact handler uses the following encoding scheme for artifact
+	 * URIs:
 	 * {@code platform:/Project_name/path/to/file.java#com.pack.ClassName/methodName(int, String)}.
+	 * <p/>
+	 * The Office artifact handler uses parameters to identify rows in specific
+	 * sheets in Excel files:
+	 * {@code platform:/Project_name/path/to/file.xlsx?sheet=Sheet1&row=A1
 	 *
-	 * @param artifact
-	 * @return artifact uri
+	 * @param artifact the artifact whose URI should be retrieved
+	 * 
+	 * @return the URI of the given artifact
 	 */
 	String getArtifactUri(EObject artifact);
 
 	/**
-	 * @return A string contains internal information that handlers use to locate
-	 *         and reconstruct the artifact
+	 * Gets the artifact's internal resolver, i.e., additional information the
+	 * artifact handler can use to retrieve relevant information about the artifact
+	 * and to restore its state.
+	 * <p>
+	 * While an artifact's URI should contain the necessary information to
+	 * reconstruct an artifact, this additional information storage can be helpful
+	 * if some aspects cannot or should not be encoded in the URI. Can be
+	 * {@code null}.
+	 * 
+	 * @param artifact the artifact whose internal resolver should be retrieved.
+	 * @return a {@code String} containing internal information that handlers use to
+	 *         locate and reconstruct the artifact
 	 */
 	String getArtifactInternalResolver(EObject artifact);
 
