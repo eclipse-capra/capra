@@ -4,7 +4,7 @@ Bundle-Name: Asciidoctor support for Eclipse Capra - UI elements
 Bundle-SymbolicName: org.eclipse.capra.ui.asciidoc;singleton:=true
 Bundle-Version: 0.9.0.qualifier
 Bundle-Vendor: Eclipse Capra
-Automatic-Module-Name: org.eclipse.capra.ui.asciidoctor
+Automatic-Module-Name: org.eclipse.capra.ui.asciidoc
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.capra.ui,
  de.jcup.asciidoctoreditor,
