@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IResourceDelta;
@@ -67,7 +67,8 @@ public class MylynHandler extends AbstractArtifactHandler<ITask> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links for Mylyn Tasks
 		return Collections.emptyList();

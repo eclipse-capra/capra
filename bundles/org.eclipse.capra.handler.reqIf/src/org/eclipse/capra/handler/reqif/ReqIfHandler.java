@@ -36,8 +36,6 @@ import org.eclipse.rmf.reqif10.common.util.ReqIF10Util;
 
 public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 
-	// TODO: This used to expect IStructuredSelection input, why?
-
 	@Override
 	public EObject createWrapper(SpecHierarchy spec, EObject artifactModel) {
 		return spec;
@@ -73,8 +71,12 @@ public class ReqIfHandler extends AbstractArtifactHandler<SpecHierarchy> {
 		return null;
 	}
 
+	/**
+	 * FIXME: Make sure that we honor link directionality
+	 */
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		if (investigatedElement instanceof SpecHierarchy) {
 			SpecHierarchy spec = (SpecHierarchy) investigatedElement;
 

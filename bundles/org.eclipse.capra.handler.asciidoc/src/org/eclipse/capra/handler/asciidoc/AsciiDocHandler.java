@@ -81,7 +81,8 @@ public class AsciiDocHandler extends AbstractArtifactHandler<AsciiDocArtifact> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Deliberately do nothing.
 		return null;
 	}

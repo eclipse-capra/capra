@@ -97,7 +97,7 @@ public abstract class AbstractTraceabilityInformationModelAdapter implements ITr
 				Object origin = artifactHelper.unwrapWrapper(o);
 				IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).get();
 				if (originHandler != null) {
-					allElements.addAll(originHandler.getInternalLinks(o, traceLinkTypes));
+					allElements.addAll(originHandler.getInternalLinks(o, traceLinkTypes, false));
 				}
 			}
 			// get internal links from targets
@@ -105,7 +105,7 @@ public abstract class AbstractTraceabilityInformationModelAdapter implements ITr
 				Object originalObject = artifactHelper.unwrapWrapper(o);
 				IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
 				if (handler != null) {
-					allElements.addAll(handler.getInternalLinks(o, traceLinkTypes));
+					allElements.addAll(handler.getInternalLinks(o, traceLinkTypes, false));
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public abstract class AbstractTraceabilityInformationModelAdapter implements ITr
 			Object originalObject = artifactHelper.unwrapWrapper(element);
 			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
 			if (handler != null) {
-				allElements.addAll(handler.getInternalLinks(element, traceLinkTypes));
+				allElements.addAll(handler.getInternalLinks(element, traceLinkTypes, false));
 			}
 
 		}
@@ -122,7 +122,7 @@ public abstract class AbstractTraceabilityInformationModelAdapter implements ITr
 		if (element.getClass().getPackage().toString().contains("org.eclipse.eatop")) {
 			IArtifactHandler<Object> handler = (IArtifactHandler<Object>) artifactHelper.getHandler(element)
 					.orElseThrow();
-			allElements.addAll(handler.getInternalLinks(element, traceLinkTypes));
+			allElements.addAll(handler.getInternalLinks(element, traceLinkTypes, false));
 		}
 		return allElements;
 	}

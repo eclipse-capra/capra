@@ -59,10 +59,18 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 		return EMFHelper.getIdentifier(artifact);
 	}
 
+	/*
+	 * This method already ignores the directionality of the relationships in UML.
+	 * We therefore do not process the {@code reverseDirection} flag right now.
+	 * FIXME: Make internal links directed
+	 */
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		List<Integer> duplicationCheck = new ArrayList<>();
 		List<Connection> allElements = new ArrayList<>();
+		// First, we take care of cases where the investigated element is a type of
+		// relationship itself.
 		if (Relationship.class.isAssignableFrom(investigatedElement.getClass())) {
 			if (selectedRelationshipTypes.isEmpty()
 					|| selectedRelationshipTypes.contains(investigatedElement.eClass().getName())) {
@@ -73,11 +81,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 					relatedElements.add(element);
 					connectionHash += element.hashCode();
 				}
-				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, rel);
-					allElements.add(conn);
-					duplicationCheck.add(connectionHash);
-				}
+				addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, rel, relatedElements,
+						connectionHash);
 			}
 		} else if (ActivityEdge.class.isAssignableFrom(investigatedElement.getClass())) {
 			if (selectedRelationshipTypes.isEmpty()
@@ -87,11 +92,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				relatedElements.add(activityEdge.getTarget());
 				relatedElements.add(activityEdge.getSource());
 				int connectionHash = investigatedElement.hashCode() + activityEdge.hashCode();
-				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, activityEdge);
-					allElements.add(conn);
-					duplicationCheck.add(connectionHash);
-				}
+				addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, activityEdge, relatedElements,
+						connectionHash);
 			}
 		} else if (Transition.class.isAssignableFrom(investigatedElement.getClass())) {
 			if (selectedRelationshipTypes.isEmpty()
@@ -102,11 +104,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				relatedElements.add(transition.getTarget());
 				int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 						+ transition.getTarget().hashCode() + transition.getSource().hashCode();
-				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, transition);
-					allElements.add(conn);
-					duplicationCheck.add(connectionHash);
-				}
+				addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, transition, relatedElements,
+						connectionHash);
 			}
 		} else if (Message.class.isAssignableFrom(investigatedElement.getClass())) {
 			if (selectedRelationshipTypes.isEmpty()
@@ -121,11 +120,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 					int connectionHash = investigatedElement.hashCode() + msg.hashCode()
 							+ msg.getMessageSort().hashCode() + sender.getCovered().hashCode()
 							+ receiver.getCovered().hashCode();
-					if (!duplicationCheck.contains(connectionHash)) {
-						Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, msg);
-						allElements.add(conn);
-						duplicationCheck.add(connectionHash);
-					}
+					addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, msg, relatedElements,
+							connectionHash);
 				}
 			}
 		} else if (Port.class.isAssignableFrom(investigatedElement.getClass())) {
@@ -141,11 +137,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				for (EObject el : relatedElements) {
 					connectionHash += el.hashCode();
 				}
-				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, port);
-					allElements.add(conn);
-					duplicationCheck.add(connectionHash);
-				}
+				addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, port, relatedElements,
+						connectionHash);
 			}
 		} else if (Connector.class.isAssignableFrom(investigatedElement.getClass())) {
 			if (selectedRelationshipTypes.isEmpty()
@@ -164,17 +157,18 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 				for (EObject el : relatedElements) {
 					connectionHash += el.hashCode();
 				}
-				if (!duplicationCheck.contains(connectionHash)) {
-					Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, connector);
-					allElements.add(conn);
-					duplicationCheck.add(connectionHash);
-				}
+				addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, connector, relatedElements,
+						connectionHash);
 			}
 		} else {
+			// Next, we check if the investigated element participates in any other
+			// relationship
 			EObject root = EcoreUtil.getRootContainer(investigatedElement);
 			TreeIterator<EObject> modelContents = root.eAllContents();
 			while (modelContents.hasNext()) {
 				EObject content = modelContents.next();
+				// We go through each element in the UML model and check if it's one of the
+				// relationships we're interested in.
 				if (selectedRelationshipTypes.isEmpty()
 						|| selectedRelationshipTypes.contains(content.eClass().getName())) {
 					if (Relationship.class.isAssignableFrom(content.getClass())) {
@@ -193,12 +187,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							for (EObject element : relatedElements) {
 								connectionHash += element.hashCode();
 							}
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										relation);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, relation,
+									relatedElements, connectionHash);
 						}
 					} else if (ActivityEdge.class.isAssignableFrom(content.getClass())) {
 						if (selectedRelationshipTypes.isEmpty()
@@ -211,12 +201,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								relatedElements.add(activityEdge.getTarget());
 							}
 							int connectionHash = investigatedElement.hashCode() + activityEdge.hashCode();
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										activityEdge);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, activityEdge,
+									relatedElements, connectionHash);
 						}
 					} else if (Transition.class.isAssignableFrom(content.getClass())) {
 						Transition transition = Transition.class.cast(content);
@@ -225,22 +211,14 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							relatedElements.add(transition.getTarget());
 							int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 									+ transition.getTarget().hashCode();
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										transition);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, transition,
+									relatedElements, connectionHash);
 						} else if (transition.getTarget().hashCode() == investigatedElement.hashCode()) {
 							relatedElements.add(transition.getSource());
 							int connectionHash = investigatedElement.hashCode() + transition.hashCode()
 									+ transition.getSource().hashCode();
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										transition);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, transition,
+									relatedElements, connectionHash);
 						}
 					} else if (Message.class.isAssignableFrom(content.getClass())) {
 						Message msg = Message.class.cast(content);
@@ -263,12 +241,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 								relatedElements.add(receiver.getCovered());
 								int connectionHash = investigatedElement.hashCode() + msg.hashCode()
 										+ msg.getMessageSort().hashCode() + receiver.getCovered().hashCode();
-								if (!duplicationCheck.contains(connectionHash)) {
-									Connection conn = new Connection(Arrays.asList(investigatedElement),
-											relatedElements, msg);
-									allElements.add(conn);
-									duplicationCheck.add(connectionHash);
-								}
+								addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, msg,
+										relatedElements, connectionHash);
 							}
 						}
 					} else if (Port.class.isAssignableFrom(content.getClass())) {
@@ -300,12 +274,8 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							for (EObject el : relatedElements) {
 								connectionHash += el.hashCode();
 							}
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										port);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, port, relatedElements,
+									connectionHash);
 						}
 					} else if (Connector.class.isAssignableFrom(content.getClass())) {
 						Connector connector = Connector.class.cast(content);
@@ -332,18 +302,23 @@ public class UMLHandler extends AbstractArtifactHandler<EModelElement> {
 							for (EObject el : relatedElements) {
 								connectionHash += el.hashCode();
 							}
-							if (!duplicationCheck.contains(connectionHash)) {
-								Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements,
-										connector);
-								allElements.add(conn);
-								duplicationCheck.add(connectionHash);
-							}
+							addIfNotDuplicate(investigatedElement, duplicationCheck, allElements, connector,
+									relatedElements, connectionHash);
 						}
 					}
 				}
 			}
 		}
 		return allElements;
+	}
+
+	private void addIfNotDuplicate(EObject investigatedElement, List<Integer> duplicationCheck,
+			List<Connection> allElements, EObject object, List<EObject> relatedElements, int connectionHash) {
+		if (!duplicationCheck.contains(connectionHash)) {
+			Connection conn = new Connection(Arrays.asList(investigatedElement), relatedElements, object);
+			allElements.add(conn);
+			duplicationCheck.add(connectionHash);
+		}
 	}
 
 	@Override

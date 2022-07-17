@@ -82,7 +82,8 @@ public class OdeHandler extends AbstractArtifactHandler<Element> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}

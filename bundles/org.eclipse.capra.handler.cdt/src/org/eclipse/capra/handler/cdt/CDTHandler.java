@@ -98,7 +98,8 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links for C code
 		return Collections.emptyList();

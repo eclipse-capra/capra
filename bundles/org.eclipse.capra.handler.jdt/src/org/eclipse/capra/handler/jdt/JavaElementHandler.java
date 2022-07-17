@@ -162,7 +162,8 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links for Java code
 		return Collections.emptyList();

@@ -126,11 +126,17 @@ public interface IArtifactHandler<T> {
 	 *                                  specific link types in the visualisation and
 	 *                                  analysis and implementation of the method
 	 *                                  should filter on this list
+	 * @param reverseDirection          if set to {@code true}, retrieves internal
+	 *                                  links using {@code investigatedElement} as
+	 *                                  the target of the links; standard behaviour
+	 *                                  is to use {@code investigatedElement} as the
+	 *                                  origin of the links
 	 * 
 	 * @return a list of {@link Connection} between the {@code investigatedElement}
 	 *         and other elements the handler takes care of
 	 */
-	List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes);
+	List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection);
 
 	/**
 	 * Decide if two objects have an internal link between them.

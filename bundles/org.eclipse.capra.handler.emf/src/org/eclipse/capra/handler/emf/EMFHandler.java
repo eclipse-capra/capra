@@ -48,7 +48,8 @@ public class EMFHandler extends AbstractArtifactHandler<EObject> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links for EMF models
 		return Collections.emptyList();

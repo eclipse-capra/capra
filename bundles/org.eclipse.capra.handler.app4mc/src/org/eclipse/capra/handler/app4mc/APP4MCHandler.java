@@ -67,12 +67,15 @@ public class APP4MCHandler extends AbstractArtifactHandler<INamed> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		List<Connection> connections = new ArrayList<>();
 		if (investigatedElement instanceof INamed) {
 			INamed named = (INamed) investigatedElement;
 			if (named.eCrossReferences() != null) {
 				List<EObject> refs = named.eCrossReferences();
+				// FIXME: Check if the cross references are bidirectional
+				// otherwise, ensure that we also find reverse links
 				for (EObject ref : refs) {
 					if (selectedRelationshipTypes != null) {
 						if (selectedRelationshipTypes.size() == 0

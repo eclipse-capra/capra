@@ -53,7 +53,8 @@ public class PhpHandler extends AbstractArtifactHandler<IModelElement> {
 	}
 
 	@Override
-	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes) {
+	public List<Connection> getInternalLinks(EObject investigatedElement, List<String> selectedRelationshipTypes,
+			boolean reverseDirection) {
 		// Method currently left empty to wait for user requirements of relevant
 		// internal links for PHP code.
 		return Collections.emptyList();
