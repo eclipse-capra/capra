@@ -70,6 +70,7 @@
 		<module>features/org.eclipse.capra.core.feature</module>
 		<module>features/org.eclipse.capra.generic.feature</module>
 		<module>features/org.eclipse.capra.handler.app4mc.feature</module>
+		<module>features/org.eclipse.capra.handler.asciidoc.feature</module>
 		<module>features/org.eclipse.capra.handler.cdt.feature</module>
 		<module>features/org.eclipse.capra.handler.hudson.feature</module>
 		<module>features/org.eclipse.capra.handler.office.feature</module>
