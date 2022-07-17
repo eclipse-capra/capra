@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.capra.core.adapters.ConnectionQuery;
 import org.eclipse.capra.core.adapters.IMetadataAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
@@ -32,6 +33,7 @@ import org.eclipse.capra.core.listeners.ITraceCreationListener;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.RollbackException;
@@ -288,8 +290,10 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 	@Override
 	public List<Connection> getConnections(ConnectionQuery query) {
 		if (query.isTraverseTransitiveLinks() && query.isIncludeInternalLinks()) {
-			return this.getInternalElementsTransitive(query.getElement(), query.getTraceModel(),
-					query.getSelectedRelationshipTypes(), query.getTransitivityDepth());
+			List<Object> accumulator = new ArrayList<>();
+			return this.getInternalElementsTransitive(query.getElement(), query.getTraceModel(), accumulator,
+					query.getSelectedRelationshipTypes(), DEFAULT_INITIAL_TRANSITIVITY_DEPTH,
+					query.getTransitivityDepth(), query.isReverseDirection());
 		}
 		if (query.isTraverseTransitiveLinks()) {
 			List<Object> accumulator = new ArrayList<>();
@@ -299,10 +303,96 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 		}
 		if (query.isIncludeInternalLinks()) {
 			return this.getInternalElements(query.getElement(), query.getTraceModel(),
-					query.getSelectedRelationshipTypes());
+					query.getSelectedRelationshipTypes(), query.isTraverseTransitiveLinks(),
+					query.getTransitivityDepth(), query.isReverseDirection());
 		}
 		return this.getConnectedElements(query.getElement(), query.getTraceModel(),
 				query.getSelectedRelationshipTypes(), query.isReverseDirection());
 	}
 
+	private List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
+			List<Object> accumulator, List<String> selectedRelationshipTypes, int currentDepth, int maximumDepth,
+			boolean reverseDirection) {
+		List<Connection> directElements = getInternalElements(element, traceModel, selectedRelationshipTypes, true,
+				maximumDepth, reverseDirection);
+		List<Connection> allElements = new ArrayList<>();
+		int currDepth = currentDepth + 1;
+		for (Connection connection : directElements) {
+			if (!accumulator.contains(connection.getTlink())) {
+				allElements.add(connection);
+				accumulator.add(connection.getTlink());
+				for (EObject e : connection.getTargets()) {
+					if (maximumDepth == 0 || currDepth < (maximumDepth + 2)) {
+						allElements.addAll(getInternalElementsTransitive(e, traceModel, accumulator,
+								selectedRelationshipTypes, currDepth, maximumDepth, reverseDirection));
+					}
+				}
+			}
+		}
+
+		return allElements;
+	}
+
+	@Override
+	public List<Connection> getInternalElementsTransitive(EObject element, EObject traceModel,
+			List<String> traceLinkTypes, int maximumDepth) {
+		List<Object> accumulator = new ArrayList<>();
+		return getInternalElementsTransitive(element, traceModel, accumulator, traceLinkTypes, 0, maximumDepth, false);
+	}
+
+	@Override
+	public List<Connection> getInternalElements(EObject element, EObject traceModel, List<String> traceLinkTypes) {
+		return getInternalElements(element, traceModel, traceLinkTypes, false, 0, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Connection> getInternalElements(EObject element, EObject traceModel, List<String> traceLinkTypes,
+			boolean traceLinksTransitive, int transitivityDepth, boolean reverseDirection) {
+		List<Connection> allElements = new ArrayList<>();
+		List<Connection> relevantConnections;
+		if (traceLinksTransitive) {
+			ConnectionQuery query = ConnectionQuery.of(traceModel, element).setTraverseTransitiveLinks(true)
+					.setTransitivityDepth(transitivityDepth).setSelectedRelationshipTypes(traceLinkTypes)
+					.setReverseDirection(reverseDirection).build();
+			relevantConnections = getConnections(query);
+		} else {
+			ConnectionQuery query = ConnectionQuery.of(traceModel, element).setSelectedRelationshipTypes(traceLinkTypes)
+					.setReverseDirection(reverseDirection).build();
+			relevantConnections = getConnections(query);
+		}
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		for (Connection conn : relevantConnections) {
+			allElements.add(conn);
+
+			// get internal links from source
+			for (EObject o : conn.getOrigins()) {
+				Object origin = artifactHelper.unwrapWrapper(o);
+				IArtifactHandler<?> originHandler = artifactHelper.getHandler(origin).get();
+				if (originHandler != null) {
+					allElements.addAll(originHandler.getInternalLinks(o, traceLinkTypes, reverseDirection));
+				}
+			}
+			// get internal links from targets
+			for (EObject o : conn.getTargets()) {
+				Object originalObject = artifactHelper.unwrapWrapper(o);
+				IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
+				if (handler != null) {
+					allElements.addAll(handler.getInternalLinks(o, traceLinkTypes, reverseDirection));
+				}
+			}
+		}
+		// show internal links even when no Capra links are present
+		if (relevantConnections.isEmpty()) {
+			Object originalObject = artifactHelper.unwrapWrapper(element);
+			IArtifactHandler<?> handler = artifactHelper.getHandler(originalObject).orElseThrow();
+			if (handler != null) {
+				allElements.addAll(handler.getInternalLinks(element, traceLinkTypes, reverseDirection));
+			}
+
+		}
+		return allElements;
+	}
 }
