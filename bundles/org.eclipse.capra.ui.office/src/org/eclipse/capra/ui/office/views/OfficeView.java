@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.eclipse.capra.ui.office.preferences.OfficePreferences;
 import org.eclipse.capra.ui.office.table.BodyLayerStack;
 import org.eclipse.capra.ui.office.table.ColumnHeaderLayerStack;
 import org.eclipse.capra.ui.office.table.LinkedArtifactLabelAccumulator;
+import org.eclipse.capra.ui.office.table.LinkedArtifactToolTip;
 import org.eclipse.capra.ui.office.table.OfficeSelectionProvider;
 import org.eclipse.capra.ui.office.table.OfficeTableColumnHeaderDataProvider;
 import org.eclipse.capra.ui.office.table.OfficeTableDataProvider;
@@ -568,6 +569,8 @@ public class OfficeView extends ViewPart {
 		getSite().setSelectionProvider(this.selectionProvider);
 
 		addDragSupport();
+
+		new LinkedArtifactToolTip(officeTable, bodyDataProvider, GridRegion.BODY);
 
 		// Finally, make sure everything is in the right place.
 		parent.layout();
