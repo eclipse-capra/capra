@@ -87,13 +87,15 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 		name.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(origins.get(0))).orElseThrow()
 				.withCastedHandler(artifactHelper.unwrapWrapper(origins.get(0)), (h, e) -> h.getDisplayName(e))
 				.orElseGet(origins.get(0)::toString));
+		name.append(" -->");
 		for (Object obj : targets) {
 			name.append(" ")
 					.append(artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj)).orElseThrow()
 							.withCastedHandler(artifactHelper.unwrapWrapper(obj), (h, e) -> h.getDisplayName(e))
-							.orElseGet(obj::toString));
+							.orElseGet(obj::toString))
+					.append(";");
 		}
-		relatedToTrace.setName(name.toString());
+		relatedToTrace.setName(name.toString().substring(0, name.toString().length() - 1));
 
 		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
 		// We're saving the trace model and the artifact model in the same transaction

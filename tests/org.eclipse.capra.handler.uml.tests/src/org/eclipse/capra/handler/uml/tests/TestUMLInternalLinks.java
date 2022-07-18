@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.preferences.CapraPreferences;
@@ -57,8 +57,8 @@ public class TestUMLInternalLinks {
 
 	private static final String EXPECTED_TEXT_FOR_INTERNAL_LINKS = "@startuml\n" + "left to right direction\n"
 			+ "object \"A : Class\" as o0 #pink\n" + "object \"B : Class\" as o1\n" + "object \"C : Class\" as o2\n"
-			+ "o0--o1: A : Class B : Class : RelatedTo\n" + "o1--o2: true : Generalization\n" + "@enduml\n";
-	
+			+ "o0--o1: A : Class --> B : Class : RelatedTo\n" + "o1--o2: true : Generalization\n" + "@enduml\n";
+
 	private static final String SHOW_FULL_TRACE_INFORMATION = "org.eclipse.capra.preferences.showFullTraceInformation";
 
 	@Before
@@ -108,7 +108,8 @@ public class TestUMLInternalLinks {
 
 		// Create a trace via the selection view
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
 		EObject traceModel = persistenceAdapter.getTraceModel(EditingDomainHelper.getResourceSet());
 		assertFalse(traceAdapter.isThereATraceBetween(_A, _B, traceModel));
 
