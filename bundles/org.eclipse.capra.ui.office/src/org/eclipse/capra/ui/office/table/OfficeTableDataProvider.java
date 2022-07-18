@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2022 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ConnectionQuery;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.EditingDomainHelper;
+import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.office.model.CapraOfficeObject;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 
 /**
  * The data provider for the cells of the office table.
  * 
- * @author Mihaela Grubii
+ * @author Mihaela Grubii, Jan-Philipp Steghöfer
  */
 public class OfficeTableDataProvider implements IDataProvider {
 
@@ -176,6 +185,46 @@ public class OfficeTableDataProvider implements IDataProvider {
 
 	public List<EntryData> getAllRows() {
 		return rows;
+	}
+
+	/**
+	 * Gets the trace links that have the {@link CapraOfficeObject} at the row
+	 * position as its target.
+	 * 
+	 * @param rowPosition the position of the {@code CapraOfficeObject} in the table
+	 * @return all trace links that have the {@link CapraOfficeObject} at the row
+	 *         position as its target
+	 */
+	public List<Connection> getIncomingConnectionsForRow(int rowPosition) {
+		return getConnectionsForOfficeObject(rowPosition, true);
+	}
+
+	/**
+	 * Gets the trace links that have the {@link CapraOfficeObject} at the row
+	 * position as its source.
+	 * 
+	 * @param rowPosition the position of the {@code CapraOfficeObject} in the table
+	 * @return all trace links that have the {@link CapraOfficeObject} at the row
+	 *         position as its source
+	 */
+	public List<Connection> getOutgoingConnectionsForRow(int rowPosition) {
+		return getConnectionsForOfficeObject(rowPosition, false);
+	}
+
+	private List<Connection> getConnectionsForOfficeObject(int rowPosition, boolean reverseDirection) {
+		CapraOfficeObject officeObject = this.getRowHighlight(rowPosition);
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter timAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter()
+				.orElseThrow();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
+		ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
+		EObject officeObjectWrapper = artifactHelper.createWrapper(officeObject);
+
+		ConnectionQuery incomingLinksQuery = ConnectionQuery.of(traceModel, officeObjectWrapper)
+				.setReverseDirection(reverseDirection).build();
+		return timAdapter.getConnections(incomingLinksQuery);
 	}
 
 }

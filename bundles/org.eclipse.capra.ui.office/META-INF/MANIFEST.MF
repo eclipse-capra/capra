@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.capra.ui.office;singleton:=true
 Bundle-Version: 0.9.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.emf.edit.ui,
  org.eclipse.equinox.registry,
  org.eclipse.swt,
@@ -33,6 +33,8 @@ Export-Package: org.eclipse.capra.ui.office,
  org.eclipse.capra.ui.office.utils,
  org.eclipse.capra.ui.office.views
 Bundle-Activator: org.eclipse.capra.ui.office.Activator
-Import-Package: org.slf4j
+Import-Package: org.eclipse.capra.core.adapters,
+ org.eclipse.capra.core.helpers,
+ org.slf4j
 Automatic-Module-Name: org.eclipse.capra.ui.office
 

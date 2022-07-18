@@ -39,6 +39,7 @@ import org.eclipse.capra.ui.office.model.CapraWordRequirement;
 import org.eclipse.capra.ui.office.preferences.OfficePreferences;
 import org.eclipse.capra.ui.office.table.BodyLayerStack;
 import org.eclipse.capra.ui.office.table.ColumnHeaderLayerStack;
+import org.eclipse.capra.ui.office.table.LinkedArtifactLabelAccumulator;
 import org.eclipse.capra.ui.office.table.OfficeSelectionProvider;
 import org.eclipse.capra.ui.office.table.OfficeTableColumnHeaderDataProvider;
 import org.eclipse.capra.ui.office.table.OfficeTableDataProvider;
@@ -71,7 +72,6 @@ import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.painter.cell.ICellPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.TextPainter;
 import org.eclipse.nebula.widgets.nattable.painter.cell.decorator.LineBorderDecorator;
-import org.eclipse.nebula.widgets.nattable.reorder.RowReorderLayer;
 import org.eclipse.nebula.widgets.nattable.resize.action.ColumnResizeCursorAction;
 import org.eclipse.nebula.widgets.nattable.resize.event.ColumnResizeEventMatcher;
 import org.eclipse.nebula.widgets.nattable.resize.mode.ColumnResizeDragMode;
@@ -80,10 +80,12 @@ import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.style.IStyle;
+import org.eclipse.nebula.widgets.nattable.style.Style;
 import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
 import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
+import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.DND;
@@ -335,7 +337,7 @@ public class OfficeView extends ViewPart {
 
 				List<CapraOfficeObject> tr = new ArrayList<CapraOfficeObject>();
 				// Add one to the row position to account for the header row.
-				tr.add(bodyDataProvider.getAllEllements().get(selectionLayer.getFullySelectedRowPositions()[0]+1));
+				tr.add(bodyDataProvider.getAllEllements().get(selectionLayer.getFullySelectedRowPositions()[0] + 1));
 				event.data = tr;
 
 			}
@@ -505,10 +507,6 @@ public class OfficeView extends ViewPart {
 		ColumnHeaderLayerStack columnHeaderLayer = new ColumnHeaderLayerStack(colHeaderDataProvider, this.bodyLayer);
 		RowHeaderLayerStack rowHeaderLayer = new RowHeaderLayerStack(rowHeaderDataProvider, this.bodyLayer);
 		CornerLayer cornerLayer = new CornerLayer(new DataLayer(cornerDataProvider), rowHeaderLayer, columnHeaderLayer);
-		DataLayer bodyDataLayer = new DataLayer(this.bodyDataProvider);
-
-		RowReorderLayer rowReorderLayer = new RowReorderLayer(bodyDataLayer);
-		SelectionLayer selectionLayer = new SelectionLayer(rowReorderLayer);
 
 		// Putting all the layers to the grid.
 		GridLayer gridLayer = new GridLayer(bodyLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
@@ -528,7 +526,7 @@ public class OfficeView extends ViewPart {
 			public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
 				uiBindingRegistry.registerMouseDownBinding(
 						new MouseEventMatcher(SWT.NONE, GridRegion.BODY, MouseEventMatcher.RIGHT_BUTTON),
-						new CellPopupMenuAction(hookContextMenu(), selectionLayer));
+						new CellPopupMenuAction(hookContextMenu(), bodyLayer.getSelectionLayer()));
 				uiBindingRegistry.registerFirstMouseMoveBinding(
 						new ColumnResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 0), new ColumnResizeCursorAction());
 				uiBindingRegistry.registerFirstMouseDragMode(
@@ -588,22 +586,25 @@ public class OfficeView extends ViewPart {
 	private void setStyleConfiguration() {
 		this.officeTable.addConfiguration(new ModernNatTableThemeConfiguration());
 		this.officeTable.addConfiguration(new AbstractRegistryConfiguration() {
-			
+
 			private final HorizontalAlignmentEnum ALIGNMENT = HorizontalAlignmentEnum.LEFT;
 
 			@Override
 			public void configureRegistry(IConfigRegistry configRegistry) {
-				IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+				IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+						DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
 				columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, columnHeaderStyle,
 						DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
 
-				IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.ROW_HEADER);
+				IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+						DisplayMode.NORMAL, GridRegion.ROW_HEADER);
 				rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle,
 						DisplayMode.NORMAL, GridRegion.ROW_HEADER);
 
-				IStyle cellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+				IStyle cellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+						DisplayMode.NORMAL, GridRegion.BODY);
 				cellStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle);
 
@@ -611,6 +612,16 @@ public class OfficeView extends ViewPart {
 				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_PAINTER, cellPainter);
 				configRegistry.registerConfigAttribute(CellConfigAttributes.DISPLAY_CONVERTER,
 						new DefaultDisplayConverter());
+
+				IStyle incomingLinkStyle = new Style();
+				incomingLinkStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_RED);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, incomingLinkStyle,
+						DisplayMode.NORMAL, LinkedArtifactLabelAccumulator.INCOMING_LINK_LABEL);
+
+				IStyle outgoingLinkStyle = new Style();
+				outgoingLinkStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
+				configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, outgoingLinkStyle,
+						DisplayMode.NORMAL, LinkedArtifactLabelAccumulator.OUTGOING_LINK_LABEL);
 			}
 		});
 	}
@@ -664,12 +675,12 @@ public class OfficeView extends ViewPart {
 	}
 
 	/**
-	 * Shows the details of the currently selected object in its native environment (MS Word, MS Excel
-	 * or Google Drive (sheets)).
+	 * Shows the details of the currently selected object in its native environment
+	 * (MS Word, MS Excel or Google Drive (sheets)).
 	 */
 	public void showObjectDetails() {
 		try {
-			selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();				
+			selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();
 		} catch (CapraOfficeObjectNotFound e) {
 			LOG.debug("Could not find office object.", e);
 			showErrorMessage(ERROR_TITLE, e.getMessage(), null);
@@ -889,7 +900,7 @@ public class OfficeView extends ViewPart {
 		@Override
 		public void run(NatTable natTable, MouseEvent event) {
 			try {
-				selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();				
+				selectionProvider.returnSelectedItem().showOfficeObjectInNativeEnvironment();
 			} catch (CapraOfficeObjectNotFound e) {
 				LOG.debug("Could not find office object.", e);
 				showErrorMessage(ERROR_TITLE, e.getMessage(), null);
