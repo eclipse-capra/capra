@@ -19,9 +19,9 @@
 
    <extension
          point="org.eclipse.capra.configuration.traceabilityInformationModel">
-      <TraceabilityMetaModelAdapter
+      <TraceabilityInformationModelAdapter
             class="org.eclipse.capra.generic.tracemodel.GenericTraceabilityInformationModelAdapter">
-      </TraceabilityMetaModelAdapter>
+      </TraceabilityInformationModelAdapter>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">

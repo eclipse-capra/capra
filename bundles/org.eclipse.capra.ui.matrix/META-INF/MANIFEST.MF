@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.ui.workbench,
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.ui.matrix,
  org.eclipse.capra.ui.matrix.views
-Bundle-Vendor: %Bundel-Vendor
+Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.capra.ui.matrix
