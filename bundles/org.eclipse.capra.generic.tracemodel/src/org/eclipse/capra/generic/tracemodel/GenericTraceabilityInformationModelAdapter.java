@@ -179,6 +179,7 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 	public void deleteTrace(List<Connection> toDelete, EObject traceModel) {
 		List<Object> toRemove = new ArrayList<>();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
+		IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel tModel = (GenericTraceModel) traceModel;
 			for (Connection c : toDelete) {
@@ -189,21 +190,16 @@ public class GenericTraceabilityInformationModelAdapter extends AbstractTraceabi
 				}
 			}
 
-			// Remove the metadata information about the traces
-			IMetadataAdapter metadataAdapter = ExtensionPointHelper.getTraceMetadataAdapter().orElseThrow();
-			for (Object trace : toRemove) {
-				if (trace instanceof EObject) {
-					metadataAdapter.removeMetadata((EObject) trace,
-							persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
-				}
-			}
-
 			// Remove the traces from the trace model
 			TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
 			Command cmd = new RecordingCommand(editingDomain, "Remove traces") {
 				@Override
 				protected void doExecute() {
 					for (Object trace : toRemove) {
+						if (trace instanceof EObject) {
+							metadataAdapter.removeMetadata((EObject) trace,
+									persistenceAdapter.getMetadataContainer(EditingDomainHelper.getResourceSet()));
+						}
 						tModel.getTraces().remove(trace);
 					}
 				}
