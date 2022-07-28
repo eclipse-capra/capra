@@ -64,8 +64,13 @@
       </description>
    </category-def>
    <repository-reference location="http://hallvard.github.io/plantuml/" enabled="true" />
-   <repository-reference location="http://featureide.cs.ovgu.de/update/v3/" enabled="true" />
-   <repository-reference location="http://download.eclipse.org/sphinx/releases/0.9.x" enabled="true" />
    <repository-reference location="http://download.eclipse.org/rmf/updates/releases/0.13.0/" enabled="true" />
    <repository-reference location="https://digital-dependability-identities.github.io/ODE_Editor/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/sphinx/releases/0.11.x" enabled="true" />
+   <repository-reference location="https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" enabled="true" />
+   <repository-reference location="https://download.eclipse.org/mylyn/releases/latest/" enabled="true" />
+   <repository-reference location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220531185310/repository" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" enabled="true" />
+   <repository-reference location="https://download.eclipse.org/releases/2021-12" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/app4mc/updatesites/releases/" enabled="true" />
 </site>
