@@ -42,7 +42,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 	org.mortbay.jetty.server
 }
 
-location "http://download.eclipse.org/sphinx/releases/0.9.x" {
+location "http://download.eclipse.org/sphinx/releases/0.11.x" {
 	org.eclipse.sphinx.sdk.feature.group
 }
 
@@ -73,5 +73,5 @@ location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 }
 
 location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
-	de.jcup.asciidoctoreditor.feature.group
+	de.jcup.asciidoctoreditor.feature.group [2.6.1,2.6.1]
 }

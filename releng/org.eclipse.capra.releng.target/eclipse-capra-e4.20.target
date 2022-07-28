@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.20" sequenceNumber="1657884325">
+<target name="eclipse-capra-e4.20" sequenceNumber="1659004314">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.3.0.202106080120"/>
@@ -47,8 +47,8 @@
       <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.9.2.201601200932"/>
-      <repository location="http://download.eclipse.org/sphinx/releases/0.9.x"/>
+      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.11.0.201706140911"/>
+      <repository location="http://download.eclipse.org/sphinx/releases/0.11.x"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>
@@ -77,7 +77,7 @@
       <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.5.1"/>
+      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.6.1"/>
       <repository id="asciidoctor-editor" location="https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/"/>
     </location>
   </locations>

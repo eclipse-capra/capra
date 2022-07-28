@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.23" sequenceNumber="1657634071">
+<target name="eclipse-capra-e4.23" sequenceNumber="1659004353">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.6.0.202203091838"/>
@@ -40,6 +40,7 @@
       <unit id="ch.qos.logback.slf4j" version="1.2.3.v20200428-2012"/>
       <unit id="org.dom4j" version="2.1.1.v20190321-1528"/>
       <unit id="com.sun.xml.bind" version="2.2.0.v20201118-1845"/>
+      <unit id="jakarta.activation" version="2.0.0.v20201118-1818"/>
       <repository id="eclipse-orbit-2022-03" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -48,8 +49,8 @@
       <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.9.2.201601200932"/>
-      <repository location="http://download.eclipse.org/sphinx/releases/0.9.x"/>
+      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.11.0.201706140911"/>
+      <repository location="http://download.eclipse.org/sphinx/releases/0.11.x"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>
@@ -82,7 +83,7 @@
       <repository id="Nattable" location="https://download.eclipse.org/nattable/releases/1.6.0/repository"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.5.1"/>
+      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.6.1"/>
       <repository id="asciidoctor-editor" location="https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/"/>
     </location>
   </locations>

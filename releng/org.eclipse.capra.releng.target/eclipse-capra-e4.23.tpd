@@ -40,6 +40,7 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202203021722
 	// Introduced to resolve problems with the javax.xml.bind dependency chain
 	// https://www.eclipse.org/forums/index.php/t/1106342/
 	com.sun.xml.bind [2.2.0.v20201118-1845,2.2.0.v20201118-1845]
+	jakarta.activation
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
@@ -47,7 +48,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 	org.mortbay.jetty.server
 }
 
-location "http://download.eclipse.org/sphinx/releases/0.9.x" {
+location "http://download.eclipse.org/sphinx/releases/0.11.x" {
 	org.eclipse.sphinx.sdk.feature.group
 }
 
@@ -82,5 +83,5 @@ location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Natta
 }
 
 location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
-	de.jcup.asciidoctoreditor.feature.group
+	de.jcup.asciidoctoreditor.feature.group [2.6.1,2.6.1]
 }
