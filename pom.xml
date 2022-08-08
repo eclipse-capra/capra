@@ -94,9 +94,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tycho-version>2.1.0</tycho-version>
-		<org.jboss.tools.tycho-plugins.version>1.6.0</org.jboss.tools.tycho-plugins.version>
-		<jacoco.version>0.8.6</jacoco.version>
+		<tycho-version>2.7.4</tycho-version>
+		<org.jboss.tools.tycho-plugins.version>2.5.0</org.jboss.tools.tycho-plugins.version>
+		<jacoco.version>0.8.8</jacoco.version>
 
 		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../releng/org.eclipse.capra.releng.p2/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.surefire.reportsPath>**/surefire-reports/</sonar.surefire.reportsPath>
