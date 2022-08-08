@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
@@ -168,8 +168,7 @@ public class SelectionView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
-					.orElseThrow();
+			IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 			EObject artifactModel = persistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 			ArtifactHelper artifactHelper = new ArtifactHelper(artifactModel);
 			IArtifactHandler<?> handler = artifactHelper.getHandler(element).orElseThrow();
@@ -327,7 +326,8 @@ public class SelectionView extends ViewPart {
 	}
 
 	private void refreshAvailableTraceTypes() {
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().orElseThrow();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
@@ -400,8 +400,22 @@ public class SelectionView extends ViewPart {
 		refreshAvailableTraceTypes();
 	}
 
+	/**
+	 * Retrieves the trace link type selected by the user in the combo box. If the
+	 * user did not select a trace link type, but there is only one entry in the
+	 * list, it will return that entry.
+	 * 
+	 * @return the selected trace link type or, if there is only one list entry, the
+	 *         single applicable trace link type
+	 */
 	public EClass getSelectedTraceType() {
-		return (EClass) traceTypeCombo.getStructuredSelection().getFirstElement();
+		EClass selectedTraceType = (EClass) traceTypeCombo.getStructuredSelection().getFirstElement();
+		if (selectedTraceType == null) {
+			if (traceTypeCombo.getCombo().getItemCount() == 1) {
+				selectedTraceType = (EClass) traceTypeCombo.getElementAt(0);
+			}
+		}
+		return selectedTraceType;
 	}
 
 	private void createGlobalActionHandlers() {
