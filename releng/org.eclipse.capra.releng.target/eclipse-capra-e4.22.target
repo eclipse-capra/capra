@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.22" sequenceNumber="1659004336">
+<target name="eclipse-capra-e4.22" sequenceNumber="1659350431">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.5.0.202112012329"/>
@@ -44,8 +44,8 @@
       <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.11.0.201706140911"/>
-      <repository location="http://download.eclipse.org/sphinx/releases/0.11.x"/>
+      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.11.2.202108251136"/>
+      <repository location="http://download.eclipse.org/sphinx/updates/release/0.11.2"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>

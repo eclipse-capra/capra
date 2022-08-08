@@ -48,7 +48,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 	org.mortbay.jetty.server
 }
 
-location "http://download.eclipse.org/sphinx/releases/0.11.x" {
+location "http://download.eclipse.org/sphinx/updates/release/0.11.2" {
 	org.eclipse.sphinx.sdk.feature.group
 }
 
