@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="eclipse-capra-e4.24" sequenceNumber="1693079123">
+  <locations>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.cdt.sdk.feature.group" version="11.0.0.202211300214"/>
+      <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="11.0.0.202211062329"/>
+      <unit id="org.eclipse.emf.compare.ide.ui.feature.group" version="3.3.20.202211161457"/>
+      <unit id="org.eclipse.emf.ecore.xcore.sdk.feature.group" version="1.23.0.v20221121-1400"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.32.0.v20221121-1400"/>
+      <unit id="org.eclipse.php.feature.group" version="7.2.1.202112011741"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.29.0.v20221121-1054"/>
+      <unit id="org.eclipse.gef.sdk.feature.group" version="3.15.0.202211301913"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="2.29.0.v20221121-1054"/>
+      <unit id="org.eclipse.pde.source.feature.group" version="3.14.1400.v20221123-1800"/>
+      <unit id="org.eclipse.m2m.qvt.oml.feature.group" version="3.10.7.v20220605-1149"/>
+      <unit id="org.eclipse.xwt.feature.feature.group" version="1.7.0.202211301116"/>
+      <unit id="org.eclipse.papyrus.sdk.feature.feature.group" version="6.3.0.202211301337"/>
+      <repository id="eclipse-2022-12" location="http://download.eclipse.org/releases/2022-12/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="3.26.0.v20221223-1911"/>
+      <unit id="org.eclipse.mylyn.hudson.feature.group" version="3.26.0.v20230321-1152"/>
+      <repository id="mylyn" location="https://download.eclipse.org/mylyn/releases/3.26/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.xpand" version="2.2.0.v201605260315"/>
+      <repository id="eclipse-2021-12" location="https://download.eclipse.org/releases/2021-12"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.apache.poi.ooxml" version="4.1.1.v20221112-0806"/>
+      <unit id="org.apache.xmlbeans" version="3.1.0.v20221112-0806"/>
+      <unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
+      <unit id="org.apache.commons.collections" version="3.2.2.v20220405-1659"/>
+      <unit id="org.apache.poi.ooxml.schemas" version="4.1.1.v20221112-0806"/>
+      <unit id="org.apache.poi" version="4.1.1.v20221112-0806"/>
+      <unit id="com.fasterxml.jackson.core.jackson-core" version="2.13.2.v20220426-1653"/>
+      <unit id="org.slf4j.api" version="1.7.30.v20221112-0806"/>
+      <unit id="ch.qos.logback.slf4j" version="1.2.3.v20221112-0806"/>
+      <unit id="org.dom4j" version="2.1.1.v20221112-0806"/>
+      <unit id="jakarta.activation" version="2.0.0.v20221112-0806"/>
+      <repository id="eclipse-orbit-2022-12" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20221123021534/repository"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="com.sun.xml.bind" version="2.2.0.v20201118-1845"/>
+      <repository id="eclipse-orbit-2022-09" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20220830213456/repository"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
+      <unit id="org.mortbay.jetty.server" version="6.1.23.v201012071420"/>
+      <unit id="javax.servlet" version="3.1.0.v201410161800"/>
+      <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sphinx.sdk.feature.group" version="0.11.2.202108251136"/>
+      <repository location="http://download.eclipse.org/sphinx/updates/release/0.11.2"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.rmf.reqif10.sdk.feature.feature.group" version="0.13.0.201509161042"/>
+      <unit id="org.eclipse.rmf.reqif10.pror.sdk.feature.feature.group" version="0.13.0.201509161042"/>
+      <repository location="http://download.eclipse.org/rmf/updates/releases"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.29"/>
+      <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.10.0.202308241828"/>
+      <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.app4mc.platform.sdk.feature.group" version="1.0.0.202011301553"/>
+      <repository id="APP4MC" location="http://download.eclipse.org/app4mc/updatesites/releases/1.0.0"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.ease.feature.feature.group" version="0.7.0.I201907120558"/>
+      <unit id="org.eclipse.ease.ui.feature.feature.group" version="0.7.0.I201907161104"/>
+      <repository id="EASE" location="http://download.eclipse.org/ease/release/0.7.0"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="ode.concept.deis.feature.feature.group" version="1.0.0.202101251505"/>
+      <repository id="ODE" location="https://digital-dependability-identities.github.io/ODE_Editor/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.nebula.widgets.nattable.core" version="1.6.0.201909181823"/>
+      <repository id="Nattable" location="https://download.eclipse.org/nattable/releases/1.6.0/repository"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="de.jcup.asciidoctoreditor.feature.group" version="2.6.1"/>
+      <repository id="asciidoctor-editor" location="https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/"/>
+    </location>
+  </locations>
+</target>

@@ -1,32 +1,33 @@
-target "eclipse-capra-e4.23" with source requirements
+target "eclipse-capra-e4.24" with source requirements
 
-location "http://download.eclipse.org/releases/2022-03/" eclipse-2022-03 {
+location "http://download.eclipse.org/releases/2022-09/" eclipse-2022-09 {
 	org.eclipse.cdt.sdk.feature.group
 	org.eclipse.cdt.testsrunner.feature.feature.group
 	org.eclipse.emf.compare.ide.ui.feature.group
 	org.eclipse.emf.ecore.xcore.sdk.feature.group
-	org.eclipse.emf.sdk.feature.group	
+	org.eclipse.emf.sdk.feature.group
 	org.eclipse.php.feature.group
 	org.eclipse.xtext.sdk.feature.group
-	org.eclipse.mylyn.gerrit.feature.feature.group
-	org.eclipse.mylyn.hudson.feature.group
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
 	org.eclipse.m2m.qvt.oml.feature.group
 	org.eclipse.xwt.feature.feature.group
-}
-
-location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2022-03" papyrus-2022-03 {
 	org.eclipse.papyrus.sdk.feature.feature.group
 }
 
-// Needed because Sphinx requires org.eclipse.xtend.shared.ui which is not in 2022-03
+// Mylyn was removed in 22-06
+location "https://download.eclipse.org/mylyn/releases/3.26/" mylyn {
+	org.eclipse.mylyn.gerrit.feature.feature.group
+	org.eclipse.mylyn.hudson.feature.group
+}
+
+// Needed because Sphinx requires org.eclipse.xtend.shared.ui which is not in 2022-06
 location "https://download.eclipse.org/releases/2021-12" eclipse-2021-12 {
 	org.eclipse.xpand
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository" eclipse-orbit-2022-03 {
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220830213456/repository" eclipse-orbit-2022-09 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
@@ -46,6 +47,7 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202203021722
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
 	org.mortbay.jetty.util
 	org.mortbay.jetty.server
+	javax.servlet
 }
 
 location "http://download.eclipse.org/sphinx/updates/release/0.11.2" {

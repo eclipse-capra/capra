@@ -1,27 +1,33 @@
-target "eclipse-capra-e4.22" with source requirements
+target "eclipse-capra-e4.24" with source requirements
 
-location "http://download.eclipse.org/releases/2021-12/" eclipse-2021-12 {
+location "http://download.eclipse.org/releases/2023-03/" eclipse-2023-03 {
 	org.eclipse.cdt.sdk.feature.group
 	org.eclipse.cdt.testsrunner.feature.feature.group
 	org.eclipse.emf.compare.ide.ui.feature.group
 	org.eclipse.emf.ecore.xcore.sdk.feature.group
-	org.eclipse.emf.sdk.feature.group	
+	org.eclipse.emf.sdk.feature.group
 	org.eclipse.php.feature.group
 	org.eclipse.xtext.sdk.feature.group
-	org.eclipse.mylyn.gerrit.feature.feature.group
-	org.eclipse.mylyn.hudson.feature.group
 	org.eclipse.gef.sdk.feature.group
 	org.eclipse.xtend.sdk.feature.group
 	org.eclipse.pde.source.feature.group
 	org.eclipse.m2m.qvt.oml.feature.group
 	org.eclipse.xwt.feature.feature.group
-}
-
-location "https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2021-03" papyrus-2021-03 {
 	org.eclipse.papyrus.sdk.feature.feature.group
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210825222808/repository/" eclipse-orbit-2021-12 {
+// Mylyn was removed in 22-06
+location "https://download.eclipse.org/mylyn/releases/3.26/" mylyn {
+	org.eclipse.mylyn.gerrit.feature.feature.group
+	org.eclipse.mylyn.hudson.feature.group
+}
+
+// Needed because Sphinx requires org.eclipse.xtend.shared.ui which is not in 2022-06
+location "https://download.eclipse.org/releases/2021-12" eclipse-2021-12 {
+	org.eclipse.xpand
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository" eclipse-orbit-2023-03 {
 	org.apache.poi.ooxml
 	org.apache.xmlbeans
 	com.google.guava
@@ -32,14 +38,20 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202108252228
 	org.slf4j.api
 	ch.qos.logback.slf4j
 	org.dom4j
+	jakarta.activation
+}	
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20220830213456/repository" eclipse-orbit-2022-09 {
 	// Introduced to resolve problems with the javax.xml.bind dependency chain
 	// https://www.eclipse.org/forums/index.php/t/1106342/
+	// Since this is no longer part of Orbit 2022-12, we use the version from 2022-09
 	com.sun.xml.bind [2.2.0.v20201118-1845,2.2.0.v20201118-1845]
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
 	org.mortbay.jetty.util
 	org.mortbay.jetty.server
+	javax.servlet
 }
 
 location "http://download.eclipse.org/sphinx/updates/release/0.11.2" {
@@ -70,6 +82,10 @@ location "http://download.eclipse.org/ease/release/0.7.0" EASE {
 
 location "https://digital-dependability-identities.github.io/ODE_Editor/" ODE {
 	ode.concept.deis.feature.feature.group
+}
+
+location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Nattable {
+	org.eclipse.nebula.widgets.nattable.core
 }
 
 location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
