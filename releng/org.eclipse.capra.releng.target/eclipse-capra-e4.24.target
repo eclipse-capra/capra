@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="eclipse-capra-e4.24" sequenceNumber="1659345649">
+<target name="eclipse-capra-e4.24" sequenceNumber="1693077253">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.cdt.sdk.feature.group" version="10.7.0.202206081808"/>
@@ -20,9 +20,9 @@
       <repository id="eclipse-2022-06" location="http://download.eclipse.org/releases/2022-06/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="2.16.1.v20200828-1618"/>
-      <unit id="org.eclipse.mylyn.hudson.feature.group" version="1.17.0.v20200730-1155"/>
-      <repository id="mylyn" location="https://download.eclipse.org/mylyn/releases/latest/"/>
+      <unit id="org.eclipse.mylyn.gerrit.feature.feature.group" version="3.26.0.v20221223-1911"/>
+      <unit id="org.eclipse.mylyn.hudson.feature.group" version="3.26.0.v20230321-1152"/>
+      <repository id="mylyn" location="https://download.eclipse.org/mylyn/releases/3.26/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xpand" version="2.2.0.v201605260315"/>
@@ -46,6 +46,7 @@
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.mortbay.jetty.util" version="6.1.23.v201012071420"/>
       <unit id="org.mortbay.jetty.server" version="6.1.23.v201012071420"/>
+      <unit id="javax.servlet" version="3.1.0.v201410161800"/>
       <repository id="eclipse-orbit-mars2" location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -58,11 +59,11 @@
       <repository location="http://download.eclipse.org/rmf/updates/releases"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.26"/>
+      <unit id="net.sourceforge.plantuml.feature.feature.group" version="1.1.29"/>
       <repository id="plantuml" location="http://hallvard.github.io/plantuml/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.8.3.202206011926"/>
+      <unit id="de.ovgu.featureide.featuremodeling.feature.group" version="3.10.0.202308241828"/>
       <repository id="feature-ide" location="http://featureide.cs.ovgu.de/update/v3/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

@@ -17,7 +17,7 @@ location "http://download.eclipse.org/releases/2022-06/" eclipse-2022-06 {
 }
 
 // Mylyn was removed in 22-06
-location "https://download.eclipse.org/mylyn/releases/latest/" mylyn {
+location "https://download.eclipse.org/mylyn/releases/3.26/" mylyn {
 	org.eclipse.mylyn.gerrit.feature.feature.group
 	org.eclipse.mylyn.hudson.feature.group
 }
@@ -47,6 +47,7 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202205311853
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" eclipse-orbit-mars2 {
 	org.mortbay.jetty.util
 	org.mortbay.jetty.server
+	javax.servlet
 }
 
 location "http://download.eclipse.org/sphinx/updates/release/0.11.2" {
