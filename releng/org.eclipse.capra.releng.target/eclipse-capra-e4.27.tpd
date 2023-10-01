@@ -1,4 +1,4 @@
-target "eclipse-capra-e4.24" with source requirements
+target "eclipse-capra-e4.27" with source requirements
 
 location "http://download.eclipse.org/releases/2023-03/" eclipse-2023-03 {
 	org.eclipse.cdt.sdk.feature.group
@@ -89,5 +89,5 @@ location "https://download.eclipse.org/nattable/releases/1.6.0/repository" Natta
 }
 
 location "https://de-jcup.github.io/update-site-eclipse-asciidoctor-editor/update-site/" asciidoctor-editor {
-	de.jcup.asciidoctoreditor.feature.group [2.6.1,2.6.1]
+	de.jcup.asciidoctoreditor.feature.group [3.1.1,3.1.1]
 }
