@@ -445,6 +445,20 @@ public class TestHelper {
 	 * @return a trace between {@code origin} and {@code target} or {@code null}
 	 */
 	public static List<Connection> getConnectionsFrom(Object origin, boolean reverseDirection) {
+		return getConnectionsFrom(origin, reverseDirection, false);
+	}
+
+	/**
+	 * Gets all connections representing traces starting from the given object.
+	 * Returns an empty list if no such trace exists.
+	 * 
+	 * @param origin           the origin of the traces
+	 * @param reverseDirection reverse the direction of the trace links
+	 * @param transitive       include transitive trace links
+	 * @return a trace between {@code origin} and {@code target} or {@code null}
+	 */
+	public static List<Connection> getConnectionsFrom(Object origin, boolean reverseDirection, boolean transitive) {
+		int transitivityDepth = transitive ? 0 : 1;
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
 				.getTraceabilityInformationModelAdapter().get();
@@ -452,7 +466,8 @@ public class TestHelper {
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
 		ConnectionQuery query = ConnectionQuery.of(traceModel, artifactHelper.createWrapper(origin))
-				.setReverseDirection(reverseDirection).build();
+				.setReverseDirection(reverseDirection).setTraverseTransitiveLinks(transitive)
+				.setTransitivityDepth(transitivityDepth).build();
 		return traceAdapter.getConnections(query);
 	}
 
@@ -507,7 +522,12 @@ public class TestHelper {
 		cSourceFile.create(new ByteArrayInputStream(buffer.toString().getBytes()), true, new NullProgressMonitor());
 
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
-		return ((ISourceRoot) (cProject.getChildren()[0])).getTranslationUnits()[0];
+		for (ITranslationUnit translationUnit : ((ISourceRoot) cProject.getChildren()[0]).getTranslationUnits()) {
+			if (translationUnit.getFile().getName().equals(fileName)) {
+				return translationUnit;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -519,9 +539,24 @@ public class TestHelper {
 	 * @throws CoreException
 	 */
 	public static IFile createEmptyFileInProject(String fileName, String projectName) throws CoreException {
+		return createFileContentInProject(fileName, projectName, "hello world!");
+	}
+
+	/**
+	 * Creates a file with the provided name in the project and adds the provided
+	 * content to the file.
+	 * 
+	 * @param fileName    the name of the created file
+	 * @param projectName the name of the project in which the file is to be created
+	 * @param content     the content to write to the file
+	 * @return the created file
+	 * @throws CoreException if the file could not be created
+	 */
+	public static IFile createFileContentInProject(String fileName, String projectName, String content)
+			throws CoreException {
 		IProject project = getProject(projectName);
 		IFile f = project.getFile(fileName);
-		f.create(new ByteArrayInputStream("hello world!".getBytes()), true, new NullProgressMonitor());
+		f.create(new ByteArrayInputStream(content.getBytes()), true, new NullProgressMonitor());
 
 		return f;
 	}
