@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Asciidoctor Fragment to Provde API Access
+Bundle-SymbolicName: de.jcup.asciidoctoreditor.extension;singleton:=true
+Bundle-Version: 0.9.0.qualifier
+Bundle-Vendor: The Eclispe Capra Team
+Fragment-Host: de.jcup.asciidoctoreditor
+Automatic-Module-Name: de.jcup.asciidoctoreditor.extension
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.eclipse.capra.ui.asciidoc;bundle-version="0.9.0"

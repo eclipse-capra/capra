@@ -20,5 +20,7 @@
             class="org.eclipse.capra.ui.asciidoc.AsciiDocSelectionSupport">
       </selectionSupport>
    </extension>
+   
+    <extension-point id="org.eclipse.capra.ui.asciidoctor.apiaccess" name="API Access to AsciiDoctor" schema="schema/org.eclipse.capra.ui.asciidoctor.apiaccess.exsd"/>
 
 </plugin>

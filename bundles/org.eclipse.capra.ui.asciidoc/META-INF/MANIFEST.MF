@@ -7,6 +7,7 @@ Bundle-Vendor: Eclipse Capra
 Automatic-Module-Name: org.eclipse.capra.ui.asciidoc
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.capra.ui,
+ org.eclipse.capra.core,
  de.jcup.asciidoctoreditor,
  org.apache.httpcomponents.httpclient,
  org.eclipse.ui.ide

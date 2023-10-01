@@ -9,10 +9,13 @@
  *  
  * Contributors:
  *      University of Gothenburg - initial API and implementation
+ *      Jan-Philipp Steghöfer - extensions for artifact existence check
  *******************************************************************************/
 package org.eclipse.capra.ui.asciidoc;
 
 import java.util.Objects;
+
+import org.eclipse.capra.ui.asciidoc.internal.AsciiDocArtifactExistenceChecker;
 
 import de.jcup.asciidoctoreditor.outline.Item;
 
@@ -62,6 +65,15 @@ public class AsciiDocArtifact {
 	@Override
 	public int hashCode() {
 		return Objects.hash(item, uri);
+	}
+
+	/**
+	 * Checks whether the AsciiDoc artifact actually exists.
+	 * 
+	 * @return {@code true} if the artifact exists, {@code false} otherwise
+	 */
+	public boolean exists() {
+		return AsciiDocArtifactExistenceChecker.checkAsciiDocArtifactExistence(this);
 	}
 
 	@Override

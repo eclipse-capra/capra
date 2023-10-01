@@ -70,6 +70,12 @@ public class AsciiDocHandler extends AbstractArtifactHandler<AsciiDocArtifact> {
 	}
 
 	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		AsciiDocArtifact asciiDocArtifact = resolveWrapper(wrapper);
+		return asciiDocArtifact != null && asciiDocArtifact.exists();
+	}
+
+	@Override
 	public String getDisplayName(AsciiDocArtifact artifact) {
 		return artifact.getItem().getName();
 	}
