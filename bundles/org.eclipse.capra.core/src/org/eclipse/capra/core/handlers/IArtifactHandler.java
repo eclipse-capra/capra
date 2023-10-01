@@ -85,6 +85,23 @@ public interface IArtifactHandler<T> {
 	T resolveWrapper(EObject wrapper);
 
 	/**
+	 * Checks if the artifact represented by the wrapper actually exists.
+	 * <p>
+	 * This interface provides a default implementation that returns false iff the
+	 * value returned by {@link this#resolveWrapper(EObject)} is <code>null</code>.
+	 * Implementing classes should override this default behaviour to use whichever
+	 * mechanism is useful, e.g., calling an {@code exists()} method on the resolved
+	 * wrapper.
+	 * 
+	 * @param wrapper the wrapped object
+	 * @return <code>true</code> iff the artifact represented by the wrapper
+	 *         actually exists
+	 */
+	default boolean doesArtifactExist(EObject wrapper) {
+		return resolveWrapper(wrapper) != null;
+	}
+
+	/**
 	 * Provide a name for the artifact to be used for display purposes.
 	 * 
 	 * @param artifact

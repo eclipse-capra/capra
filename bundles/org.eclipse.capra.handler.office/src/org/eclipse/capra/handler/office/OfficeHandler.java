@@ -14,7 +14,9 @@
 
 package org.eclipse.capra.handler.office;
 
+import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +57,18 @@ public class OfficeHandler extends AbstractArtifactHandler<CapraOfficeObject> {
 		object.setUri(uri);
 		object.setData(adapter.getArtifactName(wrapper));
 		return object;
+	}
+
+	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		try {
+			File officeFile = resolveWrapper(wrapper).getFile();
+			// TODO: Check if the referenced element actually exists
+		} catch (NoSuchFileException ex) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

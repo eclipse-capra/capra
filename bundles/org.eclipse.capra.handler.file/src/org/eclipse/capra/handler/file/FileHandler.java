@@ -47,6 +47,11 @@ public class FileHandler extends AbstractArtifactHandler<IFile> {
 	}
 
 	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		return resolveWrapper(wrapper).exists();
+	}
+
+	@Override
 	public String getDisplayName(IFile file) {
 		return file.getName();
 	}

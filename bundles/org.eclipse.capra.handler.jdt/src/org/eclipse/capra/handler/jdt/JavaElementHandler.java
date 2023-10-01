@@ -90,6 +90,12 @@ public class JavaElementHandler extends AbstractArtifactHandler<IJavaElement> im
 	}
 
 	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		IJavaElement javaElement = resolveWrapper(wrapper);
+		return javaElement != null && javaElement.exists();
+	}
+
+	@Override
 	public String getDisplayName(IJavaElement element) {
 		return element.getElementName();
 	}

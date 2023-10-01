@@ -54,6 +54,12 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 	}
 
 	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		IMarker marker = resolveWrapper(wrapper);
+		return marker != null && marker.exists();
+	}
+
+	@Override
 	public String getDisplayName(IMarker artifact) {
 		return MarkerUtilities.getMarkerType(artifact) + ": " + MarkerUtilities.getMessage(artifact);
 	}

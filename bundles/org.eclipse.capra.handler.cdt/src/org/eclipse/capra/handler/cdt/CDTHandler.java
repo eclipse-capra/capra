@@ -72,6 +72,12 @@ public class CDTHandler extends AbstractArtifactHandler<ICElement> implements IA
 	}
 
 	@Override
+	public boolean doesArtifactExist(EObject wrapper) {
+		ICElement cElement = resolveWrapper(wrapper);
+		return cElement != null && cElement.exists();
+	}
+
+	@Override
 	public String getDisplayName(ICElement element) {
 		return element.getElementName();
 	}
