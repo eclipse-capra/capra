@@ -48,6 +48,10 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * means that the properties will automatically include the metadata provided by
  * such an extension and storing any changes will also be delegated to that
  * extension.
+ * <p>
+ * The implementation also allows to access the properties via the String
+ * representation of the property IDs. This makes it easier to use this class as
+ * a source of information outside of properties views.
  * 
  * @author Jan-Philipp Steghöfer
  *
@@ -55,7 +59,30 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public class ConnectionAdapter implements IPropertySource {
 
 	private enum DescriptorIDs {
-		ORIGIN, TARGETS, TYPE
+		ORIGINS("Origins"), TARGETS("Targets"), TYPE("Type");
+
+		private final String name;
+
+		private DescriptorIDs(String s) {
+			name = s;
+		}
+
+		@Override
+		public String toString() {
+			return this.name;
+		}
+
+		public static DescriptorIDs fromString(String value) {
+			if (value == null) {
+				throw new IllegalArgumentException("Provided value must not be null");
+			}
+			for (DescriptorIDs descId : DescriptorIDs.values()) {
+				if (descId.toString().equals(value)) {
+					return descId;
+				}
+			}
+			throw new IllegalArgumentException("Provided value does not correspond to any enum value");
+		}
 	}
 
 	private static final String CATEGORY_NAME = "General";
@@ -90,13 +117,15 @@ public class ConnectionAdapter implements IPropertySource {
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		List<IPropertyDescriptor> propertyDescriptors = new ArrayList<>();
 		// Add generic properties of a connection to their own category.
-		PropertyDescriptor originDescriptor = new PropertyDescriptor(DescriptorIDs.ORIGIN, "Origin");
+		PropertyDescriptor originDescriptor = new PropertyDescriptor(DescriptorIDs.ORIGINS,
+				DescriptorIDs.ORIGINS.toString());
 		originDescriptor.setCategory(CATEGORY_NAME);
 		propertyDescriptors.add(originDescriptor);
-		PropertyDescriptor targetDescriptor = new PropertyDescriptor(DescriptorIDs.TARGETS, "Targets");
+		PropertyDescriptor targetDescriptor = new PropertyDescriptor(DescriptorIDs.TARGETS,
+				DescriptorIDs.TARGETS.toString());
 		targetDescriptor.setCategory(CATEGORY_NAME);
 		propertyDescriptors.add(targetDescriptor);
-		PropertyDescriptor typeDescriptor = new PropertyDescriptor(DescriptorIDs.TYPE, "Type");
+		PropertyDescriptor typeDescriptor = new PropertyDescriptor(DescriptorIDs.TYPE, DescriptorIDs.TYPE.toString());
 		typeDescriptor.setCategory(CATEGORY_NAME);
 		propertyDescriptors.add(typeDescriptor);
 		// All other properties of the underlying class are added without category.
@@ -115,12 +144,24 @@ public class ConnectionAdapter implements IPropertySource {
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		if (id.equals(DescriptorIDs.ORIGIN)) {
+		DescriptorIDs descId = null;
+		if (id instanceof DescriptorIDs) {
+			descId = (DescriptorIDs) id;
+		} else if (id instanceof String) {
+			// This enables us to also provide Strings using the display name of the
+			// property descriptors
+			try {
+				descId = DescriptorIDs.fromString((String) id);
+			} catch (IllegalArgumentException e) {
+				// Deliberately do nothing
+			}
+		}
+		if (descId != null && descId.equals(DescriptorIDs.ORIGINS)) {
 			return connection.getOrigins().stream().map(o -> artifactHelper.getArtifactLabel(o))
 					.collect(Collectors.toList());
-		} else if (id.equals(DescriptorIDs.TARGETS)) {
+		} else if (descId != null && descId.equals(DescriptorIDs.TARGETS)) {
 			return connection.getTargets().stream().map(artifactHelper::getArtifactLabel).collect(Collectors.toList());
-		} else if (id.equals(DescriptorIDs.TYPE)) {
+		} else if (descId != null && descId.equals(DescriptorIDs.TYPE)) {
 			return connection.getTlink().eClass().getName();
 		} else if (this.connectionMetadataPropertySource != null
 				&& this.connectionMetadataPropertySource.getPropertyValue(id) != null) {

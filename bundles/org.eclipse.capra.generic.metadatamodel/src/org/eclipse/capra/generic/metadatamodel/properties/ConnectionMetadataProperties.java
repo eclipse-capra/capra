@@ -31,6 +31,10 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * Provides access to the metadata of a connection.
+ * <p>
+ * The implementation also allows to access the properties via the String
+ * representation of the property IDs. This makes it easier to use this class as
+ * a source of information outside of properties views.
  * 
  * @author Jan-Philipp Steghöfer
  *
@@ -38,7 +42,30 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 
 	private enum DescriptorIDs {
-		CREATION_DATE, COMMENT
+		CREATION_DATE("Creation Date"), CREATION_USER("Creation User"), COMMENT("Comment");
+
+		private final String name;
+
+		private DescriptorIDs(String s) {
+			name = s;
+		}
+
+		@Override
+		public String toString() {
+			return this.name;
+		}
+
+		public static DescriptorIDs fromString(String value) {
+			if (value == null) {
+				throw new IllegalArgumentException("Provided value must not be null");
+			}
+			for (DescriptorIDs descId : DescriptorIDs.values()) {
+				if (descId.toString().equals(value)) {
+					return descId;
+				}
+			}
+			throw new IllegalArgumentException("Provided value does not correspond to any enum value");
+		}
 	}
 
 	/**
@@ -64,11 +91,17 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 		List<IPropertyDescriptor> propertyDescriptors = new ArrayList<>();
 		// Add generic properties of a connection to their own category.
 		PropertyDescriptor creationDateDescriptor = new PropertyDescriptor(DescriptorIDs.CREATION_DATE,
-				"Creation Date");
+				DescriptorIDs.CREATION_DATE.toString());
 		creationDateDescriptor.setCategory(CATEGORY_NAME);
 		propertyDescriptors.add(creationDateDescriptor);
 
-		PropertyDescriptor commentDescriptor = new TextPropertyDescriptor(DescriptorIDs.COMMENT, "Comment");
+		PropertyDescriptor creationUserDescriptor = new PropertyDescriptor(DescriptorIDs.CREATION_USER,
+				DescriptorIDs.CREATION_USER.toString());
+		creationUserDescriptor.setCategory(CATEGORY_NAME);
+		propertyDescriptors.add(creationUserDescriptor);
+
+		PropertyDescriptor commentDescriptor = new TextPropertyDescriptor(DescriptorIDs.COMMENT,
+				DescriptorIDs.COMMENT.toString());
 		commentDescriptor.setCategory(CATEGORY_NAME);
 		propertyDescriptors.add(commentDescriptor);
 
@@ -78,9 +111,23 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		if (id.equals(DescriptorIDs.CREATION_DATE)) {
+		DescriptorIDs descId = null;
+		if (id instanceof DescriptorIDs) {
+			descId = (DescriptorIDs) id;
+		} else if (id instanceof String) {
+			// This enables us to also provide Strings using the display name of the
+			// property descriptors
+			try {
+				descId = DescriptorIDs.fromString((String) id);
+			} catch (IllegalArgumentException e) {
+				// Deliberately do nothing
+			}
+		}
+		if (descId != null && descId.equals(DescriptorIDs.CREATION_DATE)) {
 			return ((TraceMetadata) this.metadata).getCreationDate();
-		} else if (id.equals(DescriptorIDs.COMMENT)) {
+		} else if (descId != null && descId.equals(DescriptorIDs.CREATION_USER)) {
+			return ((TraceMetadata) this.metadata).getCreationUser();
+		} else if (descId != null && descId.equals(DescriptorIDs.COMMENT)) {
 			return ((TraceMetadata) this.metadata).getComment();
 		}
 		return null;
@@ -90,6 +137,8 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 	public boolean isPropertySet(Object id) {
 		if (id.equals(DescriptorIDs.CREATION_DATE)) {
 			return ((TraceMetadataImpl) this.metadata).eIsSet(MetadatamodelPackage.TRACE_METADATA__CREATION_DATE);
+		} else if (id.equals(DescriptorIDs.CREATION_USER)) {
+			return ((TraceMetadataImpl) this.metadata).eIsSet(MetadatamodelPackage.TRACE_METADATA__CREATION_USER);
 		} else if (id.equals(DescriptorIDs.COMMENT)) {
 			return ((TraceMetadataImpl) this.metadata).eIsSet(MetadatamodelPackage.TRACE_METADATA__COMMENT);
 		}
@@ -100,6 +149,8 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 	public void resetPropertyValue(Object id) {
 		if (id.equals(DescriptorIDs.CREATION_DATE)) {
 			((TraceMetadataImpl) this.metadata).eUnset(MetadatamodelPackage.TRACE_METADATA__CREATION_DATE);
+		} else if (id.equals(DescriptorIDs.CREATION_USER)) {
+			((TraceMetadataImpl) this.metadata).eUnset(MetadatamodelPackage.TRACE_METADATA__CREATION_USER);
 		} else if (id.equals(DescriptorIDs.COMMENT)) {
 			((TraceMetadataImpl) this.metadata).eUnset(MetadatamodelPackage.TRACE_METADATA__COMMENT);
 		}
@@ -109,6 +160,8 @@ public class ConnectionMetadataProperties extends MetadataPropertiesSource {
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(DescriptorIDs.CREATION_DATE) && value instanceof Date) {
 			updateInTransaction(MetadatamodelPackage.TRACE_METADATA__CREATION_DATE, value);
+		} else if (id.equals(DescriptorIDs.CREATION_USER) && value instanceof String) {
+			updateInTransaction(MetadatamodelPackage.TRACE_METADATA__CREATION_USER, value);
 		} else if (id.equals(DescriptorIDs.COMMENT) && value instanceof String) {
 			updateInTransaction(MetadatamodelPackage.TRACE_METADATA__COMMENT, value);
 		}
