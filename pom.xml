@@ -54,6 +54,7 @@
 		<module>bundles/org.eclipse.capra.ui.xtext</module>
 		<module>bundles/org.eclipse.capra.ui.sunburst</module>
 		<module>bundles/org.eclipse.capra.ui.matrix</module>
+		<module>bundles/org.eclipse.capra.ui.linktable</module>
 
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsupport</module>
@@ -86,6 +87,7 @@
 		<module>features/org.eclipse.capra.ui.xtext.feature</module>
 		<module>features/org.eclipse.capra.ui.sunburst.feature</module>
 		<module>features/org.eclipse.capra.ui.matrix.feature</module>
+		<module>features/org.eclipse.capra.ui.linktable.feature</module>
 
 		<!-- Releng -->
 		<module>releng/org.eclipse.capra.releng.target</module>
