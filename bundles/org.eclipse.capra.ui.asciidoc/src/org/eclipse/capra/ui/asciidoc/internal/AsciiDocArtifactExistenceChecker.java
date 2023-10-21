@@ -62,8 +62,8 @@ public class AsciiDocArtifactExistenceChecker {
 			Optional<IAsciiDocApiAccess> asciiDocApiAccessOpt = getAsciiDoctorAccess();
 			if (asciiDocApiAccessOpt.isPresent()) {
 				IAsciiDocApiAccess apiAccess = asciiDocApiAccessOpt.get();
-				Item item = apiAccess.getItemFromAsciiDocText(0, asciiDocText);
-				artifactExists = item != null;
+				Item item = apiAccess.getItemFromAsciiDocText(artifact.getItem().getOffset(), asciiDocText);
+				artifactExists = (item != null) && (item.getName().equals(artifact.getItem().getName()));
 			}
 
 		} catch (IOException e) {

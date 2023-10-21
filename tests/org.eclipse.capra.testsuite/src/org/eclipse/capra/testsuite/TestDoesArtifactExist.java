@@ -72,12 +72,11 @@ public class TestDoesArtifactExist {
 	private static final String MODEL_B_NAME = "modelB";
 
 	private static final String ASCII_DOC_TEXT = "= AsciiDoc Article Title\n"
-			+ "Firstname Lastname <author@asciidoctor.org>\n" + "3.0, July 29, 2022: AsciiDoc article template\n"
-			+ ":toc:\n" + ":icons: font\n"
-			+ ":url-quickref: https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/\n" + "\n"
-			+ "Content entered directly below the header but before the first section heading is called the preamble.\n"
-			+ "\n" + "== First level heading\n" + "\n"
-			+ "This is a paragraph with a *bold* word and an _italicized_ word.";
+			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading\n" + "\n"
+			+ "== Second Level Heading";
+
+	private static final String ASCII_DOC_TEXT_SHORT = "= AsciiDoc Article Title\n"
+			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading";
 
 	@Before
 	public void init() throws CoreException {
@@ -176,7 +175,7 @@ public class TestDoesArtifactExist {
 		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
 		createEClassInEPackage(a, CLASS_A_NAME);
 		save(testProject, a);
-		AsciiDocArtifact asciiDocArtifact = createAsciiDocArtifact(testProject, ASCIIDOC_FILE_NAME);
+		AsciiDocArtifact asciiDocArtifact = createAsciiDocArtifact(testProject, ASCIIDOC_FILE_NAME, 94);
 		assertNotNull(asciiDocArtifact);
 		assertNotNull(asciiDocArtifact.getItem());
 		assertNotNull(asciiDocArtifact.getUri());
@@ -210,16 +209,21 @@ public class TestDoesArtifactExist {
 		// Sleep to allow deletion to succeed...
 		Thread.sleep(2000);
 		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+
+		// Create file again with shorter text
+		TestHelper.createFileContentInProject(ASCIIDOC_FILE_NAME, testProject.getName(), ASCII_DOC_TEXT_SHORT);
+		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+
 	}
 
-	private AsciiDocArtifact createAsciiDocArtifact(IProject project, String fileName)
+	private AsciiDocArtifact createAsciiDocArtifact(IProject project, String fileName, int offset)
 			throws CoreException, URISyntaxException, InterruptedException {
 		AsciiDocArtifact artifact = null;
 		IFile asciiDocFile = TestHelper.createFileContentInProject(fileName, project.getName(), ASCII_DOC_TEXT);
 		Optional<IAsciiDocApiAccess> asciiDocApiAccessOpt = getAsciiDoctorAccess();
 		if (asciiDocApiAccessOpt.isPresent()) {
 			IAsciiDocApiAccess apiAccess = asciiDocApiAccessOpt.get();
-			Item item = apiAccess.getItemFromAsciiDocText(0, ASCII_DOC_TEXT);
+			Item item = apiAccess.getItemFromAsciiDocText(offset, ASCII_DOC_TEXT);
 
 			if (asciiDocFile != null) {
 				URI uri = new URIBuilder().setScheme("platform").setPath("/resource" + asciiDocFile.getFullPath())

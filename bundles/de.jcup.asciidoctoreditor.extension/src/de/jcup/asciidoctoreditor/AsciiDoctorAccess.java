@@ -46,6 +46,9 @@ public class AsciiDoctorAccess implements IAsciiDocApiAccess {
 			e.printStackTrace();
 		}
 		if (model != null) {
+			// We rebuild first to empty cache
+			contentProvider.rebuildTree(null);
+			// Then we rebuild again with the current model
 			contentProvider.rebuildTree(model);
 			item = contentProvider.tryToFindByOffset(offset);
 		}
