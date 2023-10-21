@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
@@ -34,6 +35,7 @@ import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
+import org.eclipse.capra.ui.matrix.IEObjectForIndexProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixBodyToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
@@ -89,6 +91,7 @@ import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.HorizontalAlignmentEnum;
 import org.eclipse.nebula.widgets.nattable.style.IStyle;
+import org.eclipse.nebula.widgets.nattable.style.Style;
 import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
@@ -132,6 +135,8 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	private static final String CONFIRM_DELETION_TITLE = "Delete trace link";
 
+	private static final String ARTIFACT_DOES_NOT_EXIST_LABEL = "ARTIFACT_DOES_NOT_EXIST_LABEL";
+
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -150,7 +155,8 @@ public class TraceabilityMatrixView extends ViewPart {
 
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 
-	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
+	private final ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+			.getTraceabilityInformationModelAdapter().get();
 	private IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 
 	private TraceabilityMatrixDataProvider bodyDataProvider;
@@ -198,40 +204,54 @@ public class TraceabilityMatrixView extends ViewPart {
 	 */
 	private AbstractRegistryConfiguration capraNatTableStyleConfiguration = new AbstractRegistryConfiguration() {
 		private final HorizontalAlignmentEnum ALIGNMENT = HorizontalAlignmentEnum.LEFT;
-		
+
 		@Override
 		public void configureRegistry(IConfigRegistry configRegistry) {
 			// Black background for cells which are on the diagonal
-			IStyle diagonalCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+			IStyle diagonalCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+					DisplayMode.NORMAL, GridRegion.BODY);
 			diagonalCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_BLACK);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, diagonalCellStyle, DisplayMode.NORMAL,
-					SAME_LABEL);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, diagonalCellStyle,
+					DisplayMode.NORMAL, SAME_LABEL);
 
 			// Green background for cells where there is a link.
-			IStyle linkCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+			IStyle linkCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+					DisplayMode.NORMAL, GridRegion.BODY);
 			linkCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, linkCellStyle, DisplayMode.NORMAL,
 					LINK_LABEL);
 
 			// Style that is applied when cells are hovered
-			IStyle hoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+			IStyle hoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+					DisplayMode.NORMAL, GridRegion.BODY);
 			hoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_YELLOW);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, hoveredCellStyle, DisplayMode.HOVER);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, hoveredCellStyle,
+					DisplayMode.HOVER);
 
 			// Style that is applied when selected cells are hovered
-			IStyle selectedHoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.BODY);
+			IStyle selectedHoveredCellStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+					DisplayMode.NORMAL, GridRegion.BODY);
 			selectedHoveredCellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_GREEN);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectedHoveredCellStyle, DisplayMode.SELECT_HOVER);
-			
-			IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, selectedHoveredCellStyle,
+					DisplayMode.SELECT_HOVER);
+
+			IStyle columnHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
+					DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
 			columnHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, columnHeaderStyle,
 					DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
-			
-			IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE, DisplayMode.NORMAL, GridRegion.ROW_HEADER);
-			rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
-			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle,
+
+			IStyle rowHeaderStyle = configRegistry.getConfigAttribute(CellConfigAttributes.CELL_STYLE,
 					DisplayMode.NORMAL, GridRegion.ROW_HEADER);
+			rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle, DisplayMode.NORMAL,
+					GridRegion.ROW_HEADER);
+
+			IStyle rowHeaderStyleArtifactNotExists = new Style();
+			rowHeaderStyleArtifactNotExists.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR,
+					GUIHelper.COLOR_RED);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyleArtifactNotExists,
+					DisplayMode.NORMAL, ARTIFACT_DOES_NOT_EXIST_LABEL);
 		}
 	};
 
@@ -259,13 +279,12 @@ public class TraceabilityMatrixView extends ViewPart {
 					new RowResizeCursorAction());
 			uiBindingRegistry.registerFirstMouseDragMode(new RowResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 1),
 					new RowResizeDragMode());
-			uiBindingRegistry.registerDoubleClickBinding(MouseEventMatcher.bodyLeftClick(0),
-					new IMouseAction() {
-						@Override
-						public void run(NatTable natTable, MouseEvent event) {
-							createLinkAction.run();
-						}
-					});
+			uiBindingRegistry.registerDoubleClickBinding(MouseEventMatcher.bodyLeftClick(0), new IMouseAction() {
+				@Override
+				public void run(NatTable natTable, MouseEvent event) {
+					createLinkAction.run();
+				}
+			});
 		}
 	};
 
@@ -485,22 +504,24 @@ public class TraceabilityMatrixView extends ViewPart {
 		manager.add(showAllAction);
 	}
 
-	private void makeActions() {		
+	private void makeActions() {
 		createLinkAction = new Action() {
 			@Override
 			public void run() {
 				if (getConnectionFromSelection() != null) {
-					// If there is already a link in the selected cell, we do not want to create another one.
+					// If there is already a link in the selected cell, we do not want to create
+					// another one.
 					return;
 				}
 				PositionCoordinate selectedCellCoords = selectionProvider.getSelectedCellPosition();
 				if (selectedCellCoords != null) {
 					EObject source = bodyDataProvider.getRow(selectedCellCoords.rowPosition);
 					EObject target = bodyDataProvider.getColumn(selectedCellCoords.columnPosition);
-					
-					CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create new traceability link", Arrays.asList(source), Arrays.asList(target));
+
+					CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create new traceability link",
+							Arrays.asList(source), Arrays.asList(target));
 					createTraceOperation.addContext(IOperationHistory.GLOBAL_UNDO_CONTEXT);
-					
+
 					IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
 					try {
 						operationHistory.execute(createTraceOperation, null, TraceabilityMatrixView.this.getSite());
@@ -512,20 +533,22 @@ public class TraceabilityMatrixView extends ViewPart {
 			}
 		};
 		createLinkAction.setText("Create Link");
-		createLinkAction.setToolTipText("Create a new traceability link with the artifact in the row of the selected cell"
-				+ " as the source and the artifact in the column of the selected cell as the target");
+		createLinkAction
+				.setToolTipText("Create a new traceability link with the artifact in the row of the selected cell"
+						+ " as the source and the artifact in the column of the selected cell as the target");
 		try {
 			URL createLinkImageUrl = new URL("platform:/plugin/org.eclipse.ui/icons/full/obj16/add_obj.png");
 			ImageDescriptor createLinkImage = ImageDescriptor.createFromURL(createLinkImageUrl);
 			createLinkAction.setImageDescriptor(createLinkImage);
 		} catch (MalformedURLException ex) {
-			// Swallow this exception since we will just use the default behaviour of showing text
+			// Swallow this exception since we will just use the default behaviour of
+			// showing text
 		}
-		
+
 		deleteLinkAction = new Action() {
 			@Override
 			public void run() {
-				if (getConnectionFromSelection() != null){
+				if (getConnectionFromSelection() != null) {
 					Shell shell = TraceabilityMatrixView.this.getSite().getShell();
 					if (MessageDialog.open(MessageDialog.QUESTION, shell, CONFIRM_DELETION_TITLE,
 							CONFIRM_DELETION_QUESTION, SWT.NONE)) {
@@ -553,10 +576,10 @@ public class TraceabilityMatrixView extends ViewPart {
 			ImageDescriptor deleteLinkImage = ImageDescriptor.createFromURL(deleteLinkImageUrl);
 			deleteLinkAction.setImageDescriptor(deleteLinkImage);
 		} catch (MalformedURLException ex) {
-			// Swallow this exception since we will just use the default behaviour of showing text
+			// Swallow this exception since we will just use the default behaviour of
+			// showing text
 		}
-		
-		
+
 		refreshAction = new Action() {
 			@Override
 			public void run() {
@@ -570,7 +593,8 @@ public class TraceabilityMatrixView extends ViewPart {
 			ImageDescriptor refreshImage = ImageDescriptor.createFromURL(refreshImageUrl);
 			refreshAction.setImageDescriptor(refreshImage);
 		} catch (MalformedURLException ex) {
-			// Swallow this exception since we will just use the default behaviour of showing text
+			// Swallow this exception since we will just use the default behaviour of
+			// showing text
 		}
 
 		showAllAction = new Action() {
@@ -597,9 +621,9 @@ public class TraceabilityMatrixView extends ViewPart {
 	}
 
 	private Connection getConnectionFromSelection() {
-		if ((selectionProvider.getSelection() instanceof StructuredSelection) && 
-				((StructuredSelection)selectionProvider.getSelection()).getFirstElement() instanceof Connection) {
-			return (Connection)((StructuredSelection)selectionProvider.getSelection()).getFirstElement();
+		if ((selectionProvider.getSelection() instanceof StructuredSelection)
+				&& ((StructuredSelection) selectionProvider.getSelection()).getFirstElement() instanceof Connection) {
+			return (Connection) ((StructuredSelection) selectionProvider.getSelection()).getFirstElement();
 		}
 		return null;
 	}
@@ -613,6 +637,9 @@ public class TraceabilityMatrixView extends ViewPart {
 			DataLayer dataLayer = new DataLayer(dataProvider);
 			ColumnHeaderLayer colHeaderLayer = new ColumnHeaderLayer(dataLayer, TraceabilityMatrixView.this.bodyLayer,
 					TraceabilityMatrixView.this.bodyLayer.getSelectionLayer());
+
+			colHeaderLayer.setConfigLabelAccumulator(
+					new ArtifactExistenceConfigLabelAccumulator(dataProvider, AccumulatorType.COLUMN));
 
 			// Adding double click to the column header
 			colHeaderLayer.addConfiguration(new AbstractUiBindingConfiguration() {
@@ -650,6 +677,9 @@ public class TraceabilityMatrixView extends ViewPart {
 			DataLayer dataLayer = new DataLayer(dataProvider, 50, 20);
 			RowHeaderLayer rowHeaderLayer = new RowHeaderLayer(dataLayer, TraceabilityMatrixView.this.bodyLayer,
 					TraceabilityMatrixView.this.bodyLayer.getSelectionLayer());
+
+			rowHeaderLayer.setConfigLabelAccumulator(
+					new ArtifactExistenceConfigLabelAccumulator(dataProvider, AccumulatorType.ROW));
 
 			// Adding double click to the row header
 			rowHeaderLayer.addConfiguration(new AbstractUiBindingConfiguration() {
@@ -694,6 +724,49 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		public SelectionLayer getSelectionLayer() {
 			return this.selectionLayer;
+		}
+	}
+
+	private enum AccumulatorType {
+		ROW, COLUMN
+	}
+
+	/**
+	 * Sets config labels if an artifact does not exist any more.
+	 */
+	private final class ArtifactExistenceConfigLabelAccumulator implements IConfigLabelAccumulator {
+
+		private final IDataProvider dataProvider;
+		private final AccumulatorType accumulatorType;
+
+		private ArtifactExistenceConfigLabelAccumulator(IDataProvider dataProvider, AccumulatorType accumulatorType) {
+			this.dataProvider = dataProvider;
+			this.accumulatorType = accumulatorType;
+		}
+
+		@Override
+		public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
+			if (dataProvider instanceof IEObjectForIndexProvider) {
+				IEObjectForIndexProvider rowHeaderDataProvider = (IEObjectForIndexProvider) dataProvider;
+				int position = 0;
+				switch (this.accumulatorType) {
+				case ROW:
+					position = rowPosition;
+					break;
+				case COLUMN:
+					position = columnPosition;
+					break;
+				}
+				EObject obj = rowHeaderDataProvider.getEObject(position);
+				ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
+				Optional<IArtifactHandler<?>> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj));
+				if (handler.isPresent()) {
+					if (!handler.get().doesArtifactExist(obj)) {
+						configLabels.addLabel(ARTIFACT_DOES_NOT_EXIST_LABEL);
+					}
+				}
+			}
+
 		}
 	}
 }

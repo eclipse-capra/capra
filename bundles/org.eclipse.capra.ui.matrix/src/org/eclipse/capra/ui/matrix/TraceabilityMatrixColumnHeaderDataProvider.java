@@ -29,12 +29,14 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
  * @author Themistoklis Ntoukolis
  * @author Jan-Philipp Steghöfer
  */
-public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider {
+public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider, IEObjectForIndexProvider {
 
+	private List<EObject> eObjects = new ArrayList<>();
 	private List<String> labels = new ArrayList<>();
 
 	public TraceabilityMatrixColumnHeaderDataProvider(List<EObject> data, ArtifactHelper artifactHelper) {
 		for (EObject next : data) {
+			this.eObjects.add(next);
 			this.labels.add(artifactHelper.getArtifactLabel(next));
 		}
 	}
@@ -64,6 +66,11 @@ public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider
 	@Override
 	public void setDataValue(int arg0, int arg1, Object arg2) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public EObject getEObject(int columnIndex) {
+		return eObjects.get(columnIndex);
 	}
 
 }
