@@ -14,10 +14,15 @@ package org.eclipse.capra.ui.linktable.views;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
+import org.eclipse.capra.core.handlers.IArtifactHandler;
+import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.linktable.nattable.ConnectionColumnPropertyAccessor;
@@ -29,10 +34,11 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.nattable.NatTable;
-import org.eclipse.nebula.widgets.nattable.config.AbstractUiBindingConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.CellConfigAttributes;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultCornerDataProvider;
 import org.eclipse.nebula.widgets.nattable.grid.data.DefaultRowHeaderDataProvider;
@@ -42,17 +48,16 @@ import org.eclipse.nebula.widgets.nattable.grid.layer.GridLayer;
 import org.eclipse.nebula.widgets.nattable.grid.layer.RowHeaderLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.ILayer;
-import org.eclipse.nebula.widgets.nattable.resize.action.ColumnResizeCursorAction;
-import org.eclipse.nebula.widgets.nattable.resize.action.RowResizeCursorAction;
-import org.eclipse.nebula.widgets.nattable.resize.event.ColumnResizeEventMatcher;
-import org.eclipse.nebula.widgets.nattable.resize.event.RowResizeEventMatcher;
-import org.eclipse.nebula.widgets.nattable.resize.mode.ColumnResizeDragMode;
-import org.eclipse.nebula.widgets.nattable.resize.mode.RowResizeDragMode;
+import org.eclipse.nebula.widgets.nattable.layer.LabelStack;
+import org.eclipse.nebula.widgets.nattable.layer.cell.IConfigLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultRowSelectionLayerConfiguration;
-import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
+import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
+import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
+import org.eclipse.nebula.widgets.nattable.style.Style;
+import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfiguration;
+import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
@@ -67,6 +72,47 @@ import org.eclipse.ui.part.ViewPart;
  *
  */
 public class TraceabilityLinkTable extends ViewPart {
+
+	private final class TraceabilityLinkTableRegistryConfiguration extends AbstractRegistryConfiguration {
+		@Override
+		public void configureRegistry(final IConfigRegistry configRegistry) {
+			Style cellStyle = new Style();
+			cellStyle.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR, GUIHelper.COLOR_RED);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, cellStyle, DisplayMode.NORMAL,
+					ARTIFACT_DOES_NOT_EXIST_LABEL);
+		}
+	}
+
+	private final class ArtifactExistenceConfigLabelAccumulator implements IConfigLabelAccumulator {
+		private final IDataProvider bodyDataProvider;
+
+		private ArtifactExistenceConfigLabelAccumulator(IDataProvider bodyDataProvider) {
+			this.bodyDataProvider = bodyDataProvider;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
+			List<EObject> artifacts = new ArrayList<>();
+			Connection connection = ((ListDataProvider<Connection>) bodyDataProvider).getRowObject(rowPosition);
+			if (columnPosition == 0) {
+				artifacts = connection.getOrigins();
+			} else if (columnPosition == 1) {
+				artifacts = connection.getTargets();
+			}
+			for (EObject obj : artifacts) {
+				ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
+				Optional<IArtifactHandler<?>> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj));
+				if (handler.isPresent()) {
+					if (!handler.get().doesArtifactExist(obj)) {
+						configLabels.addLabelOnTop(ARTIFACT_DOES_NOT_EXIST_LABEL);
+					}
+				}
+			}
+		}
+	}
+
+	private static final String ARTIFACT_DOES_NOT_EXIST_LABEL = "ARTIFACT_DOES_NOT_EXIST_LABEL";
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -97,33 +143,6 @@ public class TraceabilityLinkTable extends ViewPart {
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(refreshAction);
 	}
-
-	/**
-	 * Making it possible to resize columns and rows.
-	 */
-	private AbstractUiBindingConfiguration capraUiBindingConfiguration = new AbstractUiBindingConfiguration() {
-
-		@Override
-		public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
-			uiBindingRegistry.registerFirstMouseMoveBinding(
-					new ColumnResizeEventMatcher(SWT.NONE, GridRegion.ROW_HEADER, 0), new ColumnResizeCursorAction());
-			uiBindingRegistry.registerFirstMouseDragMode(
-					new ColumnResizeEventMatcher(SWT.NONE, GridRegion.ROW_HEADER, 1), new ColumnResizeDragMode());
-			uiBindingRegistry.registerFirstMouseMoveBinding(
-					new RowResizeEventMatcher(SWT.NONE, GridRegion.COLUMN_HEADER, 0), new RowResizeCursorAction());
-			uiBindingRegistry.registerFirstMouseDragMode(
-					new RowResizeEventMatcher(SWT.NONE, GridRegion.COLUMN_HEADER, 1), new RowResizeDragMode());
-			// Make the corner on the top left also resizable
-			uiBindingRegistry.registerFirstMouseMoveBinding(
-					new ColumnResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 0), new ColumnResizeCursorAction());
-			uiBindingRegistry.registerFirstMouseDragMode(new ColumnResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 1),
-					new ColumnResizeDragMode());
-			uiBindingRegistry.registerFirstMouseMoveBinding(new RowResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 0),
-					new RowResizeCursorAction());
-			uiBindingRegistry.registerFirstMouseDragMode(new RowResizeEventMatcher(SWT.NONE, GridRegion.CORNER, 1),
-					new RowResizeDragMode());
-		}
-	};
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -186,6 +205,10 @@ public class TraceabilityLinkTable extends ViewPart {
 
 		// Body and selection layer
 		DataLayer bodyDataLayer = new DataLayer(bodyDataProvider);
+		IConfigLabelAccumulator artifactExistenceLabelAcculumaltor = new ArtifactExistenceConfigLabelAccumulator(
+				bodyDataProvider);
+		bodyDataLayer.setConfigLabelAccumulator(artifactExistenceLabelAcculumaltor);
+
 		SelectionLayer selectionLayer = new SelectionLayer(bodyDataLayer);
 		selectionLayer.addConfiguration(new DefaultRowSelectionLayerConfiguration());
 
@@ -210,8 +233,13 @@ public class TraceabilityLinkTable extends ViewPart {
 		// Put the layers together in a grid
 		GridLayer gridLayer = new GridLayer(viewportLayer, columnHeaderLayer, rowHeaderLayer, cornerLayer);
 
-		NatTable natTable = new NatTable(parent, gridLayer);
+		NatTable traceabilityLinkTable = new NatTable(parent, gridLayer, false);
+		// Adding Configuration to the table
+		traceabilityLinkTable.addConfiguration(new ModernNatTableThemeConfiguration());
+		traceabilityLinkTable.addConfiguration(new TraceabilityLinkTableRegistryConfiguration());
+		traceabilityLinkTable.configure();
 
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(traceabilityLinkTable);
+
 	}
 }
