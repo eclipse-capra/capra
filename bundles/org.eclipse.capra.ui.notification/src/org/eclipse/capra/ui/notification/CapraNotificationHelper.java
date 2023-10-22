@@ -183,12 +183,12 @@ public class CapraNotificationHelper {
 				String existingMarkerUri = marker.getAttribute(OLD_URI, null);
 				String existingMarkerIssue = marker.getAttribute(ISSUE_TYPE, null);
 
-				if (existingMarkerUri.equals(uri)) {
+				if (existingMarkerUri != null && existingMarkerUri.equals(uri)) {
 					if (issues == null) {
 						marker.delete();
 					} else {
 						for (IssueType issue : issues) {
-							if (existingMarkerIssue.equals(issue.getValue())) {
+							if (existingMarkerIssue != null && existingMarkerIssue.equals(issue.getValue())) {
 								marker.delete();
 							}
 						}
