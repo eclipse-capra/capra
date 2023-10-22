@@ -33,4 +33,31 @@
             value="true">
       </persistent>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.eclipse.capra.ui.notification.checkArtifactExistence"
+               label="Check if linked artifacts exist">
+            <command
+                  commandId="org.eclipse.capra.ui.notification.command.checkArtifactExistence"
+                  icon="icons/check_artifact_existence.png"
+                  label="Check if linked artifacts exist"
+                  style="push"
+                  tooltip="Checks if the artifacts that are the origins or the targets of trace links exists. Creates problem markers for all links in which artifacts cannot be found.">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.capra.ui.commands.category"
+            defaultHandler="org.eclipse.capra.ui.notification.CheckArtifactExistenceHandler"
+            id="org.eclipse.capra.ui.notification.command.checkArtifactExistence"
+            name="Check if linked artifacts exist">
+      </command>
+   </extension>
 </plugin>

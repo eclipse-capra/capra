@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -104,7 +105,7 @@ public class CapraNotificationHelper {
 	 *                   marker
 	 * @param container  file that the created marker will be attached to
 	 */
-	public static void createCapraMarker(Map<String, String> markerInfo, IFile container) {
+	public static void createCapraMarker(Map<String, String> markerInfo, IResource container) {
 
 		try {
 			String newMarkerIssue = markerInfo.get(ISSUE_TYPE);
