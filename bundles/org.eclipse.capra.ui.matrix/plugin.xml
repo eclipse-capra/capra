@@ -37,5 +37,37 @@
          </view>
       </perspectiveExtension>
    </extension>
-   
+   <extension
+         point="org.eclipse.ui.commands">
+         <command
+            description="%command.description.artifactExistence"
+            id="org.eclipse.capra.ui.matrix.toggleCheckArtifactExistence"
+            name="%command.name.artifactExistence">
+         <state
+               class="org.eclipse.jface.commands.ToggleState"
+               id="org.eclipse.ui.commands.toggleState">
+         </state>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.capra.ui.matrix.views.TraceabilityMatrixView?after=additions">
+         <separator
+               name="contributed"
+               visible="true"/>
+         <command
+               commandId="org.eclipse.capra.ui.matrix.toggleCheckArtifactExistence"
+               label="%command.label.artifactExistence"
+               style="toggle">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.matrix.handlers.ToggleCheckArtifactExistenceHandler"
+            commandId="org.eclipse.capra.ui.matrix.toggleCheckArtifactExistence">
+      </handler>
+   </extension>
 </plugin>

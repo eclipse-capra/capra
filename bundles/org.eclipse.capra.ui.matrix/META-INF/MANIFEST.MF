@@ -17,3 +17,4 @@ Export-Package: org.eclipse.capra.ui.matrix,
  org.eclipse.capra.ui.matrix.views
 Bundle-Vendor: %Bundle-Vendor
 Automatic-Module-Name: org.eclipse.capra.ui.matrix
+Import-Package: org.slf4j

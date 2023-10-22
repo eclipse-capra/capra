@@ -41,6 +41,7 @@ import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
+import org.eclipse.capra.ui.matrix.handlers.ToggleCheckArtifactExistenceHandler;
 import org.eclipse.capra.ui.matrix.selection.TraceabilityMatrixSelectionProvider;
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.operations.DeleteTraceOperation;
@@ -746,6 +747,10 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		@Override
 		public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
+			// Execute only if preference is set
+			if (!ToggleCheckArtifactExistenceHandler.checkArtifaceExistence()) {
+				return;
+			}
 			if (dataProvider instanceof IEObjectForIndexProvider) {
 				IEObjectForIndexProvider rowHeaderDataProvider = (IEObjectForIndexProvider) dataProvider;
 				int position = 0;
