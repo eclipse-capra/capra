@@ -74,7 +74,8 @@ public class CheckArtifactExistenceHandler extends AbstractHandler {
 						Optional<IArtifactHandler<?>> handler = artifactHelper
 								.getHandler(artifactHelper.unwrapWrapper(obj));
 						if (handler.isPresent()) {
-							if (handler.get().getArtifactStatus(obj) == ArtifactStatus.REMOVED) {
+							ArtifactStatus artifactStatus = handler.get().getArtifactStatus(obj);
+							if (artifactStatus.getStatus() == ArtifactStatus.Status.REMOVED) {
 								HashMap<String, String> markerInfo = new HashMap<>();
 								markerInfo.put(CapraNotificationHelper.ISSUE_TYPE,
 										CapraNotificationHelper.IssueType.DELETED.getValue());
@@ -85,12 +86,13 @@ public class CheckArtifactExistenceHandler extends AbstractHandler {
 								markerInfo.put(CapraNotificationHelper.NEW_URI, "");
 								markerInfo.put(CapraNotificationHelper.NEW_NAME, "");
 								CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
-							} else if (handler.get().getArtifactStatus(obj) == ArtifactStatus.RENAMED) {
+							} else if (artifactStatus.getStatus() == ArtifactStatus.Status.RENAMED) {
 								HashMap<String, String> markerInfo = new HashMap<>();
 								markerInfo.put(CapraNotificationHelper.ISSUE_TYPE,
 										CapraNotificationHelper.IssueType.RENAMED.getValue());
-								markerInfo.put(CapraNotificationHelper.MESSAGE, "Linked artifact "
-										+ artifactHelper.getArtifactLabel(obj) + " has been renamed.");
+								markerInfo.put(CapraNotificationHelper.MESSAGE,
+										"Linked artifact " + artifactStatus.getOldName() + " has been renamed to "
+												+ artifactStatus.getNewName());
 								markerInfo.put(CapraNotificationHelper.OLD_URI,
 										CapraNotificationHelper.getFileUri(obj).toPlatformString(false));
 								markerInfo.put(CapraNotificationHelper.NEW_URI, "");

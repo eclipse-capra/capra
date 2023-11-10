@@ -111,15 +111,17 @@ public interface IArtifactHandler<T> {
 	 * artifact still exists, but has been renamed, e.g., when the artifact is
 	 * resolved using an ID and a name is stored in the artifact model as well.
 	 * <p>
-	 * This interface provides a default implementation that returns
-	 * {@link ArtifactStatus.NORMAL} iff the value returned by
+	 * This interface provides a default implementation that returns an
+	 * {@link ArtifactStatus} instance with the status set to
+	 * {@link ArtifactStatus.Status.NORMAL} iff the value returned by
 	 * {@link this#doesArtifactExist(EObject)} is <code>true</code>. Otherwise, it
-	 * returns {@link ArtifactStatus.REMOVED}. Implementing classes should override
-	 * this default behaviour to use whichever mechanism is useful, e.g., calling an
-	 * {@code exists()} method on the resolved wrapper.
+	 * returns {@link ArtifactStatus.Status.REMOVED}. Implementing classes should
+	 * override this default behaviour to use whichever mechanism is useful, e.g.,
+	 * calling an {@code exists()} method on the resolved wrapper.
 	 * 
 	 * @param wrapper the wrapped object
-	 * @return <code>ArtifactStatus.NORMAL</code> if the artifact represented by the
+	 * @return An {@link ArtifactStatus} instance with the status set to:
+	 *         <code>ArtifactStatus.NORMAL</code> if the artifact represented by the
 	 *         wrapper exists, is accessible, and has the correct name.
 	 *         <code>ArtifactStatus.RENAMED</code> if the artifact represented by
 	 *         the wrapper exists and is accessible, but its name has changed.
@@ -128,9 +130,9 @@ public interface IArtifactHandler<T> {
 	 */
 	default ArtifactStatus getArtifactStatus(EObject wrapper) {
 		if (doesArtifactExist(wrapper)) {
-			return ArtifactStatus.NORMAL;
+			return new ArtifactStatus(ArtifactStatus.Status.NORMAL);
 		} else {
-			return ArtifactStatus.REMOVED;
+			return new ArtifactStatus(ArtifactStatus.Status.REMOVED);
 		}
 	}
 

@@ -74,7 +74,7 @@ public class AsciiDocArtifact {
 	 * @return {@code true} if the artifact exists, {@code false} otherwise
 	 */
 	public boolean exists() {
-		return getStatus() == ArtifactStatus.NORMAL;
+		return getStatus().getStatus() == ArtifactStatus.Status.NORMAL;
 	}
 
 	/**

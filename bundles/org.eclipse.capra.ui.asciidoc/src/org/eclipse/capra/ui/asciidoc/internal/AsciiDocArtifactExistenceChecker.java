@@ -59,7 +59,7 @@ public class AsciiDocArtifactExistenceChecker {
 	 *         exist, cannot be accessed, or an exception occurred.
 	 */
 	public static ArtifactStatus getAsciiDocArtifactStatus(AsciiDocArtifact artifact) {
-		ArtifactStatus artifactStatus = ArtifactStatus.UNKNOWN;
+		ArtifactStatus artifactStatus = new ArtifactStatus(ArtifactStatus.Status.UNKNOWN);
 		// 1. Load file
 		try {
 			URL asciiDocUrl = FileLocator.toFileURL(URI.create(artifact.getUri()).toURL());
@@ -73,17 +73,18 @@ public class AsciiDocArtifactExistenceChecker {
 				IAsciiDocApiAccess apiAccess = asciiDocApiAccessOpt.get();
 				Item item = apiAccess.getItemFromAsciiDocText(artifact.getItem().getOffset(), asciiDocText);
 				if (item == null) {
-					artifactStatus = ArtifactStatus.REMOVED;
+					artifactStatus = new ArtifactStatus(ArtifactStatus.Status.REMOVED);
 				} else if (!item.getName().equals(artifact.getItem().getName())) {
-					artifactStatus = ArtifactStatus.RENAMED;
+					artifactStatus = new ArtifactStatus(ArtifactStatus.Status.RENAMED, artifact.getItem().getName(),
+							item.getName());
 				} else {
-					artifactStatus = ArtifactStatus.NORMAL;
+					artifactStatus = new ArtifactStatus(ArtifactStatus.Status.NORMAL);
 				}
 			}
 
 		} catch (IOException e) {
 			// If we cannot open the artifact, we assume that it has been removed.
-			artifactStatus = ArtifactStatus.REMOVED;
+			artifactStatus = new ArtifactStatus(ArtifactStatus.Status.REMOVED);
 		}
 
 		return artifactStatus;

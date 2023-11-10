@@ -82,13 +82,16 @@ public class TestArtifactStatus {
 
 	private static final String MODEL_A_NAME = "modelA";
 
+	private static final String ASCII_DOC_HEADING = "First Level Heading";
+	private static final String ASCII_DOC_HEADING_MODIFIED = "A Slightly Different First Level Heading";
+
 	private static final String ASCII_DOC_TEXT = "= AsciiDoc Article Title\n"
-			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading\n" + "\n"
+			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== " + ASCII_DOC_HEADING + "\n\n"
 			+ "== Second Level Heading";
 
 	private static final String ASCII_DOC_TEXT_MODIFIED = "= AsciiDoc Article Title\n"
-			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== A Slightly Different First Level Heading\n"
-			+ "\n" + "== Second Level Heading";
+			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== " + ASCII_DOC_HEADING_MODIFIED + " \n" + "\n"
+			+ "== Second Level Heading";
 
 	private static final String ASCII_DOC_TEXT_SHORT = "= AsciiDoc Article Title\n"
 			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading";
@@ -266,8 +269,8 @@ public class TestArtifactStatus {
 		Optional<IArtifactHandler<?>> asciiDocHandler = artifactHelper.getHandler(asciiDocArtifact);
 		assertTrue(asciiDocHandler.isPresent());
 		assertTrue(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
-		assertEquals(asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)),
-				ArtifactStatus.NORMAL);
+		assertEquals(ArtifactStatus.Status.NORMAL,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)).getStatus());
 
 		// Rename Asciidoc artifact
 		IFile asciiDocFile = testProject.getFile(ASCIIDOC_FILE_NAME);
@@ -277,22 +280,25 @@ public class TestArtifactStatus {
 		// Sleep to allow the modification of the file to succeed...
 		Thread.sleep(2000);
 		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
-		assertEquals(ArtifactStatus.RENAMED,
-				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
+		ArtifactStatus artifactStatusAfterRename = asciiDocHandler.get()
+				.getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact));
+		assertEquals(ArtifactStatus.Status.RENAMED, artifactStatusAfterRename.getStatus());
+		assertEquals(ASCII_DOC_HEADING, artifactStatusAfterRename.getOldName());
+		assertEquals(ASCII_DOC_HEADING_MODIFIED, artifactStatusAfterRename.getNewName());
 
 		// Delete AsciiDoc artifact
 		asciiDocFile.delete(true, new NullProgressMonitor());
 		// Sleep to allow deletion to succeed...
 		Thread.sleep(2000);
 		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
-		assertEquals(ArtifactStatus.REMOVED,
-				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(ArtifactStatus.Status.REMOVED,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)).getStatus());
 
 		// Create file again with original text
 		TestHelper.createFileContentInProject(ASCIIDOC_FILE_NAME, testProject.getName(), ASCII_DOC_TEXT);
 		assertTrue(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
-		assertEquals(ArtifactStatus.NORMAL,
-				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(ArtifactStatus.Status.NORMAL,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)).getStatus());
 
 	}
 
