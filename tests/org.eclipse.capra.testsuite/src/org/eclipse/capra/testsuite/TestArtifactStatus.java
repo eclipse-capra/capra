@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2023 Jan-Philipp Steghöfer
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v20.html
+ *  
+ * SPDX-License-Identifier: EPL-2.0
+ *  
+ * Contributors:
+ *      Jan-Philipp Steghöfer - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.capra.testsuite;
 
 import static org.eclipse.capra.testsupport.TestHelper.clearWorkspace;
@@ -16,6 +28,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +38,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
@@ -51,9 +65,9 @@ import org.slf4j.LoggerFactory;
 
 import de.jcup.asciidoctoreditor.outline.Item;
 
-public class TestDoesArtifactExist {
+public class TestArtifactStatus {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TestDoesArtifactExist.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestArtifactStatus.class);
 
 	private static final String ASCII_DOCTOR_API_ACCESS_ID = "org.eclipse.capra.ui.asciidoctor.apiaccess";
 	private static final String ASCII_DOCTOR_API_ACCESS_CONFIG = "class";
@@ -61,19 +75,20 @@ public class TestDoesArtifactExist {
 	private static final String TEST_PROJECT_NAME = "TestProject";
 	private static final String C_PROJECT_NAME = "CProject";
 	private static final String CLASS_A_NAME = "A";
-	private static final String CLASS_B_NAME = "B";
 
 	private static final String MODEL_A_FILENAME = "modelA.ecore";
-	private static final String MODEL_B_FILENAME = "modelB.ecore";
 	private static final String C_FILE_NAME = "test.c";
 	private static final String ASCIIDOC_FILE_NAME = "test.adoc";
 
 	private static final String MODEL_A_NAME = "modelA";
-	private static final String MODEL_B_NAME = "modelB";
 
 	private static final String ASCII_DOC_TEXT = "= AsciiDoc Article Title\n"
 			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading\n" + "\n"
 			+ "== Second Level Heading";
+
+	private static final String ASCII_DOC_TEXT_MODIFIED = "= AsciiDoc Article Title\n"
+			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== A Slightly Different First Level Heading\n"
+			+ "\n" + "== Second Level Heading";
 
 	private static final String ASCII_DOC_TEXT_SHORT = "= AsciiDoc Article Title\n"
 			+ "Firstname Lastname <author@asciidoctor.org>\n" + "\n" + "== First Level Heading";
@@ -213,6 +228,71 @@ public class TestDoesArtifactExist {
 		// Create file again with shorter text
 		TestHelper.createFileContentInProject(ASCIIDOC_FILE_NAME, testProject.getName(), ASCII_DOC_TEXT_SHORT);
 		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+
+	}
+
+	@Test
+	public void testAsciiDocArtifactStatus()
+			throws CoreException, IOException, InterruptedException, BuildException, URISyntaxException {
+		// Create a project
+		IProject testProject = TestHelper.createSimpleProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
+		save(testProject, a);
+		// Create an AsciiDoc artifact pointing to the first heading
+		AsciiDocArtifact asciiDocArtifact = createAsciiDocArtifact(testProject, ASCIIDOC_FILE_NAME, 71);
+		assertNotNull(asciiDocArtifact);
+		assertNotNull(asciiDocArtifact.getItem());
+		assertNotNull(asciiDocArtifact.getUri());
+
+		// Choose the EClass
+		ResourceSet rs = new ResourceSetImpl();
+
+		EPackage _a = load(testProject, MODEL_A_FILENAME, rs);
+		assertEquals(_a.getName(), MODEL_A_NAME);
+		EClass _A = (EClass) _a.getEClassifier(CLASS_A_NAME);
+
+		// Create a trace via the selection view
+		SelectionView.getOpenedView().dropToSelection(_A);
+		SelectionView.getOpenedView().dropToSelection(asciiDocArtifact);
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+
+		// Check if trace has been created
+		assertTrue(thereIsATraceBetween(_A, asciiDocArtifact));
+
+		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
+		Optional<IArtifactHandler<?>> asciiDocHandler = artifactHelper.getHandler(asciiDocArtifact);
+		assertTrue(asciiDocHandler.isPresent());
+		assertTrue(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)),
+				ArtifactStatus.NORMAL);
+
+		// Rename Asciidoc artifact
+		IFile asciiDocFile = testProject.getFile(ASCIIDOC_FILE_NAME);
+		assertNotNull(asciiDocFile);
+		asciiDocFile.setContents(new ByteArrayInputStream(ASCII_DOC_TEXT_MODIFIED.getBytes()), IFile.FORCE,
+				new NullProgressMonitor());
+		// Sleep to allow the modification of the file to succeed...
+		Thread.sleep(2000);
+		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(ArtifactStatus.RENAMED,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
+
+		// Delete AsciiDoc artifact
+		asciiDocFile.delete(true, new NullProgressMonitor());
+		// Sleep to allow deletion to succeed...
+		Thread.sleep(2000);
+		assertFalse(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(ArtifactStatus.REMOVED,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
+
+		// Create file again with original text
+		TestHelper.createFileContentInProject(ASCIIDOC_FILE_NAME, testProject.getName(), ASCII_DOC_TEXT);
+		assertTrue(asciiDocHandler.get().doesArtifactExist(artifactHelper.createWrapper(asciiDocArtifact)));
+		assertEquals(ArtifactStatus.NORMAL,
+				asciiDocHandler.get().getArtifactStatus(artifactHelper.createWrapper(asciiDocArtifact)));
 
 	}
 

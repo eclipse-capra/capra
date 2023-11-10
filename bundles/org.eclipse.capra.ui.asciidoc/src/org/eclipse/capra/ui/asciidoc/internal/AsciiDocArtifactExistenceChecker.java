@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Optional;
 
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.asciidoc.AsciiDocArtifact;
 import org.eclipse.capra.ui.asciidoc.IAsciiDocApiAccess;
@@ -39,18 +40,26 @@ public class AsciiDocArtifactExistenceChecker {
 	private static final String ASCII_DOCTOR_API_ACCESS_CONFIG = "class";
 
 	/**
-	 * Checks if the given AsciiDoc artifact exists. This happens in two steps:
+	 * Checks the status of the given AsciiDoc artifact. This happens in two steps:
 	 * first, it is determined whether the URI provided in the artifact points to a
 	 * readable file. Then, it is checked whether the item described in the artifact
-	 * exists in the file. Only if both conditions are true, does this method also
-	 * return {@code true}.
+	 * exists in the file, i.e., offset and name match. Only if both conditions are
+	 * true, does this method also return {@code ArtifactStatus.NORMAL}. If an item
+	 * can be found at the given offset, but the name differs, this method return
+	 * {@code ArtifactStatus.RENAMED}. If an exception occurs while trying to read
+	 * the AsciiDoc artifact, this method returns {@code ArtifactStatus.REMOVED}.
 	 * 
-	 * @param artifact the AsciiDoc artifact to check
-	 * @return {@code true} if the AsciiDoc artifact was found, {@code false}
-	 *         otherwise
+	 * @param artifact the AsciiDoc artifact whose status to check
+	 * @return <code>ArtifactStatus.NORMAL</code> if the AsciiDoc artifact exists,
+	 *         is accessible, and the item at the given offset has the correct name.
+	 *         <code>ArtifactStatus.RENAMED</code> if the AsciiDoc artifact exists
+	 *         and is accessible, but the name of the item at the given offset
+	 *         differs from the name stored in the artifact.
+	 *         <code>ArtifactStatus.REMOVED</code> if the AsciiDoc artifact does not
+	 *         exist, cannot be accessed, or an exception occurred.
 	 */
-	public static boolean checkAsciiDocArtifactExistence(AsciiDocArtifact artifact) {
-		boolean artifactExists = false;
+	public static ArtifactStatus getAsciiDocArtifactStatus(AsciiDocArtifact artifact) {
+		ArtifactStatus artifactStatus = ArtifactStatus.UNKNOWN;
 		// 1. Load file
 		try {
 			URL asciiDocUrl = FileLocator.toFileURL(URI.create(artifact.getUri()).toURL());
@@ -63,15 +72,21 @@ public class AsciiDocArtifactExistenceChecker {
 			if (asciiDocApiAccessOpt.isPresent()) {
 				IAsciiDocApiAccess apiAccess = asciiDocApiAccessOpt.get();
 				Item item = apiAccess.getItemFromAsciiDocText(artifact.getItem().getOffset(), asciiDocText);
-				artifactExists = (item != null) && (item.getName().equals(artifact.getItem().getName()));
+				if (item == null) {
+					artifactStatus = ArtifactStatus.REMOVED;
+				} else if (!item.getName().equals(artifact.getItem().getName())) {
+					artifactStatus = ArtifactStatus.RENAMED;
+				} else {
+					artifactStatus = ArtifactStatus.NORMAL;
+				}
 			}
 
 		} catch (IOException e) {
-			// Deliberately do nothing. This happens when the file is not found or cannot be
-			// accessed.
+			// If we cannot open the artifact, we assume that it has been removed.
+			artifactStatus = ArtifactStatus.REMOVED;
 		}
 
-		return artifactExists;
+		return artifactStatus;
 	}
 
 	private static Optional<IAsciiDocApiAccess> getAsciiDoctorAccess() {

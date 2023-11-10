@@ -22,6 +22,7 @@ import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.commands.AbstractHandler;
@@ -73,12 +74,23 @@ public class CheckArtifactExistenceHandler extends AbstractHandler {
 						Optional<IArtifactHandler<?>> handler = artifactHelper
 								.getHandler(artifactHelper.unwrapWrapper(obj));
 						if (handler.isPresent()) {
-							if (!handler.get().doesArtifactExist(obj)) {
+							if (handler.get().getArtifactStatus(obj) == ArtifactStatus.REMOVED) {
 								HashMap<String, String> markerInfo = new HashMap<>();
 								markerInfo.put(CapraNotificationHelper.ISSUE_TYPE,
-										CapraNotificationHelper.IssueType.CHANGED.getValue());
+										CapraNotificationHelper.IssueType.DELETED.getValue());
 								markerInfo.put(CapraNotificationHelper.MESSAGE, "Linked artifact "
 										+ artifactHelper.getArtifactLabel(obj) + " does not exist anymore");
+								markerInfo.put(CapraNotificationHelper.OLD_URI,
+										CapraNotificationHelper.getFileUri(obj).toPlatformString(false));
+								markerInfo.put(CapraNotificationHelper.NEW_URI, "");
+								markerInfo.put(CapraNotificationHelper.NEW_NAME, "");
+								CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
+							} else if (handler.get().getArtifactStatus(obj) == ArtifactStatus.RENAMED) {
+								HashMap<String, String> markerInfo = new HashMap<>();
+								markerInfo.put(CapraNotificationHelper.ISSUE_TYPE,
+										CapraNotificationHelper.IssueType.RENAMED.getValue());
+								markerInfo.put(CapraNotificationHelper.MESSAGE, "Linked artifact "
+										+ artifactHelper.getArtifactLabel(obj) + " has been renamed.");
 								markerInfo.put(CapraNotificationHelper.OLD_URI,
 										CapraNotificationHelper.getFileUri(obj).toPlatformString(false));
 								markerInfo.put(CapraNotificationHelper.NEW_URI, "");

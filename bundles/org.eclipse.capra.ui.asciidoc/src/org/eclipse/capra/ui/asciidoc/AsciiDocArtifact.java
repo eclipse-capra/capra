@@ -15,6 +15,7 @@ package org.eclipse.capra.ui.asciidoc;
 
 import java.util.Objects;
 
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.capra.ui.asciidoc.internal.AsciiDocArtifactExistenceChecker;
 
 import de.jcup.asciidoctoreditor.outline.Item;
@@ -73,7 +74,22 @@ public class AsciiDocArtifact {
 	 * @return {@code true} if the artifact exists, {@code false} otherwise
 	 */
 	public boolean exists() {
-		return AsciiDocArtifactExistenceChecker.checkAsciiDocArtifactExistence(this);
+		return getStatus() == ArtifactStatus.NORMAL;
+	}
+
+	/**
+	 * Gets the status of the AsciiDoc artifact.
+	 * 
+	 * @return <code>ArtifactStatus.NORMAL</code> if the AsciiDoc artifact exists,
+	 *         is accessible, and the item at the given offset has the correct name.
+	 *         <code>ArtifactStatus.RENAMED</code> if the AsciiDoc artifact exists
+	 *         and is accessible, but the name of the item at the given offset
+	 *         differs from the name stored in the artifact.
+	 *         <code>ArtifactStatus.REMOVED</code> if the AsciiDoc artifact does not
+	 *         exist, cannot be accessed, or an exception occurred.
+	 */
+	public ArtifactStatus getStatus() {
+		return AsciiDocArtifactExistenceChecker.getAsciiDocArtifactStatus(this);
 	}
 
 	@Override

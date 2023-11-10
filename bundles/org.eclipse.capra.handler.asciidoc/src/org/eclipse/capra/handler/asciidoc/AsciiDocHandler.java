@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.asciidoc.AsciiDocArtifact;
 import org.eclipse.core.resources.IResourceDelta;
@@ -73,6 +74,12 @@ public class AsciiDocHandler extends AbstractArtifactHandler<AsciiDocArtifact> {
 	public boolean doesArtifactExist(EObject wrapper) {
 		AsciiDocArtifact asciiDocArtifact = resolveWrapper(wrapper);
 		return asciiDocArtifact != null && asciiDocArtifact.exists();
+	}
+
+	@Override
+	public ArtifactStatus getArtifactStatus(EObject wrapper) {
+		AsciiDocArtifact asciiDocArtifact = resolveWrapper(wrapper);
+		return asciiDocArtifact.getStatus();
 	}
 
 	@Override

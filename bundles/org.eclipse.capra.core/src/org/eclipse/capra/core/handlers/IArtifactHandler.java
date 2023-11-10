@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2023 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
+ *      Jan-Philipp Steghöfer - additional features, updated API
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.helpers.ArtifactStatus;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.emf.ecore.EObject;
 
@@ -99,6 +101,37 @@ public interface IArtifactHandler<T> {
 	 */
 	default boolean doesArtifactExist(EObject wrapper) {
 		return resolveWrapper(wrapper) != null;
+	}
+
+	/**
+	 * Checks the status of the artifact represented by the the wrapper.
+	 * <p>
+	 * Artifact status is determined by the handler by checking if the artifact
+	 * exists and is accessible. In some cases, handlers can also detect if an
+	 * artifact still exists, but has been renamed, e.g., when the artifact is
+	 * resolved using an ID and a name is stored in the artifact model as well.
+	 * <p>
+	 * This interface provides a default implementation that returns
+	 * {@link ArtifactStatus.NORMAL} iff the value returned by
+	 * {@link this#doesArtifactExist(EObject)} is <code>true</code>. Otherwise, it
+	 * returns {@link ArtifactStatus.REMOVED}. Implementing classes should override
+	 * this default behaviour to use whichever mechanism is useful, e.g., calling an
+	 * {@code exists()} method on the resolved wrapper.
+	 * 
+	 * @param wrapper the wrapped object
+	 * @return <code>ArtifactStatus.NORMAL</code> if the artifact represented by the
+	 *         wrapper exists, is accessible, and has the correct name.
+	 *         <code>ArtifactStatus.RENAMED</code> if the artifact represented by
+	 *         the wrapper exists and is accessible, but its name has changed.
+	 *         <code>ArtifactStatus.REMOVED</code> if the artifact represented by
+	 *         the wrapper does not exist or cannot be accessed.
+	 */
+	default ArtifactStatus getArtifactStatus(EObject wrapper) {
+		if (doesArtifactExist(wrapper)) {
+			return ArtifactStatus.NORMAL;
+		} else {
+			return ArtifactStatus.REMOVED;
+		}
 	}
 
 	/**
