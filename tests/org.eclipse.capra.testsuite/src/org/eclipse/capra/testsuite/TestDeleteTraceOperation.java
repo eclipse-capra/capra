@@ -137,7 +137,7 @@ public class TestDeleteTraceOperation {
 		List<Connection> traces = traceHelper.getTraces(Arrays.asList(new EClass[] { _A, _B }));
 		assertFalse(traces.isEmpty());
 
-		DeleteTraceOperation deleteOp = new DeleteTraceOperation("Delete trace", traces.get(0));
+		DeleteTraceOperation deleteOp = new DeleteTraceOperation("Delete trace", traces);
 		try {
 			assertEquals(operationHistory.execute(deleteOp, null, adapter), Status.OK_STATUS);
 		} catch (ExecutionException e) {

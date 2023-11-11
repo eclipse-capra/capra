@@ -3,8 +3,8 @@ package org.eclipse.capra.ui.operations;
 import java.util.List;
 
 import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
+import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
@@ -29,19 +29,31 @@ public class DeleteTraceOperation extends AbstractOperation {
 	private static final String ERROR_DIALOG_TITLE = "Error deleting trace link";
 	private static final String EXCEPTION_MESSAGE_RUNTIME_EXCEPTION = "An exception occured during the deletion of the trace link.";
 
-	private Connection connection;
+	private List<Connection> connections;
 
 	/**
 	 * Creates a new operation to delete trace links.
 	 * 
-	 * @param label      the label used for the operation. Should never be
-	 *                   <code>null</code>.
-	 * @param connection the connection representing the trace link that should be
-	 *                   deleted.
+	 * @param label       the label used for the operation. Should never be
+	 *                    <code>null</code>.
+	 * @param connections the connection representing the trace link that should be
+	 *                    deleted.
 	 */
 	public DeleteTraceOperation(String label, Connection connection) {
+		this(label, List.of(connection));
+	}
+
+	/**
+	 * Creates a new operation to delete trace links.
+	 * 
+	 * @param label       the label used for the operation. Should never be
+	 *                    <code>null</code>.
+	 * @param connections the connections representing the trace links that should
+	 *                    be deleted.
+	 */
+	public DeleteTraceOperation(String label, List<Connection> connections) {
 		super(label);
-		this.connection = connection;
+		this.connections = connections;
 	}
 
 	@Override
@@ -76,7 +88,8 @@ public class DeleteTraceOperation extends AbstractOperation {
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		TraceHelper traceHelper = new TraceHelper(traceModel);
-		traceHelper.createTrace(connection.getOrigins(), connection.getTargets(), connection.getTlink().eClass());
+		for (Connection connection : connections)
+			traceHelper.createTrace(connection.getOrigins(), connection.getTargets(), connection.getTlink().eClass());
 		return Status.OK_STATUS;
 	}
 
@@ -84,13 +97,14 @@ public class DeleteTraceOperation extends AbstractOperation {
 	 * Deletes the trace stored in the {@code connection} field.
 	 */
 	private void deleteTrace() {
-		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().get();
+		ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+				.getTraceabilityInformationModelAdapter().get();
 		IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
 		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
 		EObject metadataModel = persistenceAdapter.getMetadataContainer(resourceSet);
-		traceAdapter.deleteTrace(List.of(connection), traceModel);
+		traceAdapter.deleteTrace(connections, traceModel);
 		persistenceAdapter.saveModels(traceModel, artifactModel, metadataModel);
 	}
 
