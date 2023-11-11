@@ -49,7 +49,7 @@ public class MarkerHandler extends AbstractArtifactHandler<IMarker> implements I
 		IArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactMetaModelAdapter().orElseThrow();
 		IResource target = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(adapter.getArtifactUri(wrapper));
-		Long id = Long.getLong(adapter.getArtifactInternalResolver(wrapper));
+		Long id = Long.decode(adapter.getArtifactInternalResolver(wrapper));
 		return target.getMarker(id);
 	}
 
