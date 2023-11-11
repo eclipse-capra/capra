@@ -23,11 +23,11 @@ import org.eclipse.ui.IMarkerResolution;
  * 
  * @author Salome Maro
  */
-public class ChangeQuickFix implements IMarkerResolution {
+public class RemoveMarkerQuickFix implements IMarkerResolution {
 
 	private String label;
 
-	public ChangeQuickFix(String label) {
+	public RemoveMarkerQuickFix(String label) {
 		this.label = label;
 	}
 

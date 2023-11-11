@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.capra.ui.notification.CapraNotificationHelper.IssueType;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -29,23 +32,22 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator {
 
 	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
+		List<IMarkerResolution> resolutions = new ArrayList<>();
+		resolutions.add(new RemoveMarkerQuickFix("Do not update trace links and remove marker."));
 		try {
 			String issue = (String) marker.getAttribute(CapraNotificationHelper.ISSUE_TYPE);
 
 			if (issue.equals(IssueType.RENAMED.getValue()) || issue.equals(IssueType.MOVED.getValue()))
-				return new IMarkerResolution[] { new RenameOrMoveQuickFix("Update the EMF presentation.") };
+				resolutions.add(new RenameOrMoveQuickFix("Update the trace link."));
+			else if (issue.equals(IssueType.DELETED.getValue()))
+				resolutions.add(new DeleteQuickFix("Delete the affected trace link."));
+			else if (issue.equals(IssueType.CHANGED.getValue()))
+				resolutions.add(new DeleteQuickFix("Delete the affected trace link."));
 
-			if (issue.equals(IssueType.DELETED.getValue()))
-				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link.") };
-
-			if (issue.equals(IssueType.CHANGED.getValue()))
-				return new IMarkerResolution[] { new DeleteQuickFix("Delete the affected trace link."),
-						new ChangeQuickFix("Do not update existing trace link.") };
-
-			return new IMarkerResolution[0];
-
+			return resolutions.toArray(new IMarkerResolution[0]);
 		} catch (CoreException e) {
-			return new IMarkerResolution[0];
+			// Deliberately do nothing.
 		}
+		return new IMarkerResolution[0];
 	}
 }
