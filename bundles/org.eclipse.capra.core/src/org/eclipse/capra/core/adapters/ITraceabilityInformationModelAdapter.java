@@ -121,23 +121,24 @@ public interface ITraceabilityInformationModelAdapter {
 	boolean isThereATraceBetween(EObject origin, EObject target, EObject traceModel, boolean reverseDirection);
 
 	/**
-	 * Determine a list of all objects connected to {@code element} according to the
-	 * given trace model.
+	 * Determines a list of all connections in which {@code element} is either one
+	 * of the origins or the trace link itself according to the given trace model.
 	 * 
 	 * There are two ways {@code element} can be used:
 	 * <ol>
 	 * <li>If {@code element} is an arbitrary {@link EObject}, then the method
 	 * returns all trace links in which {@code element} is one of the origins.</li>
-	 * <li>If {@code element} is a trace link, then the method returns a
-	 * representation of the trace link itself.</li>
+	 * <li>If {@code element} is a trace link, then the method returns a list with a
+	 * {@link Connection} instance that includes the trace link.</li>
 	 * </ol>
 	 * 
 	 * @param element    the element used to determine the list of connected
 	 *                   objects.
-	 * @param traceModel the trace model to base calculation on
+	 * @param traceModel the trace model in which the connections are searched
 	 * @return a list of {@link Connection}s from the provided {@code traceModel}
 	 *         that contain {@code element} as one of their origins or a
-	 *         representation of {@code element} if {@code element} is a trace link
+	 *         {@code Connection} representation of {@code element} if
+	 *         {@code element} is a trace link
 	 */
 	List<Connection> getConnectedElements(EObject element, EObject traceModel);
 

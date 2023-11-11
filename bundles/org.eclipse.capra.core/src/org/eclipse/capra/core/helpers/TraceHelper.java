@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2023 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
+ *      Jan-Philipp Steghöfer - additional features, updated API
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
@@ -21,8 +22,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.IPersistenceAdapter;
 import org.eclipse.capra.core.adapters.ITraceabilityInformationModelAdapter;
 import org.eclipse.capra.core.handlers.AnnotationException;
 import org.eclipse.capra.core.handlers.IAnnotateArtifact;
@@ -31,6 +33,7 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -39,24 +42,37 @@ import org.eclipse.emf.transaction.TransactionalCommandStack;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
- * Helper class for creating traces
+ * Helper class for creating, updating, and deleting traces.
  */
 public class TraceHelper {
 
 	private EObject traceModel;
-	private ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper.getTraceabilityInformationModelAdapter().orElseThrow();
+	private ITraceabilityInformationModelAdapter traceAdapter = ExtensionPointHelper
+			.getTraceabilityInformationModelAdapter().orElseThrow();
 	private IArtifactMetaModelAdapter artifactAdapter = ExtensionPointHelper.getArtifactMetaModelAdapter()
 			.orElseThrow();
 
 	/**
-	 * @param traceModel
+	 * Creates a new trace helper using the default trace model.
+	 */
+	public TraceHelper() {
+		ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
+		this.traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
+	}
+
+	/**
+	 * Creates a new trace helper for the given trace model.
+	 * 
+	 * @param traceModel the model containing the traces on which the helper
+	 *                   operates
 	 */
 	public TraceHelper(EObject traceModel) {
 		this.traceModel = traceModel;
 	}
 
 	/**
-	 * Create a trace of the given traceType
+	 * Create a trace of the given type.
 	 *
 	 * @param origins
 	 * @param targets
@@ -160,9 +176,11 @@ public class TraceHelper {
 	}
 
 	/**
-	 * Gets connected artifacts from a given {@link Connection}.
+	 * Gets connected artifacts from a given {@link Connection}. Considers both
+	 * origins and targets of a connection.
 	 * 
-	 * @param connection
+	 * @param connection the connection whose connected artifacts should be
+	 *                   retrieved
 	 * @return a list of unique connected artifacts, either the actual artifacts in
 	 *         case of EMF model elements or artifact wrappers for other artifact
 	 *         types.
@@ -277,6 +295,11 @@ public class TraceHelper {
 	/**
 	 * Returns a list of connections containing the artifacts passed. Trace links
 	 * that contain a subset (at least 2) of the artifacts passed are also returned.
+	 * <p>
+	 * This method does not distinguish between origins and targets. That means that
+	 * if at least two members of {@code artifacts} are contained in either origins
+	 * or targets, the connection will be returned. To distinguish between origins
+	 * and targets, use {@code this#getTraces(List, List, EClass)} instead.
 	 * 
 	 * @param artifacts a list of EMF artifacts or artifact wrappers
 	 * @return connections containing at least two of the elements in the artifacts
