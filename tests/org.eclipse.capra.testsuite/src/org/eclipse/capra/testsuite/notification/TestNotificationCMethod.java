@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.testsupport.TestRetry;
+import org.eclipse.capra.ui.notification.DeleteQuickFix;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.model.IFunction;
@@ -190,6 +191,68 @@ public class TestNotificationCMethod {
 		cSourceFile.delete(true, new NullProgressMonitor());
 		createCSourceFileInProject(FILE_NAME, cProject);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength - 1, markers.length);
+	}
+
+	/**
+	 * Tests if a marker appears after renaming a C method that is referenced in the
+	 * trace model and if the DeleteQuickFix actually removes the link that is
+	 * associated with it.
+	 * 
+	 * @throws CoreException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws BuildException
+	 */
+	@Test
+	public void testRenameMethodDeleteQuickFix()
+			throws CoreException, IOException, InterruptedException, BuildException {
+
+		// Create a C project with a single source file
+		ICProject cProject = createCDTProject(TEST_PROJECT_NAME);
+		ITranslationUnit cSourceFile = createCSourceFileInProject(FILE_NAME, cProject);
+		IFunction method = (IFunction) cSourceFile.getChildrenOfType(74).get(0);
+
+		// Create a model
+		IProject testProject = getProject(TEST_PROJECT_NAME);
+		EPackage a = TestHelper.createEcoreModel(MODEL_A_NAME);
+		createEClassInEPackage(a, CLASS_A_NAME);
+		save(testProject, a);
+		EClass A = (EClass) a.getEClassifier(CLASS_A_NAME);
+
+		// Create a trace via the selection view
+		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
+		SelectionView.getOpenedView().dropToSelection(A);
+		SelectionView.getOpenedView().dropToSelection(method);
+		assertFalse(thereIsATraceBetween(A, method));
+		createTraceForCurrentSelectionOfType(TracemodelPackage.eINSTANCE.getRelatedTo());
+		assertTrue(thereIsATraceBetween(A, method));
+
+		// Get current number of markers
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IMarker[] markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		int currMarkerLength = markers.length;
+
+		// Rename method and wait a bit for the ResourceChangedListener to
+		// trigger
+		method.rename("noLongerMain", true, new NullProgressMonitor());
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
+
+		// Check if there are new markers
+		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		assertEquals(currMarkerLength + 1, markers.length);
+		IMarker marker = markers[0];
+		assertEquals(marker.getAttribute(MARKER_ATTRIBUTE_ISSUE_TYPE), "changed");
+		currMarkerLength = markers.length;
+
+		// Run the DeleteQuickFix
+		DeleteQuickFix fix = new DeleteQuickFix("Delete trace link");
+		fix.run(marker);
+		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
+		assertFalse(thereIsATraceBetween(A, method));
+
+		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
 		assertEquals(currMarkerLength - 1, markers.length);
 	}

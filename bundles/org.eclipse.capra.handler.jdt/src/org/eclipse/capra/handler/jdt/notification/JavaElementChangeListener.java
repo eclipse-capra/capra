@@ -15,6 +15,7 @@ package org.eclipse.capra.handler.jdt.notification;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
@@ -55,8 +56,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 
 	@Override
 	public void elementChanged(ElementChangedEvent event) {
-		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter()
-				.orElseThrow();
+		IPersistenceAdapter tracePersistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().orElseThrow();
 		EObject artifactModel = tracePersistenceAdapter.getArtifactWrappers(EditingDomainHelper.getResourceSet());
 		// get all artifacts
 		List<EObject> allArtifacts = artifactAdapter.getAllArtifacts(artifactModel);
@@ -141,7 +141,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 						CapraNotificationHelper.deleteCapraMarker(artifactId, markersToDelete, wrapperContainer);
 
 					if (artifactId.contains(affectedElementUri)) {
-						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
+						Map<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
 				}
@@ -171,8 +171,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	// the same, compare the signature. The problem is that there can be methods
 	// and variables with identical bodies, although highly unlikely. Either
 	// way, I don't think there is a completely foolproof solution for this.
-	private HashMap<String, String> generateMarkerInfo(EObject aw, IJavaElementDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<>();
+	private Map<String, String> generateMarkerInfo(EObject aw, IJavaElementDelta delta, IssueType issueType) {
+		Map<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the Java element in the wrapper (all elements)
 		String oldArtifactUri = artifactAdapter.getArtifactInternalResolver(aw);

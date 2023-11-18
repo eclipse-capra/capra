@@ -15,6 +15,7 @@ package org.eclipse.capra.handler.cdt.notification;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
@@ -141,7 +142,7 @@ public class CElementChangeListener implements IElementChangedListener {
 						CapraNotificationHelper.deleteCapraMarker(artifactId, markersToDelete, wrapperContainer);
 
 					if (artifactId.contains(affectedElementUri)) {
-						HashMap<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
+						Map<String, String> markerInfo = generateMarkerInfo(aw, delta, issueType);
 						CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 					}
 				}
@@ -160,11 +161,11 @@ public class CElementChangeListener implements IElementChangedListener {
 	 * @return a key value HashMap, containing the attributes to be assigned to a
 	 *         Capra change marker and their keys (IDs).
 	 */
-	private HashMap<String, String> generateMarkerInfo(EObject aw, ICElementDelta delta, IssueType issueType) {
-		HashMap<String, String> markerInfo = new HashMap<>();
+	private Map<String, String> generateMarkerInfo(EObject aw, ICElementDelta delta, IssueType issueType) {
+		Map<String, String> markerInfo = new HashMap<>();
 
 		// Properties from the C/C++ element in the wrapper (all elements)
-		String oldArtifactUri = artifactAdapter.getArtifactInternalResolver(aw);
+		String oldArtifactUri = artifactAdapter.getArtifactUri(aw);
 		String oldArtifactName = artifactAdapter.getArtifactName(aw);
 
 		// Properties from the affected C/C++ element before the change.

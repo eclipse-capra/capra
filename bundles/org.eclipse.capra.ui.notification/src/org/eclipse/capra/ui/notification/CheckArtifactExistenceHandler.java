@@ -91,12 +91,14 @@ public class CheckArtifactExistenceHandler extends AbstractHandler {
 								markerInfo.put(CapraNotificationHelper.ISSUE_TYPE,
 										CapraNotificationHelper.IssueType.RENAMED.getValue());
 								markerInfo.put(CapraNotificationHelper.MESSAGE,
-										"Linked artifact " + artifactStatus.getOldName() + " has been renamed to "
-												+ artifactStatus.getNewName());
+										"Linked artifact \"" + artifactStatus.getOldName() + "\" has been renamed to \""
+												+ artifactStatus.getNewName() + "\"");
 								markerInfo.put(CapraNotificationHelper.OLD_URI,
 										CapraNotificationHelper.getFileUri(obj).toPlatformString(false));
-								markerInfo.put(CapraNotificationHelper.NEW_URI, "");
-								markerInfo.put(CapraNotificationHelper.NEW_NAME, "");
+								markerInfo.put(CapraNotificationHelper.OLD_NAME, artifactHelper.getArtifactLabel(obj));
+								markerInfo.put(CapraNotificationHelper.NEW_URI,
+										CapraNotificationHelper.getFileUri(obj).toPlatformString(false));
+								markerInfo.put(CapraNotificationHelper.NEW_NAME, artifactStatus.getNewName());
 								CapraNotificationHelper.createCapraMarker(markerInfo, wrapperContainer);
 							}
 						}

@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.capra.generic.tracemodel.TracemodelPackage;
 import org.eclipse.capra.testsupport.TestHelper;
 import org.eclipse.capra.testsupport.TestRetry;
+import org.eclipse.capra.ui.notification.DeleteQuickFix;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -160,9 +161,16 @@ public class TestNotificationEObject {
 		assertEquals(issue, "deleted");
 
 		// Undo the operation
-		EPackage tracedItemParent = (EPackage) editorResource.getEObject(traceModelResource.getURIFragment(modelA));
-		tracedItemParent.getEClassifiers().add(tracedItem);
+		// EPackage tracedItemParent = (EPackage)
+		// editorResource.getEObject(traceModelResource.getURIFragment(modelA));
+		// tracedItemParent.getEClassifiers().add(tracedItem);
+		// TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
+
+		// Run the DeleteQuickFix
+		DeleteQuickFix fix = new DeleteQuickFix("Delete trace link");
+		fix.run(marker);
 		TimeUnit.MILLISECONDS.sleep(UI_REACTION_WAITING_TIME);
+		assertFalse(thereIsATraceBetween(classA, javaClass));
 
 		// Check if marker is gone
 		markers = root.findMarkers(TestHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);

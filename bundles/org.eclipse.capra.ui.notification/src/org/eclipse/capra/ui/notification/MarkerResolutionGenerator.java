@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2023 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
+ *      Jan-Philipp Steghöfer - additional features, updated API
  *******************************************************************************/
 package org.eclipse.capra.ui.notification;
 
@@ -38,7 +39,7 @@ public class MarkerResolutionGenerator implements IMarkerResolutionGenerator {
 			String issue = (String) marker.getAttribute(CapraNotificationHelper.ISSUE_TYPE);
 
 			if (issue.equals(IssueType.RENAMED.getValue()) || issue.equals(IssueType.MOVED.getValue()))
-				resolutions.add(new RenameOrMoveQuickFix("Update the trace link."));
+				resolutions.add(new RenameOrMoveQuickFix("Update the trace link to reflect the change."));
 			else if (issue.equals(IssueType.DELETED.getValue()))
 				resolutions.add(new DeleteQuickFix("Delete the affected trace link."));
 			else if (issue.equals(IssueType.CHANGED.getValue()))

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2023 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
+ *      Jan-Philipp Steghöfer - additional features, updated API
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
@@ -22,8 +23,13 @@ import java.util.Optional;
 import org.eclipse.capra.core.adapters.IArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.IArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
+import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.RollbackException;
+import org.eclipse.emf.transaction.TransactionalCommandStack;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
 /**
  * Provides support methods for working with artifacts and wrappers.
@@ -104,8 +110,8 @@ public class ArtifactHelper {
 	 */
 	public Object unwrapWrapper(Object wrapper) {
 		if (wrapper instanceof EObject) {
-			IArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper
-					.getArtifactMetaModelAdapter().orElseThrow();
+			IArtifactMetaModelAdapter artifactMetaModelAdapter = ExtensionPointHelper.getArtifactMetaModelAdapter()
+					.orElseThrow();
 			IArtifactHandler<?> handler = artifactMetaModelAdapter.getArtifactHandlerInstance((EObject) wrapper);
 			if (handler != null && handler.resolveWrapper((EObject) wrapper) != null) {
 				return handler.resolveWrapper((EObject) wrapper);
@@ -203,6 +209,34 @@ public class ArtifactHelper {
 			artifactLink = "platform:/resource" + artifactLink;
 		}
 		return artifactLink;
+	}
+
+	/**
+	 * Deletes an artifact from the trace model. This method encapsulates the
+	 * deletion inside a transaction and throws an
+	 * 
+	 * @{link {@link IllegalStateException} if the deletion was unsuccessful.
+	 * @param artifactToDelete the artifact to delete
+	 * @throws IllegalStateException if deletion was rolled back or interrupted
+	 */
+	public void deleteArtifact(EObject artifactToDelete) throws IllegalStateException {
+		TransactionalEditingDomain editingDomain = EditingDomainHelper.getEditingDomain();
+		// We're saving the trace model and the artifact model in the same transaction
+		Command cmd = new RecordingCommand(editingDomain, "Delete artifact") {
+			@Override
+			protected void doExecute() {
+				EcoreUtil.delete(artifactToDelete);
+			}
+		};
+
+		try {
+			((TransactionalCommandStack) editingDomain.getCommandStack()).execute(cmd, null); // default options
+		} catch (RollbackException e) {
+			throw new IllegalStateException("Deleting an artifact was rolled back.", e);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException("Deleting an artifact was interrupted.", e);
+		}
+
 	}
 
 }

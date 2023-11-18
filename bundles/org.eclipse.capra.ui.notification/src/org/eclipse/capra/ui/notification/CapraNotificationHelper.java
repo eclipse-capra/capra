@@ -66,6 +66,11 @@ public class CapraNotificationHelper {
 	public static final String NOTIFICATION_JOB = "CapraNotificationJob";
 
 	/**
+	 * Key to be used to specify the affected object value in markerInfo HashMap
+	 */
+	public static final String AFFECTED_OBJECT = "affectedObject";
+
+	/**
 	 * Key to be used to specify IssueType value in markerInfo HashMap
 	 */
 	public static final String ISSUE_TYPE = "issueType";
@@ -74,6 +79,11 @@ public class CapraNotificationHelper {
 	 * Key to be used to specify oldArtifactUri value in markerInfo HashMap
 	 */
 	public static final String OLD_URI = "oldArtifactUri";
+
+	/**
+	 * Key to be used to specify oldArtifactName value in markerInfo HashMap
+	 */
+	public static final String OLD_NAME = "oldArtifactName";
 
 	/**
 	 * Key to be used to specify newArtifactUri value in markerInfo HashMap
