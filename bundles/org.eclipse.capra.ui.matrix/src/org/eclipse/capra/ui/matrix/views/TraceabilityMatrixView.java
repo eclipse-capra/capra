@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.IPersistenceAdapter;
@@ -43,13 +43,18 @@ import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.handlers.ToggleCheckArtifactExistenceHandler;
 import org.eclipse.capra.ui.matrix.selection.TraceabilityMatrixSelectionProvider;
+import org.eclipse.capra.ui.notification.CapraNotificationHelper;
 import org.eclipse.capra.ui.operations.CreateTraceOperation;
 import org.eclipse.capra.ui.operations.DeleteTraceOperation;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EObject;
@@ -137,6 +142,8 @@ public class TraceabilityMatrixView extends ViewPart {
 	private static final String CONFIRM_DELETION_TITLE = "Delete trace link";
 
 	private static final String ARTIFACT_DOES_NOT_EXIST_LABEL = "ARTIFACT_DOES_NOT_EXIST_LABEL";
+
+	private static final String ARTIFACT_RENAMED_LABEL = "ARTIFACT_RENAMED_LABEL";
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -247,6 +254,14 @@ public class TraceabilityMatrixView extends ViewPart {
 			rowHeaderStyle.setAttributeValue(CellStyleAttributes.HORIZONTAL_ALIGNMENT, ALIGNMENT);
 			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyle, DisplayMode.NORMAL,
 					GridRegion.ROW_HEADER);
+
+			IStyle rowHeaderStyleArtifactRenamed = new Style();
+			rowHeaderStyleArtifactRenamed.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR,
+					GUIHelper.COLOR_YELLOW);
+			rowHeaderStyleArtifactRenamed.setAttributeValue(CellStyleAttributes.FOREGROUND_COLOR,
+					GUIHelper.COLOR_BLACK);
+			configRegistry.registerConfigAttribute(CellConfigAttributes.CELL_STYLE, rowHeaderStyleArtifactRenamed,
+					DisplayMode.NORMAL, ARTIFACT_RENAMED_LABEL);
 
 			IStyle rowHeaderStyleArtifactNotExists = new Style();
 			rowHeaderStyleArtifactNotExists.setAttributeValue(CellStyleAttributes.BACKGROUND_COLOR,
@@ -739,10 +754,12 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		private final IDataProvider dataProvider;
 		private final AccumulatorType accumulatorType;
+		private final ArtifactHelper artifactHelper;
 
 		private ArtifactExistenceConfigLabelAccumulator(IDataProvider dataProvider, AccumulatorType accumulatorType) {
 			this.dataProvider = dataProvider;
 			this.accumulatorType = accumulatorType;
+			artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
 		}
 
 		@Override
@@ -751,24 +768,52 @@ public class TraceabilityMatrixView extends ViewPart {
 			if (!ToggleCheckArtifactExistenceHandler.checkArtifaceExistence()) {
 				return;
 			}
-			if (dataProvider instanceof IEObjectForIndexProvider) {
-				IEObjectForIndexProvider rowHeaderDataProvider = (IEObjectForIndexProvider) dataProvider;
-				int position = 0;
-				switch (this.accumulatorType) {
-				case ROW:
-					position = rowPosition;
-					break;
-				case COLUMN:
-					position = columnPosition;
-					break;
-				}
-				EObject obj = rowHeaderDataProvider.getEObject(position);
-				ArtifactHelper artifactHelper = new ArtifactHelper(persistenceAdapter.getArtifactWrappers(resourceSet));
-				Optional<IArtifactHandler<?>> handler = artifactHelper.getHandler(artifactHelper.unwrapWrapper(obj));
-				if (handler.isPresent()) {
-					if (!handler.get().doesArtifactExist(obj)) {
-						configLabels.addLabel(ARTIFACT_DOES_NOT_EXIST_LABEL);
+			if (!(dataProvider instanceof IEObjectForIndexProvider)) {
+				return;
+			}
+
+			IEObjectForIndexProvider rowHeaderDataProvider = (IEObjectForIndexProvider) dataProvider;
+			int position = 0;
+			switch (this.accumulatorType) {
+			case ROW:
+				position = rowPosition;
+				break;
+			case COLUMN:
+				position = columnPosition;
+				break;
+			}
+			EObject obj = rowHeaderDataProvider.getEObject(position);
+
+			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+			IMarker[] markers = null;
+			try {
+				markers = root.findMarkers(CapraNotificationHelper.CAPRA_PROBLEM_MARKER_ID, true,
+						IResource.DEPTH_INFINITE);
+			} catch (CoreException e) {
+				return;
+			}
+			if (markers == null || markers.length == 0) {
+				return;
+			}
+			for (IMarker marker : markers) {
+				try {
+
+					if (!(Objects.equals(marker.getAttribute(CapraNotificationHelper.OLD_URI),
+							artifactHelper.getArtifactLocation(obj)))) {
+						// TODO: this does not quite work since the marker can contain additional
+						// information such as a parameter
+						continue;
 					}
+					if (Objects.equals(marker.getAttribute("issueType"),
+							CapraNotificationHelper.IssueType.DELETED.getValue())) {
+						configLabels.addLabel(ARTIFACT_DOES_NOT_EXIST_LABEL);
+					} else if (Objects.equals(marker.getAttribute("issueType"),
+							CapraNotificationHelper.IssueType.RENAMED.getValue())) {
+						configLabels.addLabel(ARTIFACT_RENAMED_LABEL);
+					}
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 

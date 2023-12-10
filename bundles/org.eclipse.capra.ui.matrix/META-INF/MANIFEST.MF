@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.capra.ui,
- org.eclipse.nebula.widgets.nattable.core
+ org.eclipse.nebula.widgets.nattable.core,
+ org.eclipse.capra.ui.notification
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.capra.ui.matrix,
  org.eclipse.capra.ui.matrix.views
