@@ -31,5 +31,12 @@
             class="org.eclipse.capra.generic.tracemodel.TracemodelPackage"
             genModel="model/generictrace.xcore"/>
    </extension>
+   <extension
+         point="org.eclipse.emf.ecore.factory_override">
+      <factory
+            class="org.eclipse.capra.generic.tracemodel.impl.CustomTracemodelFactoryImpl"
+            uri="http://www.eclipse.org/capra/traces/0.9.0">
+      </factory>
+   </extension>
 
 </plugin>

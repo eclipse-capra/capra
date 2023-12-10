@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -47,6 +46,16 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * @ordered
 	 */
 	protected static final String ID_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getID() <em>ID</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getID()
+	 * @generated
+	 * @ordered
+	 */
+	protected String id = ID_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -113,7 +122,19 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	 * @generated
 	 */
 	public String getID() {
-		return EcoreUtil.generateUUID();
+		return id;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setID(String newID) {
+		String oldID = id;
+		id = newID;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, TracemodelPackage.RELATED_TO__ID, oldID, id));
 	}
 
 	/**
@@ -217,6 +238,9 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
+			case TracemodelPackage.RELATED_TO__ID:
+				setID((String)newValue);
+				return;
 			case TracemodelPackage.RELATED_TO__NAME:
 				setName((String)newValue);
 				return;
@@ -239,6 +263,9 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
+			case TracemodelPackage.RELATED_TO__ID:
+				setID(ID_EDEFAULT);
+				return;
 			case TracemodelPackage.RELATED_TO__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -261,7 +288,7 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case TracemodelPackage.RELATED_TO__ID:
-				return ID_EDEFAULT == null ? getID() != null : !ID_EDEFAULT.equals(getID());
+				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 			case TracemodelPackage.RELATED_TO__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case TracemodelPackage.RELATED_TO__ORIGIN:
@@ -282,7 +309,9 @@ public class RelatedToImpl extends MinimalEObjectImpl.Container implements Relat
 		if (eIsProxy()) return super.toString();
 
 		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
+		result.append(" (ID: ");
+		result.append(id);
+		result.append(", name: ");
 		result.append(name);
 		result.append(')');
 		return result.toString();

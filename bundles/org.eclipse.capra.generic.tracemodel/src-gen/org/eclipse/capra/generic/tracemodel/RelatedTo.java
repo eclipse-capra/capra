@@ -31,11 +31,22 @@ public interface RelatedTo extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>ID</em>' attribute.
+	 * @see #setID(String)
 	 * @see org.eclipse.capra.generic.tracemodel.TracemodelPackage#getRelatedTo_ID()
-	 * @model unique="false" transient="true" changeable="false" volatile="true" derived="true"
+	 * @model unique="false"
 	 * @generated
 	 */
 	String getID();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.capra.generic.tracemodel.RelatedTo#getID <em>ID</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>ID</em>' attribute.
+	 * @see #getID()
+	 * @generated
+	 */
+	void setID(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
