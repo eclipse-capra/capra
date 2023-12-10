@@ -4,6 +4,7 @@ package org.eclipse.capra.generic.metadatamodel;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -21,7 +22,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * <!-- begin-model-doc -->
  * ******************************************************************************
- * Copyright (c) 2016, 2021 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2023 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +33,7 @@ import org.eclipse.emf.ecore.EReference;
  * Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *      Chalmers | University of Gothenburg - additional features, updated API
+ * 		Jan-Philipp Steghöfer - additional features, updated API
  * *****************************************************************************
  * <!-- end-model-doc -->
  * @see org.eclipse.capra.generic.metadatamodel.MetadatamodelFactory
@@ -155,13 +157,22 @@ public interface MetadatamodelPackage extends EPackage {
 	int PERSON_FEATURE_COUNT = 2;
 
 	/**
+	 * The operation id for the '<em>To String</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PERSON___TO_STRING = 0;
+
+	/**
 	 * The number of operations of the '<em>Person</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PERSON_OPERATION_COUNT = 0;
+	int PERSON_OPERATION_COUNT = 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.capra.generic.metadatamodel.impl.TraceMetadataImpl <em>Trace Metadata</em>}' class.
@@ -339,6 +350,16 @@ public interface MetadatamodelPackage extends EPackage {
 	EAttribute getPerson_Email();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.capra.generic.metadatamodel.Person#toString() <em>To String</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>To String</em>' operation.
+	 * @see org.eclipse.capra.generic.metadatamodel.Person#toString()
+	 * @generated
+	 */
+	EOperation getPerson__ToString();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.capra.generic.metadatamodel.TraceMetadata <em>Trace Metadata</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -498,6 +519,14 @@ public interface MetadatamodelPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PERSON__EMAIL = eINSTANCE.getPerson_Email();
+
+		/**
+		 * The meta object literal for the '<em><b>To String</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation PERSON___TO_STRING = eINSTANCE.getPerson__ToString();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.capra.generic.metadatamodel.impl.TraceMetadataImpl <em>Trace Metadata</em>}' class.

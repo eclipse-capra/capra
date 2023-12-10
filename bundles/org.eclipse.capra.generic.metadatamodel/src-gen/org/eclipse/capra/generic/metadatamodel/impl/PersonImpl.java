@@ -2,10 +2,14 @@
  */
 package org.eclipse.capra.generic.metadatamodel.impl;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.capra.generic.metadatamodel.MetadatamodelPackage;
 import org.eclipse.capra.generic.metadatamodel.Person;
 
 import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -133,6 +137,19 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String toString() {
+		String _name = this.getName();
+		String _plus = (_name + " <");
+		String _email = this.getEmail();
+		String _plus_1 = (_plus + _email);
+		return (_plus_1 + ">");
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -202,16 +219,12 @@ public class PersonImpl extends MinimalEObjectImpl.Container implements Person {
 	 * @generated
 	 */
 	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuilder result = new StringBuilder(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", email: ");
-		result.append(email);
-		result.append(')');
-		return result.toString();
+	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+		switch (operationID) {
+			case MetadatamodelPackage.PERSON___TO_STRING:
+				return toString();
+		}
+		return super.eInvoke(operationID, arguments);
 	}
 
 } //PersonImpl

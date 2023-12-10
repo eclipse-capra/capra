@@ -70,4 +70,12 @@ public interface Person extends EObject {
 	 */
 	void setEmail(String value);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model unique="false"
+	 * @generated
+	 */
+	String toString();
+
 } // Person

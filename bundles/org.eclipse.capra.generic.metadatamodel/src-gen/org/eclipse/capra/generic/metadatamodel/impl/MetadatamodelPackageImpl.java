@@ -11,6 +11,7 @@ import org.eclipse.capra.generic.metadatamodel.TraceMetadata;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -175,6 +176,15 @@ public class MetadatamodelPackageImpl extends EPackageImpl implements Metadatamo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getPerson__ToString() {
+		return personEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTraceMetadata() {
 		return traceMetadataEClass;
 	}
@@ -277,6 +287,7 @@ public class MetadatamodelPackageImpl extends EPackageImpl implements Metadatamo
 		personEClass = createEClass(PERSON);
 		createEAttribute(personEClass, PERSON__NAME);
 		createEAttribute(personEClass, PERSON__EMAIL);
+		createEOperation(personEClass, PERSON___TO_STRING);
 
 		traceMetadataEClass = createEClass(TRACE_METADATA);
 		createEAttribute(traceMetadataEClass, TRACE_METADATA__CREATION_DATE);
@@ -329,6 +340,8 @@ public class MetadatamodelPackageImpl extends EPackageImpl implements Metadatamo
 		initEClass(personEClass, Person.class, "Person", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPerson_Name(), theEcorePackage.getEString(), "name", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getPerson_Email(), theEcorePackage.getEString(), "email", null, 0, 1, Person.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEOperation(getPerson__ToString(), theEcorePackage.getEString(), "toString", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
 		initEClass(traceMetadataEClass, TraceMetadata.class, "TraceMetadata", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTraceMetadata_CreationDate(), theEcorePackage.getEDate(), "creationDate", null, 0, 1, TraceMetadata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
