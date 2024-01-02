@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2024 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
  *     Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *     Chalmers | University of Gothenburg - additional features, updated API
  *     Fredrik Johansson and Themistoklis Ntoukolis - initial implementation of the Matrix View
+ *     Jan-Philipp Steghöfer - additional features
  *******************************************************************************/
 package org.eclipse.capra.ui.matrix.views;
 
@@ -65,6 +66,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
@@ -101,11 +103,14 @@ import org.eclipse.nebula.widgets.nattable.style.theme.ModernNatTableThemeConfig
 import org.eclipse.nebula.widgets.nattable.ui.action.IMouseAction;
 import org.eclipse.nebula.widgets.nattable.ui.binding.UiBindingRegistry;
 import org.eclipse.nebula.widgets.nattable.ui.matcher.MouseEventMatcher;
+import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuAction;
+import org.eclipse.nebula.widgets.nattable.ui.menu.PopupMenuBuilder;
 import org.eclipse.nebula.widgets.nattable.util.GUIHelper;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
@@ -323,6 +328,10 @@ public class TraceabilityMatrixView extends ViewPart {
 		}
 	};
 
+	private TraceabilityMatrixColumnHeaderDataProvider colHeaderDataProvider;
+
+	private TraceabilityMatrixRowHeaderDataProvider rowHeaderDataProvider;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		this.parent = parent;
@@ -330,16 +339,16 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		makeActions();
 		contributeToActionBars();
-		contributeContextMenu();
 
 		// Adding support to react to selections in other views
 		getViewSite().getPage().addSelectionListener(selectionListener);
 
 	}
 
-	private void contributeContextMenu() {
+	private void contributeContextMenu(ISelectionProvider selectionProvider) {
 		MenuManager menuManager = new MenuManager();
-		getSite().registerContextMenu("myMenu", menuManager, null);
+		getSite().registerContextMenu("org.eclipse.capra.ui.matrix.QuickFixMenu", menuManager, selectionProvider);
+		traceMatrixTable.addConfiguration(new QuickFixMenuConfiguration(traceMatrixTable, menuManager));
 	}
 
 	@Override
@@ -411,10 +420,10 @@ public class TraceabilityMatrixView extends ViewPart {
 			// rows, the labels are created.
 			this.bodyDataProvider = new TraceabilityMatrixDataProvider(traces, traceModel, traceAdapter,
 					artifactHelper);
-			IDataProvider colHeaderDataProvider = new TraceabilityMatrixColumnHeaderDataProvider(
-					this.bodyDataProvider.getColumns(), artifactHelper);
-			IDataProvider rowHeaderDataProvider = new TraceabilityMatrixRowHeaderDataProvider(
-					this.bodyDataProvider.getRows(), artifactHelper);
+			colHeaderDataProvider = new TraceabilityMatrixColumnHeaderDataProvider(this.bodyDataProvider.getColumns(),
+					artifactHelper);
+			rowHeaderDataProvider = new TraceabilityMatrixRowHeaderDataProvider(this.bodyDataProvider.getRows(),
+					artifactHelper);
 
 			// Putting the data providers to their respective stacks
 			this.bodyLayer = new BodyLayerStack(this.bodyDataProvider);
@@ -435,11 +444,6 @@ public class TraceabilityMatrixView extends ViewPart {
 			// Creating the table
 			traceMatrixTable = new NatTable(parent, gridLayer, false);
 
-			// Adding Configuration to the table
-			traceMatrixTable.addConfiguration(new ModernNatTableThemeConfiguration());
-			traceMatrixTable.addConfiguration(this.capraNatTableStyleConfiguration);
-			traceMatrixTable.configure();
-
 			// Attach the selection provider
 			if (this.selectionProvider == null) {
 				this.selectionProvider = new TraceabilityMatrixSelectionProvider(bodyLayer.getSelectionLayer(),
@@ -448,6 +452,12 @@ public class TraceabilityMatrixView extends ViewPart {
 				selectionProvider.updateProvider(bodyLayer.getSelectionLayer(), this.bodyDataProvider);
 			}
 			getSite().setSelectionProvider(this.selectionProvider);
+
+			// Adding Configuration to the table
+			traceMatrixTable.addConfiguration(new ModernNatTableThemeConfiguration());
+			traceMatrixTable.addConfiguration(this.capraNatTableStyleConfiguration);
+			contributeContextMenu(selectionProvider);
+			traceMatrixTable.configure();
 
 			// Adding the tool tips
 			attachToolTip();
@@ -650,6 +660,42 @@ public class TraceabilityMatrixView extends ViewPart {
 		return null;
 	}
 
+	public static TraceabilityMatrixView getOpenedView() {
+		try {
+			return (TraceabilityMatrixView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.showView(ID);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the {@link TraceabilityMatrixEntryData} instance of the currently
+	 * selected column or row. This method prefers the column, i.e., if the column
+	 * position is larger than 0, it will return the column.
+	 * 
+	 * @return the {@code TraceabilityMatrixEntryData} for the selected column or
+	 *         row. {@code null} if no selection is present.
+	 */
+	public TraceabilityMatrixEntryData getSelectedColumnOrRowEntryData() {
+		Object rawData = null;
+		PositionCoordinate coordinate = selectionProvider.getSelectedCellPosition();
+		if (Objects.isNull(coordinate)) {
+			return null;
+		}
+		if (coordinate.getColumnPosition() > 0) {
+			rawData = colHeaderDataProvider.getDataValue(coordinate.getColumnPosition(), 0);
+		} else if (coordinate.getRowPosition() > 0) {
+			rawData = rowHeaderDataProvider.getDataValue(0, coordinate.getRowPosition());
+		}
+		if (Objects.isNull(rawData) || !(rawData instanceof TraceabilityMatrixEntryData)) {
+			return null;
+		}
+		return (TraceabilityMatrixEntryData) rawData;
+	}
+
 	/**
 	 * Class for the column stack
 	 */
@@ -792,6 +838,9 @@ public class TraceabilityMatrixView extends ViewPart {
 
 			for (IMarker marker : entryData.getMarkers()) {
 				try {
+					if (!marker.exists()) {
+						continue;
+					}
 
 					if (!(Objects.equals(marker.getAttribute(CapraNotificationHelper.OLD_URI),
 							artifactHelper.getArtifactLocation(entryData.getArtifact())))) {
@@ -815,4 +864,25 @@ public class TraceabilityMatrixView extends ViewPart {
 		}
 	}
 
+	/**
+	 * Context menu for quick fixes.
+	 */
+	private final class QuickFixMenuConfiguration extends AbstractUiBindingConfiguration {
+
+		private final Menu quickFixMenu;
+
+		public QuickFixMenuConfiguration(NatTable natTable, MenuManager menuManager) {
+			this.quickFixMenu = new PopupMenuBuilder(natTable, menuManager).build();
+		}
+
+		@Override
+		public void configureUiBindings(UiBindingRegistry uiBindingRegistry) {
+			uiBindingRegistry.registerMouseDownBinding(
+					new MouseEventMatcher(SWT.NONE, GridRegion.COLUMN_HEADER, MouseEventMatcher.RIGHT_BUTTON),
+					new PopupMenuAction(this.quickFixMenu));
+			uiBindingRegistry.registerMouseDownBinding(
+					new MouseEventMatcher(SWT.NONE, GridRegion.ROW_HEADER, MouseEventMatcher.RIGHT_BUTTON),
+					new PopupMenuAction(this.quickFixMenu));
+		}
+	}
 }

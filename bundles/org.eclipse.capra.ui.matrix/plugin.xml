@@ -62,6 +62,17 @@
                style="toggle">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.capra.ui.matrix.QuickFixMenu">
+         <menu
+               label="%command.label.quickfix">
+            <dynamic
+                  class="org.eclipse.capra.ui.matrix.QuickFixDynamicMenu"
+                  id="org.eclipse.capra.ui.matrix.QuickFixMenu.dynamic">
+            </dynamic>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
