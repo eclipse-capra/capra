@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2024 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.capra.core.helpers.ArtifactHelper;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 
 /**
@@ -29,25 +28,20 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
  * @author Themistoklis Ntoukolis
  * @author Jan-Philipp Steghöfer
  */
-public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider, IEObjectForIndexProvider {
+public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider {
 
-	private List<EObject> eObjects = new ArrayList<>();
-	private List<String> labels = new ArrayList<>();
+	private List<TraceabilityMatrixEntryData> columnData = new ArrayList<>();
 
-	public TraceabilityMatrixColumnHeaderDataProvider(List<EObject> data, ArtifactHelper artifactHelper) {
-		for (EObject next : data) {
-			this.eObjects.add(next);
-			this.labels.add(artifactHelper.getArtifactLabel(next));
+	public TraceabilityMatrixColumnHeaderDataProvider(List<TraceabilityMatrixEntryData> data,
+			ArtifactHelper artifactHelper) {
+		for (TraceabilityMatrixEntryData next : data) {
+			this.columnData.add(next);
 		}
-	}
-
-	public String getColumnHeaderLabel(int columnIndex) {
-		return this.labels.get(columnIndex);
 	}
 
 	@Override
 	public int getColumnCount() {
-		return labels.size();
+		return columnData.size();
 	}
 
 	@Override
@@ -57,20 +51,15 @@ public class TraceabilityMatrixColumnHeaderDataProvider implements IDataProvider
 
 	@Override
 	public Object getDataValue(int columnIndex, int rowIndex) {
-		if (columnIndex < 0 || columnIndex >= this.labels.size()) {
+		if (columnIndex < 0 || columnIndex >= this.columnData.size()) {
 			return null;
 		}
-		return getColumnHeaderLabel(columnIndex);
+		return this.columnData.get(columnIndex);
 	}
 
 	@Override
 	public void setDataValue(int arg0, int arg1, Object arg2) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public EObject getEObject(int columnIndex) {
-		return eObjects.get(columnIndex);
 	}
 
 }

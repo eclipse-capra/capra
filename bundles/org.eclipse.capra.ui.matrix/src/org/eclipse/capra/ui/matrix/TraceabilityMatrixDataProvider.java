@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,6 +33,12 @@ import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.ui.notification.CapraNotificationHelper;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -49,15 +56,6 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 
 	private ResourceSet resourceSet = EditingDomainHelper.getResourceSet();
 	private IPersistenceAdapter persistenceAdapter = ExtensionPointHelper.getPersistenceAdapter().get();
-
-	private class EntryData {
-		public EObject artifact;
-		public List<Connection> connections;
-
-		public EntryData(EObject artifact) {
-			this.artifact = artifact;
-		}
-	}
 
 	/**
 	 * A comparator that provides a lexicographical ordering of the class names of
@@ -92,8 +90,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 
 	}
 
-	private List<EntryData> rows = new ArrayList<>();
-	private List<EntryData> columns = new ArrayList<>();
+	private List<TraceabilityMatrixEntryData> rows = new ArrayList<>();
+	private List<TraceabilityMatrixEntryData> columns = new ArrayList<>();
 
 	/**
 	 * Returns all unique artifacts of the connections as defined by {@code func},
@@ -144,20 +142,54 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 *                     traces
 	 */
 	public TraceabilityMatrixDataProvider(List<Connection> connections, EObject traceModel,
-			ITraceabilityInformationModelAdapter traceAdapter) {
+			ITraceabilityInformationModelAdapter traceAdapter, ArtifactHelper artifactHelper) {
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IMarker[] markers = null;
+		try {
+			markers = root.findMarkers(CapraNotificationHelper.CAPRA_PROBLEM_MARKER_ID, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) {
+			return;
+		}
+		if (markers == null || markers.length == 0) {
+			return;
+		}
+
 		// Rows contain the origins
 		for (EObject element : this.getTraceOrigins(connections)) {
 			if (element != null) {
-				EntryData rowEntry = new EntryData(element);
-				rowEntry.connections = traceAdapter.getConnectedElements(element, traceModel);
+				TraceabilityMatrixEntryData rowEntry = new TraceabilityMatrixEntryData(element,
+						artifactHelper.getArtifactLabel(element));
+				rowEntry.setConnections(traceAdapter.getConnectedElements(element, traceModel));
+				findMarkers(artifactHelper, markers, element, rowEntry);
 				this.rows.add(rowEntry);
 			}
 		}
 		// Columns contain the targets
 		for (EObject element : this.getTraceTargets(connections)) {
 			if (element != null) {
-				EntryData colEntry = new EntryData(element);
+				TraceabilityMatrixEntryData colEntry = new TraceabilityMatrixEntryData(element,
+						artifactHelper.getArtifactLabel(element));
+				findMarkers(artifactHelper, markers, element, colEntry);
 				this.columns.add(colEntry);
+			}
+		}
+	}
+
+	private void findMarkers(ArtifactHelper artifactHelper, IMarker[] markers, EObject element,
+			TraceabilityMatrixEntryData entry) {
+		for (IMarker marker : markers) {
+			try {
+
+				if (!(Objects.equals(marker.getAttribute(CapraNotificationHelper.OLD_URI),
+						artifactHelper.getArtifactLocation(element)))) {
+					// TODO: this does not quite work since the marker can contain additional
+					// information such as a parameter
+					continue;
+				}
+				entry.getMarkers().add(marker);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -193,8 +225,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * 
 	 * @return a list of all artifacts displayed as columns
 	 */
-	public List<EObject> getColumns() {
-		return columns.stream().map(e -> e.artifact).collect(Collectors.toCollection(ArrayList::new));
+	public List<TraceabilityMatrixEntryData> getColumns() {
+		return columns.stream().collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
@@ -203,8 +235,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * @param index the index of the column whose artifact should be returned
 	 * @return the artifact displayed in the column with the given index
 	 */
-	public EObject getColumn(int index) {
-		return columns.get(index).artifact;
+	public TraceabilityMatrixEntryData getColumn(int index) {
+		return columns.get(index);
 	}
 
 	/**
@@ -212,8 +244,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * 
 	 * @return a list of all artifacts displayed as rows
 	 */
-	public List<EObject> getRows() {
-		return rows.stream().map(e -> e.artifact).collect(Collectors.toCollection(ArrayList::new));
+	public List<TraceabilityMatrixEntryData> getRows() {
+		return rows.stream().collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	/**
@@ -222,8 +254,8 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * @param index the index of the row whose artifact should be returned
 	 * @return the artifact displayed in the row with the given index
 	 */
-	public EObject getRow(int index) {
-		return rows.get(index).artifact;
+	public TraceabilityMatrixEntryData getRow(int index) {
+		return rows.get(index);
 	}
 
 	/**
@@ -235,17 +267,16 @@ public class TraceabilityMatrixDataProvider implements IDataProvider {
 	 * @return the connection represented in the chosen cell
 	 */
 	public Connection getCellConnection(int column, int row) {
-		EntryData colEntry = columns.get(column);
-		EntryData rowEntry = rows.get(row);
-		for (Connection connection : rowEntry.connections) {
+		TraceabilityMatrixEntryData colEntry = columns.get(column);
+		TraceabilityMatrixEntryData rowEntry = rows.get(row);
+		for (Connection connection : rowEntry.getConnections()) {
 			for (EObject target : connection.getTargets()) {
-				if (!EMFHelper.hasSameIdentifier(rowEntry.artifact, target)
-						&& EMFHelper.hasSameIdentifier(colEntry.artifact, target)) {
+				if (!EMFHelper.hasSameIdentifier(rowEntry.getArtifact(), target)
+						&& EMFHelper.hasSameIdentifier(colEntry.getArtifact(), target)) {
 					return connection;
 				}
 			}
 		}
 		return null;
 	}
-
 }

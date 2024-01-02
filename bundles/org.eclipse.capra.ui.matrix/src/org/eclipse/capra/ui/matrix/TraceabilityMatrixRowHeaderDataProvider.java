@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Chalmers | University of Gothenburg, rt-labs and others.
+ * Copyright (c) 2016-2024 Chalmers | University of Gothenburg, rt-labs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.capra.core.helpers.ArtifactHelper;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 
 /**
@@ -29,10 +28,9 @@ import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
  * @author Jan-Philipp Steghöfer
  *
  */
-public class TraceabilityMatrixRowHeaderDataProvider implements IDataProvider, IEObjectForIndexProvider {
+public class TraceabilityMatrixRowHeaderDataProvider implements IDataProvider {
 
-	private List<EObject> eObjects = new ArrayList<>();
-	private List<String> labels = new ArrayList<>();
+	private List<TraceabilityMatrixEntryData> rowData = new ArrayList<>();
 
 	/**
 	 * Creates a new data provider for row headers in a traceability matrix. The
@@ -41,10 +39,10 @@ public class TraceabilityMatrixRowHeaderDataProvider implements IDataProvider, I
 	 * 
 	 * @param data a list with the information about the row headers
 	 */
-	public TraceabilityMatrixRowHeaderDataProvider(List<EObject> data, ArtifactHelper artifactHelper) {
-		for (EObject next : data) {
-			this.eObjects.add(next);
-			this.labels.add(artifactHelper.getArtifactLabel(next));
+	public TraceabilityMatrixRowHeaderDataProvider(List<TraceabilityMatrixEntryData> data,
+			ArtifactHelper artifactHelper) {
+		for (TraceabilityMatrixEntryData next : data) {
+			this.rowData.add(next);
 		}
 	}
 
@@ -55,22 +53,17 @@ public class TraceabilityMatrixRowHeaderDataProvider implements IDataProvider, I
 
 	@Override
 	public int getRowCount() {
-		return labels.size();
+		return rowData.size();
 	}
 
 	@Override
 	public Object getDataValue(int columnIndex, int rowIndex) {
-		return labels.get(rowIndex);
+		return rowData.get(rowIndex);
 	}
 
 	@Override
 	public void setDataValue(int columnIndex, int rowIndex, Object newValue) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public EObject getEObject(int rowIndex) {
-		return eObjects.get(rowIndex);
 	}
 
 }

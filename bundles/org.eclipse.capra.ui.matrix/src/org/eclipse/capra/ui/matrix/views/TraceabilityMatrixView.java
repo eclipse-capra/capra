@@ -35,10 +35,10 @@ import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.core.helpers.TraceHelper;
 import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
-import org.eclipse.capra.ui.matrix.IEObjectForIndexProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixBodyToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixColumnHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixDataProvider;
+import org.eclipse.capra.ui.matrix.TraceabilityMatrixEntryData;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixHeaderToolTip;
 import org.eclipse.capra.ui.matrix.TraceabilityMatrixRowHeaderDataProvider;
 import org.eclipse.capra.ui.matrix.handlers.ToggleCheckArtifactExistenceHandler;
@@ -51,8 +51,6 @@ import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -62,6 +60,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -312,8 +311,8 @@ public class TraceabilityMatrixView extends ViewPart {
 		public void accumulateConfigLabels(LabelStack configLabels, int columnPosition, int rowPosition) {
 			int columnIndex = bodyLayer.getColumnIndexByPosition(columnPosition);
 			int rowIndex = bodyLayer.getRowIndexByPosition(rowPosition);
-			if (EMFHelper.hasSameIdentifier(bodyDataProvider.getRow(rowIndex),
-					bodyDataProvider.getColumn(columnIndex))) {
+			if (EMFHelper.hasSameIdentifier(bodyDataProvider.getRow(rowIndex).getArtifact(),
+					bodyDataProvider.getColumn(columnIndex).getArtifact())) {
 				configLabels.addLabel(SAME_LABEL);
 			} else {
 				String cellText = (String) bodyDataProvider.getDataValue(columnIndex, rowIndex);
@@ -331,10 +330,16 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		makeActions();
 		contributeToActionBars();
+		contributeContextMenu();
 
 		// Adding support to react to selections in other views
 		getViewSite().getPage().addSelectionListener(selectionListener);
 
+	}
+
+	private void contributeContextMenu() {
+		MenuManager menuManager = new MenuManager();
+		getSite().registerContextMenu("myMenu", menuManager, null);
 	}
 
 	@Override
@@ -404,7 +409,8 @@ public class TraceabilityMatrixView extends ViewPart {
 			// Creating data providers for body, column and row. The data provider for the
 			// body provides the data which will be shown in the cells. For columns and
 			// rows, the labels are created.
-			this.bodyDataProvider = new TraceabilityMatrixDataProvider(traces, traceModel, traceAdapter);
+			this.bodyDataProvider = new TraceabilityMatrixDataProvider(traces, traceModel, traceAdapter,
+					artifactHelper);
 			IDataProvider colHeaderDataProvider = new TraceabilityMatrixColumnHeaderDataProvider(
 					this.bodyDataProvider.getColumns(), artifactHelper);
 			IDataProvider rowHeaderDataProvider = new TraceabilityMatrixRowHeaderDataProvider(
@@ -531,8 +537,8 @@ public class TraceabilityMatrixView extends ViewPart {
 				}
 				PositionCoordinate selectedCellCoords = selectionProvider.getSelectedCellPosition();
 				if (selectedCellCoords != null) {
-					EObject source = bodyDataProvider.getRow(selectedCellCoords.rowPosition);
-					EObject target = bodyDataProvider.getColumn(selectedCellCoords.columnPosition);
+					EObject source = bodyDataProvider.getRow(selectedCellCoords.rowPosition).getArtifact();
+					EObject target = bodyDataProvider.getColumn(selectedCellCoords.columnPosition).getArtifact();
 
 					CreateTraceOperation createTraceOperation = new CreateTraceOperation("Create new traceability link",
 							Arrays.asList(source), Arrays.asList(target));
@@ -670,7 +676,7 @@ public class TraceabilityMatrixView extends ViewPart {
 									try {
 										int columnPosition = natTable.getColumnPositionByX(event.x);
 										int columnIndex = natTable.getColumnIndexByPosition(columnPosition);
-										EObject element = bodyDataProvider.getColumn(columnIndex);
+										EObject element = bodyDataProvider.getColumn(columnIndex).getArtifact();
 										openEditor(element);
 									} catch (PartInitException e) {
 										// Deliberately do nothing.
@@ -710,7 +716,7 @@ public class TraceabilityMatrixView extends ViewPart {
 									try {
 										int rowPosition = natTable.getRowPositionByY(event.y);
 										int rowIndex = natTable.getRowIndexByPosition(rowPosition);
-										EObject element = bodyDataProvider.getRow(rowIndex);
+										EObject element = bodyDataProvider.getRow(rowIndex).getArtifact();
 										openEditor(element);
 									} catch (PartInitException e) {
 										// Deliberately do nothing.
@@ -768,38 +774,27 @@ public class TraceabilityMatrixView extends ViewPart {
 			if (!ToggleCheckArtifactExistenceHandler.checkArtifaceExistence()) {
 				return;
 			}
-			if (!(dataProvider instanceof IEObjectForIndexProvider)) {
-				return;
-			}
 
-			IEObjectForIndexProvider rowHeaderDataProvider = (IEObjectForIndexProvider) dataProvider;
-			int position = 0;
+			Object rawData = null;
 			switch (this.accumulatorType) {
 			case ROW:
-				position = rowPosition;
+				rawData = dataProvider.getDataValue(0, rowPosition);
 				break;
 			case COLUMN:
-				position = columnPosition;
+				rawData = dataProvider.getDataValue(columnPosition, 0);
 				break;
 			}
-			EObject obj = rowHeaderDataProvider.getEObject(position);
+			if (Objects.isNull(rawData) || !(rawData instanceof TraceabilityMatrixEntryData)) {
+				return;
+			}
 
-			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-			IMarker[] markers = null;
-			try {
-				markers = root.findMarkers(CapraNotificationHelper.CAPRA_PROBLEM_MARKER_ID, true,
-						IResource.DEPTH_INFINITE);
-			} catch (CoreException e) {
-				return;
-			}
-			if (markers == null || markers.length == 0) {
-				return;
-			}
-			for (IMarker marker : markers) {
+			TraceabilityMatrixEntryData entryData = (TraceabilityMatrixEntryData) rawData;
+
+			for (IMarker marker : entryData.getMarkers()) {
 				try {
 
 					if (!(Objects.equals(marker.getAttribute(CapraNotificationHelper.OLD_URI),
-							artifactHelper.getArtifactLocation(obj)))) {
+							artifactHelper.getArtifactLocation(entryData.getArtifact())))) {
 						// TODO: this does not quite work since the marker can contain additional
 						// information such as a parameter
 						continue;
@@ -819,4 +814,5 @@ public class TraceabilityMatrixView extends ViewPart {
 
 		}
 	}
+
 }

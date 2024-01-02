@@ -110,13 +110,14 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	private ISelection doGetSelection(SelectionType type) {
 		switch (type) {
 		case ROW:
-			EObject selectedRow = dataProvider.getRow(selectionLayer.getFullySelectedRowPositions()[0]);
+			EObject selectedRow = dataProvider.getRow(selectionLayer.getFullySelectedRowPositions()[0]).getArtifact();
 			if (selectedRow != null) {
 				return new StructuredSelection(new ArtifactAdapter(selectedRow));
 			}
 			break;
 		case COLUMN:
-			EObject selectedColumn = dataProvider.getColumn(selectionLayer.getFullySelectedColumnPositions()[0]);
+			EObject selectedColumn = dataProvider.getColumn(selectionLayer.getFullySelectedColumnPositions()[0])
+					.getArtifact();
 			if (selectedColumn != null) {
 				return new StructuredSelection(new ArtifactAdapter(selectedColumn));
 			}
@@ -144,13 +145,15 @@ public class TraceabilityMatrixSelectionProvider implements ISelectionProvider, 
 	public void setSelection(ISelection selection) {
 		// Deliberately do nothing
 	}
-	
+
 	/**
 	 * Returns the coordinate of the first selected cell.
-	 * @return the coordinate of the first selected cell or {@code null} if no cell is selected
+	 * 
+	 * @return the coordinate of the first selected cell or {@code null} if no cell
+	 *         is selected
 	 */
 	public PositionCoordinate getSelectedCellPosition() {
-		if (selectionLayer.getSelectedCellPositions() != null && selectionLayer.getSelectedCellPositions().length>0) 
+		if (selectionLayer.getSelectedCellPositions() != null && selectionLayer.getSelectedCellPositions().length > 0)
 			return selectionLayer.getSelectedCellPositions()[0];
 		else
 			return null;

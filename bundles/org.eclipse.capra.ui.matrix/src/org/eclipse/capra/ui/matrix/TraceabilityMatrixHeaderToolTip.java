@@ -59,7 +59,7 @@ public class TraceabilityMatrixHeaderToolTip extends NatTableContentTooltip {
 	@Override
 	protected String getText(Event event) {
 		int col = this.natTable.getColumnIndexByPosition(this.natTable.getColumnPositionByX(event.x));
-		EObject artifact = dataProvider.getColumn(col);
+		EObject artifact = dataProvider.getColumn(col).getArtifact();
 		StringBuilder tooltipBuilder = new StringBuilder();
 		tooltipBuilder.append(artifactHelper.getArtifactLabel(artifact));
 		tooltipBuilder.append("\nLocated at:\n");
