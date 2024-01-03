@@ -90,11 +90,14 @@ public class SelectionSupportHelper {
 	 */
 	public static List<Object> extractSelectedElements(final ISelection selection, final IWorkbenchPart workbenchPart) {
 		List<Object> selectedElem = new ArrayList<>();
+		if (selection.isEmpty()) {
+			return selectedElem;
+		}
 
 		for (final ISelectionSupport handler : SELECTION_SUPPORTS) {
 			if (handler.supportsWorkbenchPart(workbenchPart)) {
 				List<Object> extractedElements = handler.extractSelectedElements(selection, workbenchPart);
-				if (extractedElements != null) {
+				if (extractedElements != null && !extractedElements.isEmpty()) {
 					selectedElem.addAll(extractedElements);
 					break;
 				}

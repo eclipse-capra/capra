@@ -31,6 +31,7 @@ import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ArtifactHelper;
 import org.eclipse.capra.core.helpers.EditingDomainHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.ui.helpers.SelectionSupportHelper;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.emf.ecore.EClass;
@@ -46,12 +47,11 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -306,18 +306,19 @@ public class SelectionView extends ViewPart {
 	@SuppressWarnings("unchecked")
 	public void dropToSelection(Object data) {
 		boolean selectAsSource = selection.isEmpty();
-		if (data instanceof TreeSelection) {
-			TreeSelection tree = (TreeSelection) data;
-			if (tree.toList().stream().allMatch(this::validateSelection))
-				tree.toList().forEach(t -> selection.put(t, selectAsSource));
+
+		if (data instanceof ISelection) {
+			List<Object> extractedData = SelectionSupportHelper.extractSelectedElements((ISelection) data,
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart());
+			if (extractedData != null) {
+				if (extractedData.stream().allMatch(this::validateSelection)) {
+					extractedData.forEach(e -> selection.put(e, selectAsSource));
+				}
+			}
 		} else if (data instanceof Collection<?>) {
 			Collection<Object> arrayselection = (Collection<Object>) data;
 			if (arrayselection.stream().allMatch(this::validateSelection))
 				arrayselection.forEach(a -> selection.put(a, selectAsSource));
-		} else if (data instanceof IStructuredSelection) {
-			IStructuredSelection iselection = (IStructuredSelection) data;
-			if (iselection.toList().stream().allMatch(this::validateSelection))
-				iselection.toList().forEach(i -> selection.put(i, selectAsSource));
 		} else if (validateSelection(data))
 			selection.put(data, selectAsSource);
 
