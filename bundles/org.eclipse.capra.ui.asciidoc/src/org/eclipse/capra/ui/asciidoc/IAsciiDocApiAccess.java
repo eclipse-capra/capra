@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Jan-Philipp Steghöfer
+ * Copyright (c) 2023-2024 Jan-Philipp Steghöfer
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -31,5 +31,16 @@ public interface IAsciiDocApiAccess {
 	 * @return the {@link Item} at the offset, or {@code null}
 	 */
 	public Item getItemFromAsciiDocText(int offset, String asciiDocText);
+
+	/**
+	 * Retrieves an {@link Item} which represents an <b>inline anchor</b> with the
+	 * provided ID from the provided AsciiDoc text. If there is no item with the ID,
+	 * returns {@code null}.
+	 * 
+	 * @param ID           the unique identifier of an inline anchor item
+	 * @param asciiDocText the text in which to look for an item
+	 * @return the {@link Item} with the given ID, or {@code null}
+	 */
+	Item getItemById(String ID, String asciiDocText);
 
 }

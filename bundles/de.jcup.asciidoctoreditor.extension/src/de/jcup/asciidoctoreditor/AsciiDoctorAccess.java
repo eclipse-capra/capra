@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Jan-Philipp Steghöfer
+ * Copyright (c) 2023-2024 Jan-Philipp Steghöfer
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,14 @@
  *******************************************************************************/
 package de.jcup.asciidoctoreditor;
 
+import java.util.Objects;
+
 import org.eclipse.capra.ui.asciidoc.IAsciiDocApiAccess;
 
 import de.jcup.asciidoctoreditor.outline.AsciiDoctorEditorTreeContentProvider;
 import de.jcup.asciidoctoreditor.outline.ContentProviderAccess;
 import de.jcup.asciidoctoreditor.outline.Item;
+import de.jcup.asciidoctoreditor.outline.ItemType;
 import de.jcup.asciidoctoreditor.script.AsciiDoctorScriptModel;
 import de.jcup.asciidoctoreditor.script.AsciiDoctorScriptModelBuilder;
 import de.jcup.asciidoctoreditor.script.AsciiDoctorScriptModelException;
@@ -51,6 +54,40 @@ public class AsciiDoctorAccess implements IAsciiDocApiAccess {
 			// Then we rebuild again with the current model
 			contentProvider.rebuildTree(model);
 			item = contentProvider.tryToFindByOffset(offset);
+		}
+
+		return item;
+	}
+
+	@Override
+	public Item getItemById(String ID, String asciiDocText) {
+		AsciiDoctorScriptModel model = null;
+		Item item = null;
+		try {
+			model = modelBuilder.build(asciiDocText);
+		} catch (AsciiDoctorScriptModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (model != null) {
+			// We rebuild first to empty cache
+			contentProvider.rebuildTree(null);
+			// Then we rebuild again with the current model
+			contentProvider.rebuildTree(model);
+			Object[] objects = contentProvider.getElements(model);
+			for (Object obj : objects) {
+				if (!(obj instanceof Item)) {
+					continue;
+				}
+				Item objItem = (Item) obj;
+				if (objItem.getItemType() != ItemType.INLINE_ANCHOR) {
+					continue;
+				}
+				if (Objects.equals(objItem.getName(), ID)) {
+					item = objItem;
+					break;
+				}
+			}
 		}
 
 		return item;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Jan-Philipp Steghöfer
+ * Copyright (c) 2023-2024 Jan-Philipp Steghöfer
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.capra.ui.asciidoc.IAsciiDocApiAccess;
 import org.eclipse.core.runtime.FileLocator;
 
 import de.jcup.asciidoctoreditor.outline.Item;
+import de.jcup.asciidoctoreditor.outline.ItemType;
 
 /**
  * Helper class to check if an AsciiDoc artifact exists.
@@ -43,15 +44,18 @@ public class AsciiDocArtifactExistenceChecker {
 	 * Checks the status of the given AsciiDoc artifact. This happens in two steps:
 	 * first, it is determined whether the URI provided in the artifact points to a
 	 * readable file. Then, it is checked whether the item described in the artifact
-	 * exists in the file, i.e., offset and name match. Only if both conditions are
-	 * true, does this method also return {@code ArtifactStatus.NORMAL}. If an item
-	 * can be found at the given offset, but the name differs, this method return
+	 * exists in the file. If the item is an inline anchor, the ID of the anchor is
+	 * searched in the file. Otherwise, it is checked if offset and name match. If
+	 * both conditions are true or an item with the given ID was found, this method
+	 * returns {@code ArtifactStatus.NORMAL}. If an item can be found at the given
+	 * offset, but the name differs, this method return
 	 * {@code ArtifactStatus.RENAMED}. If an exception occurs while trying to read
 	 * the AsciiDoc artifact, this method returns {@code ArtifactStatus.REMOVED}.
 	 * 
 	 * @param artifact the AsciiDoc artifact whose status to check
 	 * @return <code>ArtifactStatus.NORMAL</code> if the AsciiDoc artifact exists,
-	 *         is accessible, and the item at the given offset has the correct name.
+	 *         is accessible, an item with the given ID was found or the item at the
+	 *         given offset has the correct name.
 	 *         <code>ArtifactStatus.RENAMED</code> if the AsciiDoc artifact exists
 	 *         and is accessible, but the name of the item at the given offset
 	 *         differs from the name stored in the artifact.
@@ -71,7 +75,12 @@ public class AsciiDocArtifactExistenceChecker {
 			Optional<IAsciiDocApiAccess> asciiDocApiAccessOpt = getAsciiDoctorAccess();
 			if (asciiDocApiAccessOpt.isPresent()) {
 				IAsciiDocApiAccess apiAccess = asciiDocApiAccessOpt.get();
-				Item item = apiAccess.getItemFromAsciiDocText(artifact.getItem().getOffset(), asciiDocText);
+				Item item = null;
+				if (artifact.getItem().getItemType() == ItemType.INLINE_ANCHOR) {
+					item = apiAccess.getItemById(artifact.getItem().getId(), asciiDocText);
+				} else {
+					item = apiAccess.getItemFromAsciiDocText(artifact.getItem().getOffset(), asciiDocText);
+				}
 				if (item == null) {
 					artifactStatus = new ArtifactStatus(ArtifactStatus.Status.REMOVED);
 				} else if (!item.getName().equals(artifact.getItem().getName())) {

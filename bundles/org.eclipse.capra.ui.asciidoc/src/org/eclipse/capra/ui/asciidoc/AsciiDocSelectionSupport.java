@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 University of Gothenburg.
+ * Copyright (c) 2022-2024 University of Gothenburg and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *  
  * Contributors:
  *      University of Gothenburg - initial API and implementation
+ *      Jan-Philipp Steghöfer - additional features
  *******************************************************************************/
 package org.eclipse.capra.ui.asciidoc;
 
