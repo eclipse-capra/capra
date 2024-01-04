@@ -685,7 +685,8 @@ public class TraceabilityMatrixView extends ViewPart {
 		if (Objects.isNull(coordinate)) {
 			return null;
 		}
-		if (coordinate.getColumnPosition() > 0) {
+		if (coordinate.getColumnPosition() > 0
+				|| coordinate.getColumnPosition() == 0 && coordinate.getRowPosition() == 0) {
 			rawData = colHeaderDataProvider.getDataValue(coordinate.getColumnPosition(), 0);
 		} else if (coordinate.getRowPosition() > 0) {
 			rawData = rowHeaderDataProvider.getDataValue(0, coordinate.getRowPosition());
@@ -884,5 +885,31 @@ public class TraceabilityMatrixView extends ViewPart {
 					new MouseEventMatcher(SWT.NONE, GridRegion.ROW_HEADER, MouseEventMatcher.RIGHT_BUTTON),
 					new PopupMenuAction(this.quickFixMenu));
 		}
+	}
+
+	/**
+	 * Returns the {@link TraceabilityMatrixEntryData} instance associated with the
+	 * header cell at the given coordinates. Prefers columns over rows, i.e., if
+	 * {@code colPos > 0} always returns the entry data associated with the column
+	 * header.
+	 * 
+	 * @param colPos the column position of the header cell
+	 * @param rowPos the row position of the header cell
+	 * @return the {code TraceabilityMatrixEntryData} instance associated with the
+	 *         given header cell
+	 */
+	public TraceabilityMatrixEntryData getHeaderEntryDataForTablePositions(int colPos, int rowPos) {
+		Object rawData = null;
+		if (colPos == 0 && rowPos == 0) {
+			rawData = colHeaderDataProvider.getDataValue(0, 0);
+		} else if (colPos > 0) {
+			rawData = colHeaderDataProvider.getDataValue(colPos - 1, 0);
+		} else if (rowPos > 0) {
+			rawData = rowHeaderDataProvider.getDataValue(0, rowPos - 1);
+		}
+		if (Objects.isNull(rawData) || !(rawData instanceof TraceabilityMatrixEntryData)) {
+			return null;
+		}
+		return (TraceabilityMatrixEntryData) rawData;
 	}
 }

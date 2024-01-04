@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.nebula.widgets.nattable.ui.NatEventData;
+import org.eclipse.nebula.widgets.nattable.ui.menu.MenuItemProviders;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,7 +46,20 @@ public class QuickFixDynamicMenu extends ContributionItem {
 	@Override
 	public void fill(Menu menu, int index) {
 		TraceabilityMatrixView traceMatrixView = TraceabilityMatrixView.getOpenedView();
-		Set<IMarker> markers = traceMatrixView.getSelectedColumnOrRowEntryData().getMarkers();
+		TraceabilityMatrixEntryData entryData = null;
+		if (menu.getParentMenu() != null) {
+			Object natEventDataRaw = menu.getParentMenu().getData(MenuItemProviders.NAT_EVENT_DATA_KEY);
+			if (natEventDataRaw != null && (natEventDataRaw instanceof NatEventData)) {
+				NatEventData natEventData = (NatEventData) natEventDataRaw;
+				entryData = traceMatrixView.getHeaderEntryDataForTablePositions(natEventData.getColumnPosition(),
+						natEventData.getRowPosition());
+			}
+		}
+
+		if (Objects.isNull(entryData)) {
+			return;
+		}
+		Set<IMarker> markers = entryData.getMarkers();
 		if (Objects.isNull(markers) || markers.size() == 0)
 			return;
 		IMarkerResolutionGenerator resolutionGenerator = getMarkerResolutionGenerator();
