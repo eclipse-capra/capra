@@ -59,9 +59,15 @@ public class QuickFixDynamicMenu extends ContributionItem {
 		if (Objects.isNull(entryData)) {
 			return;
 		}
+
 		Set<IMarker> markers = entryData.getMarkers();
-		if (Objects.isNull(markers) || markers.size() == 0)
+		if (Objects.isNull(markers) || markers.size() == 0) {
+			MenuItem menuItem = new MenuItem(menu, SWT.PUSH, index);
+			menuItem.setEnabled(false);
+			menuItem.setText("No quick fixes for current artifact available");
 			return;
+		}
+
 		IMarkerResolutionGenerator resolutionGenerator = getMarkerResolutionGenerator();
 		if (Objects.isNull(resolutionGenerator)) {
 			return;
