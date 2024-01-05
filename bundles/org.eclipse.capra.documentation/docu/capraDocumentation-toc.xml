@@ -1,28 +1,9 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!--
-    Copyright (c) 2016, 2019 Chalmers | University of Gothenburg, rt-labs and others.
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v2.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v20.html
-     
-    SPDX-License-Identifier: EPL-2.0
-     
-    Contributors:
-         Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
-         Chalmers | University of Gothenburg - additional features, updated API
- -->
 <toc topic="docu/capraDocumentation.html" label="capraDocumentation">
 	<topic href="docu/capraDocumentation.html" label="Capra Help Contents">
 		<topic href="docu/capraDocumentation.html#user-guide" label="User Guide">
-			<topic href="docu/capraDocumentation.html#introduction-what-is-capra" label="Introduction -- What is Capra?"></topic>
-			<topic href="docu/capraDocumentation.html#getting-started" label="Getting Started">
-				<topic href="docu/capraDocumentation.html#prerequisites" label="Prerequisites"></topic>
-				<topic href="docu/capraDocumentation.html#installing-capra" label="Installing Capra">
-					<topic href="docu/capraDocumentation.html#installing-through-an-update-site" label="Installing Capra through an update site"></topic>
-					<topic href="docu/capraDocumentation.html#manual-installation-import-from-git" label="Installing Capra manually with Git"></topic>
-				</topic>
-			</topic>
+			<topic href="docu/capraDocumentation.html#introduction-what-is-capra" label="Introduction -- What is Eclipse Capra?"></topic>
+			<topic href="docu/capraDocumentation.html#getting-started" label="Getting Started"></topic>
 			<topic href="docu/capraDocumentation.html#traceability-concepts" label="Traceability Concepts">
 				<topic href="docu/capraDocumentation.html#definition-of-traceability" label="Definition of traceability"></topic>
 				<topic href="docu/capraDocumentation.html#what-is-a-traceability-link" label="What is a traceability link?"></topic>
@@ -40,7 +21,10 @@
 				</topic>
 				<topic href="docu/capraDocumentation.html#visualizing-traceability-links" label="Visualizing Traceability Links">
 					<topic href="docu/capraDocumentation.html#graphical-view" label="Graphical view"></topic>
-					<topic href="docu/capraDocumentation.html#traceability-matrix" label="Traceability matrix"></topic>
+					<topic href="docu/capraDocumentation.html#traceability-matrix" label="Traceability matrix">
+						<topic href="docu/capraDocumentation.html#TraceabilitymatrixinPlantUML" label="Traceability matrix in PlantUML"></topic>
+						<topic href="docu/capraDocumentation.html#Thestandalonetraceabilitymatrixview" label="The standalone traceability matrix view"></topic>
+					</topic>
 				</topic>
 				<topic href="docu/capraDocumentation.html#detecting-and-fixing-inconsistencies" label="Detecting and Fixing Inconsistencies"></topic>
 				<topic href="docu/capraDocumentation.html#analyzing-change-impact" label="Analyzing change impact"></topic>

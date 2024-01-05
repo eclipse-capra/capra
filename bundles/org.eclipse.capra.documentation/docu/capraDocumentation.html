@@ -6,88 +6,36 @@
 	<body>
 		<h1 id="capra-help-contents">Capra Help Contents</h1>
 		<h2 id="user-guide">User Guide</h2>
-		<h3 id="introduction-what-is-capra">Introduction &#8212; What is Capra?</h3>
-		<p>Capra is a dedicated traceability management tool that allows the creation, management, visualization, and analysis of traceability links within Eclipse. Traceability links can be created between arbitrary artifacts, including all EMF model elements, all types of source code files supported by the Eclipse Platform through specialized development tools, tickets and bugs managed by Eclipse Mylyn, and all other artifacts for which an appropriate wrapper is provided. Capra is highly configurable and allows users (in a company or project) to define link types that are useful to them. </p>
-		<p>Compared to other similar projects which may have similar features, Capra is not a modeling tool or a tool for requirements management. All functionality is focused on providing traceability capabilities, i.e., the ability to create and visualize links between artifacts modeled in different domain-specific languages. This allows the architecture to be highly modular and the tool to be extremely customizable.</p>
+		<h3 id="introduction-what-is-capra">Introduction &#8212; What is Eclipse Capra?</h3>
+		<p>Eclipse Capra is a traceability management tool. It allows the creation of trace links between arbitrary artifacts, provides features to edit them and keep them consistent, and visualise the relationships between them. This includes traceability matrices and graph visualisations that are helpful for reporting and change impact analysis.</p>
+		<p>In essence, Eclipse Capra allows the creation of trace links between arbitrary artifacts, as long as an adapter for these artifacts is available. Eclipse Capra currently natively supports elements from UML, SysML, AADL, EAST-ADL, as well as ReqIF models created in, e.g., Eclipse Papyrus, Eclipse EATOP, and ProR. Furthermore, adapters for test case executions managed by a continuous integration server like Hudson or Jenkins can be traced to. There is also support for source code files supported by the Eclipse Platform (e.g., Java, C, Python) and tasks from an issue tracking system supported by Eclipse Mylyn. External artifacts for which the Eclipse Platform does not offer built-in support can also be linked if a fitting adapter is provided. Built-in capabilities allow linking to Office documents and documents hosted by Google Docs. A generic file handler and a handler for EMF models also provide capabilities for formats that currently have no native support.</p>
+		<p>Once trace links are established, Eclipse Capra offers features to manage them. If a model element that is linked to is moved, e.g., Eclipse Capra will notify the user and allow changing the link accordingly. The same support is given for model elements that are deleted or renamed. Quick fixes are available to fix most isses in a semi-automatic fashion.</p>
+		<p>Eclipse Capra also offers different visualisations of the trace links which allow developers to traverse the relationships established through the links and understand how the different artifacts are connected. This is helpful when assessing the impact a change has (e.g., which design artifacts need to be adapted when a requirement has changed?) or when trying to understand how the design artifacts in a complex development project are connected. In addition, Eclipse Capra can display traceability matrices, as requested by standards like ISO 26262.</p>
+		<p>The tool is highly extensible. The meta-model used for the traceability links can easily be adapted to a specific end-user&#8217;s needs. Eclipse Capra&#8217;s modular architecture allows exchanging the persistence, the visualisation, and the management modules easily. New adapters for additional artifacts can easily be added without re-compilation. This allows end-users to customise almost every aspect of the tool if needed. At the same time, we provide sensible defaults that will allow the majority of users to use Capra out of the box without extensive configuration.</p>
 		<h3 id="getting-started">Getting Started</h3>
-		<p>This section describes the prerequisites to run Capra and how to install the tool.</p>
-		<h4 id="prerequisites">Prerequisites</h4>
-		<p>Before downloading and using Capra, first download a distribution of the Eclipse Modeling Environment and make sure you have the following installed:</p>
+		<p>There are a number of resources to help you get started with Eclipse Capra:</p>
 		<ul>
-			<li>
-				<a href="http://plantuml.com/eclipse.html">PlantUML</a>: Use the nightlies 
-				<a href="http://hallvard.github.io/plantuml/">update site</a> in Eclipse&#8217;s &#8220;Install new software...&#8221; feature. Version 1.1.11 or higher should be installed through this link. Older versions advertised on the website will not work! It might also be necessary to install 
-				<a href="http://www.graphviz.org">Graphviz</a> binaries on your system to view the visualisation of traceability links.
+			<li>The 
+				<a href="https://wiki.eclipse.org/Capra">project wiki</a> contains information on how to install Eclipse Capra and contribute to it.
 			</li>
-			<li>
-				<a href="https://wiki.eclipse.org/Xcore">Xcore</a>: Install through Eclipse&#8217;s &#8220;Install new software...&#8221; feature. Select the Mars distribution &#8220;http://download.eclipse.org/releases/mars/&#8221; in the work with field. 
+			<li>A 
+				<a href="https://www.youtube.com/watch?v=jkUiYPIrutI&amp;t=1205s">video introduction</a> to Eclipse Capra from the Eclipse Open Research Webinar Series
 			</li>
-			<li>
-				<a href="https://www.eclipse.org/mylyn/">Mylyn</a>: Install the &#8220;Mylyn Builds Connector: Hudson/Jenkins&#8221; through Eclipse&#8217;s &#8220;Install new software...&#8221; feature
-			</li>
-			<li>
-				<a href="https://www.eclipse.org/cdt/">C/C++ Development Tools</a>: : Use Eclipse&#8217;s &#8220;Install new software...&#8221; feature
-			</li>
-			<li>
-				<a href="https://www.eclipse.org/jdt">Java Development Tools</a>: Use Eclipse&#8217;s &#8220;Install new software...&#8221; feature
-			</li>
-			<li>
-				<a href="https://eclipse.org/xtend/">Xtend</a>: Install through the Eclipse Market Place
-			</li>
-			<li>
-				<a href="https://eclipse.org/papyrus/">Papyrus</a>: Install through the Eclipse Market Place 
-			</li>
-		</ul>
-		<h4 id="installing-capra">Installing Capra</h4>
-		<p>Capra can be installed either through an update site or manually.</p>
-		<h5 id="installing-through-an-update-site">Installing Capra through an update site</h5>
-		<ul>
-			<li>Go to the 
-				<a href="https://github.com/Salome-Maro/TraceabilityManagement">Capra Github repository</a>.
-			</li>
-			<li>Click on &#8220;Releases&#8221; (Please note that the current release is a Pre-release and the official release will be available once the tool is an Eclipse project)</li>
-			<li>Download the file 
-				<code>Capra_v.0.1.zip</code> (Note the location of your download)
-			</li>
-			<li>Open your Eclipse environment</li>
-			<li>Make sure that you have all the dependencies listed above installed</li>
-			<li>Click on Help &gt;&gt; Install New Software</li>
-			<li>Click on Add and select Archive</li>
-			<li>Select your zip file and click Add</li>
-			<li>You should see the features that Capra has grouped into several categories as shown in Figure 1.</li>
-			<li>To get a minimum version of Capra working, install all the features in Core and at least one artifact wrapper. This means that if you for instance install only the EMFHandler, then you will only be able to create traceability links between model elements contained in EMF models. It is recommended to install all available artifact handlers.</li>
-			<li>Install the features in the visualization and notification categories in order to get their functionality working. </li>
-			<li>Restart Eclipse</li>
-			<li>Go to perspectives and switch to the Capra perspective</li>
-			<li>Now you can create traceability links as described in 
-				<a href="#creating-traceability-links">Creating Traceability Links</a>.
-			</li>
-		</ul>
-		<p><figure><img src="../images/updatesite.png" width="600"/><figcaption>Figure 1: Installing Capra from the Updatesite</figcaption></figure></p>
-		<h5 id="manual-installation-import-from-git">Installing Capra manually with Git</h5>
-		<ul>
-			<li>Open your Eclipse Environment</li>
-			<li>Go to File &gt;&gt; Import and select Git &gt;&gt; Projects from Git</li>
-			<li>Use the 
-				<a href="https://git.eclipse.org/r/capra/org.eclipse.capra">Git repository</a> and import all available projects to your workspace
-			</li>
-			<li>Build your workspace</li>
-			<li>Make sure that all the projects have no errors.</li>
-			<li>Click on Run &gt;&gt; Run Configurations and create a new Eclipse Application Configuration</li>
-			<li>Select your running workspace</li>
-			<li>Click Finish</li>
-			<li>Once the new workspace opens, create or import projects that you want to use to create traceability links</li>
-			<li>Go to perspectives and switch to the Capra perspective</li>
-			<li>Now you can create traceability links as described in 
-				<a href="#creating-traceability-links">Creating Traceability Links</a>.
+			<li>The 
+				<a href="https://github.com/panorama-research/mobstr-dataset">MobSTr dataset</a> &#8212; a complete systems engineering example that shows Eclipse Capra&#8217;s extensibility
 			</li>
 		</ul>
 		<h3 id="traceability-concepts">Traceability Concepts</h3>
-		<p>In this section, important concepts for traceability are described.</p>
+		<p>In this section, important concepts of traceability are described.</p>
 		<h4 id="definition-of-traceability">Definition of traceability</h4>
 		<p>Traceability can be defined as the ability to relate different artifacts created during the development of a software system. Traceability allows creating and using links between system and software development artifacts. For instance, this allows connecting the origin of a requirement with its specification, the design elements that address its specification, the code that implements these design elements, and the acceptance tests that check if the requirement has been achieved.</p>
 		<h4 id="what-is-a-traceability-link">What is a traceability link?</h4>
-		<p>The connections between different artifacts in a software development environment are called traceability links. A traceability link can connect two or more elements to imply that there is a relationship between these elements.</p>
+		<p>The connections between different artifacts in a software development environment are called traceability links. A traceability link can connect two or more elements to imply that there is a relationship between these elements. Traceability links are also often called 
+			<em>trace links</em>.
+		</p>
+		<p>Eclipse Capra stores traceability links in a 
+			<em>trace model</em>. The trace model contains all important information about the traceability links themselves, about the artifacts the links connect, and about the metadata stored about a traceability link.
+		</p>
 		<h4 id="types-of-traceability-links">Types of traceability links</h4>
 		<p>Depending on the requirements of a domain, traceability links can have different types. There are three different categories that can lead to different types of traceability links: the shape of a link, the semantics of a link, and the direction of a link. </p>
 		<ul>
@@ -213,15 +161,46 @@
 		<p>The graphical view allows you to explore directly connected elements or transitively connected elements. To use the latter functionality, click on the downward arrow on right hand corner of the Plant UML View and click on &#8220;Toggle Transitivity&#8221;. This enables you to move from viewing only directly connected elements to the selected element, to viewing all the transitively connected elements. Use the same button to return to the previously active view.</p>
 		<p><figure>		<img src="../images/toggleTransitivity.png" width="600"/>		<figcaption>		Figure 7: Toggle Transitivity		</figcaption></figure></p>
 		<h5 id="traceability-matrix">Traceability matrix</h5>
+		<p>Eclipse Capra supports two ways of showing a traceability matrix: either via the PlantUML view or via the standalone matrix view.</p>
+		<h6 id="TraceabilitymatrixinPlantUML">Traceability matrix in PlantUML</h6>
 		<p>The traceability matrix can be created by selecting at least two model elements when the &#8220;Plant UML View&#8221; is open. This will list all the model elements as rows and columns and an &#8220;x&#8221; mark will appear to show that there is a traceability link between two elements. For instance, the picture below shows the resulting matrix when selecting Req3 and the artifact wrapper representing the PDF document. </p>
-		<p><figure>		<img src="../images/matrixView.png" width="400"/>		<figcaption>		Figure 8: Matrix View as a result of selecting two elements		</figcaption></figure></p>
+		<p><figure>	
+			<br/>	<img src="../images/matrixView.png" width="400"/>
+			<br/>	<figcaption>	Figure 8: Matrix View as a result of selecting two elements</figcaption>
+			<br/></figure>
+		</p>
 		<p>Selecting more than two model elements expands the matrix into a square matrix with same elements listed vertically and horizontally. </p>
-		<p><figure>		<img src="../images/matrixViewMany.png" width="600"/>		<figcaption>		Figure 9: Matrix view as a result of selecting more than two elements		</figcaption></figure></p>
+		<p><figure>	
+			<br/>	<img src="../images/matrixViewMany.png" width="600"/>
+			<br/>	<figcaption>	Figure 9: Matrix view as a result of selecting more than two elements</figcaption>
+			<br/></figure>
+		</p>
+		<h6 id="Thestandalonetraceabilitymatrixview">The standalone traceability matrix view</h6>
+		<p>Eclipse Capra also offers a standalone viewer for trace matrices. That standalone view has the advantage that it can handle larger trace models, that it can export the matrix to Excel, and that it offers some convenience functions, such as providing a graphical view of which artifacts are inconsistent (see also 
+			<a href="#detecting-and-fixing-inconsistencies">Detecting and fixing inconsistencies</a> further below). A user can doubleclick on an empty cell to create a new trace link between the two referenced artifacts. It is also possible to select an existing trace link and delete it, either by using the menu or the 
+			<code>Del</code> button on the keyboard.
+		</p>
+		<p><figure>
+			<br/>	<img src="../images/standalone-matrix.png" width="600"/>
+			<br/>	<figcaption>	Figure 10: The standalone traceability matrix view.</figcaption>
+			<br/></figure>
+		</p>
 		<h4 id="detecting-and-fixing-inconsistencies">Detecting and Fixing Inconsistencies</h4>
-		<p>Traceability links need to be updated as the artifacts they connect evolve. Capra provides a feature to notify users when these artifacts change and to give suggestions on how the traceability links can be changed accordingly. The suggestions are offered as quick fixes to the user and if the user wants to make the changes suggested by the quick fix, the fix can be applied automatically by clicking on it. Currently Capra uses the Eclipse Notification Framework to detect changes and can capture rename, move, change and delete actions made on artifacts that have traceability links.</p>
+		<p>Traceability links need to be updated as the artifacts they connect evolve. Capra provides features that help users identify when the artifacts have changed and to resolve the issues that come with this.</p>
+		<p>On the one hand, Eclipse Capra will notify users when artifacts which are maintained inside Eclipse change. If, e.g., a user changes a requirement in a ReqIF file, Eclipse Capra will detect this change, check if any trace links to or from the requirement exist, and create a marker if that is the case. Eclipse Capra uses the Eclipse Notification Framework to detect changes and can capture rename, move, change and delete actions made on artifacts that have traceability links.</p>
+		<p>On the other hand, Eclipse Capra allows users to manually check the consistency of the entire trace model. This is useful when the trace model contains trace links to artifacts that are maintained outside of Eclipse, e.g., with an external requirements editor or an external modelling tool. To check all trace links for consistency, use the corresponding button in the Eclipse IDEs toolbar as shown below.</p>
+		<p><figure>
+			<br/>	<img src="../images/check-consistency.png" width="400"/>
+			<br/>	<figcaption>Figure 11: The button to check for consistency of the trace model in the main Eclipse IDE toolbar.</figcaption>
+			<br/></figure>
+		</p>
 		<p>The problems detected by Capra are shown in the 
-			<code>Problems View</code> with a type &#8220;Capra problem&#8221;. We demonstrate the use of the 
-			<code>Problems View</code> and quick fixes using our practical example of the HVAC project.
+			<code>Problems View</code> with a type &#8220;Capra problem&#8221;. In addition, the 
+			<a href="traceability-matrix">traceability matrix view</a> also shows which artifacts can no longer be found (in red) and which have been renamed (in yellow).
+		</p>
+		<p>Eclipse Capra also provides quick fixes to address any issues and update traceability links accordingly. Which fixes are applicable is automatically selected by Capra. Quick fixes are either accessible via the problems view or by using the context menu on the corresponding artifact on the traceability matrix.</p>
+		<p>We demonstrate the use of the 
+			<code>Problems View</code> and quick fixes using our practical example of the HVAC project. 
 		</p>
 		<ol>
 			<li>Go to the &#8220;Project Explorer&#8221; and expand the project containing test cases. </li>
@@ -230,26 +209,26 @@
 			</li>
 			<li>Look at the 
 				<code>Problems view</code> and you will see a warning with a type &#8220;Capra Problem&#8221;. The issue tells you that there is a traceability link that points to a file named 
-				<code>BlowerTest.java</code>, but that file has been deleted. <figure> 		<img src="../images/problemView.png" width="700"/> 		<figcaption> 		Figure 9: Problem view showing Capra errors 		</figcaption> </figure>
+				<code>BlowerTest.java</code>, but that file has been deleted. <figure> 		<img src="../images/problemView.png" width="700"/> 		<figcaption> 		Figure 12: Problem view showing Capra errors 		</figcaption> </figure>
 			</li>
 			<li>Right click on the warning and select Quick fix.</li>
 			<li>A window will appear showing the quick fixes options available. In this case there is one option, which is to delete the traceability link related to 
-				<code>BlowerTest.java</code> file. <figure> 		<img src="../images/quickFix.png" width="500"/> 		<figcaption> 		Figure 10: Quick Fixes 		</figcaption> </figure> 
+				<code>BlowerTest.java</code> file. <figure> 		<img src="../images/quickFix.png" width="500"/> 		<figcaption> 		Figure 13: Quick Fixes 		</figcaption> </figure> 
 			</li>
 			<li>Click Finish.</li>
 			<li>Notice that the traceability link has been deleted and the warning disappears.</li>
 		</ol>
 		<h4 id="analyzing-change-impact">Analyzing change impact</h4>
 		<p>In this section, we describe scenarios in which Capra can be used to facilitate change impact analysis. Change impact analysis allows to evaluate the effect a change to an artifact will have on other artifacts. Using the HVAC example, assume that the customer requests a change on the requirement 
-			<code>REQ-3</code>. Before such a change is made, it is important for the company to know which other artefacts will be affected. With Capra, this can be achieved by selecting 
-			<code>REQ-3</code> and, using the visualization, reviewing all other artefacts that are related to 
+			<code>REQ-3</code>. Before such a change is made, it is important for the company to know which other artifacts will be affected. With Capra, this can be achieved by selecting 
+			<code>REQ-3</code> and, using the visualization, reviewing all other artifacts that are related to 
 			<code>REQ-3</code> too. 
 		</p>
-		<p><figure>		<img src="../images/toggleTransitivity.png" width="700"/>		<figcaption>		Figure 11: Capra graphical view showing directly connected elements		</figcaption></figure> </p>
+		<p><figure>		<img src="../images/toggleTransitivity.png" width="700"/>		<figcaption>		Figure 14: Capra graphical view showing directly connected elements		</figcaption></figure> </p>
 		<p>For further analysis, clicking on Toggle transitivity as shown in the figure below will show all artifacts connected to 
 			<code>REQ-3</code> and their connnections to other artifacts. The end user can therefore use this information as a starting point for performing impact analysis.
 		</p>
-		<p><figure>		<img src="../images/graphical-view-transitive.png" width="500"/>		<figcaption>		Figure 12: Capra graphical view showing transitively connected elements		</figcaption></figure> </p>
+		<p><figure>		<img src="../images/graphical-view-transitive.png" width="500"/>		<figcaption>		Figure 15: Capra graphical view showing transitively connected elements		</figcaption></figure> </p>
 		<h2 id="developer-guide">Developer Guide</h2>
 		<p>The following subsection describes the technical architecture of the tool. This information is also available in more detail in a tool demonstration paper 
 			<a href="#references">(1)</a>. Our motivation for choosing this architecture design is based on a study on factors and guidelines that affect how a traceability tool can support traceability maintenance 
@@ -267,7 +246,7 @@
 		</ol>
 		<p>Additionally, Capra has an API which makes traceability data available to other tools. The current version uses the provided traceability data to visualize it graphically.</p>
 		<p>The figure below depicts the extension points. The rationale for each of them is described in the following.</p>
-		<p><figure>		<img src="../images/capraArchitecture.png" width="600"/>		<figcaption>		Figure 13: The Architecture of Capra		</figcaption></figure> </p>
+		<p><figure>		<img src="../images/capraArchitecture.png" width="600"/>		<figcaption>		Figure 16: The Architecture of Capra		</figcaption></figure> </p>
 		<h4 id="traceability-metamodel">Traceability Metamodel</h4>
 		<p>Depending on the company, development context, and process used, the traceability links required can differ. For example, traceability links for a company developing web-based solutions are not the same as links for companies developing embedded software. In the former case, traceability links can help connect certain entries in the server configuration files to specific requirements. The traceability links for embedded software need to relate, e.g., the hardware specification to the software design. Both concepts do not make sense in the respective other domain.</p>
 		<p>To address different link types, the tool offers an extension point for the traceability metamodel. Here the end user (company), can define the types of links through a metamodel and supply it to the tool. Examples of link types are &#8220;verifies&#8221;, &#8220;implements&#8221;, &#8220;refines&#8221;, &#8220;related to&#8221; etc. In addition to link types, the metamodel can also define additional information to be stored with each link. It might be desirable, e.g., to store the date and time the link was created or which user created it.</p>
@@ -283,7 +262,7 @@
 			<code>ArtifactMetamodelAdapter</code>, 
 			<code>TraceMetamodelAdapter</code> and 
 			<code>TracePersistenceAdapter</code>. 
-			<code>ArtifactMetaodelAdapter</code> has methods that provide access to the artifact wrappers and their contents,  
+			<code>ArtifactMetamodelAdapter</code> has methods that provide access to the artifact wrappers and their contents,  
 			<code>TraceMetamodelAdapter</code> has methods that provide access to the traceability links and the content of the links and the 
 			<code>TracePersistenceAdapter</code> has methods that provide access to the traceability model and the artifact wrapper model. The traceability model containing the traceability links is available to other tools. That means that traceability data can be used by other tools for specialised tasks such as impact analysis.
 		</p>
@@ -295,7 +274,7 @@
 			<br/>
 			<code>TraceMetamodelAdapter</code> interface. 
 		</p>
-		<p><figure>		<img src="../images/interface.png" width="600"/>		<figcaption>		Figure 14: Use of the method &#8220;isThereATraceBetween()&#8221; provided by the `TraceMetamodelAdapter` interface		</figcaption></figure></p>
+		<p><figure>		<img src="../images/interface.png" width="600"/>		<figcaption>		Figure 17: Use of the method &#8220;isThereATraceBetween()&#8221; provided by the `TraceMetamodelAdapter` interface		</figcaption></figure></p>
 		<h4 id="adding-a-custom-traceability-metamodel">Adding a custom Traceability Metamodel</h4>
 		<p>To define your own traceability metamodel follow the steps below:</p>
 		<ol>
@@ -309,7 +288,7 @@
 				<code>model</code> folder create a new file and name it 
 				<code>MyTraceabilityMetaModel.xcore</code>. A pop up window will appear asking if you want to add the Xtext nature to the project. Click &#8220;Yes&#8221;.
 			</li>
-			<li>Define your traceability metamodel as required. In our example, we add two types of traceability links i.e &#8220;implements&#8221; and &#8220;tests&#8221; <figure> 		<img src="../images/traceMetamodelDefinition.png" width="400"/>		<figcaption> 		Figure 15: Tracemetamodel Definition 		</figcaption> </figure> </li>
+			<li>Define your traceability metamodel as required. In our example, we add two types of traceability links i.e &#8220;implements&#8221; and &#8220;tests&#8221; <figure> 		<img src="../images/traceMetamodelDefinition.png" width="400"/>		<figcaption> 		Figure 19: Tracemetamodel Definition 		</figcaption> </figure> </li>
 			<li>Open the 
 				<code>plugin.xml</code> file of the new project and click on the &#8220;Extension Points&#8221; tab 
 			</li>
@@ -317,19 +296,19 @@
 			<li>In the text box for the &#8220;Extension point filter&#8221; type &#8220;Traceability&#8221; and select 
 				<code>org.eclipse.capra.configuration.traceabilityMetaModel</code>
 			</li>
-			<li>Click Finish. <figure> 		<img src="../images/addTraceExtension.png" width="500"/> 		<figcaption> 		Figure 16: Adding the Trace metamodel extension point 		</figcaption> </figure> </li>
+			<li>Click Finish. <figure> 		<img src="../images/addTraceExtension.png" width="500"/> 		<figcaption> 		Figure 19: Adding the Trace metamodel extension point 		</figcaption> </figure> </li>
 			<li>Another pop up window will appear asking if you want to add the project 
 				<code>org.eclipse.capra.core</code> to the list of plugin dependencies. Click Yes 
 			</li>
 			<li>Right click on the newly added extension, and click on &#8220;New&#8221; then 
 				<code>TraceabilityMetaModelAdapter</code>. A new 
-				<code>TraceabilityMetaModelAdapter</code> will be created 	<figure> 		<img src="../images/newTMAdapter.png" width="700"/> 		<figcaption> 		Figure 17: Adding the Trace metamodel extension point 		</figcaption> 	</figure> 	
+				<code>TraceabilityMetaModelAdapter</code> will be created 	<figure> 		<img src="../images/newTMAdapter.png" width="700"/> 		<figcaption> 		Figure 20: Adding the Trace metamodel extension point 		</figcaption> 	</figure> 	
 			</li>
 			<li>Click on the newly created 
 				<code>TraceabilityMetaModelAdapter</code>. On the right hand side, we need to provide a class for this extension in which we will implement all the required interfaces. 
 			</li>
 			<li>Click on &#8220;Class&#8221; and a pop up window for creating a new class will appear. Make sure the folder is 
-				<code>src</code> and name your class <figure> 		<img src="../images/newClass.png" width="700"> </img>		<figcaption> 		Figure 18: Add new Class 		</figcaption> </figure> <figure> 		<img src="../images/addNewTraceAdapterClass.png" width="500"/> 		<figcaption> 		Figure 19: Add new Trace Adapter Class 		</figcaption> </figure> 
+				<code>src</code> and name your class <figure> 		<img src="../images/newClass.png" width="700"> </img>		<figcaption> 		Figure 21: Add new Class 		</figcaption> </figure> <figure> 		<img src="../images/addNewTraceAdapterClass.png" width="500"/> 		<figcaption> 		Figure 22: Add new Trace Adapter Class 		</figcaption> </figure> 
 			</li>
 			<li>Click Finish and a class will be created with the methods to be implemented in it. </li>
 			<li>Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. </li>
@@ -341,7 +320,7 @@
 				<code>model</code> folder, create a new file and name it 
 				<code>artifact.xcore</code>.
 			</li>
-			<li>Define the artifact metamodel as in the picture below. Note that you can modify this definition to fit your needs. <figure> 		<img src="../images/artifactMetamodelDefinition.png" width="400"/> 		<figcaption> 		Figure 20: Artifact Metamodel definition 		</figcaption> </figure> </li>
+			<li>Define the artifact metamodel as in the picture below. Note that you can modify this definition to fit your needs. <figure> 		<img src="../images/artifactMetamodelDefinition.png" width="400"/> 		<figcaption> 		Figure 23: Artifact Metamodel definition 		</figcaption> </figure> </li>
 			<li>Next, open the 
 				<code>plugin.xml</code> file of the project and click on the &#8220;Extension Points&#8221; tab
 			</li>
@@ -351,10 +330,10 @@
 			</li>
 			<li>Right click on the newly added extension, and click on &#8220;New&#8221; then 
 				<code>ArtifactMetamodelAdapter</code>. A new 
-				<code>ArtifactMetamodelAdapter</code> will be created <figure> 		<img src="../images/newArtifactAdapter.png" width="600"/>		<figcaption> 		Figure 21: Artifact adapter definition 		</figcaption> </figure> 
+				<code>ArtifactMetamodelAdapter</code> will be created <figure> 		<img src="../images/newArtifactAdapter.png" width="600"/>		<figcaption> 		Figure 24: Artifact adapter definition 		</figcaption> </figure> 
 			</li>
 			<li>Click on &#8220;Class&#8221; and a pop up window for creating a new class will appear. Make sure the folder is 
-				<code>src</code> and name your class <figure> 		<img src="../images/newArtifactAdapterClass.png" width="500"/> 		<figcaption> 		Figure 22: Artifact adapter Class definition 		</figcaption> </figure> 
+				<code>src</code> and name your class <figure> 		<img src="../images/newArtifactAdapterClass.png" width="500"/> 		<figcaption> 		Figure 25: Artifact adapter Class definition 		</figcaption> </figure> 
 			</li>
 			<li>Click Finish and a class will be created with the methods to be implemented in it. </li>
 			<li>Implement all the methods according to your new custom metamodel. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. </li>
@@ -386,13 +365,13 @@
 				<code>org.eclipse.capra.core</code> to the list of plugin dependencies. Click Yes 
 			</li>
 			<li>Right click on the newly added extension, and click on &#8220;New&#8221;, then &#8220;ArtifactHandler&#8221;. A new 
-				<code>ArtifactHandler</code> will be created. <figure> 		<img src="../images/newArtifactHandler.png" width="600"/>		<figcaption> 		Figure 23: New Artifact Handler definition 		</figcaption> </figure>
+				<code>ArtifactHandler</code> will be created. <figure> 		<img src="../images/newArtifactHandler.png" width="600"/>		<figcaption> 		Figure 26: New Artifact Handler definition 		</figcaption> </figure>
 			</li>
 			<li>Click on the newly created 
 				<code>ArtifactHandler</code>. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 
 			</li>
 			<li>Click on &#8220;Class&#8221; and a pop up window for creating a new class will appear. Make sure the folder is 
-				<code>src</code> and name your class <figure> 		<img src="../images/newArtifactClass.png" width="500"/>		<figcaption> 		Figure 24: New Artifact Handler Class definition 		</figcaption> </figure>
+				<code>src</code> and name your class <figure> 		<img src="../images/newArtifactClass.png" width="500"/>		<figcaption> 		Figure 27: New Artifact Handler Class definition 		</figcaption> </figure>
 			</li>
 			<li>Click Finish and a class will be created with the methods to be implemented in it. In this case there are only two methods.</li>
 			<li>Implement all required methods. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name. </li>
@@ -418,7 +397,7 @@
 			<li>Edit the static variables 
 				<code>DEFAULT_PROJECT_NAME</code>, 
 				<code>DEFAULT_TRACE_MODEL_NAME</code> and 
-				<code>DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME</code> to reflect the new location and new model names for your traceability model and artifact wrapper model. <figure> 		<img src="../images/editPersistenceHandler.png" width="700"/> 		<figcaption> 		Figure 25: Editing existing Persistence Handler 		</figcaption> </figure>
+				<code>DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME</code> to reflect the new location and new model names for your traceability model and artifact wrapper model. <figure> 		<img src="../images/editPersistenceHandler.png" width="700"/> 		<figcaption> 		Figure 28: Editing existing Persistence Handler 		</figcaption> </figure>
 			</li>
 			<li>Save the project and Run Capra</li>
 		</ol>
@@ -438,19 +417,19 @@
 			<li>Click on Add. A pop up window will appear with a list of available extension points.</li>
 			<li>Un-check the checkbox that says &#8220;Show only extension points from the required plugins&#8221; </li>
 			<li>In the textbox for &#8220;Extension point filter&#8221; type &#8220;Persistence&#8221;, select 
-				<code>org.eclipse.capra.configuration.persistenceHandler</code> and click Finish. <figure> 		<img src="../images/addPersistenceHandler.png" width="500"/> 		<figcaption> 		Figure 26: Add new Persistence Handler 		</figcaption> </figure>
+				<code>org.eclipse.capra.configuration.persistenceHandler</code> and click Finish. <figure> 		<img src="../images/addPersistenceHandler.png" width="500"/> 		<figcaption> 		Figure 29: Add new Persistence Handler 		</figcaption> </figure>
 			</li>
 			<li>Another pop up window will appear asking if you want to add the project 
 				<code>org.eclipse.capra.core</code> to the list of plugin dependencies. Click Yes. 
 			</li>
 			<li>Right click on the newly added extension, and click on &#8220;New&#8221;, then 
-				<code>persistenceHandler</code>. A new Persistence Handler will be created. <figure> 		<img src="../images/newPersistenceHandler.png" width="600"/>		<figcaption> 		Figure 27: New Persistence Handler 		</figcaption> </figure>
+				<code>persistenceHandler</code>. A new Persistence Handler will be created. <figure> 		<img src="../images/newPersistenceHandler.png" width="600"/>		<figcaption> 		Figure 30: New Persistence Handler 		</figcaption> </figure>
 			</li>
 			<li>Click on the newly created 
 				<code>persistenceHandler</code>. On the right hand side, we need to provide a class for this extension, where we will implement all the required interfaces. 
 			</li>
 			<li>Click on &#8220;Class&#8221; and a pop up window for creating a new class will appear. Make sure the folder is 
-				<code>src</code> and name your class. <figure> 		<img src="../images/newPersistenceHandlerClass.png" width="500"/> 		<figcaption> 		Figure 28: New Persistence Handler Class 		</figcaption> </figure>
+				<code>src</code> and name your class. <figure> 		<img src="../images/newPersistenceHandlerClass.png" width="500"/> 		<figcaption> 		Figure 31: New Persistence Handler Class 		</figcaption> </figure>
 			</li>
 			<li>Click Finish and a class will be created with the methods to be implemented in it. In this case there are only two methods.</li>
 			<li>Implement all methods according to your needs. Note that information about what each method does and its parameters can be obtained by hovering the mouse over the respective method name.</li>
@@ -468,7 +447,7 @@
 				<code>DefaultPriorityHander.java</code>.
 			</li>
 			<li>Modify the code to select the correct handler. For instance, the code below selects a 
-				<code>hudsonHandler</code> when the element selected is a Test element or a build element. <figure> 		<img src="../images/priorityHandlerCode.png" width="700"/> 		<figcaption> 		Figure 29: Code for the Priority Handler 		</figcaption> </figure>
+				<code>hudsonHandler</code> when the element selected is a Test element or a build element. <figure> 		<img src="../images/priorityHandlerCode.png" width="700"/> 		<figcaption> 		Figure 32: Code for the Priority Handler 		</figcaption> </figure>
 			</li>
 		</ol>
 		<h3 id="adding-new-source-files">Adding new source files</h3>
@@ -483,10 +462,11 @@ which accompanies this distribution, and is available at
 http://www.eclipse.org/legal/epl-v20.html
 
 SPDX-License-Identifier: EPL-2.0
-
+ 
 Contributors:
-    Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
-    Chalmers | University of Gothenburg - additional features, updated API
+   Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
+   Chalmers | University of Gothenburg - additional features, updated API
+
 </code></pre>
 		<p>The Contributors entry can be replaced with the appropriate names. Use &#8220;Fix copyrights&#8221; from the context menu to add the copyrights to all relevant files in a project or folder.</p>
 		<h2 id="references">Rerefences</h2>

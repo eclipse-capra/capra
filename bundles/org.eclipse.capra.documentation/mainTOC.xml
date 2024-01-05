@@ -6,6 +6,7 @@
 <topic href="docu/capraDocumentation.html#getting-started" label="Getting Started"></topic>
 <topic href="docu/capraDocumentation.html#traceability-concepts" label="Traceability Concepts"></topic>
 <topic href="docu/capraDocumentation.html#practical-examples" label="Practical Examples"></topic>
+<anchor id="handler-documentation"/>
 </topic>
 <topic href="docu/capraDocumentation.html#developer-guide" label="Developer Guide">
 <link toc="toc/capra_Documentation.xml"/>
