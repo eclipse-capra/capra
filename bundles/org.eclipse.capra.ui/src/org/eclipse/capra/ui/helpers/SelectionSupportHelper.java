@@ -90,7 +90,7 @@ public class SelectionSupportHelper {
 	 */
 	public static List<Object> extractSelectedElements(final ISelection selection, final IWorkbenchPart workbenchPart) {
 		List<Object> selectedElem = new ArrayList<>();
-		if (selection.isEmpty()) {
+		if (selection == null || selection.isEmpty()) {
 			return selectedElem;
 		}
 
