@@ -18,7 +18,6 @@
 
 	<modules>
 		<module>bundles/org.eclipse.capra.core</module>
-		<module>bundles/org.eclipse.capra.documentation</module>
 		<module>bundles/org.eclipse.capra.generic.persistence</module>
 		<module>bundles/org.eclipse.capra.generic.priority</module>
 		<module>bundles/org.eclipse.capra.generic.tracemodel</module>
@@ -55,6 +54,10 @@
 		<module>bundles/org.eclipse.capra.ui.sunburst</module>
 		<module>bundles/org.eclipse.capra.ui.matrix</module>
 		<module>bundles/org.eclipse.capra.ui.linktable</module>
+		
+		<!-- Documentation -->
+		<module>bundles/org.eclipse.capra.documentation</module>
+		<module>bundles/org.eclipse.capra.documentation.asciidoc</module>
 
 		<!-- Tests -->
 		<module>tests/org.eclipse.capra.testsupport</module>

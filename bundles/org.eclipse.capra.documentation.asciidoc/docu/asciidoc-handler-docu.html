@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	</head>
+	<body>
+		<h2 id="asciidoc-handler">Tracing to AsciiDoc files</h2>
+		<p>Eclipse Capra natively supports AsciiDoc files using the 
+			<a href="https://github.com/de-jcup/eclipse-asciidoctor-editor">Eclipse AsciiDoctor Editor</a>. When an Asciidoc file is openend in the editor, its contents are shown in the outline view.
+		</p>
+		<p><figure>
+			<br/>	<img src="../images/asciidoc-outline.png" width="600"/>
+			<br/>	<figcaption>	Figure 1: The outline view of the AsciiDoc Editor.</figcaption>
+			<br/></figure>
+		</p>
+		<p>From there, it is possible to drag and drop the entries into Eclipse Capra&#8217;s Selection View.</p>
+		<h3 id="asciidoc-handler-types">Two different ways to trace</h3>
+		<p>Eclipse Capra supports to different ways to trace to elements within an Asciidoc file:</p>
+		<ol>
+			<li>Trace to any element based on its 
+				<em>offset</em> within the file. This means that Eclipse Capra will store at which position in the file the element appears.
+			</li>
+			<li>Trace to any identifier element. This means that Eclipse Capra will store the identifier directly without storing the position.</li>
+		</ol>
+		<p>These two ways of tracing have a fundamental difference when retrieving the original element in the Asciidoc file again:</p>
+		<ol>
+			<li>When tracing to an element based on the 
+				<em>offset</em>, if any text is added or removed before the element appears in the file, it can no longer be located.
+			</li>
+			<li>When tracing to an identifier element, Eclipse Capra will traverse the entire file to find the identifier. This means that this method is more robust when the text changes. However, each identifier needs to be unique within the file. If the name of the identifier is changed, Eclipse Capra will no longer be able to find it.</li>
+		</ol>
+		<p>When using the identifier-based method, the user needs to add identifiers into the text at the right positions, e.g., after a headline. This requires some additional work as well as a consistent naming scheme.</p>
+	</body>
+</html>

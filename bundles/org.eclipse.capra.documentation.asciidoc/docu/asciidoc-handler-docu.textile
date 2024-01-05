@@ -1,0 +1,24 @@
+h2(#asciidoc-handler). Tracing to AsciiDoc files
+
+Eclipse Capra natively supports AsciiDoc files using the "Eclipse AsciiDoctor Editor":https://github.com/de-jcup/eclipse-asciidoctor-editor. When an Asciidoc file is openend in the editor, its contents are shown in the outline view.
+
+<figure>
+	<img src="../images/asciidoc-outline.png" width="390"/>
+	<figcaption>	Figure 1: The outline view of the AsciiDoc Editor. Notice that the outline shows elements such as headings and identifier elements separately.</figcaption>
+</figure>
+
+From there, it is possible to drag and drop the entries into Eclipse Capra's Selection View.
+
+h3(#asciidoc-handler-types). Two different ways to trace
+
+Eclipse Capra supports to different ways to trace to elements within an Asciidoc file:
+
+# Trace to any element based on its _offset_ within the file. This means that Eclipse Capra will store at which position in the file the element appears. When dragging a headline or similar structural element into the selection view, Capra will use this way to identify the element.
+# Trace to any identifier element. This means that Eclipse Capra will store the identifier directly without storing the position if one of the identifier elements is used in a trace link.
+
+These two ways of tracing have a fundamental difference when retrieving the original element in the Asciidoc file again:
+
+# When tracing to an element based on the _offset_, if any text is added or removed before the element appears in the file, it can no longer be located.
+# When tracing to an identifier element, Eclipse Capra will traverse the entire file to find the identifier. This means that this method is more robust when the text changes. However, each identifier needs to be unique within the file. If the name of the identifier is changed, Eclipse Capra will no longer be able to find it.
+
+When using the identifier-based method, the user needs to add identifiers into the text at the right positions, e.g., after a headline. This requires some additional work as well as a consistent naming scheme.

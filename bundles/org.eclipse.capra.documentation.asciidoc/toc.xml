@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Eclipse Capra AsciiDoc Integration Documentation" link_to="../org.eclipse.capra.documentation/mainTOC.xml#handler-documentation">
+	<topic href="docu/asciidoc-handler-docu.html" label="Tracing to AsciiDoc files">
+		<topic href="docu/asciidoc-handler-docu.html#asciidoc-handler-types" label="Two different ways to trace"></topic>
+	</topic>
+</toc>
